@@ -1,0 +1,96 @@
+\footnotesize
+\begin{tabular}{p{6.3cm} p{7cm}}
+\begin{lstlisting}[mathescape]
+$\text{\underline{Haskell}}$
+class Semiring a => Monoid a 
+ where 
+  mempty :: a 
+  mappend :: a -> a -> a 
+  mappend = (<>) 
+  mconcat :: [a] -> a 
+  mconcat = 
+   foldr mappend mempty 
+$\text{\underline{Coq}}$
+class Monoid {A : type}
+ (dot : A $\to$ A $\to$ A)
+ (one : A) : Prop := {
+  dot_assoc : forall x y z : A, 
+  (dot x (dot y z)) = 
+  dot (dot x y) z
+  unit_left : forall x, 
+  dot one x = x 
+  unit_right : forall x, 
+  dot x one = x              
+}
+$\text{\textit{Alternative Definition:}}$
+Record monoid := {
+ dom : Type; 
+ op : dom -> dom -> dom 
+  where "x * y" := op x y; 
+ id : dom where "1" := id; 
+ assoc : forall x y z, 
+  x * (y * z) = (x * y) * z; 
+ left_neutral : forall x,   
+  1 * x = x; 
+ right_neutal : forall x,
+  x * 1 = x; 
+}
+$\text{\underline{MathScheme}}$
+Monoid := Theory { 
+ U : type; 
+ * : (U,U) $\to$ U; 
+ e : U; 
+ axiom right_identity_*_e : 
+  forall x : U $\cdot$ (x * e) = x;
+ axiom left_identity_*_e :  
+  forall x : U $\cdot$ (e * x) = x;
+ axiom associativity_* : 
+  forall x,y,z : U $\cdot$ 
+  (x * y) * z = x * (y * z); 
+}
+\end{lstlisting}
+&
+\begin{lstlisting}[mathescape]
+$\text{\underline{Agda}}$
+record Monoid c $\ell$ : 
+   Set (suc (c $\sqcup$ $\ell$)) where 
+ infixl 7 _$\bullet$_
+ infix 4 _$\approx$_
+ field 
+  Carrier : Set c 
+  _$\approx$_ : Rel Carrier $\ell$ 
+  _$\bullet$_ : Op$_2$ Carrier 
+  isMonoid : IsMonoid _$\approx$_ _$\bullet$_ $\varepsilon$ 
+$\text{where }$ IsMonoid $\text{ is defined as }$
+record IsMonid ($\bullet$ : Op$_2$) ($\varepsilon$ : A) 
+ : Set (a $\sqcup$ $\ell$) where 
+  field 
+   isSemiring : IsSemiring $\bullet$ 
+   identity : Identity $\varepsilon$ 
+   identity$^l$ : LeftIdentity $\varepsilon$ $\bullet$ 
+   identity$^l$ : proj$_1$ identity 
+   identity$^r$ : Rightdentity $\varepsilon$ $\bullet$ 
+   identity$^r$ : proj$_2$ identity           
+
+$\text{\underline{MMT}}$
+theory Semigroup : ?NatDed = 
+ u : sort 
+ comp : tm u $\to$ tm u $\to$ tm u 
+  # 1 * 2 prec 40
+ assoc : $\vdash$ $\forall$ [x, y, z]
+  (x * y) * z = x * (y * z)    
+ assocLeftToRight : 
+  {x,y,z} $\vdash$ (x * y) * z 
+          = x * (y * z) 
+  = [x,y,z] 
+   allE (allE (allE assoc x) y) z
+ assocRightToLeft : 
+  {x,y,z} $\vdash$  x * (y * z) 
+           = (x * y) * z 
+  = [x,y,z] sym assocLR 
+theory Monoid : ?NatDed 
+ includes ?Semigroup 
+ unit : tm u # e 
+ unit_axiom : $\vdash$ $\forall$ [x] = x * e = x       
+\end{lstlisting}       
+\end{tabular}  

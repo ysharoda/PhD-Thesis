@@ -1,0 +1,106 @@
+\chapter{Introduction}
+
+%Libraries are quite useful to make standard knowledge available to users, so they can just focus on the novelty of their task. Libraries of Mathematics are no exception. 
+%Building a large library of mathematics is one of the goals of the mechanized mathematics and formal knowledge communities. It has been envisioned by the QED manifesto in 1994 \ednote{cite}, and has - since then - been the subject of many research efforts \ednote{citations}. 
+
+Building a large library of mathematics is one of the goals of the mechanized mathematics community. There has been many efforts that focus on different aspects of library building \ednote{more here} 
+and address some of the challenges, including foundation, organization, automation and others. 
+
+Algebra is a main components of any library of mathematics. We examined some of the libraries of Algebra \ednote{citations}, and found that they mainly consists of three pieces of information\footnote{our examples are taken from the algebra library}
+\begin{itemize}
+    \item Theories 
+    \begin{minted}[escapeinside=||,mathescape=true,fontsize=\footnotesize]{Agda}
+record Monoid c |$\ell$| : Set (suc (c |$\sqcup$| |$\ell$|)) where 
+ infixl 7 _|$\bullet$|_
+ infix 4 _|$\approx$|_
+ field 
+   Carrier : Set c 
+   _|$\approx$|_ : Rel Carrier |$\ell$| 
+   _|$\bullet$|_ : Op|$_2$| Carrier 
+   isMonoid : IsMonoid _|$\approx$|_ _|$\bullet$|_ |$\varepsilon$| 
+    \end{minted}
+    \item Related Constructions 
+    \begin{minted}[escapeinside=||,mathescape=true,fontsize=\footnotesize]{Agda}
+        record IsMonoidMorphism (|$\llbracket$|_|$\rrbracket$|:Morphism)
+        : Set(c|$_1$| |$\sqcup$| |$\ell_1$| |$\sqcup$| c|$_2$| |$\sqcup$| |$\ell_2$|) where 
+        field
+        sm-homo : IsSemigroupMorphism F.semigroup T.semigroup |$\llbracket$|_|$\rrbracket$|
+        |$\varepsilon$|-homo   : Homomorphic|$_0$| |$\llbracket$|_|$\rrbracket$|   F.|$\varepsilon$| T.|$\varepsilon$|     
+    \end{minted}
+    \item Theorems and proofs 
+    \begin{minted}[escapeinside=||,mathescape=true,fontsize=\footnotesize]{Agda}
+        comm+id|$^{l}$| |$\Rightarrow$|id|$^{r}$| : LeftIdentity e _|$\bullet$|_ |$\to$| RightIdentity e _|$\bullet$|_ 
+        comm+id|$^{l}$||$\Rightarrow$|id|$^{r}$| id|$^{l}$| x = begin 
+        x |$\bullet$| e |$\approx\langle$| comm x e |$\rangle$|
+        e |$\bullet$| x |$\approx\langle$| id|$^{l}$| x |$\rangle$|
+        x 
+    \end{minted}        
+\end{itemize}
+current practice requires library builders to provide every piece of  information, with some exceptions \ednote{Coq generates induction principle and other things}. But, does it have to be the case? 
+
+Figure XX shows the definition of \verb|Monoid| and monoid homomorphism, \verb|MonoidHom|. It shows how the definition of \verb|MonoidHom| can be generated from the definition of \verb|Monoid| by providing two instances of the theory, a homomorphism function, \verb|hom|, and preservation axioms \verb|pres-f| for every function symbol \verb|f|. This observation gives rise to the following questions 
+\begin{itemize}
+    \item What is the right abstraction for theory presentations of algebraic structures?
+    \item Is there enough information that can be generated from theory presentations? 
+    \item What pieces of information are needed for the system to generate
+    particular constructions? 
+    \item How would this affect the activity of library building? 
+\end{itemize} 
+Turns out the answers are given by universal algebra \ednote{citations}, which generalizes over the details of an equational theory and give us concrete definitions of its related constructions. 
+
+Given these abstractions, we envision the library building activity to be more of a specification of what one wants to be in the library, rather than a reconstruction of the formalization of the same standard information again and again. In this project, we aim to get close to this practice. 
+
+In the next section \ednote{put the labels here}, we highlight the current practice of library builders of writing information that can be generated. In Section \ref{}\ednote{put the label}, we present our contribution. We conclude the introduction section by giving a broader context of how our work fits in the effort of building a library of formalized mathematics. 
+
+\section{Research Problem}
+
+Logic provides us with a language to talk about our observations by defining concepts and stating their properties, along with a deduction system to derive conclusions from our observations \ednote{talk about this more formally, and cite \url{http://intrologic.stanford.edu/chapters/chapter_01.html}}. Every formal system is based on a logic that provides the bases for its syntax, as well as some design decisions that are part of its infrastructure. The variation in underlying logics and design decisions have resulted in very different presentations of the same mathematical knowledge. For example, Figure \ref{mon-diff-lang} shows the representation of \verb|Monoid| theory in $5$ different languages.  
+\begin{figure}\label{mon-diff-lang}
+\input{figures/mon-diff-reps-2-col.tex}
+\end{figure}
+These representations are all mathematically equivalent, but they do not look the same. In some cases, as in Haskell and MMT, the theory \monoid is defined as an extension of \semigroup. Despite this being useful, there is no reason why a developer might not want to add a theory \unital (a non-associative \monoid), to the hierarchy \ednote{citation: the haskell hierarchy problem, and the recent paper from 2020}. A better approach to defining \monoid here would consider it to be an extension of both theories, but still allowing the user to overlook the hierarchy and deal with the \emph{flattened} definition, if that all they need to get their work done. \ednote{maybe I want to move this argument from here}. The two Coq definitions takes two extreme views to the bundling problem \ednote{citations here} by either having the carrier and all the function symbols as arguments (the first definition) or having all elements of the theory as declarations of a record type (the second definition) \ednote{say more about the difference between classes and records in Coq}. the formalization of the Algebraic hierarchy in the Agda standard library is based on setoids (sets equipped with the equivalence relation). Therefore, we find an extra field of the definition of \monoid corresponding to the equivalence relation $\_\approx\_$. 
+
+Every one of these definitions is good for different purposes, but having design decisions baked in the definitions makes them less reusable in projects that do not deploy the same decisions. That's why different formalizations of the algebraic hierarchy within the same system exists. For example, there are at least $4$ algebra libraries in Coq \ednote{citations}. The team that worked on formalizing the Feit-Thompson theorem in Coq had to come up with their own formalization of the algebraic hierarchy, and mentioned - referring to other libraries of Algebra in Coq. 
+\begin{quote}
+    ``In spite of this body of prior work, however, we have found it
+    difficult to make practical use of the algebraic hierarchy in our project to
+    formalize the Feit-Thompson Theorem in the Coq system."
+\end{quote}
+
+These observations lead us to asking whether there is an abstraction which can be flexible enough to build different presentation from. Is there a raw definition of \monoid that correspond to the mathematical concept without the extra design details that current formal systems deploy? 
+
+Turns out \emph{Universal Algebra} provides the right abstraction over those details. A theory in universal algebra has three components \verb|(S,F,E)|; a sort \verb|S|, a list of function symbols along with their arities \verb|F|, and a list of axioms (equations) that describe properties of the function symbols \verb|E|. It also provides definitions of some related constructions, like morphisms, product algebras, term languages, $\cdots$, etc. By observing some of these definitions we see that all the information needed to generate them is available in the theory. Taking homomorphism as an example, it is defined as ....\ednote{talk more here about the generation of hom}. 
+
+With these abstractions in place, we aim to automatically generate definitions from theory presentations represented abstractly as an equational theory\ednote{talk at the very beginning about what we mean by theory presentations}. We discuss our contributions in detail in the next section. 
+
+\section{Contributions}
+\begin{itemize}
+    \item Highlight the redundancy in algebra libraries 
+    \item Compile a list of structures that can be generated from theory presentations
+    \item Generate some of these constructions in Tog, a small implementation of a depdently typed language, in the style of Agda, Coq and Lean. 
+    \item Export this implementation to Agda 
+    \item Test the implementation on a library of over $200$ theories implemented using the combinators defined ... \ednote{citation}. This is the first implementation - we know of, that is based completely on arrows. \ednote{more here}
+\end{itemize}  
+
+\section{Broader Context}
+
+There are different ways of organizing knowledge within a formal system \ednote{cite the srvey paper}. In this section, we discuss our vision of the structure of a large library of mathematics. The general structure that we advocate is a theory graph \ednote{Talk more about how theory graph is implemented in different system - examples MMT and development graphs in Hets. Also the work on CLEAR kind of envisioned it} --- it comes closed to capturing the structure of mathematical knowledge, as it allows us to express facts like `a group is a monoid` and that `monoid and additive monoid are isomorphic`. 
+The nodes of the graph are biform theories \ednote{cite the paper about theory graphs} and they are connected by theory morphisms which describe how the different theories connect to each other. A morphism maps symbols of a source theory to expressions in the target one. The simplest form of morphisms is inclusions, in which the mapping is the identity. Morphisms are used to transfer results from one theory to another. So, a morphism between monoid and additivie monoid that describes they are isomorphic, allows us to transfer results between them. To be able to build a large library that encodes mathematical knowledge with morphisms that leverages their structure as described by mathematicians and have enough tools and related definitions to get users started on their tasks without having to define a lot of basic mathematical knowledge is a very labor-intensive task. We aim at using generative programming to generate parts of this library that can be automatically derived from developer-given information. This enhances the usability of the library by providing more customized definitions to the user, enhances maintainability as the generative algorithms propagates changes in the developer provided definitions, and decrease the development time, because the developer need not worry about writing these generated definitions. 
+\ednote{find a way to talk about this library being the center of a tetrapodal structure}
+
+%The main objective of our work is to shorten the development time of libraries by generating many of the definitions that are currently being provided by the developers. Our approach also enables the existence of different definitions based on different design decisions within the same library, without extra burden on the developer, mainly because these definitions are generated. 
+
+%Although our work is generic enough and can be applied in different contexts, we want to highlight in this section our vision of how information in a library should be organized. 
+
+%A library of mathematical knowledge is organized in terms of units of knowledge, a way to connect these units and underlying semantics \ednote{cite the survey paper}. 
+%The library is more useful and manageable if it takes advantage of the underlying structures of Mathematics. 
+
+%emphasis on structure and with enough tools and definitions that allow  
+
+% consisting of theories as nodes and morphisms as edges. 
+
+\section{Outline of Thesis}
+chapter for examples of redundancy in libraries - 
+chapter for talking about all constructions that can be generated - 
+chapter about Tog and implementation - 
+chapter about the MS library  

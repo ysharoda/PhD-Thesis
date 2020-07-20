@@ -1,0 +1,42 @@
+\documentclass[]{article}
+
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\footnotesize}
+\usepackage{graphicx}
+\usepackage{subcaption}
+
+\begin{document}
+
+\begin{figure}
+\begin{subfigure}[t]{\textwidth}
+\begin{lstlisting}[mathescape]
+record Monoid (A : Set) : Set where
+  constructor monoid
+  field
+    e  : A
+    op : A $\to$ A $\to$ A
+    lunit : {x : A} $\to$ (op e x) == x
+    runit : {x : A} $\to$ (op x e) == x
+    assoc : {x y z : A} $\to$ 
+         op x (op y z) == op (op x y) z
+\end{lstlisting}
+\caption{The definition of as a record type in Tog}
+\end{subfigure}
+\hfill 
+\begin{subfigure}[t]{\textwidth}
+\begin{lstlisting}[mathescape]
+record MonoidHom {A1 : Set} {A2 : Set} 
+    (M1 : Monoid A1) (M2 : Monoid A2) : Set where
+  constructor monoidHom
+  field
+    hom : A1 $\to$ A2
+    pres-e  : (hom M1.e) == M2.e
+    pres-op : (x y : A1) $\to$ hom (M1.op x y) ==  
+      M2.op (hom x) (hom y)
+\end{lstlisting}
+\caption{The definition of as a record type in Tog}
+\label{fig:monoid_hom}
+\end{subfigure}
+\caption{The figure caption} 
+\end{figure}
+\end{document}

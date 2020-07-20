@@ -1,0 +1,17 @@
+\documentclass[]{article}
+
+\usepackage{tikz}
+\usepackage{tikz-cd}
+
+\begin{document}
+
+  \begin{tikzcd}[row sep=0.9em, column sep=0.3em]
+    \verb|Carrier| \arrow[d,hook] \arrow[r,hook] \arrow[dr,hook]& \verb|Pointed| \arrow[d,hook]& \\
+    \verb|Magma| \arrow[d,hook] \arrow[r,hook] & 
+    \verb|PointedMagma|  \arrow[d,hook] \arrow[rr,hook] \arrow[drr,hook]
+    & & \verb|RightUnital|  \arrow[d,hook]\\
+    \verb|Semigroup| \arrow[d,hook] & \verb|LeftUnital| \arrow[rr,hook] & &\verb|Unital| \arrow[dlll,hook] & \\
+    \verb|Monoid|  && &&
+  \end{tikzcd}
+
+\end{document}

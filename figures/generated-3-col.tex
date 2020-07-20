@@ -1,0 +1,86 @@
+\begin{adjustbox}{width=\columnwidth,center}
+    \begin{tabular}{p{10cm} p{12cm}}        
+\lstset{backgroundcolor=\color{ourblue}}
+\begin{lstlisting}[mathescape]
+record Monoid (A : Set) : Set 
+ where
+ constructor monoid
+ field
+  e  : A
+  op : A $\to$ A $\to$ A
+  lunit:{x : A} $\to$ (op e x) == x
+  runit:{x : A} $\to$ (op x e) == x
+  assoc: {x y z : A} $\to$ 
+  op x (op y z) == op (op x y) z
+\end{lstlisting}
+\lstset{backgroundcolor=\color{ourpink}}
+\begin{lstlisting}[mathescape]
+record MonoidSig (AS : Set) : Set where
+ constructor MonoidSigSigC
+ field
+  eS : AS
+  opS : AS -> AS -> AS
+  
+record MonoidProd (AP : Set) : Set where
+ constructor MonoidProdC
+ field
+  eP : Prod AP AP
+  opP : Prod AP AP ->
+      Prod AP AP -> Prod AP AP
+  lunit_eP : (xP : Prod AP AP) 
+           -> opP eP xP == xP
+  runit_eP : (xP : Prod AP AP) 
+           -> opP xP eP == xP
+  associative_opP :
+   (xP: Prod AP AP)(yP: Prod AP AP)
+   (zP : Prod AP AP) ->
+   opP (opP xP yP) zP == opP xP (opP yP zP)
+   
+data MonoidLang : Set where
+  eL : MonoidLang
+  opL : MonoidLang -> MonoidLang -> MonoidLang 
+\end{lstlisting}
+&
+
+\lstset{backgroundcolor=\color{ourpink}}
+\begin{lstlisting}[mathescape]
+data MonoidOpenLang (n : Nat) : Set where
+  v : Fin n -> MonoidOpenLang n
+  eOL : MonoidOpenLang n
+  opOL : MonoidOpenLang n -> MonoidOpenLang n -> 
+         MonoidOpenLang n
+
+evalTerm : (A : Set) -> Monoid A -> MonoidLang -> A
+evalTerm _ Mo (eL) = e Mo
+evalTerm _ Mo (opL x1 x2) = op Mo (evalTerm _ Mo x1) 
+                                  (evalTerm _ Mo x2)
+
+evalOpenTerm : (A : Set) (n : Nat) -> 
+        Monoid A -> MonoidOpenLang n -> Vec A n -> A
+evalOpenTerm _ n mo (v fin) vars = lookup _ n fin vars        
+evalOpenTerm _ n mo (eOL) vars = e mo
+evalOpenTerm _ n mo (opOL x1 x2) vars = op mo
+      (evalOpenTerm _ n mo x1 vars)
+      (evalOpenTerm _ n mo x2 vars)
+
+record MonoidHom (A1 : Set) (A2 : Set) 
+  (Mo1 : Monoid A1) (Mo2 : Monoid A2) : Set where
+ constructor MonoidHomC
+ field
+  hom : A1 -> A2
+  pres-e : hom (e Mo1) == e Mo2
+  pres-op : (x1 : A1) (x2 : A1) -> 
+    hom (op Mo1 x1 x2) == op Mo2 (hom x1) (hom x2)
+
+record MonoidRelInterp (A1 : Set) (A2 : Set)
+  (Mo1 : Monoid A1) (Mo2 : Monoid A2) : Set where
+ constructor MonoidRelInterpC
+ field
+  interp : A1 -> A2 -> Set
+  interp-e : interp (e Mo1) (e Mo2)
+  interp-op: (x1: A1) (x2: A1) (y1 : A2) (y2 : A2) ->
+       interp x1 y1 -> interp x2 y2 ->
+       interp (op Mo1 x1 x2) (op Mo2 y1 y2)
+\end{lstlisting}
+\end{tabular}  
+\end{adjustbox}

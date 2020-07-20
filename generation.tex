@@ -1,0 +1,35 @@
+\chapter{Constructions For Free!}
+
+
+
+\section{Basic Ingredients}
+equality, substitution, .. 
+
+The theoretical background of our work is taken from Universal Algebra. 
+
+Starting from theories of universal algebra, we aim to design a framework to generate useful constructions. To achieve this, our first step is to find a language to represent equational theories and other constructions, and a type checker to make sure the generated constructions are correct. While looking for this system we had the following criteria in mind 
+
+\begin{itemize}
+ \item A small language 
+ \item Little syntactic sugar 
+ \item Support record, data and function declarations 
+ \item Dependently typed \ednote{we originally wanted a DTT-based system to be able to talk about the arrows. We didn't end up doing that - all work on the arrows is at the metalanguage (haskell), not the object one (tog). Now, there is no real reason why we need DTT. }
+\end{itemize}
+
+\ednote{Motivate the decision to use Tog}
+
+To investigate what information can be derived from an equational theory, we needed to internalize it within a language and a type checker. One of our core decisions is to find a minimal
+
+\section{Syntax}
+Tog is a dependent type language that has a syntax similar to Agda, Coq and Idris, with much less sugar. 
+\subsection{Expressions}
+\subsubsection{Types}
+
+\subsubsection{Functions}
+
+\subsection{Declaration}
+\subsubsection{Record}
+
+\subsubsection{Data Types}
+
+\subsubsection{Functions}

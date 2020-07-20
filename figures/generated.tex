@@ -1,0 +1,69 @@
+\begin{adjustbox}{width=\columnwidth,center}
+    \begin{tabular}{p{7cm} p{2mm} p{7cm}}        
+\lstset{backgroundcolor=\color{ourblue}}
+\begin{lstlisting}[mathescape]
+record Monoid (A : Set) : Set 
+ where
+  constructor monoid
+  field
+   e  : A
+   op : A $\to$ A $\to$ A
+   lunit : {x : A} $\to$ (op e x) == x
+   runit : {x : A} $\to$ (op x e) == x
+   assoc : {x y z : A} $\to$ 
+     op x (op y z) == op (op x y) z
+\end{lstlisting}
+\lstset{backgroundcolor=\color{ourpink}}
+\begin{lstlisting}[mathescape]
+record MonoidHom 
+    (A1 : Set) (A2 : Set)
+    (Mo1 : Monoid A1)
+    (Mo2 : Monoid A2) : Set where
+  constructor MonoidHomC
+  field
+    hom : A1 $\to$ A2
+    pres-e : hom (e Mo1) == e Mo2
+    pres-op : 
+      (x1 : A1) (x2 : A1) $\to$
+      hom (op Mo1 x1 x2) 
+      == op Mo2 (hom x1) (hom x2)
+\end{lstlisting}
+&
+&
+\lstset{backgroundcolor=\color{ourpink}}
+\begin{lstlisting}[mathescape]
+data MonoidLang : Set where
+ eL : MonoidLang
+ opL : MonoidLang $\to$ MonoidLang 
+      $\to$ MonoidLang
+
+
+record MonoidSig (AS : Set) : Set 
+ where
+  constructor MonoidSigSigC
+  field
+   eS : AS
+   opS : AS $\to$ AS $\to$ AS    
+    
+    
+record MonoidProd (AP : Set) 
+   : Set 
+ where
+  constructor MonoidProdC
+  field
+   eP : Prod AP AP
+   opP : Prod AP AP $\to$ Prod AP AP 
+       $\to$ Prod AP AP
+   lunit_eP : (xP : Prod AP AP) 
+       $\to$ opP eP xP == xP
+   runit_eP : (xP : Prod AP AP) 
+       $\to$ opP xP eP == xP
+   associative_opP : 
+       (xP : Prod AP AP) 
+       (yP : Prod AP AP) 
+       (zP : Prod AP AP) 
+       $\to$ opP (opP xP yP) zP 
+         == opP xP (opP yP zP)   
+\end{lstlisting}
+\end{tabular}  
+\end{adjustbox}

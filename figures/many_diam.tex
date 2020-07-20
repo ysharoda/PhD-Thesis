@@ -1,0 +1,123 @@
+\RequirePackage{amsmath}
+\documentclass[smallcondensed,draft]{svjour3}
+\usepackage{amssymb}
+\usepackage{tikz}
+\tikzstyle{arrow}=[-angle 45]
+\usepackage{tikz-cd}
+\usepackage{wrapfig}
+\usepackage{listings}
+\usepackage{mathptmx}
+\usepackage{stmaryrd,mathtools}
+\let\vec\relax
+\usepackage{MnSymbol}
+%\usepackage{natbib}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{prooftree1}
+\usepackage{comment}
+\usepackage{listings}
+\usepackage{xspace}
+\usepackage[show]{ed}
+
+\usepackage{combinators}
+\usepackage{macros}
+% \pagestyle{headings}
+
+\begin{document}
+
+\begin{figure}[h]
+	\begin{tikzcd}
+		\verb|Carrier| \arrow[d,hook] \arrow[r,hook] & \verb|Pointed| \arrow[d,hook] \\
+		\verb|Magma| \arrow[d,hook] \arrow[r,hook] & \verb|PointedMagma| \arrow[d,hook] 
+		\arrow[dr,hook]\\ 
+		\verb|Semigroup| \arrow[dd,hook] & \verb|LeftUnital| \arrow[d,hook] & \verb|RightUnital| 
+		\arrow[dl,hook]\\
+		   & \verb|Unital| \arrow[ld,hook] \\ 
+		\verb|Monoid| 
+	\end{tikzcd}
+	\caption{Defining Monoid using tiny theories}
+	\label{fig:monoid}
+\end{figure}
+	
+\begin{figure}[h]
+	\begin{tikzcd}[row sep=huge, column sep=scriptsize]
+&& & \verb|Pointed0| \arrow[dd,hook] & \\
+ \verb|Carrier| \arrow[dd,hook] \arrow[rr,hook] & & \verb|Pointed| \arrow[ur,mapsto] & & \\ 
+ & \verb|AddMagma| \arrow[rr,hook] \arrow[dd,hook]& & \verb|AddPointedMagma| \arrow[rr,hook] 
+ \arrow[dd,hook]& & 
+\verb|AddRightUnital|  \arrow[dd,hook]\\
+ \verb|Magma| \arrow[ur,mapsto] \arrow[dd,hook]  & & 
+    \verb|PointedMagma| \arrow[dd,hook] \arrow[ur,mapsto] \arrow[from=uu, crossing over] 
+    \arrow[rr,hook,crossing over] \arrow[from=ll,hook, crossing over]
+    & & \verb|RightUnital| \arrow[ur,mapsto] \\ 
+ & \verb|AddSemigroup| \arrow[ddr,hook] & &\verb|AddLeftUnital| \arrow[rr,hook] &  & 
+ \verb|AddUnital| \arrow[ddlll,hook] \\
+ \verb|Semigroup|  \arrow[ddrr,hook] \arrow[ur,mapsto]&  & \verb|LeftUnital| \arrow[ur,mapsto] 
+\arrow[rr,hook,crossing over] &  & \verb|Unital| \arrow[ddll,hook,crossing over]\arrow[ur,mapsto] 
+\arrow[from=uu,hook,crossing over]& \\ 
+& & \verb|AddMonoid| & & \\ 
+& & \verb|Monoid|  \arrow[u,mapsto] && 
+	\end{tikzcd}
+	\caption{Defining Monoid using tiny theories}
+	\label{fig:cube_monoid}
+\end{figure}	
+	
+
+\begin{figure}[h]
+	\begin{tikzcd}[row sep=huge, column sep=scriptsize]
+		&& & \verb|Pointed0| \arrow[dd,hook] & \\
+		\verb|Carrier| \arrow[dd,hook] \arrow[rr,hook] & & \verb|Pointed| \arrow[ur,mapsto] & & \\ 
+		& \verb|AddMagma| \arrow[rr,hook] \arrow[dd,hook]& & \verb|AddPointedMagma| 
+		\arrow[rr,hook] 
+		\arrow[dd,hook]& & 
+		\verb|AddRightUnital|  \arrow[dd,hook]\\
+		\verb|Magma| \arrow[ur,mapsto] \arrow[dd,hook]  & & 
+		\verb|PointedMagma| \arrow[dd,hook] \arrow[ur,mapsto] \arrow[from=uu, crossing over] 
+		\arrow[rr,hook,crossing over] \arrow[from=ll,hook, crossing over]
+		& & \verb|RightUnital| \arrow[ur,mapsto] \\ 
+		& \verb|AddSemigroup| \arrow[ddd,hook] & &\verb|AddLeftUnital| \arrow[rr,hook] &  & 
+		\verb|AddUnital| \arrow[dddllll,hook] \\
+		\verb|Semigroup|  \arrow[ddd,hook] \arrow[ur,mapsto]&  & \verb|LeftUnital| 
+		\arrow[ur,mapsto] 
+		\arrow[rr,hook,crossing over] &  & \verb|Unital| \arrow[dddllll,hook,crossing 
+		over]\arrow[ur,mapsto] 
+		\arrow[from=uu,hook,crossing over]& \\ 
+		&&&& \\ 
+		&  \verb|AddMonoid| &  &&\\ 
+	 \verb|Monoid|  \arrow[ur,mapsto] && &&
+	\end{tikzcd}
+	\caption{Defining Monoid using tiny theories}
+	\label{fig:cube2_monoid}
+\end{figure}	
+	
+\begin{figure}[h]
+	\begin{tikzcd}[row sep=huge, column sep=scriptsize]
+		&& & \verb|Pointed0| \arrow[dd,hook] & \\
+		\verb|Carrier| \arrow[dd,hook] \arrow[rr,hook] & & \verb|Pointed| \arrow[ur,mapsto] & & \\ 
+		& \verb|AddMagma| \arrow[rr,hook] \arrow[dd,hook]& & \verb|AddPointedMagma| & & \\
+		\verb|Magma| \arrow[ur,mapsto] \arrow[dd,hook]  & & 
+		\verb|PointedMagma| \arrow[ur,mapsto] \arrow[from=uu, crossing over]  \arrow[from=ll,hook, 
+		crossing over]& & \\ 
+		& \verb|AddSemigroup| \arrow[ddd,hook] & & &  & \\
+		\verb|Semigroup|  \arrow[ddd,hook] \arrow[ur,mapsto]&  & &  & & \\ 
+		&&&& \\ 
+		&  \verb|AddMonoid| &  &&\\ 
+		\verb|Monoid|  \arrow[ur,mapsto] && &&
+	\end{tikzcd}
+   \begin{tikzcd}[row sep=huge, column sep=scriptsize]
+   & \verb|AddPointedMagma| \arrow[dd,hook] \arrow[rr,hook]& & \verb|AddRightUnital| 
+   \arrow[dd,hook]\\ 			
+   \verb|PointedMagma| \arrow[dd,hook,crossing over]\arrow[ur,mapsto] \arrow[rr,hook,crossing 
+   over] & & 
+   \verb|RightUnital| \arrow[ur,mapsto]& \\
+   & \verb|AddLeftUnital| \arrow[rr,hook]& & \verb|AddUnital| \arrow[dd,hook]\\
+   \verb|LeftUnital| \arrow[ur,mapsto] \arrow[rr,hook,crossing over]&& \verb|Unital| \arrow[dd,hook]
+   \arrow[from=uu,hook,crossing over] \arrow[ur,mapsto]& \\
+   &&& \verb|AddMonoid| \\
+   && \verb|Monoid| \arrow[ur,mapsto] &\\
+\end{tikzcd}	
+\caption{Defining Monoid using tiny theories}
+\label{fig:cube3_monoid}
+\end{figure}
+	
+\end{document}	
