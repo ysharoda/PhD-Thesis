@@ -1,3 +1,4 @@
+\RequirePackage{amsmath}
 \documentclass[12pt]{report}                  % Times New Roman, 12pt
 %\usepackage{gscale_thesis_singlespace} % Single spaced thesis
 \usepackage{style_files/gscale_thesis_doublespace} % Double spaced thesis
@@ -8,7 +9,7 @@
 \setcounter{tocdepth}{1}                        % Limits the TOC to chapter and section names
 \usepackage{minted}
 \usepackage{listings}
-\lstset{basicstyle={\ttfamily\footnotesize}}
+\lstset{basicstyle={\ttfamily}}%\footnotesize
 
 \usepackage[show]{ed}
 % Additional packages
@@ -30,6 +31,7 @@
 \usepackage{stmaryrd}
 \usepackage{xcolor}
 \usepackage{comment}
+\usepackage{tikz-cd}
 \numberwithin{equation}{section}                 % Numbers equations based on their section
 
 \usepackage{macros}
@@ -61,6 +63,8 @@
 
 %\tableofcontents
 \input{intro.tex}
+
+\input{library.tex}
 
 \input{generation.tex}
  
