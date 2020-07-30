@@ -1,0 +1,98 @@
+\documentclass[]{article}
+
+\usepackage{enumitem}
+
+\begin{document}
+    
+\section{Introduction}
+\subsection{Overview}
+\begin{itemize}
+    \item Large Math libraries are useful. evidences are: the vision of QED, the paper about UDML challenge by WF, look into publications and talks of the Xena project and LML workshop for evidence 
+    \item A generative approach can proof useful 
+    \begin{itemize}
+        \item the components of an algebra library 
+        \item why it is possible and useful to generate them 
+    \end{itemize}
+\end{itemize}
+
+\subsection{Research Problem}
+\begin{itemize}
+    \item Theory presentations are written in a formal language that has a specific structure 
+    \item They look different in different systems because they are loaded with design decisions 
+    \item Accordingly, related constructions look different and are repeated for every theory 
+    \item Mathematically, there is a uniform way to look at them described by universal algbera 
+\end{itemize}    
+    
+\subsection{Contributions}
+\begin{itemize}
+    \item Highlighting redundancy in current library building practice 
+    \item Identifying X constructions that can be generated for uni-sorted FOL theories 
+    \item Providing an extensible framework for implementing them 
+    \item Implementing a library of algebraic theories that emphasizes the role of arrows 
+    \item Exporting the generated constructions to Agda 
+\end{itemize}    
+
+\subsection{Broader Scope}
+\begin{itemize}
+    \item we are working towards library organized as a theory graph of biform theories at the center of a tetrapodal structure.  
+\end{itemize}
+
+\section{Background}
+\begin{itemize}
+    \item Little Theories 
+    \item Tiny Theories 
+    \item Categories of theory presentations / contexts / extensions 
+    \item Axiomatic theories and formal languages 
+\end{itemize}
+    
+\section{Design of our framework}
+\begin{itemize}
+    \item specification of the different pieces of the interpreter (flattener, generator, and exporter). 
+    \item benefits of having this framework: better usability, maintainability, and less time-to-market. 
+\end{itemize}    
+
+\section{Tog}
+\begin{itemize}
+    \item a short section introducing the basics of Tog 
+\end{itemize}
+
+\section{Library of Algebra}
+\subsection{Overview}
+    \begin{itemize}
+        \item Why the MathScheme library maximizes reuse: focusing on diamonds and arrows in MathScheme versus in other systems 
+    \end{itemize}
+\subsection{Combinators}
+    \begin{itemize}
+        \item Explain the combinators: syntax, operational semantics, and categorical semantics (briefly)
+    \end{itemize}
+\subsection{Implementation}
+    \begin{itemize}
+        \item Design decisions: 1. combine-over instead of combine, 2. not using mixin 
+        \item Graph building: implementation og combinators 
+    \end{itemize}
+\subsection{Interesting Cases}
+PointedMagma, Monoid, and Semiring 
+
+\section{Constructions For Free!}    
+\begin{itemize}
+    \item Infrastructure
+    \begin{itemize}
+        \item Functions, Datatypes, and Records: definitions and applications 
+    \end{itemize}
+    \item Constructions 
+    \begin{itemize}
+        \item for each: motivation, definition from universal algbera, and implementation. 
+    \end{itemize}
+\end{itemize}
+
+\section{Exporting}
+
+\section{Related Work}
+
+\section{Discussion}
+Generalization to multisorted and higher types. 
+
+\section{Conclusion}
+
+    
+\end{document}
