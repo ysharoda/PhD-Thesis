@@ -7,21 +7,34 @@
 \section{Introduction}
 \subsection{Overview}
 \begin{itemize}
-    \item Large Math libraries are useful. evidences are: the vision of QED, the paper about UDML challenge by WF, look into publications and talks of the Xena project and LML workshop for evidence 
-    \item A generative approach can proof useful 
+    \item There is a lot of formal knowledge that
+    is useful, both in mathematics and elsewhere, and it is quite a lot of
+    work to formalize it. 
     \begin{itemize}
+        \item evidences are: the vision of QED, the paper about UDML challenge by WF, look into publications and talks of the Xena project and LML workshop for evidence 
+    \end{itemize}
+        \item We have noticed patterns in parts of the libraries. Are these patterns regylar enough that the can be used to generate parts of libraries, instead of being forced to write it all by hand? 
         \item the components of an algebra library 
         \item why it is possible and useful to generate them 
-    \end{itemize}
 \end{itemize}
 
 \subsection{Research Problem}
+Observations
 \begin{itemize}
     \item Theory presentations are written in a formal language that has a specific structure 
     \item They look different in different systems because they are loaded with design decisions 
     \item Accordingly, related constructions look different and are repeated for every theory 
     \item Mathematically, there is a uniform way to look at them described by universal algbera 
 \end{itemize}    
+Questions 
+\begin{itemize}
+    \item Can this uniformity be captured by a meta program that generates parts of an algebra library? 
+    \item Which parts of an algebra library can be generated? 
+    \item What design decisions need to be abstracted from? and which ones can be introduced again after new definitions are generated?
+    \item How would this affect the activity of library writing?
+    \item Can these generation algorithms be extended beyond the library, to user-defined theories? 
+    \item Can these generation algorithms be extended beyond uni-sorted first-order logic?  
+\end{itemize}
     
 \subsection{Contributions}
 \begin{itemize}
@@ -43,6 +56,7 @@
     \item Tiny Theories 
     \item Categories of theory presentations / contexts / extensions 
     \item Axiomatic theories and formal languages 
+    \item Universal Algebra 
 \end{itemize}
     
 \section{Design of our framework}
@@ -83,6 +97,7 @@ PointedMagma, Monoid, and Semiring
     \begin{itemize}
         \item for each: motivation, definition from universal algbera, and implementation. 
     \end{itemize}
+    \item Note: emphasize the code being straightforward 
 \end{itemize}
 
 \section{Exporting}
