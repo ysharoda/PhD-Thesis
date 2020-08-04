@@ -1,0 +1,100 @@
+
+\newcommand{\thy}[1]{\texttt{#1}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\B}{\mathbb{B}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\V}{\mathbb{V}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\TP}{\mathbb{P}}
+\newcommand{\EmptyThy}{\emptyset}
+\newcommand{\wfctx}{\mathtt{ctx}}
+\newcommand{\define}{\triangleq}
+\newcommand{\rename}{\mapsto}
+
+\newcommand{\sem}[2]{\ensuremath{\llbracket{#2}\rrbracket_{#1}}}
+\newcommand{\semC}[1]{\sem{\B}{#1}}
+\newcommand{\semE}[1]{\sem{\E}{#1}}
+\newcommand{\semB}[1]{\sem{\B^{\rightarrow}}{#1}}
+\newcommand{\semP}[1]{\sem{\pi}{#1}}
+\newcommand{\partialf}{\rightharpoonup}
+
+\newcommand{\ren}[4]{\ensuremath{\left[ #1\mapsto #2 \right]_{#3}^{#4}}}
+\newcommand{\emptyview}{\ensuremath{\left[\,\right]}}
+\newcommand{\rencat}{\Join}
+
+\newcommand{\extend}[2]{\ensuremath{{#1}\hookrightarrow{#2}}}
+% not sure (JC) if this should still be defined
+\newcommand{\extarr}[5]{\ensuremath{{#1}_{#2}^{#3}:{#4}\Mapsto{#5}}}
+
+\newcommand{\extcomb}{\mathfrak{E}}
+\newcommand{\rencomb}{\mathfrak{R}}
+\newcommand{\comfun}{\mathfrak{C}}
+\newcommand{\mixfun}{\mathfrak{M}}
+\newcommand{\reify}{\mathfrak{I}}
+
+\newcommand{\cn}[1]{\ensuremath{\operatorname{\mathtt{#1}}}}
+
+\newenvironment{thyex}
+{\left\{%
+	\begin{array}{rcl}%
+	} {%
+	\end{array}%
+	\right\}%
+}
+\newcommand{\thyrow}[2]{{#1} & : & {#2}\\}
+
+\newenvironment{floatrule}{\hrule\vskip\abovedisplayskip}
+{\vskip\belowdisplayskip\hrule\vskip\belowdisplayskip}
+
+\hyphenation{pro-per-ties}
+
+%%%%%%%%%% Start TeXmacs macros
+\newcommand{\tmop}[1]{\ensuremath{\operatorname{\mathtt{#1}}}\xspace}
+\newcommand{\tmtexttt}[1]{{\ttfamily{#1}}}
+\newcommand{\assign}{\coloneq}
+\newcommand{\tmdfn}[1]{\textbf{#1}}
+\newcommand{\cdummy}{\circ}
+\newcommand{\upl}{+}
+
+
+\newcommand{\typeJudg}[2]{#1 \, \vdash \, #2 \, \cn{Type}}
+\newcommand{\kindJudg}[2]{#1 \, \vdash \, #2 \, \cn{Kind}}
+\newcommand{\lang}[1]{Lang(#1) }
+
+\newcommand{\varSet}{\mathbb{V}}
+
+% The term language for the combinators 
+\newcommand{\extb}[2]{\tmop{#1} \; \cn{\textbf{extended\_by}} \; \{#2\}}
+\newcommand{\renw}[2]{\cn{rename} #1 \, \cn{using} \, \{#2\}}
+\newcommand{\combineover}[3]{\cn{\textbf{combine}} \; \tmop{#1}, \; \tmop{#2} \; \cn{\textbf{over}} \; 
+\tmop{#3}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
