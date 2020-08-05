@@ -88,24 +88,19 @@ An example is a morphism that flips a binary operation, i.e.: maps \lstmath{op x
 \begin{tikzpicture}[node distance=9.0cm, auto,baseline=(current bounding box.center)]
 \node (P) {$
     \begin{thyex}
-    \thyrow{U}{\tmop{Type}}
-    \thyrow{op}{U \rightarrow U \rightarrow U}
+    \thyrow{A}{\tmop{Type}}
+    \thyrow{op}{A \rightarrow A \rightarrow A}
     \end{thyex} $};
 \node (B) [right of=P] {$
     \begin{thyex}
     \thyrow{U}{\tmop{Type}}
-    \thyrow{op}{U \rightarrow U \rightarrow U}
+    \thyrow{op}{A \rightarrow A \rightarrow A}
     \end{thyex} $};
-\draw[->] (P) to node {$[U \mapsto\ U,
+\draw[->] (P) to node {$[A \mapsto\ A,
     op \mapsto\ \mathsf{flip}\ op]$} (B);
 \end{tikzpicture}
 \end{equation}
 
-\begin{comment}
- maps each symbol of \lstmath{$\Gamma$} to an expression in \lstmath{$\Delta$}. 
+\section{Theory Graph}
 
-Statement in \lstmath{$\Gamma$} can be translated to statements in \lstmath{$\Delta$} via substitution.  some theory (source) into expressions of a destination theory. is mapping between two theories. this mapp
-
-It maps symbols from the source theory to expressions in the target one. 
-\end{comment}
 
