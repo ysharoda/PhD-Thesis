@@ -2,6 +2,7 @@
 
 \section{Axiomatic Theory}
 
+A theory is a specification of a class of algebras, that share some properties. 
 An axiomatic theory is a pair \lstmath{(L,$\Sigma$)}, where \lstmath{L} describes the language of the theory. It consists of \lstmath{(S,F)}. \lstmath{S} is a set of sorts and \lstmath{F} is a set of function symbols. \lstmath{$\Sigma$} is a set of axioms describing properties of objects in the language. A theory is closed under logical consequences, therefore we speak of a \emph{theory presentation}, in which only necessary axioms are given. Theory presentations are defined in a logic that provides the inference rules used to derive useful theorems.  
 
 In a dependently typed setup, the distinction between sorts, functions symbols, and axioms need not exist. Instead a theory is seen as a telescope~\cite{de1991telescopic}. Every declaration \lstmath{$c : t$} within the telescope is defined within a context \lstmath{$\Gamma$}. This is described as \lstmath{$\Gamma \vdash c : t$}.  
@@ -25,4 +26,86 @@ $$
 \end{figure}
 
 \section{Theory Morphisms}
+\label{sec:morphisms}
+Morphisms are used to capture the structure of mathematics, by describing how theories are related to each other. In mathematical texts, a theorem proved for an arbitrary \lstmath{Monoid} would be used when considering an arbitrary \lstmath{Group} without extra work. In formal mathematics, this can only be done if a morphism between \lstmath{Monoid} and \lstmath{Group} exists. The morphism specifies how results in \lstmath{Monoid} can be interpreted in \lstmath{Group}. 
+
+A morphism $\arrow{[v]}{\Gamma}{\Delta}$ consist of a list of assignments $[v]$, a source theory \lstmath{$\Gamma$}, and a target theory \lstmath{$\Delta$}. $[v]$ assigns to every symbol in $\Gamma$ an expression of $\Delta$. A term \lstmath{t} in the language of $\Gamma$ can be translated into a term \lstmath{t$^\prime$} in the language of $\Delta$ using substitution, such that  \lstmath{t$^\prime$ = t$[v]$}. 
+
+The formation rules for views, as given in~\cite{carette2018building} is given in Figure~\ref{fig:views}. 
+\begin{figure}[ht]
+    \begin{proofrules}
+        \[ \context{\Delta}\ \wfctx \justifies \view{}{\varnothing}{\Delta} \]
+        \[ (\context{\Gamma}\ ;\ x : \sigma)\ \wfctx \qquad
+        \view{v}{\Gamma}{\Delta} \qquad
+        \context{\Delta} \vdash r : \substitution{\sigma}{v}{} \justifies
+        \view{v,x \mapsto r}{(\context{\Gamma}\ ;\ x : \sigma)}{\context{\Delta}} \]
+    \end{proofrules}
+    \caption{Formation rules for morphisms.}
+    \label{fig:views}
+\end{figure}
+
+It is worth mentioning that the mapping is only a part of the morphism. A morphism consists of the source and destination theories as well as the mapping. 
+
+We distinguish between three type of morphisms 
+
+\subsection{Identity Morphism}
+\label{sec:idmorph}
+If $\arrow{[v]}{\Gamma}{\Delta}$ is an identity morphism, then $[v]$ maps every symbol $x \in \syms{\Gamma}$ to itself. This implies that $[v]$ is a bijection and that $x[v] = x$. 
+
+Identity morphisms between two theories if the source is included verbatim in the destination, like in the case when \lstmath{Group} is defined as an extension of \lstmath{Monoid}. It is the simplest form of morphisms and allow transport of results without the need to perform substitution 
+
+\subsection{Embedding}
+\label{sec:embedding}
+If $\arrow{[v]}{\Gamma}{\Delta}$ is an embedding, then $[v]$ is a bijection that maps every symbol $x \in \syms{\Gamma}$ to a symbol $r \in \syms{\Delta}$, which is not necessarily itself. 
+
+Consider for example, the morphism from \verb|Magma| to \verb|AdditiveMagma|
+\begin{equation*}\label{eq:additiveview}
+\begin{tikzpicture}[node distance=9.0cm, auto,baseline=(current bounding box.center)]
+\node (P) {$
+    \begin{thyex}
+    \thyrow{A}{\tmop{Type}}
+    \thyrow{op}{A \rightarrow A \rightarrow A}
+%    \thyrow{assoc_op}{\cdots}
+    \end{thyex} $};
+\node (B) [right of=P] {$
+    \begin{thyex}
+    \thyrow{A}{\tmop{Type}}
+    \thyrow{+}{A \rightarrow A \rightarrow A}
+%    \thyrow{assoc_+}{\cdots}
+    \end{thyex} $};
+\draw[->] (P) to node {$[A \mapsto\ A, 
+    op \mapsto\ + ]$} (B);
+\end{tikzpicture}
+\end{equation*}
+A term $t \in \Gamma$ is transported to $\Delta$ as $t[v]$, i.e.: by applying the substitution $[v]$ to the term $t$. 
+
+\subsection{General Morphism}
+\label{sec:generalmorph}
+A morphism $\arrow{[v]}{\Gamma}{\Delta}$ is a general morphism if it maps symbols $x \in \syms{\Gamma}$ to terms $r \in \Delta$. 
+
+An example is a morphism that flips a binary operation, i.e.: maps \lstmath{op x y} to \lstmath{op y x}
+\begin{equation}\label{eq:flipmagmaview}
+\begin{tikzpicture}[node distance=9.0cm, auto,baseline=(current bounding box.center)]
+\node (P) {$
+    \begin{thyex}
+    \thyrow{U}{\tmop{Type}}
+    \thyrow{op}{U \rightarrow U \rightarrow U}
+    \end{thyex} $};
+\node (B) [right of=P] {$
+    \begin{thyex}
+    \thyrow{U}{\tmop{Type}}
+    \thyrow{op}{U \rightarrow U \rightarrow U}
+    \end{thyex} $};
+\draw[->] (P) to node {$[U \mapsto\ U,
+    op \mapsto\ \mathsf{flip}\ op]$} (B);
+\end{tikzpicture}
+\end{equation}
+
+\begin{comment}
+ maps each symbol of \lstmath{$\Gamma$} to an expression in \lstmath{$\Delta$}. 
+
+Statement in \lstmath{$\Gamma$} can be translated to statements in \lstmath{$\Delta$} via substitution.  some theory (source) into expressions of a destination theory. is mapping between two theories. this mapp
+
+It maps symbols from the source theory to expressions in the target one. 
+\end{comment}
 
