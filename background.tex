@@ -111,9 +111,24 @@ In systems that are based on categorical semantics, a theory graph is seen as a 
 \section{Little Theories}
 The little theories approach is introduced in~\cite{LittleTheories}. It ensures that if a statement \lstmath{s} is proven in context \lstmath{$\Gamma$}, then every statement in \lstmath{$\Gamma$} is required to prove \lstmath{s}. In this case, we say \lstmath{$\Gamma$} is the \emph{minimal axiomatization} needed to prove \lstmath{s}. This implies that theorems are proved in different contexts based on the amount of structure needed to prove them. In contrast, a big theory approach would use only one big theory for proving all results. 
 
-Using little theories maximizes reuse of results. Results proven in the theory \lstmath{$\Gamma$} can be transported to all theories connected to \lstmath{$\Gamma$} via morphisms\footnote{Only the morphisms that has $\Gamma$ as a source}. This emphasizes the role of morphisms for increasing usability and reducing redundancy when dealing with formal systems.  
+Using little theories maximizes reuse of results. Results proven in the theory \lstmath{$\Gamma$} can be transported to all theories \lstmath{$\Delta$} whenever a morphism $m : \Gamma \to \Delta$ exists. This emphasizes the role of morphisms for increasing usability and reducing redundancy when dealing with formal systems.  
 
 \section{Tiny Theories}
+Tiny theories is a refinement of little theories, in which only one new piece of information is added at a time~\cite{mathscheme2011experiments}. To make this more clear, let's consider a library that has the theories \lstmath{PointedMagma} and \lstmath{Unital} defined as follows. 
+\begin{lstlisting}[mathescape]
+theory PointedMagma = { 
+  A : Type 
+  e : A 
+  op : A $\to$ A $\to$ A }
+theory Unital = {
+  A : Type 
+  e : A 
+  op : A $\to$ A $\to$ A 
+  lunit : $\cdots$
+  runit : $\cdots$
+}   
+\end{lstlisting}
+These definition overlook that in some cases one might want to talk about an operation with only right unit, like in the case of subtraction on integers. One will then need to add a new theory that is similar to \lstmath{Unital} without the \lstmath{lunit} declaration. Any theorems proved in the context of \lstmath{Unital} cannot be used, even if it only depends on \lstmath{lunit}. \ednote{Another motivating example will be given when talking about building pointedMagma with combinators. remember to refer to this here}.  
 
 
 
