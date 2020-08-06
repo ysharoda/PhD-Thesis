@@ -101,6 +101,15 @@ An example is a morphism that flips a binary operation, i.e.: maps \lstmath{op x
 \end{tikzpicture}
 \end{equation}
 
-\section{Theory Graph}
+Connecting theories have been known for a long time in logic~\cite{tarski1953undecidable, enderton1972mathematical} under the name \emph{theory interpretations}. The same name is used by IMPS~\cite{farmer1993imps, InterpIMPS1994}. CLEAR~\cite{Goguen1980}, OBJ and their successors used the term \emph{morphisms}, maybe because of using category theory for semantics. The term \emph{view} has also been used to refer to the same concept by Maude, MathScheme, and MMT \ednote{others?}. 
 
+\section{Theory Graph}
+One way to organize theories is using theory graphs. \cite{kohlhase2010towards} suggests the graph organization structure is needed when dealing with large libraries. A theory graph is an acyclic directed graph consisting of a set of theories, as nodes, and morphisms, as edges between them. 
+
+In systems that are based on categorical semantics, a theory graph is seen as a diagram in the category of theories and theory morphisms. Specware uses the keyword \emph{diagram} to build them. The work in~\cite{developmentGraph2000}, based on CASL, refer to them as \emph{development graphs}. 
+
+\section{Little Theories}
+
+
+\section{Tiny Theories}
 
