@@ -33,8 +33,13 @@
 \usepackage{comment}
 \usepackage{tikz-cd}
 \numberwithin{equation}{section}                 % Numbers equations based on their section
-
-\usepackage{macros}
+\usepackage{xspace}
+\usepackage{MnSymbol}
+\usepackage{proof}
+\usepackage{prooftree1}
+\usepackage{style_files/macros}
+\usepackage{style_files/tpcj_macros}
+\usepackage{style_files/combinators}
 
 % ********************************
 \begin{document}
@@ -64,12 +69,15 @@
 %\tableofcontents
 \input{intro.tex}
 
+\input{background.tex}
+
 \input{library.tex}
 
 \input{generation.tex}
  
- \bibliographystyle{natbib}
- \bibliography{thesis}
+ 
+\bibliographystyle{natbib}
+\bibliography{thesis}
  
 \end{document}
 % ********************************

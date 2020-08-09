@@ -1,7 +1,10 @@
 \chapter{Background}
 
-\section{Axiomatic Theory}
+\section{Equational Logic}
 
+\section{Substitution}
+
+\section{Axiomatic Theory}
 A theory is a specification of a class of algebras, that share some properties. 
 An axiomatic theory is a pair \lstmath{(L,$\Sigma$)}, where \lstmath{L} describes the language of the theory. It consists of \lstmath{(S,F)}. \lstmath{S} is a set of sorts and \lstmath{F} is a set of function symbols. \lstmath{$\Sigma$} is a set of axioms describing properties of objects in the language. A theory is closed under logical consequences, therefore we speak of a \emph{theory presentation}, in which only necessary axioms are given. Theory presentations are defined in a logic that provides the inference rules used to derive useful theorems.  
 
@@ -57,6 +60,8 @@ Identity morphisms between two theories if the source is included verbatim in th
 \subsection{Embedding}
 \label{sec:embedding}
 If $\arrow{[v]}{\Gamma}{\Delta}$ is an embedding, then $[v]$ is a bijection that maps every symbol $x \in \syms{\Gamma}$ to a symbol $r \in \syms{\Delta}$, which is not necessarily itself. 
+\ednote{introduce the notation that an embedding morphism $m$ is represented using $\tilde{m}$. Since the identity is an embedding it is also represented as $\tilde{id}$}
+\ednote{present the $\vars$ and that \lstmath{embed : $\vars \to \vars$}}
 
 Consider for example, the morphism from \verb|Magma| to \verb|AdditiveMagma|
 \begin{equation*}\label{eq:additiveview}
@@ -103,10 +108,12 @@ An example is a morphism that flips a binary operation, i.e.: maps \lstmath{op x
 
 Connecting theories have been known for a long time in logic~\cite{tarski1953undecidable, enderton1972mathematical} under the name \emph{theory interpretations}. The same name is used by IMPS~\cite{farmer1993imps, InterpIMPS1994}. CLEAR~\cite{Goguen1980}, OBJ and their successors used the term \emph{morphisms}, maybe because of using category theory for semantics. The term \emph{view} has also been used to refer to the same concept by Maude, MathScheme, and MMT \ednote{others?}. 
 
-\section{Theory Graph}
+\section{Theory Graph}\label{sec:background:theorygraph}
 One way to organize theories is using theory graphs. \cite{kohlhase2010towards} suggests the graph organization structure is needed when dealing with large libraries. A theory graph is an acyclic directed graph consisting of a set of theories, as nodes, and morphisms, as edges between them. 
 
 In systems that are based on categorical semantics, a theory graph is seen as a diagram in the category of theories and theory morphisms. Specware uses the keyword \emph{diagram} to build them. The work in~\cite{developmentGraph2000}, based on CASL, refer to them as \emph{development graphs}. 
+
+\ednote{talk about Hets, being a graph of different logics, based on  institutions}
 
 \section{Little Theories}
 The little theories approach is introduced in~\cite{LittleTheories}. It ensures that if a statement \lstmath{s} is proven in context \lstmath{$\Gamma$}, then every statement in \lstmath{$\Gamma$} is required to prove \lstmath{s}. In this case, we say \lstmath{$\Gamma$} is the \emph{minimal axiomatization} needed to prove \lstmath{s}. This implies that theorems are proved in different contexts based on the amount of structure needed to prove them. In contrast, a big theory approach would use only one big theory for proving all results. 
@@ -130,5 +137,6 @@ theory Unital = {
 \end{lstlisting}
 These definition overlook that in some cases one might want to talk about an operation with only right unit, like in the case of subtraction on integers. One will then need to add a new theory that is similar to \lstmath{Unital} without the \lstmath{lunit} declaration. Any theorems proved in the context of \lstmath{Unital} cannot be used, even if it only depends on \lstmath{lunit}. \ednote{Another motivating example will be given when talking about building pointedMagma with combinators. remember to refer to this here}.  
 
-
+\section{Category Theory}
+explain pushout and how it is calculated 
 

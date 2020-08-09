@@ -1,0 +1,246 @@
+\chapter{Library}
+
+%One can define a new theory either by stating its components or by using combinators to build it from existing ones. 
+
+In Section \ednote{find the subsection in the intro}, we mentioned $3$ categories of information; Theories, related constructions and proofs. In this section, we build our library of axiomatic theories, before we use it to generate related constructions that we discuss in Chapter~\ref{ch:generation}. 
+
+We build a library of equational first-order theories organized as a theory graph using the tiny theories approach. Instead of having to provide all declaration of the theories and morphisms within the graph, we use the MathScheme combinators introduced in~\cite{CaretteOConnorTPC, carette2018building}. 
+
+\ednote{give the overview of the sections}
+
+\begin{comment}
+To test our generation algorithms, we needed a large library of equational theories. As we have discussed in Section~\ref{sec:broader_context}, we work in the favor of a library organized as a theory graph, believing that it leverages the structure of mathematical knowledge. Arrows of the graph are the means to relating the different theories. In this section, we present our approach to building a library that emphasizes these connections. 
+
+In Section~\ref{sec:thry_based_libs} we discuss the motivation behind building such a library. In Section~\ref{sec:ms_combinators} we present the combinators used in building it and discuss how they are arrow based. Section~\ref{sec:lib_implementation}, discusses the challenges of the implementation of the combinators to build a theory graph. We finally show some interesting cases of library definitions in Section~\ref{sec:interesting_cases}. 
+\end{comment}
+
+
+\section{Theory Graph Development}
+\label{sec:thry_graph_in_action}
+Many formal systems support a theory graph approach, and realizes the need of having morphisms between theories. Examples of these are Clear, OBJ, CASL, Maude, Specware, IMPS, and MMT\ednote{Maybe also Isabelle with locale expressions}. 
+
+%Clear is - to our knowledge - the first system that provides a modular way to write formal specifications. It provide theory combinators to build larger theories from smaller ones. 
+
+Specware and MMT relies on the user giving every piece of details about the theories and the morphisms between them. IMPS generates the morphism, given a source and target theory. 
+
+Clear\ednote{this needs to be elaborated more, either here or in a related work section. A good resource here is the PhD thesis of Sanella with the title: semantics, implementation and pragmatics of CLEAR} is - to our knowledge - the first system to use combinators for creating new theories\footnote{Clear is a specification language that often refers to theories as specifications.}. OBJ, and CASL are successors of Clear and also support combinators. We realize two problems related to this group of systems. First, they provide some combinators that are useful but does not allow the user to see a flattened version of their theory, like hiding and freeness~\cite{CoFI:2004:CASL-RM}. The second problem is related to how the \emph{union} operation is implemented. Although the semantics of union is a pushout in the category of specifications and morphisms, it is computed on a 'same name, same thing' basis. Given the following specification in CASL 
+\begin{lstlisting}
+spec BaseSpec = sort A end 
+spec Ext1 = BaseSpec then 
+  ops e : A 
+  __*__ :  A * A -> A, unit e 
+end 
+spec Ext2 = BaseSpec then 
+  ops e : A 
+  __+__ :  A * A -> A, unit e 
+end 
+spec Combine = Ext1 and Ext2 end
+\end{lstlisting}
+Both specifications \verb|Ext1| and \verb|Ext2| extends the \verb|BaseSpec| with a binary operation and its unit element. In case of \verb|Ext1|. A pushout between the two arrows \lstmath{BaseSpec $\to$ Ext1} and \lstmath{BaseSpec $\to$ Ext2} would result in a theory with one sort \lstmath{A},and  two binary operations with two different unit elements. When trying this specification in CASL\footnote{using the online tool at: \url{http://rest.hets.eu}}, it computes the following declarations for \lstmath{Combine}.  
+\begin{lstlisting}
+  sorts A
+  op __*__ : A * A -> A
+  op __+__ : A * A -> A
+  op e : A
+  forall x : A . x + e = x %(ga_right_unit___+__)%
+  forall x : A . e + x = x %(ga_left_unit___+__)%
+  forall x : A . x * e = x %(ga_right_unit___*__)%
+  forall x : A . e * x = x %(ga_left_unit___*__)%
+\end{lstlisting} 
+The provided definition of \lstmath{Combine} has only one unit element that is the unit of the two binary operations, which is different from what a pushout would compute. 
+
+Combinators provide a module algebra that allows manipulating theories in different ways. They enhance modularity, reusability and maintainability of the library by saving the user the need to repeat definitions. Despite that, 
+many theorem provers that are in use today, do not have the notion of morphism and suffer from redundancy. Agda and Coq are big examples of that. Apart from extensions, they do not support combining modules.
+
+In~\cite{carette2018building}, we present $4$ combinators along with their operational and categorical semantics. The semantics we provide is based on the category of contexts and the categorical semantics of dependent type theory. In the following section we present the combinators and their semantics. 
+
+\section{MathScheme Combinators}
+
+Despite the large literature on using combinators to save work and reduce redundancy, Most of the systems we listed here suffer from redundancies in their own libraries. \ednote{Add an appendix about the different redundancies}To avoid this redundancy, we suggest in~\cite{carette2018building} a set of combinators that form a compact language to describe algebraic theories by reusing older ones. We use these combinators to build our library as well as some important design decisions 
+\begin{itemize}
+    \item Preserve the ability to flatten theories by avoiding combinators like freeness and hiding. \ednote{find a reference that explains the problems hiding introduces}. Flattening is important for usability reasons. Many library users may want to work with theories with no interest in how they were built. For example, a user may want to prove a result in \verb|Group| theory. They are not interested in \verb|Monoid| and don't want to bother about it. They just want to use a \verb|Group| as they know it from mathematics. 
+    \item Take names seriously. Similar concepts have different names in different contexts of mathematics. The unit of \verb|_+_| has a different name than the one of \verb|_*_| and confusing their names would be a huge usability problem.Using a neutral name, like \verb|e| would not also be helpful. In cases of a name clash, the user is asked to resolve it. No automatic generated names. 
+    \item Use tiny theories: Since we do not provide a drop combinator, we use tiny theories to make sure all intermediate results are available for future theories to use. 
+    \item The language we use is based on arrows, not theories. This allows us to compute category theory operations based on their real semantics, not an approximation like same-name-same-thing. 
+\end{itemize}
+
+The combinators we present in~\cite{carette2018building}, are designed from the beginning to capture the structure of mathematics based on the well-understood structure provided by the categorical semantics of dependently typed languages. While one can see the algebraic hierarchy as a series of inclusions as \lstmath{Magma $\to$ Semigroup $\to$ Monoid $\to$ Group $\to$ $\cdots$}, examining the work in \cite{halleck} and \cite{jipsen} show us that the algebraic hierarchy is more packed with diamonds, as we show in Figure~\ref{fig:cube_monoid} 
+\input{figures/many_diam.tex}
+Dealing with diamonds (multiple inheritance) is considered a challenging problem~\cite{sakkinen1989disciplined, jigsaw1992, traits2006, diamonds2011}. We have shown in the Section~\ref{sec:thry_graph_in_action} how there is a gap in how specification systems implements diamonds, whether by not following its correct semantics, or by not supporting it at all. 
+
+We discuss here the $4$ combinators presented in~\cite{CaretteOConnorTPC, carette2018building}. The combinators assume theories expressed in an underlying dependent type logic, but it abstracts over many of its details. The minimum requirements of the underlying logic are listed in ~\cite{carette2018building}. We include them here for coherence. These requirements are 
+\begin{itemize}
+    \item An infinite set of variable names \vars.
+    
+    \item A typing judgement for terms $s$ of type $\sigma$ in a context
+    $\Gamma$ which we write $\Gamma \vdash s : \sigma$.
+    
+    \item A kinding judgement for types $\sigma$ of kind $\kappa$ in a context
+    $\context{\Gamma}$ which we write\\
+    $\context{\Gamma} \vdash \sigma : \kappa : \Box$.  We further assume that the set
+    of valid kinds $\kappa : \Box$ is given and fixed.
+    
+    \item A definitional equality (a.k.a. convertibility) judgement of terms
+    $s_1$ of type $\sigma_1$ and $s_2$ of type $\sigma_2$ in a context $\context{\Gamma}$,
+    which we write $\context{\Gamma} \vdash s_1 : \sigma_1 \equiv s_2 : \sigma_2$. \ We
+    will write $\context{\Gamma} \vdash s_1 \equiv s_2 : \sigma$ to denote $\context{\Gamma} \vdash
+    s_1 : \sigma \equiv s_2 : \sigma$.
+    
+    \item A notion of substitution on terms. Given a list of variable
+    assignments $\assignment{x_i}{s_i}{i < n}$
+    and an expression $e$ we write $\substitutiondef{e}{x_i}{s_i}{i < n}$
+    for the term $e$ after simultaneous substitution of variables $\left\{ x_i
+    \right\}_{i < n}$ by the corresponding term in the assignment.
+\end{itemize}
+
+\subsection{Extension} 
+\label{subsec:extension}
+\paragraph{Description}
+Given a theory presentation $\Gamma$ and a list of declarations $\Delta^+$, the extension operation generates a new theory $\Gamma\rtimes\Delta^+$, and an identity morphism from $\Gamma$ to $\Gamma\rtimes\Delta^+$. 
+The construction is defined as
+\[\extensionDef{\extSource}{\extDecls}\]
+\noindent where $\extDecls = \left\{a_{i}:\sigma_{i}:\kappa_{i}\right\}_{i<n}$. 
+where $\extSource$ is the theory being extended, $\extDecls$ is a list of declarations to be added to the ones in $\extSource$. 
+
+\paragraph{Preconditions}
+$\Delta^+$ is a sequence of declarations $\{a_i : \sigma_i : \kappa_{i}\}$. An extension is well-formed if 
+\begin{eqnarray}
+\forall i \cdot a_i \notin \syms{\Sigma} \\
+\forall i \cdot \Gamma_{i-1} \vdash \sigma_i : \kappa_{i}
+\end{eqnarray}
+where $\Gamma_{i-1} = \Gamma \rtimes \{a_0 : \sigma_0 : \kappa_0\  \cdots \ a_{i-1} : \sigma_{i-1} : \kappa_{i-1}\}$ 
+
+\paragraph{Categorical Semantics}
+In the category of contexts $\ctxcat$, an extension corresponds to a forgetful functor. 
+
+\paragraph{Example}
+
+\subsection{Rename}
+\label{subsec:rename}
+\paragraph{Description}
+Given a theory presentation $\Gamma$ and a rename function $\pi$, the rename operation generates a new theory $\pi \cdot \Gamma$ that results from performing a substitution of $\pi$ in $\Gamma$, as well as an embedding morphism $\tilde{\pi} : \Gamma \to \pi\cdot\Gamma$. The rename is construction is defined as 
+\[ \renameDef{\renSource}{\renFun} \]
+
+\paragraph{Preconditions}
+A rename operation is well-formed whenever the rename function $\pi : \vars{\Sigma} \to \vars$ is a bijection, and the codomain is a $k-$permuation on $\vars$, where $k$ is the number of declarations in $\Sigma$. 
+
+\subsection{Combine}
+\label{subsec:combine}
+\paragraph{Description}
+To say a \lstmath{Monoid} is a \lstmath{Semigroup} and a \lstmath{Unital}, we need multiple inheritance, which creates a diamond structure. The \lstmath{Combine} operation is the one to use in this case. It is well agreed upon that the semantics of such an operation should be a pushout in the category of theory presentations\ednote{cite the other systems or refer to a previous section}. A pushout is a $5-$ary operation that takes two arrows and three objects of a category. The two arrows needs to originate from the same source. In our setup, two arrows would suffice, as the $3$ theories can be deduced from them. Most systems that support multiple inheritance, define it as an operation with theories as input, with the exception of Specware that defined it as the colimit of a diagram with the user required to provide all the theories and morphisms in the diagram. The \lstmath{Combine} operation in our setup is different in the sense that it requires as input two arrows and two rename functions. The definition of the operation is 
+\[
+\comfun\left( u_{\Delta}, u_{\Phi}, \pi_{\Delta}, \pi_{\Phi}\right) \define
+\left\{\begin{aligned}
+\mathtt{pres} & = \combineResult_0\rtimes\left(\combineResult_{\Delta} \cup \combineResult_{\Phi}\right) \\
+\mathtt{embed}_{\Delta} & = \left[v_{\Delta}\right] : \Delta\rightarrow\combineResult\\
+\mathtt{embed}_{\Phi} & = \left[v_{\Phi}\right] : \Phi\rightarrow\combineResult\\
+\mathtt{diag} & = \left[uv\right]:\Gamma\rightarrow\combineResult\\
+\mathtt{mediate} & = \lambda\ w_{\Delta}\ w_{\Phi}\ .\  w_{\combineResult}
+\end{aligned}\right\}\]
+$u_{\Delta}$ and $u_{\Phi}$ are the two arrows for the pushout. $\pi_{\Delta}$ and $\pi_{\Phi}$ are two rename functions given to resolve name conflicts, we discuss in the next section 
+
+\paragraph{Preconditions}
+The following equation sums up the precondition of performing a combine 
+\[
+\pi_{\Delta} \left( x \right) = \pi_{\Phi} \left( y \right)
+\Leftrightarrow \exists z \in \left| \Gamma \right|.\ x =
+\substitution{z}{u_{\Delta}}{} \wedge y = \substitution{z}{u_{\Phi}}{} \]
+This precondition ensures that 
+
+%The work in \cite{carette2018building} defines $4$ combinators used to build a graph of axiomatic theories in a dependently-typed logic. This graph corresponds to a diagram in the category $\tpcat$ of theory presentations and morphisms between them.
+%    \item The category of contexts $\ctxcat$ is the opposite of the category of theory presentations $\tpcatOp$, i.e. if a theory \lstmath{T'} is the extension of a theory \lstmath{T} in the category $\tpcat$, then there is a morphism in $\ctxcat$ from \lstmath{T'} to \lstmath{T} that drops some of the declarations in \lstmath{T}. Because theories are viewed as telescopes, to drop a declaration, all its subsequent ones need to be dropped. 
+ %   \item A fibered category is \ednote{short description here}. The category of context $\ctxcat$ forms the basis of a fibration, with the fibered category being the category of extensions $\extcat$. The fibration maps every extension object from $\extcat$ to its source in $\ctxcat$. 
+
+\subsection{Mixin.}
+\label{subsec:mixin}
+
+\section{Library Implementation}
+\label{sec:lib_implementation}
+One contribution of our work is to provide an implementation of the MathScheme library described in the previous section. Although other implementations exist \ednote{cite them}, this is the first one that takes arrows as serious as the paper does. Previous implementations based their computation of pushout on theories. They used same-name-same-thing approach to figure out the source of the two arrows. This results in situations like the Casl example in Section~\ref{sec:thry_graph_in_action}. Another case in which things do not work as it should is the following definition\footnote{Note how this definition has an \lstmath{over} part that was part of the original definitions in the library, as in \cite{CaretteOConnorTPC}, and then removed in the }
+\begin{lstlisting}
+SemiRng = combine AdditiveCommutativeMonoid Semigroup Ringoid over RingoidSig
+\end{lstlisting}
+This definition is not well formed. \verb|RingoidSig| has declarations for two binary operations, while \verb|Semigroup| has only one. A morphism from \verb|RingoidSig| to \verb|Semigroup| needs to forget one binary operation. This is not possible given our choice of combinators that avoid a drop operation as discussed in Section~\ref{sec:thry_graph_in_action}. 
+
+In this section we discuss our implementation \ednote{describe the subsections}. 
+
+\subsection{Core Decisions}
+
+\subsubsection{Referring to arrows}
+By looking carefully at the combinators used to build the library , we find that in the case of \lstmath{extends} or \lstmath{rename} combinators, we need to identify a theory from the theory graph. But in cases of \lstmath{combine} and \lstmath{mixin}, we need to refer to arrows in the graph. Unlike theories, arrows have no canonical names, mainly because they do not appear in informal mathematics. For example, it is hard to think of a name for the arrow (the result of composition of arrows) from the \lstmath{PointedMagma} to \lstmath{Monoid} theory (that adds the axioms). A language that refers to it as the arrow from \lstmath{PointedMagma} to \lstmath{Monoid} is more usable than one that gives it a name. Sticking to this decision, which is the one given in the paper, leads to definitions like 
+\begin{lstlisting}
+combine CommutativeMagma {} AssociativeMagma {}
+\end{lstlisting}
+which leaves us guessing what the source is. We can end up with multiple scenarios 
+\begin{itemize}
+    \item The common source is \lstmath{Magma}, in which case we have one binary operation that is both associative and commutative 
+    \item The common source is \lstmath{Carrier}, in which case the user is asking for a theory with two binary operations, one associative and the other commutative. In this case, this definition won't be accepted because of the name clash; The user has to choose another name for one of the two operations. A possible fix is 
+    \begin{lstlisting}
+    combine CommutativeMagma {op to +} AssociativeMagma {op to *}
+    \end{lstlisting}
+\end{itemize}
+
+Systems implementing pushouts usually resolve this problem by employing a \emph{same-name-same-thing} approach. While this approach work in many cases, it does not catch error like this one 
+\begin{lstlisting}[mathescape]
+T1 = extend Carrier {_*_ : A $\to$ A $\to$ A, e : A, lunit : $\cdots$, runit: $\cdots$}
+T2 = extend Carrier {_+_ : A $\to$ A $\to$ A, e : A, lunit : $\cdots$, runit: $\cdots$}
+R = combine T1 {} T2 {}     
+\end{lstlisting}
+The result \lstmath{R} --- if computed with same-name-same-thing approach, will have two binary operations with the same unit element. We tend to believe the user meant to have two different unit elements. 
+
+This create ambiguity that we would rather avoid. That's why we do not favor an approach of guessing the common source based on names. We modify the syntax of \lstmath{combine} in the paper to have an \lstmath{over} part similar to a previous publication \cite{CaretteOConnorTPC}. 
+
+\subsubsection{All Paths Commute Approach} 
+When referring to an arrow using its source and target, we implicitly assume that all paths commute, i.e.: Given the source and target, they either is no path, one path, or multiple paths that commute between them. 
+
+In Section XX\ednote{add the label here}, we discussed the two types of arrows, embeddings and general morphisms. We also noted\ednote{check which section has this discussion} that the only combinator that accepts and generates a general morphism is \lstmath{mixin}. If we restrict our language to \lstmath{extension}, \lstmath{rename}, and \lstmath{combine}, we end up with an all-embeddings graph, in which all paths commute\ednote{I believe some more discussion is needed here, but I don't have enough resources}.
+
+\subsubsection{Identity Arrow}
+
+\subsubsection{Theory Expressions}
+Based on those two decisions, the language that we implement has the following expressions
+\begin{lstlisting}
+Theory {}
+extend <theory_name> {a$_0$ : t$_0$ \cdots a$_n$ : t$_n$}
+rename <theory_name> {a$_0$ to b_0 ; \cdots ; a$_n$ to b$_n$}
+combine <theory_name> {a$_0$ to b_0 ; \cdots ; a$_n$ to b$_n$}
+               <theory_name> {a'$_0$ to b'_0 ; \cdots ; a'$_n$ to b'$_n$}
+    over <theory_name>
+id     
+\end{lstlisting} 
+
+
+\subsection{Theories and Morphisms}
+A theory is a list of declarations defined as a telescope. We capture this using the following Haskell dataype 
+\begin{minted}{haskell}
+data GTheory = GTheory {
+params :: Params,
+fields :: Fields }
+\end{minted}
+where a parameter is represented as a list of bindings that can be either explicit or implicit, by using the different \lstmath{Binding} constructors \lstmath{Bind} and \lstmath{HBind}. A field is a list of declarations of type 
+\lstmath{data Constr = Constr Name Expr} consisting of a name and an expression corresponding to its type. 
+
+\begin{lstlisting}
+data Params
+= NoParams | ParamDecl [Binding] | ParamDef [HiddenName]
+data Binding = Bind [Arg] Expr | HBind [Arg] Expr
+data Fields = NoFields | Fields [Constr]
+\end{lstlisting}
+
+\subsection{Theory Graph Structure}
+Theories and morphisms 
+
+it works because we do not allow cycles 
+
+
+
+\section{Interesting Cases}
+\label{sec:interesting_cases}
+
+\begin{comment}
+There are two different ways by which a user or a library builder can define a new theory; either by stating all its components or by reusing existing theories. While an end user might in some cases prefer the first approach for the formalization tasks, a library is more rich in information if it deploys the second approach. For example, defining a \group to be a \monoid with inverse gives us more information than what are its declarations, it also tell us about how it is related to \monoid. Most systems provide users with at least inclusions which enable them to include a verbatim version of one theory into the other, so the relation between \group and \monoid mentioned here can be captured. But, is this enough? 
+
+
+
+%Combinators are mainly used to create connections between the new theory and existing ones. The have been around since, at least the work of Goguen and Brustall on CLEAR under the name \emph{theory building operations} \cite{Goguen1980}. Their work on theories and morphisms can be seen as an early envision of a theory graph. CLEAR has introduced two combinators to add new declarations to a theory, \lstmath|extend-signature-morphism| adds new symbols to the language of the theory and \lstmath|enrich| which adds new symbols or equations \ednote{corresponding to conservative and non-conservative extension.}The operation \lstmath|combine(T,T')| corresponds to the coproduct of the two theories. Notice how the input to the operation is two theories, not morphisms. The application of an argument to a parameterized theory is computed using the \lstmath{apply(F,$\langle$ F$_1$$\cdots$F$_n$ $\rangle$)}. This operation is arrow-based, but we were not able to find its implementation. It also has a combinator \lstmath{derive(T,$\sigma$,T')} that calculates the quotient of \lstmath{T} by \lstmath{$\sigma$}\ednote{I don't understand this one}.  
+\end{comment}
