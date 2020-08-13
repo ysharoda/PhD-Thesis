@@ -198,8 +198,10 @@ In Section XX\ednote{add the label here}, we discussed the two types of arrows, 
 \subsubsection{Identity Arrow}
 
 \subsubsection{Theory Expressions}
+\label{sec:impl:expressions}
 Based on those two decisions, the language that we implement has the following expressions
-\begin{lstlisting}
+\begin{lstlisting}[mathescape]
+Mapping
 Theory {}
 extend <theory_name> {a$_0$ : t$_0$ \cdots a$_n$ : t$_n$}
 rename <theory_name> {a$_0$ to b_0 ; \cdots ; a$_n$ to b$_n$}
@@ -211,31 +213,268 @@ id
 
 
 \subsection{Theories and Morphisms}
-A theory is a list of declarations defined as a telescope. We capture this using the following Haskell dataype 
+Dependent type theory (DTT) and Curry-Howarth correspondence makes the distinction between type, function and axiom declarations needless. Therefore, an axiomatic theory in DTT is seen as a telescope, as discussed in Section~\ref{sec:background:theory}. We capture this representation by the following type. 
 \begin{minted}{haskell}
 data GTheory = GTheory {
-params :: Params,
-fields :: Fields }
+  declarations :: [Constr],
+  waist        :: Int     }
 \end{minted}
-where a parameter is represented as a list of bindings that can be either explicit or implicit, by using the different \lstmath{Binding} constructors \lstmath{Bind} and \lstmath{HBind}. A field is a list of declarations of type 
-\lstmath{data Constr = Constr Name Expr} consisting of a name and an expression corresponding to its type. 
+The waist is needed to determine how many of the declarations are parameters. It is needed to solve the bundling problem~\cite{alhassy2019}. 
 
-\begin{lstlisting}
-data Params
-= NoParams | ParamDecl [Binding] | ParamDef [HiddenName]
-data Binding = Bind [Arg] Expr | HBind [Arg] Expr
-data Fields = NoFields | Fields [Constr]
-\end{lstlisting}
+The three components of a morphism (view) as discussed in~\ref{sec:background:morphisms} are captured by the following type. 
+\begin{minted}{haskell}
+data GView  = GView {
+  source  :: GTheory,
+  target  :: GTheory,
+  rename :: Rename }  
+\end{minted}
+where \lstmath{type Rename = Map.Map Name_ Name_}
 
 \subsection{Theory Graph Structure}
-Theories and morphisms 
+We define a theory graph as a name-to-theory map and a name-to-view map 
+\begin{minted}{haskell}
+data TGraph = TGraph { 
+  _nodes :: Map.Map Name_ GTheory,
+  _edges :: Map.Map Name_ GView } 
+\end{minted}
+An alternative way to represent graphs would have been to include only the \lstmath{_edges}, as they contain information about theories. We preferred to keep both to make it easier to lookup theories in the graph. 
 
-it works because we do not allow cycles 
+We noticed that in many cases, the same renames are being reused. So, we also added a \lstmath{Mapping} type that allows the user to define something like 
+\begin{lstlisting}
+Map plus-zero = {op to + ; e to 0}
+\end{lstlisting}
+and reuse it. Accordingly, a library consists of a theory graph and some of these mappings 
+\begin{minted}{haskell}
+data Library = Library {
+  _graph   :: TGraph,
+  _renames :: Map.Map Name_ Rename }
+\end{minted}
+
+\subsection{Combinators}
+We introduced the expressions we use to build the theory graph in Section~\ref{sec:impl:expressions}. In this section, we discuss our implementation for these expressions. The language that we introduce to Tog is described here 
+\begin{lstlisting}
+data Language = 
+    MappingC Name [RenPair]
+  | TheoryC Name [Constr]
+  | ModExprC Name ModExpr
+\end{lstlisting}
+
+\subsubsection{Mappings}
+When encountering a mapping, we add it to the \lstmath{renames} list of the library. 
+\begin{minted}{haskell}
+addMapping :: Name -> [RenPair] -> Library -> Library
+addMapping nm rens = 
+   over mappings (Map.insert (nm^.name) (renPairsToMapping rens))
+\end{minted}
+\lstmath{over} is the setter function we get by using Haskell lenses. It sets the \lstmath{mapping} field of the library to a new instance of \lstmath{Map} that has the given mapping. \ednote{introduce some of the most used mappings that we use later in examples}
+
+\subsubsection{Flat Theories}
+Given a theory presentation as a list of declarations, we construct the new theory and added to the graph. 
+\begin{minted}{haskell}
+theory :: Name -> [Abs.Constr] -> Library -> Library
+theory nm cList =
+  let newThry  = GTheory cList waistNm
+  in  over graph (over nodes (Map.insert (nm^.name) newThry))
+\end{minted}
+Note that the new theory has no morphisms and is not connected to any theory. In our definition of the library, we only use it to define the \lstmath{Empty} theory, that corresponds to the root of the graph. 
+
+\subsubsection{Modular Expressions}
+Modular expressions are the ones that uses the combinators we introduced before to compute new theories and arrows. The function \lstmath{updateGraph} is used to add them to the graph 
+\begin{minted}{haskell}
+updateGraph ::   Name_ -> Either GView PushOut -> TGraph -> TGraph
+updateGraph nm (Left view) =
+  over nodes (Map.insert nm (target view)) .
+  over edges (Map.insert ("To"++nm) view)
+updateGraph nm (Right ut) =
+  over nodes (Map.insert nm (target $ uLeft ut)) .
+  over edges (\e -> foldr (uncurry Map.insert) e 
+                        [("To"++nm++"1",uLeft ut),
+                         ("To"++nm++"2",uRight ut),
+                         ("To"++nm++"D",diagonal ut)])
+\end{minted}
+In all cases, the combinators that we use generates only one theory. Its name is the first argument to \lstmath{updateGraph}. The number of generated arrows is different based on the combinators. \lstmath{extends} and \lstmath{rename} generates one morphism, while \lstmath{combine} generates three. We capture this with the type \lstmath{Either GView PushOut}, where \lstmath{Pushout} is defined as 
+\begin{minted}{haskell}
+data PushOut = PushOut { -- of a span
+  uLeft    :: GView,
+  uRight   :: GView,
+  diagonal :: GView,
+  apex     :: GTheory } -- common point
+\end{minted}
+The names of the new arrows are generated based on the names of the new theories. Since a new theory with a user given name is defined every time, we know that the new arrow names have not been generated before. 
+
+The functions \lstmath{computeExtend}, \lstmath{computeRename}, and \lstmath{computeCombine} calculate the new arrows and theories. 
+
+\paragraph{1. Computing Extension}
+The inputs to the extension operation is the theory being extended and the new declarations. Computing extensions are easy; The new theory is obtained by concatenating the new declarations to the ones already and the theory. Those two theories form the source and target of the new view, with the mapping being the identity. 
+\begin{minted}{haskell}
+computeExtend :: [Constr] -> GTheory -> GView
+computeExtend newDecls srcThry =
+  GView srcThry (extThry newDecls srcThry) (validateRen srcThry Map.empty)
+
+extThry :: [Constr] -> GTheory -> GTheory 
+extThry newConstrs thry@(GTheory constrs wst) =
+  if List.intersect newConstrNames (symbols thry) == []
+  then GTheory (constrs ++ newConstrs) wst
+  else error $ "Cannot create theory "
+    where newConstrNames = map getConstrName newConstrs
+\end{minted}
+
+\paragraph{2. Computing Rename}
+In order to perform a rename, a replacement of all occurrences of a symbol \lstmath{x} with symbol \lstmath{y} needs to be done. This requires traversing the internal representation of the theory. For this, we use the Haskell \lstmath{Generics} package\ednote{add citations}. The construction of the new theory and view are then straightforward.   
+\begin{minted}{haskell}
+computeRename :: Rename -> GTheory -> GView  
+computeRename namesMap thry =
+  GView thry (renameThy thry namesMap) (validateRen thry namesMap)
+
+renameThy :: GTheory -> Rename -> GTheory
+renameThy (GTheory constrs wst) m =
+  GTheory (gmap (mapAsFunc m) constrs) wst
+  
+gmap :: (Generics.Typeable a, Generics.Data b) => (a -> a) -> b -> b
+gmap r x = Generics.everywhere (Generics.mkT r) x  
+\end{minted}
+
+\paragraph{3. Computing Combine}
+The algorithm to compute the result of combining two theories work as follows 
+\begin{itemize}
+    \item Given the name of the source theory and the two theories to be combined, the first step is to lookup the paths from the source to the target theory. A path is defined as a non-empty list of views. The function \lstmath{getPath} does that by starting at the target node and going backward, exploring all possible paths until it find the source. This is possible because we know our graph is more of a tree; It has a root, which is the empty theory and it has no cycles (arrows are never directed backwards). Once we have these two paths, we construct the two instances of \lstmath{QPath}, which is defined as follows 
+\begin{minted}{haskell}
+data QPath = QPath { 
+  path :: Path,
+  ren  :: Rename }
+\end{minted}
+
+    \item Now that we have the morphisms (the path) and the renames, we check the preconditions of the operation introduced in Section~\ref{subsec:combine}. The function \lstmath{checkGuards} does that starting by the source symbols, transforming them as the views of each path described, and then applying the renames. If the result of transforming the symbols of the source theory is the same by following the two paths and applying the renames, then the pushout can be computed 
+    
+    \item The result theory is computed by taking the disjoint union of the declarations in the source theory, the one on the left of the diamond (the first argument), then the one on the right. Note that this operation is not commutative. If we take the disjoint union of the source, right, then left theories, we get an equivalent but not equal theory. The order of declarations will be different, but the two theories will have the same declarations. 
+\begin{minted}{haskell}
+ newThry = 
+   GTheory (disjointUnion3 (declarations srcMapped)
+                                          (declarations lThry) 
+                                          (declarations rThry)) 
+                 (waist srcMapped)
+\end{minted}    
+    \item The source and target of the resulting morphisms are easy to figure out. Their mapping is calculated by composing the mappings in the views on the path between the two theories, and then composing it with the rename symbols. 
+\begin{minted}{haskell}
+lView = GView lt newThry $ validateRen lt (allMaps left)
+rView = GView rt newThry $ validateRen rt (allMaps right)
+diag  = GView commonSrc newThry $ validateRen commonSrc (allMaps left)
+\end{minted}
+\end{itemize}
 
 
 
 \section{Interesting Cases}
 \label{sec:interesting_cases}
+We used our implementation to build a library of $227$. We use tiny theories approach to build the algebraic hierarchy from \lstmath{Empty} up to \lstmath{Ring} and  \lstmath{BoundedDistributedLattice}. In this section, we introduce some of the interesting cases, that involved challenges in building the library. 
+
+\subsection{AdditivePointedMagma}
+\lstmath{AdditivePointedMagma} consists of three declarations \lstmath{(A,+,0)}. 
+The black theories and arrows in Figure~\ref{fig:addPointedMagma} shows what we  have in the graph prior to the definition of \lstmath{AdditivePointedMagma}. Ideally, all theories and arrows in blue need to be generated from the modular expression defining \lstmath{AdditivePointedMagma}. 
+\begin{figure}[h]
+    \begin{tikzcd}
+        Carrier \arrow[r,hook] \arrow[d,hook] \arrow[rd,hook] & Magma \arrow[r,mapsto] \arrow[d,hook] & AdditiveMagma \arrow[dd,hook,dashed,blue] \\
+        Pointed \arrow[d,mapsto] \arrow[r,hook] & PointedMagma \arrow[rd,mapsto,dashed,blue]&    \\
+        Pointed0  \arrow[rr,hook,dashed,blue] & & \textcolor{blue}{AdditivePointedMagma} \\       
+    \end{tikzcd}
+    \caption{The construction of AdditivePointedMagma}
+    \label{fig:addPointedMagma}
+\end{figure}
+But if we try to define it in one-liner, we end up with the one of the following cases. 
+\begin{itemize}
+ \item The definition 
+\begin{lstlisting}
+combine AdditiveMagma {} Pointed0 {} over Carrier
+\end{lstlisting}
+would generate the theory \lstmath{AdditivePointedMagma}, and the three arrows 
+\lstmath{Carrier $\to$ AdditivePointedMagma}, 
+\lstmath{AdditiveMagma $\to$ AdditivePointedMagma}, 
+and \lstmath{Pointed0 $\to$ AdditivePointedMagma}. 
+The arrow \lstmath{PointedMagma $\to$ AdditivePointedMagma} won't be generated. 
+
+\item The definition 
+\begin{lstlisting}
+combine AdditiveMagma {} PointedMagma {op to +} over Magma 
+\end{lstlisting}
+will not generate the arrow \lstmath{Pointed0 $\to$ AdditivePointedMagma}. 
+
+\item The definition 
+\begin{lstlisting}
+combine Pointed0 {} PointedMagma {e to 0} over Pointed 
+\end{lstlisting}
+will not generate the arrow \lstmath{AdditiveMagma $\to$ AdditivePointedMagma}. 
+\end{itemize}
+Instead, to get all these connections, we define \lstmath{AdditivePointedMagma} as follows 
+\begin{lstlisting}
+Pointed0Magma = combine PointedZero {} PointedMagma {e to 0} over Pointed
+PointedPlusMagma = combine AdditiveMagma {} PointedMagma {op to +} over Magma
+AdditivePointedMagma = combine Pointed0Magma {op to +} PointedPlusMagma {e to 0} over PointedMagma
+\end{lstlisting}
+which result in the following diagram 
+\begin{figure}[h]
+    \begin{tikzcd}
+        Carrier \arrow[r,hook] \arrow[d,hook] \arrow[rd,hook] & Magma \arrow[r,mapsto] \arrow[d,hook] \arrow[rd,mapsto,dashed,blue] & AdditiveMagma \arrow[d,hook,dashed,blue] \\
+        Pointed \arrow[d,mapsto] \arrow[r,hook] \arrow[rd,mapsto,dashed,blue]& PointedMagma \arrow[rd,mapsto,dashed,blue] \arrow[d,mapsto,dashed,blue] \arrow[r,mapsto,dashed,blue] &  PointedPlusMagma \arrow[d,hook,dashed,blue] \\
+        Pointed0  \arrow[r,hook,dashed,blue] & Pointed0Magma \arrow[r,hook,dashed,blue] & \textcolor{blue}{AdditivePointedMagma} \\       
+    \end{tikzcd}
+    \caption{The construction of AdditivePointedMagma}
+    \label{fig:addPointedMagmaReal}
+\end{figure}
+Although it is not immediately obvious to define \lstmath{AdditivePointedMagma} this way, it corresponds more to the tiny theories approach that advocates to having all intermediate theories. The two intermediate theories \lstmath{Pointed0Magma} and \lstmath{PointedPlusMagma} becomes useful when we define the \lstmath{Zero}, which is defined as follows 
+\begin{lstlisting}
+record Zero0 (A : Set) : Set where
+ constructor Zero0C
+ field
+   0 : A
+   * : A -> A -> A
+   leftZero_op_0 : (x : A) -> * 0 x == 0
+   rightZero_op_0 : (x : A) -> * x 0 == 0
+\end{lstlisting}
+
+\subsection{AdditiveMonoid}
+One would want to have \lstmath{AdditiveMonoid} with all the morphisms we introduced in Figure~\ref{fig:cube2_monoid}. In this section we discuss how close we can get to this diagram. 
+
+We have discussed the construction of \lstmath{AdditivePointedMagma}, and showed how the construction is not precisely as in Figure~\ref{fig:cube2_monoid}, although all the morphisms are defined, some are composed of other morphisms. Now, we focus more on the part of defining \lstmath{AdditiveUnital}. The definition of \lstmath{AdditiveLeftUnital} and \lstmath{AdditiveRightUnital} goes as follows 
+\begin{lstlisting}
+AdditiveLeftUnital = combine AdditivePointedMagma {} LeftUnital plus-zero over PointedMagma
+AdditiveRightUnital = combine AdditivePointedMagma {} RightUnital plus-zero over PointedMagma
+\end{lstlisting} 
+It make sense to expect \lstmath{AdditiveUnital} to have morphisms with \lstmath{Unital}, \lstmath{AdditiveLeftUnital}, and \lstmath{AdditiveRightUnital}. Similar to the case we had in the previous section, a pushout will only compute two of these three morphisms. The possible pushouts are 
+\begin{lstlisting}
+combine AdditiveLeftUnital {} AdditiveRightUnital {} over AdditivePointedMagma
+\end{lstlisting}
+
+\begin{lstlisting}
+combine AdditiveLeftUnital {} Unital plus-zero over LeftUnital 
+\end{lstlisting}
+
+\begin{lstlisting}
+combine AdditiveRightUnital {} Unital plus-zero over RightUnital 
+\end{lstlisting}
+
+Unlike the one before, there is no way to compose different pushouts to get the three morphisms. The reason is that all possible pushouts compute the same theory, without the system realizing they are. 
+
+The same problem occurs when defining \lstmath{AdditiveMonoid} and attempting to generate the three morphisms 
+\lstmath{AdditiveUnital $\to$ AdditiveMonoid}, 
+\lstmath{AdditiveSemigroup $\to$ AdditiveMonoid}, and 
+\lstmath{Monoid $\to$ AdditiveMonoid}. 
+
+We thought of the following solutions to this problem 
+\begin{itemize}
+    \item Computing the colimit of the three theories. 
+    \item Dealing with the graph that generates \lstmath{Monoid} using diagram combinators \ednote{cite the CICM2019 paper}. 
+\end{itemize}
+Our approach is to defined these techniques in terms of pushouts, i.e. provide them as a syntactic sugar to performing multiple pushouts. Since pushouts in the category of contexts are associative, we believed we are able to do that, but the examples above shows that this is not always possible. Therefore, we provided a construction that allows the user to add identity arrows between two theories.\ednote{guarantees that this does not mess with the all-commute-path principle.} 
+
+
+
+
+\section{Best Practice Guidelines}
+\begin{itemize}
+    \item Although the operation we want to know is a rename, we used the \lstmath{combine} operation to perform it. This estanlishes more connections between 
+    \item use the theory with the most intersection 
+\end{itemize}
+
 
 \begin{comment}
 There are two different ways by which a user or a library builder can define a new theory; either by stating all its components or by reusing existing theories. While an end user might in some cases prefer the first approach for the formalization tasks, a library is more rich in information if it deploys the second approach. For example, defining a \group to be a \monoid with inverse gives us more information than what are its declarations, it also tell us about how it is related to \monoid. Most systems provide users with at least inclusions which enable them to include a verbatim version of one theory into the other, so the relation between \group and \monoid mentioned here can be captured. But, is this enough? 
