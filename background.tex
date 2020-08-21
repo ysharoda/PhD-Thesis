@@ -50,13 +50,15 @@ The formation rules for views, as given in~\cite{carette2018building} is given i
 
 It is worth mentioning that the mapping is only a part of the morphism. A morphism consists of the source and destination theories as well as the mapping. 
 
+Connecting theories have been known for a long time in logic~\cite{tarski1953undecidable, enderton1972mathematical} under the name \emph{theory interpretations}. The same name is used by IMPS~\cite{farmer1993imps, InterpIMPS1994}. CLEAR~\cite{Goguen1980}, OBJ and their successors used the term \emph{morphisms}, maybe because of using category theory for semantics. The term \emph{view} has also been used to refer to the same concept by Maude, MathScheme, and MMT. 
+
 We distinguish between three type of morphisms 
 
 \subsection{Identity Morphism}
 \label{sec:idmorph}
 If $\arrow{[v]}{\Gamma}{\Delta}$ is an identity morphism, then $[v]$ maps every symbol $x \in \syms{\Gamma}$ to itself. This implies that $[v]$ is a bijection and that $x[v] = x$. 
 
-Identity morphisms between two theories if the source is included verbatim in the destination, like in the case when \lstmath{Group} is defined as an extension of \lstmath{Monoid}. It is the simplest form of morphisms and allow transport of results without the need to perform substitution 
+Identity morphisms exist between two theories if the source is included verbatim in the destination, like in the case when \lstmath{Group} is defined as an extension of \lstmath{Monoid}. It is the simplest form of morphisms and allow transport of results without the need to perform substitution 
 
 \subsection{Embedding}
 \label{sec:embedding}
@@ -99,7 +101,7 @@ An example is a morphism that flips a binary operation, i.e.: maps \lstmath{op x
     \end{thyex} $};
 \node (B) [right of=P] {$
     \begin{thyex}
-    \thyrow{U}{\tmop{Type}}
+    \thyrow{A}{\tmop{Type}}
     \thyrow{op}{A \rightarrow A \rightarrow A}
     \end{thyex} $};
 \draw[->] (P) to node {$[A \mapsto\ A,
@@ -107,10 +109,8 @@ An example is a morphism that flips a binary operation, i.e.: maps \lstmath{op x
 \end{tikzpicture}
 \end{equation}
 
-Connecting theories have been known for a long time in logic~\cite{tarski1953undecidable, enderton1972mathematical} under the name \emph{theory interpretations}. The same name is used by IMPS~\cite{farmer1993imps, InterpIMPS1994}. CLEAR~\cite{Goguen1980}, OBJ and their successors used the term \emph{morphisms}, maybe because of using category theory for semantics. The term \emph{view} has also been used to refer to the same concept by Maude, MathScheme, and MMT \ednote{others?}. 
-
 \section{Theory Graph}\label{sec:background:theorygraph}
-One way to organize theories is using theory graphs. \cite{kohlhase2010towards} suggests the graph organization structure is needed when dealing with large libraries. A theory graph is an acyclic directed graph consisting of a set of theories, as nodes, and morphisms, as edges between them. 
+One way to organize theories is using theory graphs. They are needed when dealing with large libraries~\cite{kohlhase2010towards}. A theory graph is an acyclic directed graph consisting of a set of theories, as nodes, and morphisms, as edges between them. 
 
 In systems that are based on categorical semantics, a theory graph is seen as a diagram in the category of theories and theory morphisms. Specware uses the keyword \emph{diagram} to build them. The work in~\cite{developmentGraph2000}, based on CASL, refer to them as \emph{development graphs}. 
 
@@ -136,7 +136,7 @@ theory Unital = {
   runit : $\cdots$
 }   
 \end{lstlisting}
-These definition overlook that in some cases one might want to talk about an operation with only right unit, like in the case of subtraction on integers. One will then need to add a new theory that is similar to \lstmath{Unital} without the \lstmath{lunit} declaration. Any theorems proved in the context of \lstmath{Unital} cannot be used, even if it only depends on \lstmath{lunit}. \ednote{Another motivating example will be given when talking about building pointedMagma with combinators. remember to refer to this here}.  
+These definition overlook that in some cases one might want to talk about an operation with only right unit, like in the case of subtraction on integers. One will then need to add a new theory that is similar to \lstmath{Unital} without the \lstmath{lunit} declaration. Any theorems proved in the context of \lstmath{Unital} cannot be used, even if it only depends on \lstmath{lunit}. 
 
 \section{Category Theory}
 explain pushout and how it is calculated 
