@@ -1,0 +1,98 @@
+\chapter{Tog}
+\label{ch:tog}
+
+The interpreter of our DSL generates definitions of theories and related constructions. We need a meta-theory to provide the language to represent and interpret those definitions. We have the following prerequisites for our language 
+\begin{itemize}
+\item $\Pi$-Types: The semantics of the combinators we are using is given in categorical dependent logic. Having $\Pi$-types is needed to represent the types of views in terms of their source and target theories. 
+\item Dependent records to represent theories as telescopes. 
+\item Module system to manage namespaces such that every theory with its generated constructions is a module. 
+\item Inductive data types to represent term languages. 
+\item Equality to represent the equations within a theory. 
+\end{itemize}
+
+These features are available by default in dependently typed systems, like Agda, Coq, and Lean. But we refrained from using any of these systems to avoid delving into their design decisions. Instead, we prefer a small language that does not have many other extra features. We use Tog~\cite{tog}, a small implementation of Martin-\"{o}f type theory. 
+Tog is a small dependently typed language and type checker created by the Agda developers to experiment with type checking ideas. It has mainly been used to experiment with type checking through unification~\cite{mazzoli2016type}. 
+
+Tog is implemented in Haskell. Figure~\ref{fig:togRepr} shows the internal representation of Tog. 
+\begin{figure}
+\begin{minted}[fontsize=\scriptsize,escapeinside=~~,mathescape=true]{haskell}
+data Decl
+    = TypeSig TypeSig
+    | FunDef Name [Pattern] FunDefBody
+    | Data Name Params DataBody
+    | Record Name Params RecordBody
+    | Module_ Module
+    | ~$\cdots$~
+    deriving (Eq, Ord, Show, Read)
+
+data TypeSig = Sig Name Expr
+    deriving (Eq, Ord, Show, Read)
+
+data Where = Where [Decl] | NoWhere
+    deriving (Eq, Ord, Show, Read)
+
+data Params
+    = NoParams | ParamDecl [Binding] | ParamDef [HiddenName]
+    deriving (Eq, Ord, Show, Read)
+
+data HiddenName = NotHidden Name | Hidden Name
+    deriving (Eq, Ord, Show, Read)
+
+data DataBody
+    = DataDecl Name | DataDef [Constr] | DataDeclDef Name [Constr]
+    deriving (Eq, Ord, Show, Read)
+
+data RecordBody
+    = RecordDecl Name
+    | RecordDef Name Fields
+    | RecordDeclDef Name Name Fields
+    deriving (Eq, Ord, Show, Read)
+
+data Fields = NoFields | Fields [Constr]
+    deriving (Eq, Ord, Show, Read)
+
+data Constr = Constr Name Expr
+    deriving (Eq, Ord, Show, Read)
+
+data FunDefBody = FunDefNoBody | FunDefBody Expr Where
+    deriving (Eq, Ord, Show, Read)
+
+data Telescope = Tel [Binding]
+    deriving (Eq, Ord, Show, Read)
+
+data Binding = Bind [Arg] Expr | HBind [Arg] Expr
+    deriving (Eq, Ord, Show, Read)
+
+data Expr
+    = Lam [Name] Expr
+    | Pi Telescope Expr    -- ~$\Pi$ types 
+    | Fun Expr Expr       -- function types  
+    | Eq Expr Expr        -- equations 
+    | App [Arg]             -- type applications 
+    | Id QName             -- types names
+    deriving (Eq, Ord, Show, Read)
+
+data Arg = HArg Expr | Arg Expr
+    deriving (Eq, Ord, Show, Read)
+
+data Pattern
+    = EmptyP Empty | ConP QName [Pattern] | IdP QName | HideP Pattern
+    deriving (Eq, Ord, Show, Read)
+\end{minted}
+\caption{Internal Representation of the Tog Language}
+\label{fig:togRepr}
+\end{figure}
+
+A Tog module is a list of declaration, such that each declaration is either a type signature, function definition, datatype declaration, record definition, or a nested module represented using the \lstmath{Module$\_$}, \lstmath{Record}, and \lstmath{Data} constructors, resp. 
+A function type is defined using \lstmath{TypeSig} and its definition using \lstmath{FunDef}. 
+According to the type \lstmath{Decl} modules can import and open other modules, but our experiences shows that this features isn't supported. 
+
+Parameters to modules, records, and datatypes are represented by the \lstmath{Params} type. A single parameter has the type \lstmath{Binding} and can be declared implicit by using the constructor \lstmath{HBind}. 
+
+A record field and a datatype constructor are both of type \lstmath{Constr}, each having a \lstmath{Name} and a type expression \lstmath{Expr}. Dependent types are created with the \lstmath{Pi} constructor. Function types are curried and represented with the \lstmath{Fun} constructor. Axioms that are equation are represented with \lstmath{Eq} constructor. Type and function applications are created using the \lstmath{App} constructor. If a type has no arguments, then the \lstmath{Id} constructor is used to refer to it by name. 
+
+To perform pattern matching, the \lstmath{Pattern} type is used. Matching with a $0$-ary constructor is done using \lstmath{IdP}. If the constructor take parameters, then \lstmath{ConP} is used. \lstmath{HideP} represents pattern matching on implicit arguments (when needed) and \lstmath{EmptyP} represents the don't care \lstmath{$\_$} character. 
+
+We use this internal representation to generate our constructions. This language come with a dependent type checker that we use to check our generated definitions. 
+\ednote{We probably need to say something about universes in Tog. In tog, it is true that \lstmath{Set : Set}. We decided then that this is not a big deal, but I don't know why.}
+
