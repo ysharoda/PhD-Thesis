@@ -1,0 +1,128 @@
+
+
+
+
+\newcommand{\theory}[1]{\ensuremath{#1}}
+%The context of a theory
+\newcommand{\context}[1]{\ensuremath{#1}}	
+% The list of symbol identifiers of a theory
+\newcommand{\syms}[1]{\ensuremath{| #1 |}}
+% A rename function from the symbols of the input theory to the set of variables
+
+% Variables
+\newcommand{\vars}{\ensuremath{\mathbb{V}}}
+
+% Rename functions and views
+\newcommand{\renfunname}[1]{\ensuremath{\pi_#1}}
+\newcommand{\renfuntype}[2]{\ensuremath{#1 : \syms{#2} \to \varSet}}
+%\newcommand{\renview}{}
+
+%The category of contexts
+\newcommand{\catctx}{\ensuremath{\mathbb{C}}}
+\newcommand{\catthry}{\ensuremath{\mathbb{P}}}
+\newcommand{\catext}{\ensuremath{\mathbb{E}}}
+\newcommand{\arrow}[3]{\ensuremath{#1 : #2 \to #3}} % name, source, target
+\newcommand{\renarrow}[3]{\ensuremath{#1 : #2 \mapsto #3}}
+
+\newcommand{\applyview}[2]{\ensuremath{#2[#1]}} %view, theory --> \Gamma[u]
+\newcommand{\applyrenfun}[2]{\ensuremath{#1 \cdot #2}} % renfun, theory --> \pi \cdot \Gamma
+
+% The arrows in the different categories -- i/ps: name, source, target
+\newcommand{\arrowthry}[3]{\ensuremath{\arrowname{#1} : \arrowthrytype{#2}{#3}}}
+\newcommand{\arrowthrytype}[2]{\ensuremath{#1 \to #2}}
+\newcommand{\arrowctxtype}[2]{\ensuremath{#1 \rightarrowtriangle #2}}
+\newcommand{\arrowctx}[3]{\ensuremath{\arrowctxname{#1} : \arrowctxtype{#2}{#3}}}
+\newcommand{\arrownt}[3]{\arrowname{#1} : #2 \rightrightarrow #3}
+\newcommand{\arrowname}[1]{[ #1 ]}
+\newcommand{\arrowctxname}[1]{#1}
+\newcommand{\arrowArbExt}[1]{\ensuremath{#1^{\Mapsto}}}
+\newcommand{\displaymap}[3]{#1 : \arrowctxtype{#2}{#3}}
+
+\newcommand{\arrowdef}[2]{\ensuremath{\define [#1]_#2}}
+
+% In sections 1,2,3 and 4 (before the exposition of CT), the macro view is used to refer to
+% arrows between theories
+\newcommand{\view}[3]{\ensuremath{\arrowthry{#1}{#2}{#3}}}
+\newcommand{\viewname}[1]{[ #1 ]}
+\newcommand{\composeviews}[2]{\viewname{#1} ; \viewname{#2}}
+
+\newcommand{\composeext}[2]{\extname{#1} ; \extname{#2}}
+\newcommand{\compose}[4]{\ensuremath{\composeviews{#1}{#2} : \viewtype{#3}{#4}}}
+\newcommand{\viewdef}[2]{\ensuremath{ #1 \define #2}}
+\newcommand{\viewtype}[2]{\arrowthrytype{#1}{#2}}
+\newcommand{\composedef}[3]{\ensuremath{\composeviews{#1}{#2} \define #3}}
+
+% Objects of the category of extensions
+\newcommand{\objectname}[1]{#1}
+\newcommand{\extname}[1]{#1}
+\newcommand{\objectext}[3]{\objectname{ #1 } : #3 \rightharpoonup #2}
+
+%Assignments and substitution (See the beginning of basic semantics section)
+\newcommand{\assignment}[3]{\ensuremath{\lbag #1 \mapsto #2 \rbag_{#3}}}
+\newcommand{\substitutiondef}[4]{\ensuremath{#1[ #2 \mapsto #3 ]_{#4}}}
+\newcommand{\substitution}[3]{\ensuremath{#1[ #2]_{#3}}}
+
+%Composing arrows
+
+
+% The general notation that we use to represent an arrow goes as follows:
+% arrow-name : domain -> codomain
+% An arrow in the category of theory presentations would look exactly this way.
+% - If we want to emphasize that this arrow is an inclusion/rename we use a hooked/mapsto arrow
+% An arrow between two contexts should have the notation
+% arrow-name_con : domain_con -> codomain_con
+
+\begin{comment}
+
+\newcommand{\arrow_w_subscr}[3]{\ensuremath{#1 : #2 \to_#4 #3}}
+% Arrows between contexts: Currently represented as left arrow
+\newcommand{\conarrow}[3]{\ensuremath{#1^{op} : #2 \rightarrow #3}}
+% This command refer to the arrow between extensions and stands for, natural transformation arrow
+%   #1 is the name of the arrow
+%   #2/#3 the name of the domain/codomain (It is sub_scripted by an index, so #2_i refer to the domain/codomain of extension arrow i
+%   #4/#5 the name of the domain/codomain arrow (the domain/codomain of the nt)
+\newcommand{\ntarrow}[#3]{\ensuremath{#1^{\leftleftarrows}} : #2 \leftleftarroe }
+\newcommand{\ntaroow_old}[5]{\ensuremath{{#1}_{#2}^{#3}:{#5}\leftleftarrows{#4}}}
+\end{comment}
+
+
+\newcommand{\extSource}{\Gamma}
+\newcommand{\extTarget}{\Delta}
+\newcommand{\extDecls}{\extTarget^+}
+\newcommand{\extension}[2]{\extcomb\left(#1, #2\right)}
+\newcommand{\extensionDef}[2]{
+\extension{#1}{#2} \define
+\left\{
+\begin{aligned}
+\mathtt{pres} & = #1 \rtimes #2 \\
+\mathtt{embed} & = \tilde{\idF} : #1 \rightarrow #1 \rtimes #2
+\end{aligned}\right\}
+}
+
+\newcommand{\renSource}{\Gamma}
+\newcommand{\renTarget}{\Delta}
+\newcommand{\renFun}{\pi}
+\newcommand{\renameOp}[2]{\rencomb\left(#1,#2\right)}
+\newcommand{\renameDef}[2]{
+\rencomb\left(\renSource, \renFun : \left| \renSource \right|
+\rightarrow \vars\right)
+\define
+\left\{\begin{aligned}
+	\mathtt{pres} & = #2 \cdot #1 \\
+	\mathtt{embed} & = \tilde{#2}:#1 \rightarrow #2\cdot#1
+\end{aligned}\right\}	
+}	
+
+
+\newcommand{\idF}{\ensuremath{\mathsf{id}}}
+\newcommand{\appExt}[2]{\ensuremath{#1\left[\tilde{#2}\right]}}
+\newcommand{\extArrow}[3]{\arrow{\tilde{#1}}{#2}{#3}}
+
+\newcommand{\combineResult}{\Xi}
+
+\newcommand{\mmt}{\texorpdfstring{{\normalfont\scshape{Mmt}}\xspace}{MMT\ }}
+
+%% Display map
+\newcommand{\dispmap}[1]{\ensuremath{\delta_{#1}}}
+
+\newcommand*{\LargerCdot}{\raisebox{-0.25ex}{\scalebox{1.5}{$\cdot$}}}
