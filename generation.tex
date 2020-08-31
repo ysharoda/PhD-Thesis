@@ -1,6 +1,8 @@
 \chapter{Constructions For Free!}
 \label{ch:generation}
 
+Starting from a flattened theory presentation, the second part of the interpreter is used to generate useful constructions. Our generator manipulates Tog internal representation of theories to create useful definitions. Our generated defintions are guaranteed to be well-formed, but They are presented as Tog definitions and typechecked by Tog, after generation. 
+
 \section{What can be generated}
 Given a theory presentation \lstmath{(S,F,E)} in first order equational logic, The following constructions can be generated 
 \begin{itemize}
