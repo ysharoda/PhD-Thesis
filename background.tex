@@ -7,7 +7,8 @@
 \section{Axiomatic Theory}
 \label{sec:background:theory}
 A theory is a specification of a class of algebras, that share some properties. 
-An axiomatic theory is a pair \lstmath{(L,$\Sigma$)}, where \lstmath{L} describes the language of the theory. It consists of \lstmath{(S,F)}. \lstmath{S} is a set of sorts and \lstmath{F} is a set of function symbols. \lstmath{$\Sigma$} is a set of axioms describing properties of objects in the language. A theory is closed under logical consequences, therefore we speak of a \emph{theory presentation}, in which only necessary axioms are given. Theory presentations are defined in a logic that provides the inference rules used to derive useful theorems.  
+An axiomatic theory is a pair \lstmath{(L,$\Sigma$)}, where \lstmath{L} describes the language of the theory. It consists of \lstmath{(S,F)}. \lstmath{S} is a set of sorts and \lstmath{F} is a set of function symbols. The function symbols we refer to here are restricted functions, i.e. functions over simple types that are expressible in first order logic. We discuss the generalization of our approach to functions operating over complex domains, like power sets or sequences, in Chapter~\ref{ch:discussion}. 
+\lstmath{$\Sigma$} is a set of axioms describing properties of objects in the language. A theory is closed under logical consequences, therefore we speak of a \emph{theory presentation}, in which only necessary axioms are given. Theory presentations are defined in a logic that provides the inference rules used to derive useful theorems.  
 
 In a dependently typed setup, the distinction between sorts, functions symbols, and axioms need not exist. Instead a theory is seen as a telescope~\cite{de1991telescopic}. Every declaration \lstmath{$c : t$} within the telescope is defined within a context \lstmath{$\Gamma$}. This is described as \lstmath{$\Gamma \vdash c : t$}.  
 

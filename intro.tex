@@ -9,7 +9,7 @@ A software system is more useful to its users when it is equipped with a library
 As the mathematics knowledge management community grew larger, the vision for the large math library has been reframed into a collection of heterogeneous, intercommunicating systems, under the name universal digital math library (UDML)~\cite{farmer2004mkm}. Despite all the efforts to build such a library, it still does not exist. We focus our attention on algebra libraries. They mostly contain three types of definitions 
 \begin{itemize}
     \item Theories describing algebraic structures, like \lstmath{Monoid}, \lstmath{Group}, and \lstmath{Ring}. 
-    \item Constructions related to these algebraic structures, like morphisms, products, and term algebras.  
+    \item Definitions of concepts and constructions related to these algebraic structures, like morphisms, products, and term algebras.  
     \item Proofs of basic theorems. 
 \end{itemize}
 
@@ -124,7 +124,7 @@ Having this DSL in place would benefit the process of theory development in the 
 \paragraph{How?}
 In order to develop this DSL we need to find out the right abstraction from which all the variabilities and the related constructions can be generated and we also need to provide an interpreter for this DSL that generates the library definitions. 
 
-Universal algebra provides us with the right abstractions. It abstracts over algebraic structures and their related constructions and provides the meta theory that explains how the generation algorithms should work. A theory presentation in universal algebra has three components \verb|(S,F,E)|; a sort \verb|S|, a list of function symbols along with their arities \verb|F|, and a list of axioms (equations) that describe properties of the function symbols \verb|E|. If we can abstract over the details of theory presentations to extract this information, we are able to generate the constructions defined by universal algebra, like morphisms, product algebras, term languages, $\cdots$, etc. 
+Universal algebra provides us with the right abstractions. It abstracts over algebraic structures and their related constructions and provides the meta theory that explains how the generation algorithms should work. A theory presentation in universal algebra has three components \verb|(S,F,E)|; a sort \verb|S|, a list of function symbols along with their types \verb|F|, and a list of axioms (equations) that describe properties of the function symbols \verb|E|. If we can abstract over the details of theory presentations to extract this information, we are able to generate the constructions defined by universal algebra, like morphisms, product algebras, term languages, and others. 
 
 
 Also, we know that theory presentations are written in formal languages, which provide uniform syntax for expressing information. By having a suitable way to manipulate theories, we can generate information from them. This can happen if theories are first class citizens, if the needed reflection mechanisms are in place, or using a meta program in the hosting language. We use Tog~\cite{tog} as our language and type checker. We discuss Tog in Chapter~\ref{ch:tog}. 
@@ -138,7 +138,7 @@ Also, we know that theory presentations are written in formal languages, which p
 In this work, we attempt to answer the following research questions 
 \begin{itemize}
     \item Can the uniformity provided by universal algebra be captured by a meta program that generates parts of an algebra library?
-    \item What design decisions need to be abstracted from? and which ones can be reintroduced after the generation of new?
+    \item What design decisions need to be abstracted from and which ones can be reintroduced after the generation of new?
     \item Which information need to be provided by the developer and which ones can be generated? 
     \item What are the preconditions for generating this new information? 
     \item How would this affect the activity of library building?
@@ -164,9 +164,9 @@ In this work, we attempt to answer the following research questions
 \label{sec:broader_context}
 There are different ways of organizing knowledge within a formal system. Our work contributes to building a large math library organized as a theory graph in the heart of a tetrapodal structure. Theory graphs capture the structure of mathematical knowledge by enabling the description of relationships between the different pieces using morphisms. Using them, we can express facts like `a group is a monoid` and that `monoid and additive monoid are isomorphic`. 
 
-The nodes of the graph are biform theories~\cite{biformCICM2018}, which connect axiomatic theories (used by theorem provers), and algorithmic theories (used by computer algebra systems) using meaning formulas. That way it facilitates communication between reasoning and computational systems; it becomes possible to reason about algorithmic theories, and to use results of computer algebra systems in theorem provers. 
+The nodes of a theory graph can be any kind of theories. Ideally, they would be biform theories~\cite{biformCICM2018}, as they connect axiomatic theories (used by theorem provers), and algorithmic theories (used by computer algebra systems) using meaning formulas. That way it facilitates communication between reasoning and computational systems; it becomes possible to reason about algorithmic theories, and to use results of computer algebra systems in theorem provers. In this work we only look at axiomatic theories. 
 
-Biform theories are connected by morphisms, a meaning preservation mapping. The simplest form of a morphism is inclusion. Morphisms are used to transfer results from one theory to another. So, a morphism between \lstmath{Monoid} and \lstmath{AdditiveMonoid} that describes they are isomorphic, allows us to transfer results between them. 
+Morphisms are meaning preservation maps. The simplest form of a morphism is inclusion. Morphisms are used to transfer results from one theory to another. So, a morphism between \lstmath{Monoid} and \lstmath{AdditiveMonoid} that describes they are isomorphic, allows us to transfer results between them. 
 
 In~\cite{carette2020bigMath}, the authors argue that modern mathematics is organized as a tetrapod with knowledge organization being at its center. We are working towards a library organized as a theory graph of biform theories that serves as this center. Different aspects of the tetrapod will be consumers and producers of knowledge in this library. This implies that the size of this library would be huge, and that using generative approach to support its building would be a great asset. 
 
