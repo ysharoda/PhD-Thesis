@@ -225,6 +225,48 @@ of structures that look very similar and could be generated.
 
 We continue investigating the redundancy in code written by developers. In the previous section we looked into general purpose libraries. We now turn our attention to user projects highlighting the cases when users had to redefine information already existing in libraries. 
 
-The theories and data structures project~\cite{theoriesAndDts} explores how algebraic theories give rise to some common data structures. A natural first step is to formalize the algebraic theories of interest to the project. Despite the existence of some of these algebraic structures in the standard library, like the \lstmath{Monoid} theory with the definition above, the project developers redefined many of them~\footnote{https://github.com/JacquesCarette/TheoriesAndDataStructures/tree/master/Structures}, like \lstmath{Magma, }\lstmath{Monoid}, \lstmath{CommMonoid}, and \lstmath{AbelianGroup}. In some cases, like in \lstmath{Monoid}, the definitions avoided setoids, while in others, like in \lstmath{CommMonoid} it used it. This highlights how important it is to provide a way of customizing definitions while using them, instead of 
+The theories and data structures project~\cite{theoriesAndDts}, implemented in Agda, explores how algebraic theories give rise to some common data structures. A natural first step is to formalize the algebraic theories of interest to the project. Despite the existence of some of these algebraic structures in the standard library, like the \lstmath{Monoid} theory with the definition above, the project developers redefined many of them~\footnote{https://github.com/JacquesCarette/TheoriesAndDataStructures/tree/master/Structures}, like \lstmath{Magma, }\lstmath{Monoid}, \lstmath{CommMonoid}, and \lstmath{AbelianGroup}. In some cases, like in \lstmath{Monoid}, the definitions avoided setoids, while in others, like in \lstmath{CommMonoid} it used it. This highlights how important it is to provide a way of customizing definitions while using them. 
+
+The MGG project~\cite{carette2011generative} deals with the computational geometry software as a family of programs and aim to define abstractions from which different software pieces can be generated. One of the layers common to many members of this software family is algebra. In \stmath{Algebra.lhs} the finally tagless representation of many algebraic structures are given as follows 
+\begin{minted}{haskell}
+class Monoid repr n where
+  add :: repr n -> repr n -> repr n
+  zero :: repr n
+
+class Monoid repr n => AdditiveGroup repr n where
+  neg :: repr n -> repr n
+  sub :: repr n -> repr n -> repr n
+  int_pow :: Integer -> repr n -> repr n
+  of_int :: Integer -> repr n
+\end{minted}
+We show in Chapter~\ref{ch:generation} that the finally tagless representation can be generated. Another form of redundancy, is defining the \lstmath{Monoid} instance of various number representations, like float, integer and rational, along with the code and staged versions. For example, in Float.lhs, we find the following definition 
+\begin{minted}{haskell}
+instance Monoid BaseImm Double where
+  add = liftA2 (+)
+  zero = pure (0.0)
+
+instance Monoid Code Double where
+  add (Code x) (Code y) = Code [| $(x) + $(y) |]
+  zero = Code [| 0.0 |]
+
+instance Monoid Staged Double where
+  add a b = monoid Alg.zero add add a b
+  zero = of_atom (0.0)
+\end{minted}
+with instances of the three version of \lstmath{Double} for \lstmath{Field}, \lstmath{AdditiveGroup}, \lstmath{Norm}, and \lstmath{Ring}. The same definitions in repeated for \lstmath{Integer} type in Integer.lhs file. 
+\begin{minted}{haskell}
+instance Monoid BaseImm Integer where
+  add = liftA2 (+)
+  zero = pure 0
+
+instance Monoid Code Integer where
+  add (Code x) (Code y) = Code [| $(x) + $(y) |]
+  zero = Code [| 0 |]
+
+instance Monoid Staged Integer where
+  zero = of_atom $ 0
+  add = monoid A.zero add add
+\end{minted}
+and for rationals in Rational.lhs\ednote{Problem with this example is the repo has limited accessibility.}
 
 
