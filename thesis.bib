@@ -1,0 +1,863 @@
+
+% ------ Tog ---------- 
+@misc{tog,
+  key = {Tog, a dependently-typed checker},
+  title = {Tog, A prototypical implementation of dependent types},
+  author = {Francesco Mazzoli and Nils Anders Danielsson and Ulf Norell  and Andrea Vezzosi and Andreas Abel},
+  journal = {GitHub Repository},
+  date = {2017}, 
+  howpublished = {\url{https://github.com/bitonic/tog}}
+}
+
+@article{mazzoli2016type,
+    title={Type checking through unification},
+    author={Mazzoli, Francesco and Abel, Andreas},
+    journal={arXiv preprint arXiv:1609.09709},
+    year={2016}
+}
+
+% https://github.com/bitonic/tog
+
+% ----- Libraries ------- 
+
+% Coq 
+@article{Geuvers2002,
+  title = { A Constructive Algebraic Hierarchy in {Coq} },
+  journal = {Journal of Symbolic Computation} ,
+  volume = {34},
+  number = {4},
+  pages = {271 - 286},
+  year = {2002},
+  issn = {0747-7171},
+  doi = {https://doi.org/10.1006/jsco.2002.0552},
+  url = {http://www.sciencedirect.com/science/article/pii/S0747717102905523},
+  author = {Herman Geuvers and Randy Pollack and Freek Wiedijk and Jan Zwanenburg},
+  abstract = {We describe a framework of algebraic structures in the proof assistant Coq. We have 
+  developed this framework as part of the FTA project in Nijmegen, in which a constructive proof of the 
+  fundamental theorem of algebra has been formalized in Coq. The algebraic hierarchy that is described 
+  here is both abstract and structured. Structures like groups and rings are part of it in an abstract way, 
+  defining e.g. a ring as a tuple consisting of a group, a binary operation and a constant that together 
+  satisfy the properties of a ring. In this way, a ring automatically inherits the group properties of the 
+  additive subgroup. The algebraic hierarchy is formalized in Coq by applying a combination of labelled 
+  record types and coercions. In the labelled record types of Coq, one can use dependent types: the type 
+  of one label may depend on another label. This allows us to give a type to a dependent-typed tuple like 
+  〈A, f, a〉, where A is a set,f an operation on A and a an element of A. Coercions are functions that are 
+  used implicitly (they are inferred by the type checker) and allow, for example, to use the structure A:= 
+  〈A, f, a〉 as a synonym for the carrier set A, as is often done in mathematical practice. Apart from the 
+  inheritance and reuse of properties, the algebraic hierarchy has proven very useful for reusing notations.}
+}
+
+@InProceedings{Gonthier2009,
+  author="Garillot, Fran{\c{c}}ois
+  and Gonthier, Georges
+  and Mahboubi, Assia
+  and Rideau, Laurence",
+  title="Packaging Mathematical Structures",
+  booktitle="Theorem Proving in Higher Order Logics",
+  year="2009",
+  publisher="Springer Berlin Heidelberg",
+  address="Berlin, Heidelberg",
+  pages="327 -- 342",
+  isbn="978-3-642-03359-9"
+}
+
+@InProceedings{Spitters2010,
+  author="Spitters, Bas
+  and van der Weegen, Eelis",
+  title="Developing the Algebraic Hierarchy with Type Classes in {Coq}",
+  booktitle="Interactive Theorem Proving",
+  year="2010",
+  publisher="Springer Berlin Heidelberg",
+  address="Berlin, Heidelberg",
+  pages="490 -- 493",
+  abstract="We present a new formalization of the algebraic hierarchy in Coq, exploiting its new type class 
+  mechanism to make practical a solution formerly thought infeasible. Our approach addresses both 
+  traditional challenges as well as new ones resulting from our ambition to build upon this development a 
+  library of constructive analysis in which abstraction penalties inhibiting efficient computation are reduced 
+  to a bare minimum. To support mathematically sound abstract interfaces for ℕ, ℤ, and ℚ, our 
+  formalization includes portions of category theory and multisorted universal algebra.",
+  isbn="978-3-642-14052-5"
+}
+
+@misc{coq-contribs-algebra,
+   key = { {Coq} User Contributions - Algebra Library},
+   title = { {Coq} User Contributions - Algebra Library},
+   journal = {GitHub Repository},
+   author = {Loïc Pottier},
+   date = {1999}, 
+   howpublished = {\url{https://github.com/coq-contribs/algebra}}
+}
+
+@InProceedings{spivak2014coqcats,
+    author="Gross, Jason
+    and Chlipala, Adam
+    and Spivak, David I.",
+    title="Experience Implementing a Performant Category-Theory 
+    Library in 
+    {Coq}",
+    booktitle="Interactive Theorem Proving",
+    year="2014",
+    publisher="Springer International Publishing",
+    address="Cham",
+    pages="275 -- 291",
+    abstract="We describe our experience implementing a broad 
+    category-theory library in Coq. Category theory and 
+    computational 
+    performance are not usually mentioned in the same breath, but 
+    we have 
+    needed substantial engineering effort to teach Coq to cope with 
+    large 
+    categorical constructions without slowing proof script 
+    processing 
+    unacceptably. In this paper, we share the lessons we have 
+    learned about 
+    how to represent very abstract mathematical objects and 
+    arguments in 
+    Coq and how future proof assistants might be designed to 
+    better support 
+    such reasoning. One particular encoding trick to which we draw 
+    attention 
+    allows category-theoretic arguments involving duality to be 
+    internalized 
+    in Coq's logic with definitional equality. Ours may be the 
+    largest Coq 
+    development to date that uses the relatively new Coq version 
+    developed 
+    by homotopy type theorists, and we reflect on which new 
+    features were 
+    especially helpful.",
+    isbn="978-3-319-08970-6"
+}
+
+
+% Isabelle 
+@misc{Isabelle-hol-algebra, 
+  key = {Isabelle's HOl-Algebra Library}, 
+  title = {Isabelle's HOl-Algebra Library}, 
+  howpublished = {\url{https://isabelle.in.tum.de/library/HOL/HOL-Algebra/index.html}}, 
+  accessed = {March 10,2020} 
+}
+
+% Agda 
+@misc{agda_stdlib,
+  key = {{A}gda Library Authors},
+  title = {{A}gda {S}tandard {L}ibrary},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/agda/agda-stdlib}}
+}
+
+% Lean: Mathlib 
+@article{lean2019,
+  title={The Lean mathematical library},
+  author="The Mathlib Community",
+  journal = {arXiv preprint arXiv: 1910.09336},
+  year={2019},
+  note={\url{https://arxiv.org/abs/1910.09336}}
+}
+
+%CASL reference manual 
+@Book{CoFI:2004:CASL-RM,
+    author =       "{CoFI (The Common Framework Initiative)}",
+    editor = "Peter D. Mosses",
+    title =        "\textsc{Casl} Reference Manual",
+    year =         "2004",
+    publisher =    "Springer",
+    series =       "Lecture Noted in Computer Science", 
+    volume = "2960",
+    abstract =     "\textsc{Casl}, the \emph{Common Algebraic
+    Specification Language}, has been designed by CoFI, the
+    \emph{Common Framework Initiative} for algebraic
+    specification and development. \textsc{Casl} is an
+    expressive language for specifying requirements and
+    design for conventional software. It is algebraic in
+    the sense that models of \textsc{Casl} specifications
+    are algebras; the axioms can be arbitrary first-order
+    formulas. \par \textsc{Casl} is a major new algebraic
+    specification language. It has been carefully designed
+    by a large group of experts as a general-purpose
+    language for practical use in software development --
+    in particular, for specifying both requirements and
+    design. \textsc{Casl} includes carefully-selected
+    features from many previous specification languages, as
+    well as some novel features that allow algebraic
+    specifications to be written much more concisely and
+    perspicuously than hitherto. It may ultimately replace
+    most of the previous languages, and provide a common
+    basis for future research and development. \par
+    \textsc{Casl} has already attracted widespread interest
+    within the algebraic specification community, and is
+    generally regarded as a de facto standard. Various
+    sublanguages of \textsc{Casl} are available --
+    primarily for use in connection with existing tools
+    that were developed in connection with previous
+    languages. Extensions of \textsc{Casl} provide
+    languages oriented toward development of particular
+    kinds of software (reactive, concurrent, etc.) \par
+    Major libraries of validated \textsc{Casl}
+    specifications are freely available on the Internet,
+    and the specifications can be reused simply by
+    referring to their names. Tools are provided to support
+    practical use of \textsc{Casl}: checking the
+    correctness of specifications, proving facts about
+    them, and managing the formal software development
+    process. \par This reference manual gives a detailed
+    presentation of the \textsc{Casl} specification
+    formalism. It reviews the main underlying concepts, and
+    carefully summarizes the intended meaning of each
+    construct of \textsc{Casl}. It formally defines both
+    the syntax and semantics of \textsc{Casl}, and presents
+    a logic for reasoning about \textsc{Casl}
+    specifications. It also provides extensive libraries of
+    \textsc{Casl} specifications of basic datatypes, and an
+    annotated bibliography of CoFI publications.",
+    annote =       "Gives full details of the design of \textsc{Casl}: an
+    informal language summary, concrete and abstract
+    syntax, well-formedness and model-class semantics, and
+    proof rules. Includes the libraries of basic
+    datatypes.",
+}
+
+@article{mathscheme2011experiments,
+  author = {Carette, Jacques and Farmer, William and Jeremic, 
+  Filip and 
+  Maccio, Vincent and O'Connor, Russell and Tran, Quang},
+  year = {2011},
+  month = {06},
+  pages = {},
+  title = {The {MathScheme} Library: Some Preliminary 
+  Experiments}, 
+  journal={arXiv preprint arXiv:1106.1862},
+}
+
+@INPROCEEDINGS{grabowski2016mizar,
+  author={A. {Grabowski} and A. {Korniłowicz} and C. 
+  {Schwarzweller}},
+  booktitle={2016 Federated Conference on Computer Science 
+  and 
+  Information Systems (FedCSIS)},
+  title={On algebraic hierarchies in mathematical repository of 
+  Mizar},
+  year={2016},
+  volume={},
+  number={},
+  pages={363-371},
+  keywords={algebra;algebraic hierarchy;Mizar mathematical 
+  repository;group structure;rings structure;integral domain 
+  structure;field 
+  structure;vector space structure;Structural 
+  rings;Additives;Modules 
+  (abstract algebra);Concrete;Computer science},
+  doi={},
+  ISSN={null},
+  month={Sep.},}
+
+%----------------- Bundling Problem ------------ 
+@InProceedings{Gross2014,
+  author="Gross, Jason
+  and Chlipala, Adam
+  and Spivak, David I.",
+  editor="Klein, Gerwin
+  and Gamboa, Ruben",
+  title="Experience Implementing a Performant Category-Theory Library in {Coq}",
+  booktitle="Interactive Theorem Proving",
+  year="2014",
+  publisher="Springer International Publishing",
+  address="Cham",
+  section = "2",
+  pages="275 -- 291",
+  abstract="We describe our experience implementing a broad category-theory library in Coq. Category 
+  theory and computational performance are not usually mentioned in the same breath, but we have 
+  needed substantial engineering effort to teach Coq to cope with large categorical constructions without 
+  slowing proof script processing unacceptably. In this paper, we share the lessons we have learned about 
+  how to represent very abstract mathematical objects and arguments in Coq and how future proof 
+  assistants might be designed to better support such reasoning. One particular encoding trick to which 
+  we draw attention allows category-theoretic arguments involving duality to be internalized in Coq's logic 
+  with definitional equality. Ours may be the largest Coq development to date that uses the relatively new 
+  Coq version developed by homotopy type theorists, and we reflect on which new features were 
+  especially helpful.",
+  isbn="978-3-319-08970-6"
+}
+
+@misc{cohen2020hierarchy,
+  title={Hierarchy Builder: algebraic hierarchies made easy in {Coq} with {Elpi}},
+  author={Cohen, Cyril and Sakaguchi, Kazuhiko and Tassi, Enrico},
+  howpublished = {\url{https://hal.inria.fr/hal-02478907}},
+  note = {working paper or preprint},
+  year={2020}
+}
+
+@misc{mahboubi2017mathematical,
+  title={Mathematical components},
+  author={Mahboubi, Assia and Tassi, Enrico},
+  year={2017}
+}
+
+@incollection{CaretteOConnorTPC,
+  year={2012},
+  isbn={978-3-642-31373-8},
+  booktitle={Intelligent Computer Mathematics},
+  volume={7362},
+  series={Lecture Notes in Computer Science},
+  doi={10.1007/978-3-642-31374-5_14},
+  title={Theory Presentation Combinators},
+  url={http://dx.doi.org/10.1007/978-3-642-31374-5_14},
+  publisher={Springer Berlin Heidelberg},
+  author={Carette, Jacques and O{'}Connor, Russell},
+  pages={202-215}
+}
+
+@article{carette2018building,
+  title={Building on the Diamonds between Theories: Theory Presentation Combinators},
+  author={Jacques Carette and Russell O'Connor and Yasmine Sharoda},
+  journal={arXiv preprint arXiv:1812.08079},
+  year={2018}
+}
+
+@inproceedings{alhassy2019,
+  author = {Al-hassy, Musa and Carette, Jacques and Kahl, Wolfram},
+  title = {A Language Feature to Unbundle Data at Will (Short Paper)},
+  booktitle = {Proceedings of the 18th ACM SIGPLAN International Conference on Generative Programming: 
+  Concepts and Experiences},
+  series = {GPCE 2019},
+  year = {2019},
+  isbn = {978-1-4503-6980-0},
+  location = {Athens, Greece},
+  pages = {14 -- 19},
+  numpages = {6},
+  url = {http://doi.acm.org/10.1145/3357765.3359523},
+  doi = {10.1145/3357765.3359523},
+  acmid = {3359523},
+  publisher = {ACM},
+  address = {New York, NY, USA},
+  keywords = {Agda, Emacs, dependent-types, extensible, meta-program, modules, packages},
+} 
+
+% Universal Algebra 
+@book{whitehead1898treatise,
+  title={A treatise on universal algebra: with applications},
+  author={Whitehead, A.N.},
+  lsbn={12040192},
+  series={Cornell University Library historical math monographs},
+  url={http://books.google.ca/books?id=XUwNAAAAYAAJ},
+  year={1898},
+  publisher={The University Press}
+}
+
+@article{sankappanavar1981course,
+  title={A course in universal algebra},
+  author={Sankappanavar, Hanamantagouda P and Burris, Stanley},
+  journal={Graduate Texts Math},
+  volume={78},
+  year={1981}
+}
+
+@book{meinke1991universal,
+  title={Universal algebra},
+  author={Meinke, Karl and Tucker, John V},
+  year={1991},
+  publisher={University of Wales (Swansea). Mathematics and Computer Science Division}
+}
+
+
+@book{denecke2002universal,
+  title={Universal Algebra and Applications in Theoretical Computer Science},
+  author={Denecke, K. and Wismath, S.L.},
+  isbn={9781584882541},
+  lccn={2001054803},
+  url={https://books.google.ca/books?id=sCOInFMLOVYC},
+  year={2002},
+  publisher={Taylor \& Francis}
+}
+
+@Inbook{sannella2012foundations,
+    title = {Universal Algebra},   
+  bookTitle={Foundations of Algebraic Specification and Formal Software Development},
+  author={Sannella, D. and Tarlecki, A.},
+   pages = {15 -- 39},      
+  isbn={9783642173363},
+  lccn={2011941495},
+  series={Monographs in Theoretical Computer Science. An EATCS Series},
+  url={https://books.google.ca/books?id=85CLRvu5QxUC},
+  year={2012},
+  publisher={Springer Berlin Heidelberg}
+}
+
+@book{ehrig2012fundamentals,
+  title={Fundamentals of Algebraic Specification 1: Equations and Initial Semantics},
+  author={Ehrig, H. and Mahr, B.},
+  isbn={9783642699627},
+  series={Monographs in Theoretical Computer Science. An EATCS Series},
+  url={https://books.google.ca/books?id=YNypCAAAQBAJ},
+  year={2012},
+  publisher={Springer Berlin Heidelberg}
+}
+
+@article{meinke1992higherTypes,
+  title = "Universal algebra in higher types",
+  journal = "Theoretical Computer Science",
+  volume = "100",
+  number = "2",
+  pages = "385 - 417",
+  year = "1992",
+  issn = "0304-3975",
+  doi = "https://doi.org/10.1016/0304-3975(92)90310-C",
+  url = 
+  "http://www.sciencedirect.com/science/article/pii/030439759290310C",
+  author = "Karl Meinke",
+  abstract = "We develop the elementary theory of higher-order 
+  universal 
+  algebra using the nonstandard approach to finite type theory 
+  introduced 
+  by Henkin. Basic results include: existence theorems for free 
+  and initial 
+  higher type algebras, a complete higher type equational 
+  calculus, and 
+  characterisation theorems for higher type equational and Horn 
+  classes."
+}
+
+% Theorem Provers 
+@InProceedings{Goguen1980,
+  author="Burstall, R. M.
+  and Goguen, J. A.",
+  editor="Bj{\o}orner, Dines",
+  title="The semantics of clear, a specification language",
+  booktitle="Abstract Software Specifications",
+  year="1980",
+  publisher="Springer Berlin Heidelberg",
+  address="Berlin, Heidelberg",
+  pages="292 -- 332",
+  abstract="This paper gives a semantics for the Clear language for specifying problems and programs, described by Burstall and Goguen in 1977. A blend of denotational semantics with categorical ideas is used.",
+  isbn="978-3-540-38136-5"
+}
+
+@article{farmer1993imps,
+    title={IMPS: An interactive mathematical proof system},
+    author={Farmer, William M and Guttman, Joshua D and Thayer, F Javier},
+    journal={Journal of Automated Reasoning},
+    volume={11},
+    number={2},
+    pages={213--248},
+    year={1993},
+    publisher={Springer}
+}
+
+@InProceedings{InterpIMPS1994,
+    author="Farmer, William M.",
+    editor="Heering, Jan
+    and Meinke, Karl
+    and M{\"o}ller, Bernhard
+    and Nipkow, Tobias",
+    title="Theory interpretation in simple type theory",
+    booktitle="Higher-Order Algebra, Logic, and Term Rewriting",
+    year="1994",
+    publisher="Springer Berlin Heidelberg",
+    address="Berlin, Heidelberg",
+    pages="96--123",
+    abstract="Theory interpretation is a logical technique for relating one axiomatic theory to another with important applications in mathematics and computer science as well as in logic itself. This paper presents a method for theory interpretation in a version of simple type theory, called lutins, which admits partial functions and subtypes. The method is patterned on the standard approach to theory interpretation in first-order logic. Although the method is based on a nonclassical version of simple type theory, it is intended as a guide for theory interpretation in classical simple type theories as well as in predicate logics with partial functions.",
+    isbn="978-3-540-48579-7"
+}
+
+
+% CASL development graph 
+@InProceedings{developmentGraph2000,
+    author="Autexier, Serge
+    and Hutter, Dieter
+    and Mantel, Heiko
+    and Schairer, Axel",
+    editor="Bert, Didier
+    and Choppy, Christine
+    and Mosses, Peter D.",
+    title="Towards an Evolutionary Formal Software-Development Using CASL",
+    booktitle="Recent Trends in Algebraic Development Techniques",
+    year="2000",
+    publisher="Springer Berlin Heidelberg",
+    address="Berlin, Heidelberg",
+    pages="73--88",
+    abstract="In practice, the formal development of software is an evolutionary process. Failed proof attempts give rise to changes in the specification and such changes invalidate proofs which have been previously performed. Clearly, it is very desirable to preserve much of the proof effort after such changes. In this paper, we propose development graphs as a general framework for modular specifications and define a structure preserving translation of CASL specifications into these graphs. The feature of development graphs, which is most important for an evolutionary process, is that they simplify the analysis of changes to the specification such that their negative effects can be kept to a minimum.",
+    isbn="978-3-540-44616-3"
+}
+
+% -------- Concepts ------------ 
+% -- Telescope 
+@article{de1991telescopic,
+  title={Telescopic mappings in typed lambda calculus},
+  author={de Bruijn, Nicolaas Govert},
+  journal={Information and Computation},
+  volume={91},
+  number={2},
+  pages={189 -- 204},
+  year={1991},
+  publisher={Citeseer}
+}
+
+
+%------------- Universal Algebra Formalizations ----------- 
+@InProceedings{capretta99,
+  author="Capretta, Venanzio",
+  title="Universal Algebra in Type Theory",
+  booktitle="Theorem Proving in Higher Order Logics",
+  year="1999",
+  publisher="Springer Berlin Heidelberg",
+  address="Berlin, Heidelberg",
+  pages="131 -- 148",
+  abstract="We present a development of Universal Algebra inside Type Theory, formalized using the proof assistant Coq. We define the notion of a signature and of an algebra over a signature. We use setoids, i.e. types endowed with an arbitrary equivalence relation, as carriers for algebras. In this way it is possible to define the quotient of an algebra by a congruence. Standard constructions over algebras are defined and their basic properties are proved formally. To overcome the problem of defining term algebras in a uniform way, we use types of trees that generalize wellorderings. Our implementation gives tools to define new algebraic structures, to manipulate them and to prove their properties.",
+  isbn="978-3-540-48256-7"
+}
+
+@article{Gunther2018Agda,
+  title = "Formalization of Universal Algebra in {Agda}",
+  journal = "Electronic Notes in Theoretical Computer Science",
+  volume = "338",
+  pages = "147 - 166",
+  year = "2018",
+  note = "The 12th Workshop on Logical and Semantic Frameworks, with Applications (LSFA 2017)",
+  issn = "1571-0661",
+  doi = "https://doi.org/10.1016/j.entcs.2018.10.010",
+  url = "http://www.sciencedirect.com/science/article/pii/S1571066118300768",
+  author = "Emmanuel Gunther and Alejandro Gadea and Miguel Pagano",
+  keywords = "universal algebra, formalization of mathematics, equational logic",
+  abstract = "In this work we present a novel formalization of universal algebra in Agda. We show that heterogeneous signatures can be elegantly modelled in type-theory using sets indexed by arities to represent operations. We prove elementary results of heterogeneous algebras, including the proof that the term algebra is initial and the proofs of the three isomorphism theorems. We further formalize equational theory and prove soundness and completeness. At the end, we define (derived) signature morphisms, from which we get the contravariant functor between algebras; moreover, we also proved that, under some restrictions, the translation of a theory induces a contra-variant functor between models."
+}
+=======
+% ------------- MKM -------------- 
+@article{farmer2004mkm,
+  title={MKM: a new interdisciplinary field of research},
+  author={Farmer, William M},
+  journal={ACM SIGSAM Bulletin},
+  volume={38},
+  number={2},
+  pages={47 -- 52},
+  year={2004},
+  publisher={ACM New York, NY, USA}
+}
+
+@article{carette2019big,
+  title={Big Math and the One-Brain Barrier A Position Paper and Architecture Proposal},
+  author={Carette, Jacques and Farmer, William M and Kohlhase, Michael and Rabe, Florian},
+  journal={arXiv preprint arXiv:1904.10405},
+  year={2019}
+}
+
+@inproceedings{kohlhase2010towards,
+    title={Towards MKM in the large: Modular representation and scalable software architecture},
+    author={Kohlhase, Michael and Rabe, Florian and Zholudev, Vyacheslav},
+    booktitle={International Conference on Intelligent Computer Mathematics},
+    pages={370--384},
+    year={2010},
+    organization={Springer}
+}
+
+% --------- Algebraic Hierarchy ------------- 
+@misc{halleck,
+  author = "John Halleck",
+  howpublished = {\url{http://www.horizons-2000.org/2.%20Ideas%20and%20Meaning/John%20Halleck%27s%20Logic%20System%20Interrelationships.html}},
+  title = "Logic System Interrelationships",
+  note = {Accessed: March 20, 2020}
+}
+
+@misc{jipsen,
+  author = "Peter Jipsen",
+  title = "List of Mathematical Structures",
+  howpublished = {\url{http://math.chapman.edu/~jipsen/structures/doku.php}},
+  note = {Accessed: March 20, 2020}
+}
+
+%---------- Haskell Deriving ------------------- 
+@article{loeh2010genericDeriving,
+  author = {Magalh\~{a}es, Jos\'{e} Pedro and Dijkstra, Atze and 
+  Jeuring, 
+  Johan and L\"{o}h, Andres},
+  title = {A Generic Deriving Mechanism for {H}askell},
+  year = {2010},
+  issue_date = {November 2010},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  volume = {45},
+  number = {11},
+  issn = {0362-1340},
+  url = {https://doi.org/10.1145/2088456.1863529},
+  doi = {10.1145/2088456.1863529},
+  journal = {ACM SIGPLAN Notices},
+  month = sep,
+  pages = {37–48},
+  numpages = {12},
+  keywords = {type classes, datatype-generic programming, 
+  haskell}
+}
+
+@inproceedings{loeh2018derivingVia,
+  author = {Bl\"{o}ndal, Baldur and L\"{o}h, Andres and Scott, 
+  Ryan},
+  title = {Deriving via: Or, How to Turn Hand-Written Instances 
+  into an 
+  Anti-Pattern},
+  year = {2018},
+  isbn = {9781450358354},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/3242744.3242746},
+  doi = {10.1145/3242744.3242746},
+  booktitle = {Proceedings of the 11th ACM SIGPLAN International 
+  Symposium on {H}askell},
+  pages = {55–67},
+  numpages = {13},
+  keywords = {functional programming, instances, {H}askell, type 
+  classes, 
+  deriving},
+  location = {St. Louis, MO, USA},
+  series = {{H}askell 2018}
+}
+
+@misc{haskell,
+  key = "{H}askell",
+  howpublished = {https://www.haskell.org/},
+  title = "{H}askell; An advanced, purely functional programming 
+  language",
+  note = {Accessed: March 22, 2020}
+}
+
+@inproceedings{sheard2002TH, 
+    author = {Sheard, Tim and Jones, Simon Peyton}, 
+    title = {Template Meta-Programming for {H}askell}, 
+    year = {2002}, 
+    isbn = {1581136056}, 
+    publisher = {Association for Computing Machinery}, 
+    address = {New York, NY, USA}, 
+    url = {https://doi.org/10.1145/581690.581691}, 
+    doi = {10.1145/581690.581691}, 
+    booktitle = {Proceedings of the 2002 ACM SIGPLAN Workshop 
+    on 
+    {H}askell}, 
+    pages = {1–16}, 
+    numpages = {16}, 
+    keywords = {templates, meta programming}, 
+    location = {Pittsburgh, Pennsylvania}, 
+    series = {Haskell ’02} }
+
+@InProceedings{Norell2004TemplateHs,
+  author = "Norell, Ulf and Jansson, Patrik",
+  editor = "Kozen, Dexter",
+  title = "Prototyping Generic Programming in Template {H}askell",
+  booktitle = "Mathematics of Program Construction",
+  year = "2004",
+  publisher = "Springer Berlin Heidelberg",
+  address = "Berlin, Heidelberg",
+  pages = "314 -- 333",
+}
+
+@Misc{lensesLib,
+    key = "Lens Library",
+    title = {{H}askell Lens Library},
+    howpublished = {\url{https://hackage.haskell.org/package/lens}},
+    note = {version 4.19.1; Accessed: 2020-03-22}
+}
+
+@inproceedings{LittleTheories,
+    author = {W. M. Farmer and J. D. Guttman and F. J. Thayer},
+    title = {Little Theories},
+    booktitle = {CADE-11: Proceedings of the 11th International 
+    Conference on Automated Deduction},
+    year = {1992},
+    isbn = {3-540-55602-8},
+    pages = {567 -- 581},
+    publisher = {Springer-Verlag},
+    address = {London, UK},
+}
+
+@article{carette2009finally,
+    title={Finally tagless, partially evaluated: Tagless staged 
+    interpreters for simpler typed languages},
+    author={Carette, Jacques and Kiselyov, Oleg and Shan, Chung-chieh},
+    journal={Journal of Functional Programming},
+    volume={19},
+    number={5},
+    pages={509 -- 543},
+    year={2009},
+    publisher={Cambridge University Press}
+}
+
+@inproceedings{carette2011generative,
+  title={A generative geometric kernel},
+  author={Carette, Jacques and Elsheikh, Mustafa and Smith, Spencer},
+  booktitle={Proceedings of the 20th ACM SIGPLAN workshop on Partial evaluation and program manipulation},
+  pages={53 -- 62},
+  year={2011},
+  organization={ACM}
+}
+
+----------- Maude -----
+@inproceedings{Maude,
+    author = "M. Clavel and S. Eker and P. Lincoln and J. Meseguer",
+    title = "Principles of {Maude}",
+    booktitle = "Proceedings of the First International Workshop on Rewriting Logic",
+    volume = "4",
+    editor = "J. Meseguer",
+    pages = "65--89",
+    year = "1996",
+}
+
+-------------- Logic --------- 
+@book{enderton1972mathematical,
+    title={A mathematical introduction to logic},
+    author={Enderton, Herbert B},
+    year={1972},
+    publisher={Academic Press}
+}
+
+@book{tarski1953undecidable,
+    title={Undecidable theories},
+    author={Tarski, Alfred and Mostowski, Andrzej and Robinson, Raphael Mitchel},
+    volume={13},
+    year={1953},
+    publisher={Elsevier}
+}
+
+% The diamond problem 
+
+@inproceedings{sakkinen1989disciplined,
+    title={Disciplined Inheritance.},
+    author={Sakkinen, Markku},
+    booktitle={ECOOP},
+    volume={89},
+    pages={39--56},
+    year={1989}
+}
+
+@phdthesis{jigsaw1992,
+    author = {Bracha, Gilad},
+    title = {The Programming Language Jigsaw: Mixins, Modularity and Multiple Inheritance}, 
+    school = {The University of Utah},
+    year = {March 1992}
+}
+
+@article{traits2006,
+    author = {Ducasse, St{\'e}phane and Nierstrasz, Oscar and Sch\"{a}rli, Nathanael and Wuyts, Roel and Black, Andrew P.},
+    title = {Traits: A Mechanism for Fine-grained Reuse},
+    journal = {ACM Trans. Program. Lang. Syst.},
+    issue_date = {March 2006},
+    volume = {28},
+    number = {2},
+    month = mar,
+    year = {2006},
+    issn = {0164-0925},
+    pages = {331--388},
+    numpages = {58},
+    url = {http://doi.acm.org/10.1145/1119479.1119483},
+    doi = {10.1145/1119479.1119483},
+    acmid = {1119483},
+    publisher = {ACM},
+    address = {New York, NY, USA},
+    keywords = {Languages, Smalltalk, inheritance, mixins, multiple inheritance, reuse, traits},
+} 
+
+@InProceedings{diamonds2011,
+    author="Wimmer, Manuel
+    and Kappel, Gerti
+    and Kusel, Angelika
+    and Retschitzegger, Werner
+    and Sch{\"o}nb{\"o}ck, Johannes
+    and Schwinger, Wieland
+    and Kolovos, Dimitris
+    and Paige, Richard
+    and Lauder, Marius
+    and Sch{\"u}rr, Andy
+    and Wagelaar, Dennis",
+    editor="Cabot, Jordi
+    and Visser, Eelco",
+    title="A Comparison of Rule Inheritance in Model-to-Model Transformation Languages",
+    booktitle="Theory and Practice of Model Transformations",
+    year="2011",
+    publisher="Springer Berlin Heidelberg",
+    address="Berlin, Heidelberg",
+    pages="31--46",
+    abstract="Although model transformations presumably play a major role in Model-Driven Engineering, reuse mechanisms such as inheritance have received little attention so far. In this paper, we propose a comparison framework for rule inheritance in declarative model-to-model transformation languages, and provide an in-depth evaluation of three prominent representatives thereof, namely ATL, ETL (declarative subsets thereof), and TGGs. The framework provides criteria for comparison along orthogonal dimensions, covering static aspects, which indicate whether a set of inheriting transformation rules is well-formed at compile-time, and dynamic aspects, which describe how inheriting rules behave at run-time. The application of this framework to dedicated transformation languages shows that, while providing similar syntactical inheritance concepts, they exhibit different dynamic inheritance semantics and offer basic support for checking static inheritance semantics, only.",
+    isbn="978-3-642-21732-6"
+}
+
+% QED ---- 
+@article{boyer1994qed,
+    title={The QED manifesto},
+    author={Boyer, Robert and others},
+    journal={Automated Deduction--CADE},
+    volume={12},
+    pages={238--251},
+    year={1994}
+}
+
+% The Haskell Hierarchy 
+@misc{wiki:haskell_hierarch,
+    author = "Haskell Wiki",
+    title = "Functor-Applicative-Monad Proposal",
+    year = "2015",
+    url = "https://wiki.haskell.org/Functor-Applicative-Monad_Proposal",
+    note = "[Online; accessed 14-November-2019]"
+}
+
+@article{spitters2011type,
+    title={Type classes for mathematics in type theory},
+    author={Spitters, Bas and Van der Weegen, Eelis},
+    journal={arXiv preprint arXiv:1102.1323},
+    year={2011}
+}
+
+% Biform Theories 
+@InProceedings{biformCICM2018,
+    author="Carette, Jacques
+    and Farmer, William M.
+    and Sharoda, Yasmine",
+    editor="Rabe, Florian
+    and Farmer, William M.
+    and Passmore, Grant O.
+    and Youssef, Abdou",
+    title="Biform Theories: Project Description",
+    booktitle="Intelligent Computer Mathematics",
+    year="2018",
+    publisher="Springer International Publishing",
+    address="Cham",
+    pages="76--86",
+    abstract="A biform theory is a combination of an axiomatic theory and an algorithmic theory that supports the integration of reasoning and computation. These are ideal for specifying and reasoning about algorithms that manipulate mathematical expressions. However, formalizing biform theories is challenging as it requires the means to express statements about the interplay of what these algorithms do and what their actions mean mathematically. This paper describes a project to develop a methodology for expressing, manipulating, managing, and generating mathematical knowledge as a network of biform theories. It is a subproject of MathScheme, a long-term project at McMaster University to produce a framework for integrating formal deduction and symbolic computation.",
+    isbn="978-3-319-96812-4"
+}
+
+% One Barin Barrier 
+@article{carette2020bigMath,
+    title={Big Math and the One-Brain Barrier--The Tetrapod Model of Mathematical Knowledge},
+    author={Jacques Carette and William M. Farmer and Michael Kohlhase and Florian Rabe},
+    journal={Mathematical Intelligencer},
+    year={2020}
+}
+
+% cicm diagrams 
+@InProceedings{cicm2019diagrams,
+    author="Rabe, Florian
+    and Sharoda, Yasmine",
+    editor="Kaliszyk, Cezary
+    and Brady, Edwin
+    and Kohlhase, Andrea
+    and Sacerdoti Coen, Claudio",
+    title="Diagram Combinators in MMT",
+    booktitle="Intelligent Computer Mathematics",
+    year="2019",
+    publisher="Springer International Publishing",
+    address="Cham",
+    pages="211--226",
+    abstract="Formal libraries, especially large ones, usually employ modularity to build and maintain large theories efficiently. Although the techniques used to achieve modularity vary between systems, most of them can be understood as operations in the category of theories and theory morphisms. This yields a representation of libraries as diagrams in this category, with all theory-forming operations extending the diagram.",
+    isbn="978-3-030-23250-4"
+}
+
+@techreport{piroi2007organisational,
+    title={Organisational Tools for MKM in Theorema},
+    author={Piroi, Florina and Buchberger, Bruno and Rosenkranz, Camelia and Jebelean, Tudor},
+    year={2007},
+    institution={Technical report}
+}
+
+@misc{theoriesAndDts,
+  key = {Theories and Data Structures},
+  title = {Theories and Data Structures},
+  author = {Al-hassy, Musa and Carette, Jacques and Kahl, Wolfram},
+  journal = {GitHub Repository},
+  date = {2019}, 
+  howpublished = {\url{https://github.com/JacquesCarette/TheoriesAndDataStructures}}
+}
