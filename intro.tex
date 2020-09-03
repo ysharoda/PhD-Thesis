@@ -5,16 +5,41 @@
 
 %Formalizing a mathematical result is a lot of work, involving a lot of subtleties and design decisions. 
 
-A software system is more useful to its users when it is equipped with a library of ready-to-utilize information. A user can then focus on what is novel and more interesting to them. When it comes to Mathematics, the amount of information that can be contained in such a library is huge. The influential QED manifesto~\cite{boyer1994qed}, released in 1994, envisioned a library in which all Mathematics is formalized and rigorously checked. The QED manifesto believed in one-formalization-fits-all approach to building the library. 
-As the mathematics knowledge management community grew larger, the vision for the large math library has been reframed into a collection of heterogeneous, intercommunicating systems, under the name universal digital math library (UDML)~\cite{farmer2004mkm}. Despite all the efforts to build such a library, it still does not exist. We focus our attention on algebra libraries. They mostly contain three types of definitions 
-\begin{itemize}
-    \item Theories describing algebraic structures, like \lstmath{Monoid}, \lstmath{Group}, and \lstmath{Ring}. 
-    \item Definitions of concepts and constructions related to these algebraic structures, like morphisms, products, and term algebras.  
-    \item Proofs of basic theorems. 
-\end{itemize}
+Mathematical theorem provers comes equipped with libraries of a body of formalized mathematics. The more ready-to-use information there is in the library, the more useful it is to its potential users. %But building these libraries is a no-easy task. Partly because of the huge amount of information that needs to go into the library, but also because of the inherent design decisions that need to be taken to build it which makes reusing definitions harder.
+  
+%A software system is more useful to its users when it is equipped with a library of ready-to-utilize information. A user can then focus on what is novel and more interesting to them. When it comes to Mathematics, the amount of information that can be contained in such a library is huge. 
+A large library of formalized, ready-to-use mathematics has long been the pursuit of mathematicians and computer scientists.  
+The influential QED manifesto~\cite{boyer1994qed}, released in 1994, envisioned a library in which all Mathematics is formalized and rigorously checked. The QED manifesto believed in one-formalization-fits-all approach to building this library.
+Diversity in mathematical formalizations was a big obstacle towards realizing the library described by QED. There was not an agreement even on which foundation to use for formalizing all of mathematics~\cite{qedrealoaded2016}.  Since then, mathematical knowledge management (MKM) became an active area of research framing a new vision for the large math library. The universal digital math library (UDML), described in ~\cite{farmer2004mkm}, is a collection of heterogeneous, intercommunicating systems and is described as a grand challenge facing MKM. 
 
-Current practice involves having library developers write all definitions by hand. We want to support the activity of library building by providing more automation to this process. We build our system based on $2$ observations. We discuss them here using the theory of \lstmath{Monoid} as our running example.  
+Developing and maintaining libraries of mathematics requires a lot of manpower. One would want to believe that this human effort is put into the creative work of formalizing new pieces of knowledge. By examining current libraries of theorem provers, we know this is not true. Library definitions suffer from a huge reusability problem, forcing developers to redefine common mathematical knowledge, like the algebraic hierarchy. There are many algebra libraries that formalize algebraic structures, along with some of their related properties. Every theorem prover has at least one. In the case of Coq, there are at least $4$ algebra libraries~\cite{Gonthier2009,Geuvers2002,coq-contribs-algebra,Spitters2010}, and even more for Category Theory~\cite{spivak2014coqcats}. 
+In~\cite{Gonthier2009}, the authors mention, referring to other libraries:  
+\begin{quote}
+    ``In spite of this body of prior work, however, we have found it
+    difficult to make practical use of the algebraic hierarchy in our project to
+    formalize the Feit-Thompson Theorem in the Coq system."
+\end{quote}
+We want to understand the source of the reusability problem, so we investigated the definition of the \lstmath{Monoid} structure. In the mind of mathematicians, the \lstmath{Monoid} structure consists of a carrier set and an associative binary operation that has a unit. In a formal math text, the definition can look like\ednote{put some examples}. Despite the slight differences, in the minds of readers it is clear that these definitions correspond to the same mathematical concept. 
 
+In formal systems, things are not the same. Figure~\ref{fig:mon-diff-lang} shows how the \lstmath{Monoid} theory is defined in $5$ different languages. Computers do not know that these definitions are the same and are not able to convert between them, at least not on their own. Choosing one of these definitions over the other does not respect the diversity in the way they are used. Having multiple presentations of the same theory is a form of useful redundancy\ednote{put the source}. Yet, library developers should not be providing these definitions by hand. In fact, there need to be one presentation of \lstmath{Monoid} which provides views to the other ones. 
+
+The reusability problem does not end at algebraic structures. It also affects how their related constructions are presented. One of the common definitions related to an algebraic structure is the homomorphism between any two of its instances. Homomorphisms are structure-preserving maps. Universal algebra gives us a definition for generating the homomorphism for any theory \lstmath{X} by creating a function between the two carriers of the theories and preservation axioms for every function symbol \lstmath{op} that follows the following pattern 
+\begin{lstlisting}[mathescape]
+hom (op$_1$ x$_1$ .. x$_n$) = op$_2$ (hom x$_1$) .. (hom x$_n$)
+\end{lstlisting}
+It is not common that formal systems provide a way to compute homomorphisms of an arbitrary structure. One reason is that computing them within a formal systems is not as direct as the definition above. Figure XX shows the \lstmath{Magma} homomorphism for two different presentations of \lstmath{Magma}. On the left is a presentation in which all arguments are fields. The corresponding homomorphism is parameterized over two instances of \lstmath{Magma}, and access to all fields need qualified names. The presentation on the right, has extra implicit arguments and does not qualify the name of the carrier. The small difference in how \lstmath{Magma} is defined has lead to some subtleties that are not part of the mathematical definition, but that a formal system needs to take care of. 
+
+%Today, developers are forced to redefine knowledge that are already defined It is work that is not interesting to mathematicians as it does not involve creating new mathematics. As has been noted by Michael Harris in~\cite{automatedReasoning} 
+%\begin{quote}
+% ``If mathematicians have to spend their time formalizing math to be understood by a computer, that’s time they’re not spending doing new math."
+%\end{quote}
+
+%Every theorem prover is equipped with one. None of these libraries is close to the vision of UDML\ednote{talk about specification languages coming closer, ex: Hets}. 
+%In fact, they form a heterogeneous body of knowledge that is  disconnected with absolutely no communication between them. 
+
+% We examine libraries of algebraic structures trying to get a step closer to having them realize the UDML vision. We focus our attention to two components of the library, namely the definitions of 1) algebraic structures, and 2) related constructions that are useful to deal with them, like homomorphism, product, and term algebras. We use the term \emph{theory development} to refer to the activity of providing these definitions. 
+
+Current practice of library development involves strongly embedding the design decisions into the library definitions. The definitions and their related constructions are all provided by the library developer. We want to use the uniformity provided by universal algebra to generate useful pieces of knowledge that are currently being hand written. 
 % QED has been revised in .. , attributing its non realization to not enough man power (due to the lack of an immediate application) and that formalized mathematics is not good for communication, and does not resemble classic mathematics.  \ednote{say more here}.
 
 %There were many problems with the realization of this library, \ednote{citations}, of which we focus on two; capturing the structure of Mathematics and the huge manpower needed to formalize this information. We focus our attention to libraries of Algebra. 
@@ -36,14 +61,7 @@ The two Coq definitions takes two extreme views to the bundling problem~\cite{le
 
 The formalization of the Algebraic hierarchy in the Agda standard library is based on setoids (sets equipped with the equivalence relation). Therefore, we find an extra field of the definition of \monoid corresponding to the equivalence relation $\_\approx\_$. 
 
-These variabilities reflect the design decisions of library builders and makes it harder to customize these definitions for users' projects that choose different decisions. This usability problem leads to redundancy as users are forced to redefine theories for their own purposes. We find multiple libraries for the algebraic hierarchy, even within the same system. In the Coq system, there are at least $4$ libraries of Algebra~\cite{Gonthier2009,Geuvers2002,coq-contribs-algebra,Spitters2010}, and even more for Category Theory~\cite{spivak2014coqcats}. In 
-\cite{Gonthier2009}, the authors
-mention, referring to other libraries:  
-\begin{quote}
-    ``In spite of this body of prior work, however, we have found it
-    difficult to make practical use of the algebraic hierarchy in our project to
-    formalize the Feit-Thompson Theorem in the Coq system."
-\end{quote}
+These variabilities reflect the design decisions of library builders and makes it harder to customize these definitions for users' projects that choose different decisions. This usability problem leads to redundancy as users are forced to redefine theories for their own purposes. We find multiple libraries for the algebraic hierarchy, even within the same system. In the Coq system, there are at least $4$ libraries of Algebra
 
 \paragraph{Handwritten Boilerplate}
 Libraries provide some utilities related to algebraic structures, including signatures, morphisms, term languages, etc. 
