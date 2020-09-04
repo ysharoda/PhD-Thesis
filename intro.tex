@@ -1,9 +1,6 @@
 \chapter{Introduction}
 
-%Libraries are quite useful to make standard knowledge available to users, so they can just focus on the novelty of their task. Libraries of Mathematics are no exception. 
-%Building a large library of mathematics is one of the goals of the mechanized mathematics and formal knowledge communities. It has been envisioned by the QED manifesto in 1994 \ednote{cite}, and has - since then - been the subject of many research efforts \ednote{citations}. 
-
-%Formalizing a mathematical result is a lot of work, involving a lot of subtleties and design decisions. 
+%, so they can just focus on the novelty of their task. Libraries of Mathematics are no exception. 
 
 Mathematical theorem provers comes equipped with libraries of a body of formalized mathematics. The more ready-to-use information there is in the library, the more useful it is to its potential users. %But building these libraries is a no-easy task. Partly because of the huge amount of information that needs to go into the library, but also because of the inherent design decisions that need to be taken to build it which makes reusing definitions harder.
   
@@ -21,38 +18,66 @@ In~\cite{Gonthier2009}, the authors mention, referring to other libraries:
 \end{quote}
 We want to understand the source of the reusability problem, so we investigated the definition of the \lstmath{Monoid} structure. In the mind of mathematicians, the \lstmath{Monoid} structure consists of a carrier set and an associative binary operation that has a unit. In a formal math text, the definition can look like\ednote{put some examples}. Despite the slight differences, in the minds of readers it is clear that these definitions correspond to the same mathematical concept. 
 
-In formal systems, things are not the same. Figure~\ref{fig:mon-diff-lang} shows how the \lstmath{Monoid} theory is defined in $5$ different languages. Computers do not know that these definitions are the same and are not able to convert between them, at least not on their own. Choosing one of these definitions over the other does not respect the diversity in the way they are used. Having multiple presentations of the same theory is a form of useful redundancy\ednote{put the source}. Yet, library developers should not be providing these definitions by hand. In fact, there need to be one presentation of \lstmath{Monoid} which provides views to the other ones. 
-
-The reusability problem does not end at algebraic structures. It also affects how their related constructions are presented. One of the common definitions related to an algebraic structure is the homomorphism between any two of its instances. Homomorphisms are structure-preserving maps. Universal algebra gives us a definition for generating the homomorphism for any theory \lstmath{X} by creating a function between the two carriers of the theories and preservation axioms for every function symbol \lstmath{op} that follows the following pattern 
-\begin{lstlisting}[mathescape]
-hom (op$_1$ x$_1$ .. x$_n$) = op$_2$ (hom x$_1$) .. (hom x$_n$)
-\end{lstlisting}
-It is not common that formal systems provide a way to compute homomorphisms of an arbitrary structure. One reason is that computing them within a formal systems is not as direct as the definition above. Figure XX shows the \lstmath{Magma} homomorphism for two different presentations of \lstmath{Magma}. On the left is a presentation in which all arguments are fields. The corresponding homomorphism is parameterized over two instances of \lstmath{Magma}, and access to all fields need qualified names. The presentation on the right, has extra implicit arguments and does not qualify the name of the carrier. The small difference in how \lstmath{Magma} is defined has lead to some subtleties that are not part of the mathematical definition, but that a formal system needs to take care of. 
-
-%Today, developers are forced to redefine knowledge that are already defined It is work that is not interesting to mathematicians as it does not involve creating new mathematics. As has been noted by Michael Harris in~\cite{automatedReasoning} 
-%\begin{quote}
-% ``If mathematicians have to spend their time formalizing math to be understood by a computer, that’s time they’re not spending doing new math."
-%\end{quote}
-
-%Every theorem prover is equipped with one. None of these libraries is close to the vision of UDML\ednote{talk about specification languages coming closer, ex: Hets}. 
-%In fact, they form a heterogeneous body of knowledge that is  disconnected with absolutely no communication between them. 
-
-% We examine libraries of algebraic structures trying to get a step closer to having them realize the UDML vision. We focus our attention to two components of the library, namely the definitions of 1) algebraic structures, and 2) related constructions that are useful to deal with them, like homomorphism, product, and term algebras. We use the term \emph{theory development} to refer to the activity of providing these definitions. 
-
-Current practice of library development involves strongly embedding the design decisions into the library definitions. The definitions and their related constructions are all provided by the library developer. We want to use the uniformity provided by universal algebra to generate useful pieces of knowledge that are currently being hand written. 
-% QED has been revised in .. , attributing its non realization to not enough man power (due to the lack of an immediate application) and that formalized mathematics is not good for communication, and does not resemble classic mathematics.  \ednote{say more here}.
-
-%There were many problems with the realization of this library, \ednote{citations}, of which we focus on two; capturing the structure of Mathematics and the huge manpower needed to formalize this information. We focus our attention to libraries of Algebra. 
-
-\paragraph{Variabilities in theory presentations}
-%A UDML will contain a huge amount of mathematical knowledge Beside the shear volume of information that needs to be included in a large math library, there is a large variability in design decisions within the systems and between the projects using them. Even for one piece of mathematical information, there are different ways of presenting it. We will focus on libraries of Algebra and use \lstmath{Monoid} as our running example. 
-The theory of \lstmath{Monoid} in Mathematics describes an algebraic structure that has a carrier, a binary operation which is associative and has a unit. 
-Figure~\ref{fig:mon-diff-lang} shows how the \lstmath{Monoid} theory is defined in $5$ different languages. Those definitions are mathematically equivalent, but they look different because they are expressed in different logics and based on different design decisions. 
+In formal systems, things are not the same. Figure~\ref{fig:mon-diff-lang} shows how the \lstmath{Monoid} theory is defined in $5$ different languages.
 \begin{figure}
     \input{figures/mon-diff-reps-2-col.tex}
     \caption{Representation of \lstinline|Monoid| theory in different languages.}
     \label{fig:mon-diff-lang}
 \end{figure}
+Computers do not know that these definitions are the same and are not able to convert between them, at least not on their own. Choosing one of these definitions over the other does not respect the diversity in the way they are used. Having multiple presentations of the same theory is a form of useful redundancy\ednote{put the source}. Yet, library developers should not be providing these definitions by hand. In fact, there need to be one presentation of \lstmath{Monoid} which provides views to the other ones. 
+
+The reusability problem does not end at algebraic structures. It also affects how their related constructions are presented. One of the common definitions related to an algebraic structure is the homomorphism between any two of its instances. Homomorphisms are structure-preserving maps. Universal algebra gives us a definition for generating the homomorphism for any theory \lstmath{X} by creating a function between the two carriers of the theories and preservation axioms for every function symbol \lstmath{op} that follows the following pattern 
+\begin{lstlisting}[mathescape]
+hom (op$_1$ x$_1$ .. x$_n$) = op$_2$ (hom x$_1$) .. (hom x$_n$)
+\end{lstlisting}
+It is not common that formal systems provide a way to compute homomorphisms of an arbitrary structure. One reason is that computing them within a formal systems is not as direct as the definition above. Figure~\ref{fig:Xhom} shows the \lstmath{PointedMagma} homomorphism for two different presentations of \lstmath{PointedMagma}. On the left is a presentation in which all arguments are fields. The corresponding homomorphism is parameterized over two instances of \lstmath{PointedMagma}, and access to all fields need qualified names. The presentation on the right, has extra implicit arguments and does not qualify the name of the carrier. The small difference in how \lstmath{PointedMagma} is defined has lead to some subtleties that are not part of the mathematical definition, but that a formal system needs to take care of. 
+\begin{figure}
+    \begin{multicols}{2}
+        \begin{lstlisting}[mathescape]
+theory Magma { 
+  A : type 
+  e : A
+  op : A $\to$ A $\to$ A
+}
+        
+theory MagmaHom (M1, M2 : Magma){
+  hom : M1.A $\rightarrow$ M2.A
+  pres-e  : ... 
+  pres-op : ... 
+}
+     \end{lstlisting}        
+        \columnbreak
+        \begin{lstlisting}[mathescape]
+theory Magma (A : type){  
+  e : A
+  op : A $\to$ A $\to$ A
+}
+
+theory MagmaHom {A1, A2 : type } (M1 : Magma A1, M2 : Magma A2){
+  hom : A1 $\rightarrow$ A2
+  pres-e  : ... 
+  pres-op : ... 
+}
+        \end{lstlisting}
+    \end{multicols}    
+    \caption{Definition of homomorphisms for two theories}
+    \label{fig:Xhom}
+\end{figure}
+
+%Today, developers are forced to redefine knowledge that are already defined It is work that is not interesting to mathematicians as it does not involve creating new mathematics. As has been noted by Michael Harris in~\cite{automatedReasoning} 
+%\begin{quote}
+% ``If mathematicians have to spend their time formalizing math to be understood by a computer, that’s time they’re not spending doing new math."
+%\end{quote}
+% We examine libraries of algebraic structures trying to get a step closer to having them realize the UDML vision. We focus our attention to two components of the library, namely the definitions of 1) algebraic structures, and 2) related constructions that are useful to deal with them, like homomorphism, product, and term algebras. We use the term \emph{theory development} to refer to the activity of providing these definitions. 
+
+Current practice of library development involves strongly embedding the design decisions into the library definitions. The definitions and their related constructions are all provided by the library developer. We want to use the uniformity provided by universal algebra to generate useful pieces of knowledge that are currently being hand written. 
+
+\section{Research Problem}
+
+This research project is based on $2$ observations related to libraries of formal mathematics 
+
+\paragraph{Variabilities in theory presentations}
+Figure~\ref{fig:mon-diff-lang} shows how the mathematical structure \lstmath{Monoid} can have different presentations in different formal systems. The source of variability is the design decision taken by library builders. 
 
 In some cases, as in Haskell and MMT, the theory \monoid is defined as an extension of \semigroup. Despite this being useful, there is no reason why a developer might not want to add a theory \unital (a non-associative \monoid), to the hierarchy. Exposing this hierarchy to the user makes their code vulnerable in case the hierarchy changes. This problem occurred when Haskell changed the hierarchy of type classes when \lstmath{Applicative} became a superclass for \lstmath{Monad} ~\cite{wiki:haskell_hierarch}. The work in \cite{cohen2020hierarchy} discusses this problem. 
 %A better approach to defining \monoid here would consider it to be an extension of both theories, but still allowing the user to overlook the hierarchy and deal with the \emph{flattened} definition, if that all they need to get their work done. \ednote{maybe I want to move this argument from here}. 
@@ -61,60 +86,18 @@ The two Coq definitions takes two extreme views to the bundling problem~\cite{le
 
 The formalization of the Algebraic hierarchy in the Agda standard library is based on setoids (sets equipped with the equivalence relation). Therefore, we find an extra field of the definition of \monoid corresponding to the equivalence relation $\_\approx\_$. 
 
-These variabilities reflect the design decisions of library builders and makes it harder to customize these definitions for users' projects that choose different decisions. This usability problem leads to redundancy as users are forced to redefine theories for their own purposes. We find multiple libraries for the algebraic hierarchy, even within the same system. In the Coq system, there are at least $4$ libraries of Algebra
+Do design decisions need to be embedded that much in algebraic theory presentations? If we can manage those decisions, maybe we can switch between presentations to have the one most suitable to the application in hand.  
 
 \paragraph{Handwritten Boilerplate}
-Libraries provide some utilities related to algebraic structures, including signatures, morphisms, term languages, etc. 
-Figure~\ref{fig:hom-foo-bar} shows the definition of homomorphism for two theories within the same language; \lstmath{Foo} and \lstmath{Bar}. 
-\begin{figure}
-\begin{multicols}{2}
-  \begin{lstlisting}[mathescape]
-theory Foo { 
-  U : type 
-  s1 : U 
-  s2 : U $\to$ U $\to$ U
-}
+Universal algebra defines many constructs related to algebraic structures that are useful when dealing with them. examples include signatures, morphisms, term languages, and others. Section~\ref{sec:toBeGenerated} lists some of these constructs. 
 
-theory FooHom{
-  f1 , f2 : Foo 
-  hom : f1.U $\rightarrow$ f2.U 
-  pres-s1 : ... 
-  pres-s2 : ... 
-}
-\end{lstlisting}        
-\columnbreak
-\begin{lstlisting}[mathescape]
-theory Bar {
-  U : type 
-  s1 : U 
-  s2 : U $\rightarrow$ U 
-}
+Optimally, our library will have definitions of those constructions for every algebraic structure and would be adaptable to the different design decisions. Due to the huge amount of this information, developers are usually selective of what should be included. 
 
-theory BarHom { 
-  b1, b2 : Bar 
-  hom : b1.U $\rightarrow$ b2.U 
-  pres-s1 : $\cdots$
-  pres-s2 : $\cdots$
-}
-\end{lstlisting}
-\end{multicols}    
-\caption{Definition of homomorphisms for two theories}
-\label{fig:hom-foo-bar}
-\end{figure}
-
-To define the homomorphism in both cases, we need to define two instances of the theory, a homomorphism function from the carrier of the first one, to the carrier of the second, and the preservation axioms that follow the pattern
-\begin{lstlisting}[mathescape]
-hom (op$_1$ x$_1$ .. x$_n$) = op$_2$ (hom x$_1$) .. (hom x$_n$)
-\end{lstlisting} 
-
-There are many other constructs that follow from the definitions of theories. We discuss them in Section\ednote{Add this in the future}. The presentation of those constructs change based on the different design decisions employed by the system. In case the carrier is a parameter to the theories \lstmath{Foo} and \lstmath{Bar}, the definition of homomorphism would look different. 
-
-Optimally, our library will have definitions of those constructions for every algebraic structure and would be adaptable to the different design decisions. 
+This work can be saved if the uniform definitions provided by universal algebra can be used to \emph{generate} this definitions instead of creating them. Many problems face this generative approach. The most important are 1) having design decisions baked into definitions make the mathematical definition of the constructions not directly applicable 2) Manipulating theory presentations require going to the meta-level using either strong reflection mechanisms or meta programs in the host language 
 
 \paragraph{}
-Current practice is that library developers take a lot of design decisions upfront to defining the theories, and they become core parts of it. They also provide all definitions of related constructions manually. It takes a huge amount of human work to provide all the definitions within a large library of mathematics; Add to this the requirement that those definitions becomes customizable so they can serve multiple user needs. 
 
-We want to enhance this practice by providing more automation to the process of library development. We suggest a generative approach in which a developer can \emph{describe} what information needs to go in the library and what design decisions they are taking, then the library gets generated based on this description. 
+We want to enhance the practice of library development by adding more automation to the process of theory development. We suggest a generative approach in which a developer can \emph{describe} what information needs to go in the library and what design decisions they are taking, then the library gets generated based on this description. We achieve this by providing a DSL for theory development that can be used for building libraries and developing theories within users' projects. It would lift the burden of having to define utilities that are needed to perform the task in hand, but are standard information to the point that writing them is boring and distracting from the original task. 
 
 We are inspired by the \emph{deriving} mechanism in Haskell. When defining a new datatype, a Haskell user can ask for some utilities to be readily available for them to use on that type. The Haskell compiler would then generate these functions for the user. Some of these are basic, like equality and printer, but the community has gone as far as giving users the chance to define their own templates for deriving instances, knows as the \emph{deriving-via} technique. A pretty impressive example of deriving information is shown in Figure~\ref{fig:deriving-via-example}\ednote{find a better way to put the link to the source}. 
 Also, the Lens library~\cite{lensesLib} in Haskell, use template Haskell~\cite{sheard2002TH} for the same purpose. 
@@ -127,42 +110,26 @@ Also, the Lens library~\cite{lensesLib} in Haskell, use template Haskell~\cite{s
 %We are suggesting the use of automation to improve library building and enhance the reusability of its definitions. First, we use an abstraction over details of theory presentations It appears to be inevitable that to improve reusability, we need to have multiple presentations of a theory, and accordingly, multiple presentations of its related constructions. But a library developer should not be writing these definitions by hand. 
 %In this work, we suggest  Users can then load the version of \lstmath{Monoid} that works better for their purposes. 
 
-\section{Research Problem}
-
-We work towards providing a DSL for theory development that can be used for building libraries and developing theories within users' projects. It would lift the burden of having to define utilities that are needed to perform the task in hand, but are standard information to the point that writing them is boring and distracting from the original task. 
-
-\paragraph{Why?}
-Having this DSL in place would benefit the process of theory development in the following ways 
+This DSL would change the activity of theory development in the following way 
 \begin{itemize}
-    \item Reduce the development time of new libraries by providing expressions instead of actual definitions 
-    \item Enhance the maintainability of the library. By understanding how new design decisions affect the definitions, developers would modify the generator instead of having to modify every definition. 
-    \item Increase the usability of library definitions by giving the users the tools to customize those definitions.  
+    \item Save the human effort put in reproducing standard knowledge by internalizing this knowledge in the generation algorithm.
+    \item Maintain a level of flexibility towards changing design decisions by understanding how they affect the generated definitions.
+    \item Increase the usability of library definitions by reducing the amount of design decisions baked into them. 
 \end{itemize}  
 
-\paragraph{How?}
-In order to develop this DSL we need to find out the right abstraction from which all the variabilities and the related constructions can be generated and we also need to provide an interpreter for this DSL that generates the library definitions. 
-
-Universal algebra provides us with the right abstractions. It abstracts over algebraic structures and their related constructions and provides the meta theory that explains how the generation algorithms should work. A theory presentation in universal algebra has three components \verb|(S,F,E)|; a sort \verb|S|, a list of function symbols along with their types \verb|F|, and a list of axioms (equations) that describe properties of the function symbols \verb|E|. If we can abstract over the details of theory presentations to extract this information, we are able to generate the constructions defined by universal algebra, like morphisms, product algebras, term languages, and others. 
-
-
-Also, we know that theory presentations are written in formal languages, which provide uniform syntax for expressing information. By having a suitable way to manipulate theories, we can generate information from them. This can happen if theories are first class citizens, if the needed reflection mechanisms are in place, or using a meta program in the hosting language. We use Tog~\cite{tog} as our language and type checker. We discuss Tog in Chapter~\ref{ch:tog}. 
-
-%First, it is loaded with design decisions that are not relevant to the mathematical definitions. Second that many of the information provided in the library does not have to be written by hand, but can be automatically generated if enough machinery is in place. 
-
-%Current practice is that library developers make choices with respect to these attributes and stick to it. This creates a reusability problems in projects that do not want to stick with those choices and a maintainability problem in case the library developer changes their decisions. These decisions propagates to constructions that are related to algebraic structures, adding to the overhead of redefining this information. \ednote{The existence of multiple definitions that support variabilities in design decision is desirable redundancy}
-
-%We want to support library builders, by lifting the burden of having to define information that can be automatically computed if given the appropriate description. We want to use generative programming to achieve that, working towards a DSL for library building. In this model, one gives a description of what needs to be in the library, then an interpreter would automatically generate the definitions. This way, we can achieve highly reusable, easily maintainable library, requiring less human effort. 
+%To develop our DSL we need to find out the right abstraction from which all the variabilities and the related constructions can be generated and we also need to provide an interpreter for this DSL that generates the library definitions. 
+The definitions we use in our development are based on universal algebra abstractions. Universal algebra abstracts over algebraic structures and their related constructions and provides the meta theory that explains how the generation algorithms should work. A theory presentation in universal algebra has three components \verb|(S,F,E)|; a sort \verb|S|, a list of function symbols along with their types \verb|F|, and a list of axioms (equations) that describe properties of the function symbols \verb|E|. If we can abstract over the details of theory presentations to extract this information, we are able to generate the constructions defined by universal algebra, like morphisms, product algebras, term languages, and others. 
 
 In this work, we attempt to answer the following research questions 
-\begin{itemize}
-    \item Can the uniformity provided by universal algebra be captured by a meta program that generates parts of an algebra library?
-    \item What design decisions need to be abstracted from and which ones can be reintroduced after the generation of new?
-    \item Which information need to be provided by the developer and which ones can be generated? 
-    \item What are the preconditions for generating this new information? 
-    \item How would this affect the activity of library building?
-    \item Can the generation algorithms be extended beyond the library, to user-defined theories?
-    \item Can these generation algorithms be extended beyond uni-sorted first-order theories, the ones that universal algebra captures? 
-\end{itemize}
+\begin{enumerate}
+    \item[RQ1] Can the uniformity provided by universal algebra be captured by a meta program that generates parts of an algebra library?
+    \item[RQ2] What design decisions need to be abstracted from and which ones can be reintroduced after the generation of new?
+    \item[RQ3] Which information need to be provided by the developer and which ones can be generated? 
+    \item[RQ4] What are the preconditions for generating this new information? 
+    \item[RQ5] How would this affect the activity of library building?
+    \item[RQ6] Can these generation algorithms be extended beyond uni-sorted first-order theories, the ones that universal algebra captures? 
+\end{enumerate}
+
 
 %These observations lead us to asking whether there is an abstraction which can be flexible enough to build different presentation from. Is there a raw definition of \monoid that correspond to the mathematical concept without the extra design details that current formal systems deploy? 
 
@@ -210,6 +177,20 @@ chapter for talking about all constructions that can be generated -
 chapter about Tog and implementation - 
 chapter about the MS library  
 
+\section{Publications}\ednote{different name for the section?!}
+%Covers: 
+%1. that some of the work in the thesis has been published already
+%2. what parts of those papers were yours
+%3. what parts in the thesis are written up by you, but are “inventions” of someone else (if any).
+This thesis lead to the following publications: 
+\begin{itemize}
+    \item The paper \cite{biformCICM2018}
+    \item The paper \cite{diagrams_mmt}
+    \item The paper \cite{leverageCICM2020}
+    \item The paper \cite{carette2018building}
+    \item The paper \cite{bercic2020space}
+\end{itemize}
+
 
 \begin{comment}
 The usability of a software system can be highly Having a software system with a library of useful operations
@@ -229,3 +210,11 @@ Building a large library of mathematics is one of the goals of the mechanized ma
 and address some of the challenges, including foundation, organization, automation and others. 
 
 \end{comment}
+
+%Also, we know that theory presentations are written in formal languages, which provide uniform syntax for expressing information. By having a suitable way to manipulate theories, we can generate information from them. This can happen if theories are first class citizens, if the needed reflection mechanisms are in place, or using a meta program in the hosting language. We use Tog~\cite{tog} as our language and type checker. We discuss Tog in Chapter~\ref{ch:tog}. 
+
+%First, it is loaded with design decisions that are not relevant to the mathematical definitions. Second that many of the information provided in the library does not have to be written by hand, but can be automatically generated if enough machinery is in place. 
+
+%Current practice is that library developers make choices with respect to these attributes and stick to it. This creates a reusability problems in projects that do not want to stick with those choices and a maintainability problem in case the library developer changes their decisions. These decisions propagates to constructions that are related to algebraic structures, adding to the overhead of redefining this information. \ednote{The existence of multiple definitions that support variabilities in design decision is desirable redundancy}
+
+%We want to support library builders, by lifting the burden of having to define information that can be automatically computed if given the appropriate description. We want to use generative programming to achieve that, working towards a DSL for library building. In this model, one gives a description of what needs to be in the library, then an interpreter would automatically generate the definitions. This way, we can achieve highly reusable, easily maintainable library, requiring less human effort. 
