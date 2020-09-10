@@ -1,5 +1,5 @@
 \RequirePackage{amsmath}
-\documentclass[12pt]{report}                  % Times New Roman, 12pt
+\documentclass[12pt,fleqn]{report}                  % Times New Roman, 12pt
 %\usepackage{gscale_thesis_singlespace} % Single spaced thesis
 \usepackage{style_files/gscale_thesis_doublespace} % Double spaced thesis
 \usepackage{style_files/fancyheadings}                   % Header and footer styling
@@ -8,7 +8,6 @@
 \include{definitions}                                % LaTeX variables for preface pages/headers
 \setcounter{tocdepth}{1}                        % Limits the TOC to chapter and section names
 \usepackage{minted}
-\usepackage{upquote}
 \usepackage{listings}
 \lstset{basicstyle={\ttfamily}}%\footnotesize
 
@@ -56,11 +55,12 @@
 \begin{document}
 
 %\tableofcontents
-\input{intro.tex}
+%\input{intro.tex}
+\input{intro2.tex}
 
 \input{background.tex}
 
-%\input{redundancy.tex}
+\input{redundancy.tex}
 
 \input{design.tex}
 
@@ -69,6 +69,8 @@
 \input{library.tex}
 
 \input{generation.tex}
+
+\input{export.tex}
 
 \input{discussion.tex}
   
