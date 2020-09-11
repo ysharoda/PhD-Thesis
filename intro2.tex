@@ -4,15 +4,15 @@
 %Mathematical theorem provers comes equipped with libraries of formalized mathematics. 
 A large library of formalized, ready-to-use mathematics has long been the pursuit of mathematicians and computer scientists.  
 The influential QED manifesto~\cite{boyer1994qed}, released in 1994, envisioned a library in which all mathematics is formalized and rigorously checked. The QED manifesto believed in one-formalization-fits-all approach to building this library.
-Diversity in mathematical formalizations was a big obstacle towards realizing the library described by QED. There was not an agreement even on which foundation to use for formalizing all of mathematics~\cite{qedrealoaded2016}.  Since then, mathematical knowledge management (MKM) became an active area of research framing a new vision for the large math library. The universal digital math library (UDML), described in ~\cite{farmer2004mkm}, is a collection of heterogeneous, intercommunicating systems and building this library is described as a grand challenge facing MKM. 
+Diversity in mathematical formalizations was a big obstacle towards realizing the library described by QED. There was not an agreement even on which foundation to use for formalizing all of mathematics~\cite{qedrealoaded2016}.  Since then, mathematical knowledge management (MKM) became an active area of research framing a new vision for the large math library. The universal digital math library (UDML), described in~\cite{farmer2004mkm}, is a collection of heterogeneous, intercommunicating systems and building this library is described as a grand challenge facing MKM. 
 
-Despite the many efforts dedicated to building math libraries\ednote{some references}, a UDML has not become a reality. One reason is that developing and maintaining libraries of mathematics requires a lot of manpower. One would want to believe that this human effort is put into the creative work of formalizing new pieces of knowledge. By examining current libraries of theorem provers, we know this is not always true. The process of creating libraries for theorem provers involve a lot of redundancy. We give examples from libraries of formal systems in Chapter~\ref{ch:redundancy}. To understand why this redundancy exists, we examine the formalization of \lstmath{Monoid} in algebra textbooks versus in theorem provers. 
+Despite the many efforts dedicated to building math libraries\ednote{some references}, a universal large library has not become a reality. One reason is that developing and maintaining libraries of mathematics requires a lot of manpower. One would want to believe that this human effort is put into the creative work of formalizing new pieces of knowledge. By examining current libraries of theorem provers, we know this is not always the case. The process of creating libraries for theorem provers involve a lot of redundancy. We give examples from libraries of formal systems in Chapter~\ref{ch:redundancy}. To understand why this redundancy exists, we examine the formalization of \lstmath{Monoid} in algebra textbooks versus in interactive theorem provers. 
 
-\lstmath{Monoid} is an algebraic structure that describes algebras with carrier set and associative binary operation with a unit over that set. The definition given in~\cite{jacobson1985basic}  is 
+\lstmath{Monoid} is an algebraic structure that describes algebras with carrier set and associative binary operation over that set that has a unit. The definition given in~\cite{jacobson1985basic}  is 
 \begin{quote}
     A monoid is a triple $(M,p,1)$ in which $M$ is a non-vacuous set, $p$ is an associative binary composition (or product) in $M$, and $1$ is an element of $M$ such that $p(1,a)= a = p(a,1)$ for all $a \in M$ 
 \end{quote}
-The definition of \lstmath{Monoid} is followed by the definition of monoid homomorphism as
+The definition of \lstmath{Monoid} is followed by the definition of its homomorphism as
 \begin{quote}
 If $M$ and $M^\prime$ are monoids, then a map $\eta$ of $M$ into $M^\prime$ is called a homomorphism if 
 \begin{multicols}{3}
@@ -26,7 +26,7 @@ If $M$ and $M^\prime$ are monoids, then a map $\eta$ of $M$ into $M^\prime$ is c
 More monoid-related constructions are defined, like submonoid, and quotient monoids. The same constructions are defined for \lstmath{Group} and \lstmath{Ring}. 
 %Mathematics presented in textbooks rely on the human understanding to be able to generalize these concepts. For example, \cite{jacobson1985basic} does not provide an explicit definition for group homomorphism, but proceeds to use it. 
 
-If we try to capture these definitions with a minimal (imaginary) computer language we would have the following definitions 
+Formal systems\footnote{We use the term \emph{formal systems} to refer to all computer systems with logical foundations, be it automatic theorem prover (ATP), interactive theorem prover (ITP), specification system, or others.} present algebraic structures using axiomatic theories\ednote{should I define axiomatic theories?}. \lstmath{Monoid} and its homomorphism are presented axiomatically in a minimal (imaginary) computer language as follows 
 \begin{lstlisting}[mathescape]
 theory Monoid { 
   A : type 
@@ -66,19 +66,41 @@ theory GroupHom {
   pres-inv : (x : G1.A) $\to$ hom (G1.inv x) = G2.inv (hom x)
 }
 \end{lstlisting}
-Notice how the two definitions of homomorphisms are similar. The homomorphism of a theory \lstmath{X} is a mapping between two instances of \lstmath{X}, given by those $3$ components 1) the $2$ instances of the theory, 2) the function \lstmath{hom} that maps the carriers of the $2$ instances, and 3) preservation axioms \lstmath{pres-x} for every operation symbol \lstmath{x}. The preservation axioms follow the pattern
+Notice how the two definitions of homomorphisms are similar and do not depend so much on the details of the theory. Generally, the homomorphism of a theory \lstmath{X} is a mapping between two instances of \lstmath{X} and has $3$ components 1) the $2$ instances of the theory, 2) the function \lstmath{hom} that maps the carriers of the $2$ instances, and 3) preservation axioms \lstmath{pres-x} for every operation symbol \lstmath{x}. The preservation axioms follow the pattern
 \begin{lstlisting}[mathescape]
 hom (op$_1$ x$_1$ .. x$_n$) = op$_2$ (hom x$_1$) .. (hom x$_n$)
 \end{lstlisting}
-Our observation of this pattern gives rise to some questions 
+Observing this pattern gives rise to some questions
+ 
 \begin{itemize}
 \item[Q1] Is this pattern specific to \lstmath{Monoid}, \lstmath{Group}, and their homomorphisms? 
 \end{itemize}    
-\lstmath{Monoid} and \lstmath{Group} are two of many algebraic structures used in abstract algebra. The commonalities between these structures is the subject of study of universal algebra. A theory\ednote{this is the first occurence of the word theory, need to bridge into it} in universal algebra is defined as~\cite{mckenzie1987algebras}
+\lstmath{Monoid} and \lstmath{Group} are two of many algebraic structures used in abstract algebra. The commonalities between these structures is the subject of study of universal algebra, and is captured by the following definition~\cite{mckenzie1987algebras}
 \begin{quote}
     An algebra is an ordered pair $\langle A, F \rangle$ such that $A$ is a nonempty set and $F = \langle F_i : i \in I \rangle$ where $F_i$ is a finitary operation on $A$ for each $i \in I$. $A$ is called the universe of $\langle A, F \rangle$, $F_i$ is referred to as a fundamental or basic operation of $\langle A, F \rangle$ for each $i \in I$, and $I$ is called the index set of the set of operation symbols for $\langle A, F \rangle$. 
-\end{quote}\ednote{look for a text book that explicitly state axioms. The properties of the function symbols, which are mentioned in mathematics textbooks but not always stated, are stated as axioms in formal systems, and so we defined an algebraic theory to be a type ($\langle A, F \rangle$,$E$), where $E$ is the set of axioms. }
-For every theory that fit in this definition, we have a uniform definition of homomorphism, subalgebra, quotient algebra, term language and others. \lstmath{Monoid} theory is one of those captured by this abstraction. We have given a definition of \lstmath{Monoid} in an imaginary language that fits in this abstraction. In Figure~\ref{fig:mon-diff-lang}, we show the definitions of \lstmath{Monoid} in $5$ different language. 
+\end{quote}
+\ednote{look for a text book that explicitly state axioms. The properties of the function symbols, which are mentioned in mathematics textbooks but not always stated, are stated as axioms in formal systems, and so we defined an algebraic theory to be a type ($\langle A, F \rangle$,$E$), where $E$ is the set of axioms.}
+\todo{check the sanella software specification book for this definition. }
+
+For every theory that fit in this definition, we have a uniform definition of homomorphism, subalgebra, quotient algebra, term language and others. 
+
+\begin{itemize}
+    \item[Q2] What meta theory is used? 
+\end{itemize}
+While libraries of mathematics contain many different pieces of mathematical knowledge, we choose to focus on abstract algebra. Mathematicians have already studied the commonalities in this field and created universal algebra to describe it. Hence, we have a strong meta theory to understand how the definitions relate to each other. On the other hand, the MKM community have not utilized these abstraction in library building. This is the gap we are trying to fill in this work.  
+
+\begin{itemize}
+    \item[Q3] Is there enough information that can be generated? 
+\end{itemize}
+There is a lot of information that can be generated for one algebraic structure.  We list X\ednote{find the number} of them in Section~\ref{sec:toBeGenerated}. There are also many algebraic structures used in mathematics and computer science. While the hierarchy the comes in mind usually is \\
+\lstmath{Semigroup $\to$ Monoid $\to$ Group $\to$ Semiring $\to$ Ring}, there are many more and are structured in a more complex way, as we discuss in Chapter~\ref{ch:library}. 
+The list in~\cite{jipsen} defines over $300$ structure. There are also many being used in the meta theory of programming languages, like \lstmath{Applicative} and \lstmath{Monad}. 
+Algebraic software specification is another area that uses algebraic theories to describe software. The broad scope of software systems make us believe there is a lot of algebraic structures being produced by this community.  
+
+\begin{itemize}
+    \item[Q4] What abstractions are needed (barriers exists) to generate this knowledge?
+\end{itemize}\todo{This question can be written in a better way}.  
+\lstmath{Monoid} theory is one of those captured by this abstraction. We have given a definition of \lstmath{Monoid} in an imaginary language that fits in this abstraction. In Figure~\ref{fig:mon-diff-lang}, we show the definitions of \lstmath{Monoid} in $5$ different language. 
 \begin{figure}
     \input{figures/mon-diff-reps-2-col.tex}
     \caption{Representation of \lstinline|Monoid| theory in different languages.}
@@ -93,20 +115,10 @@ Not only are library definitions diverse, but so are user projects. When design 
     difficult to make practical use of the algebraic hierarchy in our project to
     formalize the Feit-Thompson Theorem in the Coq system."
 \end{quote}
+
 This kind of redundancy is addressed in this thesis using generative programming. We define an abstraction over design decisions, from which different constructions defined by universal algebra can be automatically generated. By minimizing the design decisions that are embedded into the definition we aim to reduce redundancy and increase usability. 
 
-\begin{itemize}
-    \item[Q2] Is there enough information that can be generated? 
-\end{itemize}
-There is a lot of information that can be generated for one algebraic structure.  We list X\ednote{find the number} of them in Section~\ref{sec:toBeGenerated}. There are also many algebraic structures used in mathematics and computer science. While the hierarchy the comes in mind usually is \\
-\lstmath{Semigroup $\to$ Monoid $\to$ Group $\to$ Semiring $\to$ Ring}, there are many more and are structured in a more complex way, as we discuss in Chapter~\ref{ch:library}. 
-The list in~\cite{jipsen} defines over $300$ structure. There are also many being used in the meta theory of programming languages, like \lstmath{Applicative} and \lstmath{Monad}. 
-Algebraic software specification is another area that uses algebraic theories to describe software. The broad scope of software systems make us believe there is a lot of algebraic structures being produced by this community.  
 
-\begin{itemize}
-    \item[Q3] What meta theory is used? 
-\end{itemize}
-While libraries of mathematics contain many different pieces of mathematical knowledge, we choose to focus on abstract algebra. Mathematicians have already studied the commonalities in this field and created universal algebra to describe it. Hence, we have a strong meta theory to understand how the definitions relate to each other. On the other hand, the MKM community have not utilized these abstraction in library building. This is the gap we are trying to fill in this work.  
 
 \begin{comment}
 \begin{itemize}
@@ -115,7 +127,6 @@ While libraries of mathematics contain many different pieces of mathematical kno
 We need a language to capture the abstractions of universal algebra, and meta programming capabilities to enable manipulating them to automatically generate new ones. 
 
 When choosing the language, we don't want to be burdened with system-specifc details. We want to be as system independent as possible, as our ideas should apply to all systems that are able to represent first order theories. We see in Figure XX that normal practice of theory definition in many systems have design decisions embedded in the definition of the theory. We choose Tog~\cite{tog}, a minimal dependently types system to implement our ideas. We introduce it in Chapter~\ref{ch:tog}.  
-
 \end{comment}
 
 \section{Research Problem}
@@ -186,7 +197,7 @@ Morphisms are meaning preservation maps. The simplest form of a morphism is incl
 
 In~\cite{carette2020bigMath}, the authors argue that modern mathematics is organized as a tetrapod with knowledge organization being at its center. We are working towards a library organized as a theory graph of biform theories that serves as this center. Different aspects of the tetrapod will be consumers and producers of knowledge in this library. This implies that the size of this library would be huge, and that using generative approach to support its building would be a great asset. 
 
-We support the building of this library by providing combinators to define the library theories and algorithms to compute related construction.rs
+We support the building of this library by providing combinators to define the library theories and algorithms to compute related constructions
 
 
 
