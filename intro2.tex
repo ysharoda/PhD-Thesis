@@ -168,7 +168,7 @@ This DSL would change the activity of theory development in the following way
 
 %The definitions we use in our development are based on universal algebra abstractions. Universal algebra abstracts over algebraic structures and their related constructions and provides the meta theory that explains how the generation algorithms should work. A theory presentation in universal algebra has three components \verb|(S,F,E)|; a sort \verb|S|, a list of function symbols along with their types \verb|F|, and a list of axioms (equations) that describe properties of the function symbols \verb|E|. If we can abstract over the details of theory presentations to extract this information, we are able to generate the constructions defined by universal algebra, like morphisms, product algebras, term languages, and others. 
 
-In this work, we attempt to answer the following research questions 
+In this work, we attempt to answer the following research questions\todo{refer to the questions later, make sure they are all addressed in the thesis and the conclusion} 
 \begin{enumerate}
     \item[RQ1] Can the uniformity provided by universal algebra be captured by a meta program that generates parts of an algebra library?
     \item[RQ2] What design decisions need to be abstracted from and which ones can be reintroduced after the generation of new?
@@ -179,15 +179,16 @@ In this work, we attempt to answer the following research questions
 \end{enumerate}
 
 \section{Contributions}
+\todo{forward reference to chapter+section where contribution is documented}
 \begin{itemize}
-    \item Highlight the redundancy in algebra libraries 
+    \item Highlight the redundancy in algebra libraries
     \item Compile a list of structures that can be generated from theory presentations
     \item Generate some of these constructions in Tog, a small implementation of a dependently typed language, in the style of Agda, Coq and Lean. 
     \item Export this implementation to Agda 
     \item Test our framework on a library of over $200$ theories implemented using the combinators defined in~\cite{carette2018building}. 
 \end{itemize}  
 
-\section{Broader Context}
+\section{Broader Context}\todo{Make a bridge to it being broader context, readers say they don't see the context}. 
 \label{sec:broader_context}
 There are different ways of organizing knowledge within a formal system. Our work contributes to building a large math library organized as a theory graph in the heart of a tetrapodal structure. Theory graphs, explained in details in Section~\ref{sec:background:theorygraph}, capture the structure of mathematical knowledge by enabling the description of relationships between the different pieces using morphisms. Using them, we can express facts like `a group is a monoid` and that `monoid and additive monoid are isomorphic`. 
 
@@ -199,7 +200,24 @@ In~\cite{carette2020bigMath}, the authors argue that modern mathematics is organ
 
 We support the building of this library by providing combinators to define the library theories and algorithms to compute related constructions
 
+\section{Publications}
+This thesis lead to the following publications\ednote{how should I refer to myself here, I? the author?}\todo{write my contribution in~\cite{biformCICM2018}}\ednote{should I also include the abstract submitted to CICM2019 doctoral program?}: 
+\begin{itemize}
+    \item In \cite{biformCICM2018},
+    \item The MathScheme library is built using combinators that has been first published in~\cite{CaretteOConnorTPC}. The author contributed to an extended version of the paper, submitted to iournal of automated reasoning\cite{carette2018building}. The author's contribution to this work can be summarized as follows: 
+    \begin{itemize}
+        \item Taking part in developing the type system for the combinators 
+        \item Surveying theory expressions in different formal systems to frame the novelty of the paper. 
+        \item Providing the first arrow-based implementation of the paper, as we discuss in Section~\ref{sec:lib_implementation}. 
+        \item Using the combinators to build a library of over $200$ theories. Although the library definitions pre-existed, many of them were not correct because they were based on theories. Shifting the implementation to arrows mandated figuring out the right arrows to build the theories, which was never done before this work.
+    \end{itemize}
+    \item ~\cite{diagrams_mmt} discusses diagram combinators in MMT~\cite{MMT}. We used the diagram combinators to implement the MathScheme library~\cite{mathscheme2011experiments}. This was our first attempt to implement the combinators and also the first time diagrams combinators is tested. As the combinators computes a theory and some arrows, we considered treating them as diagrams. There were promising results, but did not scale up as - by that time - there were problems with how MMT supports the diagram combinators. 
+    \item In \cite{leverageCICM2020}, we present redundancy in libraries of formal systems, as well as our approach to generate many of those redundant definitions. The author collected the examples of redundancy, implemented the framework, and made most of the paper writing.
+    \item The paper~\cite{bercic2020space} surveys the software used by producers and consumers of mathematical knowledge, categorizing them in $5$ different aspects; inference, computation, concretization, narration, and organization. The author contributed mainly to the organization aspect, finding how to best categorize how different system organize knowledge within them. 
+\end{itemize}
 
+\section{Outline}
+\todo{This section}
 
 \begin{comment}  
 These algebraic concepts are very important in mathematics and computer science that they are a main component in libraries of almost every mechanized system\ednote{add citations on research of algebra library development}. We consider the \lstmath{Monoid} structure for our running example. a \lstmath{Monoid} consists of a carrier over which there is an associative binary operation that has a unit. If we look at algebra textbooks, we find that~\cite{mckenzie1987algebras} defines it as 
