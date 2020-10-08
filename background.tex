@@ -1,11 +1,17 @@
 \chapter{Background}
+\todo{JC: Have an overview telling us: 1. what background information we’re going to need 2. and where each of those ideas will in fact be used. [If they are not, then don’t put them in!]}
 
 \section{Equational Logic}
+
+\section{Algebraic Structures}
 
 \section{Substitution}
 
 \section{Axiomatic Theory}
 \label{sec:background:theory}
+\todo{Give a formal definition to a theory}
+\todo{Talk about what well-formed means}
+\todo{talk about primitive theories, the ones that only has function symbols and axioms, no definitions, theorems or proofs}
 A theory is a specification of a class of algebras, that share some properties. 
 An axiomatic theory is a pair \lstmath{(L,$\Sigma$)}, where \lstmath{L} describes the language of the theory. It consists of \lstmath{(S,F)}. \lstmath{S} is a set of sorts and \lstmath{F} is a set of function symbols. The function symbols we refer to here are restricted functions, i.e. functions over simple types that are expressible in first order logic. We discuss the generalization of our approach to functions operating over complex domains, like power sets or sequences, in Chapter~\ref{ch:discussion}. 
 \lstmath{$\Sigma$} is a set of axioms describing properties of objects in the language. A theory is closed under logical consequences, therefore we speak of a \emph{theory presentation}, in which only necessary axioms are given. Theory presentations are defined in a logic that provides the inference rules used to derive useful theorems.  
@@ -32,6 +38,7 @@ $$
 
 \section{Theory Morphisms}
 \label{sec:background:morphisms}
+\todo{If T1 |= phi then T2 |= view-from-T1-to-T2(phi)}
 Morphisms are used to capture the structure of mathematics, by describing how theories are related to each other. In mathematical texts, a theorem proved for an arbitrary \lstmath{Monoid} would be used when considering an arbitrary \lstmath{Group} without extra work. In formal mathematics, this can only be done if a morphism between \lstmath{Monoid} and \lstmath{Group} exists. The morphism specifies how results in \lstmath{Monoid} can be interpreted in \lstmath{Group}. 
 
 A morphism $\arrow{[v]}{\Gamma}{\Delta}$ consist of a list of assignments $[v]$, a source theory \lstmath{$\Gamma$}, and a target theory \lstmath{$\Delta$}. $[v]$ assigns to every symbol in $\Gamma$ an expression of $\Delta$. A term \lstmath{t} in the language of $\Gamma$ can be translated into a term \lstmath{t$^\prime$} in the language of $\Delta$ using substitution, such that  \lstmath{t$^\prime$ = t$[v]$}. 
