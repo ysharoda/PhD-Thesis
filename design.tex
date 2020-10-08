@@ -1,11 +1,11 @@
 \chapter{Framework Design}
 
 Our work towards adding more automation to theory development envisions users and library developers writing expressions like 
-\begin{lstlisting}
+\begin{togcode}
 Mononid = combine Unital and Semigroup over Magma
             generate homomorphism, OpenTerms, Simplifier
             using (waist=1,eq=Agda.Builtin.Equality)
-\end{lstlisting}
+\end{togcode}
 The systems would then provide the theory presentation for \lstmath{Monoid} as a descendant of \lstmath{Unital} and \lstmath{Semigroup}\footnote{The \lstmath{combine} operation is explained in detail in Section~\ref{subsec:combine}} and
 the constructions specified in the \lstmath{generate} clause, employing the design decisions in the \lstmath{using} clause.  
 

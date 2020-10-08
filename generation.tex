@@ -49,18 +49,18 @@ As we discussed in Chapter~\ref{ch:tog}, Tog provides us with the internal repre
 
 \subsection{Equational Theories}
 An equational theory in universal algebra abstracts over theory presentations of algebraic structures and consists of a sort, a list of function symbols and a list of axioms, as discussed in Section~\ref{sec:background:theory}. We capture this definition of equational theories by the type \lstmath{EqTheory}. 
-\begin{minted}{haskell}
+\begin{hscode}
 data EqTheory = EqTheory {
   _thyName   :: Name_  ,   -- the name of the theory 
   _sort       :: Constr ,      
   _funcTypes  :: [Constr],
   _axioms     :: [Constr],
   _waist      :: Int }
-\end{minted}
+\end{hscode}
 The \lstmath{waist} is used in the same way as in \lstmath{GTheory} from Section~\ref{sec:impl:expressions}. 
 
 Tog internalization of dependent records is converted into \lstmath{EqTheory} using the function \lstmath{recordToEqTheory}
-\begin{minted}{haskell}
+\begin{hscode}
 recordToEqTheory :: TRecord -> Eq.EqTheory
 recordToEqTheory record@(TRecord nm params _) =
   Eq.build (nm^.name) 
@@ -68,7 +68,7 @@ recordToEqTheory record@(TRecord nm params _) =
     (getRecordComps isFunc record)
     (getRecordComps isAxiom record)
     (paramsNum params)
-\end{minted}
+\end{hscode}
 We use \lstmath{TRecord} instead of the \lstmath{Record} constructor of \lstmath{Decl} to specialize this function to only records instead of any \lstmath{Decl}.\ednote{change this in the implementation to go from GTheory to EqTheory direclty }
 
 An instance of a theory can be obtained by calling the function \lstmath{eqApp}. 
@@ -76,23 +76,23 @@ An instance of a theory can be obtained by calling the function \lstmath{eqApp}.
 The input to this function is the definition of the theory, and in some cases an integer number. This is useful in case many instances of the theory are needed, and so they are indexed by number. The instance is represented as a tuple of two components \lstmath{([Binding],Expr)}. The \lstmath{Binding} list is useful when the theory has parameter, i.e.: \lstmath{waist > 0}. In this case the  bindings are the arguments to the theory instance. The \lstmath{Expr} corresponds to the instance expression of the theory. The instance expression is represented using the constructor \lstmath{App [Expr]}, where the first element of the list is the constructor. If there are any arguments, they follow after it. 
 
 Another useful utility function related to theories is a \lstmath{projectConstr} that projects a declaration of the theory. 
-\begin{minted}{haskell}
+\begin{hscode}
 projectConstr :: EqTheory -> String -> Constr -> Expr 
 projectConstr thry instName c@(Constr n _)  =
   if isArg thry c then App [mkArg (n ^. name)]
   else App [mkArg (n ^. name),mkArg instName]
-\end{minted}
+\end{hscode}
 The projection of a declaration depends on whether it is a parameter or a field. A parameter is projected unqualified, while a field needs to be qualified by the instance name. 
 
 \subsection{Functions}
 We distinguish between two uses of a function symbol. The function declaration, of type \lstmath{Constr} has a name and type. The function application is an expression of type \lstmath{Expr} created using the constructor \lstmath{App}. We capture these two forms with the following types 
-\begin{minted}{haskell}
+\begin{hscode}
 type FType = Constr
 data FApp = FApp [Binding] Expr
-\end{minted}
+\end{hscode}
 
 In many cases when we generate definitions, we want to define a function application given the type of the function symbol. This is done using \lstmath{fapp}. 
-\begin{minted}{haskell}
+\begin{hscode}
 fapp :: FType -> FApp
 fapp (Constr n typ) =
   let nm = n ^. name
@@ -104,11 +104,11 @@ fapp (Constr n typ) =
   in if (arity == 0) then FApp [] $ App [mkArg nm]
       else FApp [HBind (map mkArg vars) (etyp typ)]$
                   App $ mkArg nm : map mkArg vars       
-\end{minted}
+\end{hscode}
 \lstmath{vars} is the list of variables generated according to the arity of the function symbol. Their types are determined based on the type of any of the arguments of the function. As we work in a unisorted environment, we don't need to check the types of all function arguments. 
 
 One common operation on functions is pattern matching. We define the type class \lstmath{mkPattern} and its two instances for \lstmath{FType} and \lstmath{Expr}. 
-\begin{minted}{haskell}
+\begin{hscode}
 class MkPattern a where
   mkPattern :: a -> Pattern
 
@@ -134,33 +134,33 @@ instance MkPattern Expr where
                                       -- nested function applicaions
       _ -> error "unknown pattern"
 mkPattern _ = error "unknown pattern"   
-\end{minted}
+\end{hscode}
 
 Other functions support applying a functor to an expression 
-\begin{minted}{haskell}
+\begin{hscode}
 functor :: Name_ -> Expr -> Expr
 functor fnm (Id (NotQual (Name (_,n)))) = App [mkArg fnm, mkArg n]
 functor fnm (App (a:as)) = App $ a : map (\x -> Arg $ App [mkArg fnm,x]) as
 functor _ _ = error "invalid function application" 
-\end{minted}
+\end{hscode}
 In some cases we are mapping an expression, like a function application, instead of only a function name. In this case the function \lstmath{functor'} is used. 
-\begin{minted}{haskell}
+\begin{hscode}
 functor' :: Expr -> Expr -> Expr
 functor' (App args) (Id (NotQual (Name (_,n)))) = 
   App (args ++ [mkArg n])
 functor' (App args) (App (a:as)) = 
   App $ a : (map (\x -> Arg $ App (args ++ [x])) as)
 functor' _ _ = error "invalid function application" 
-\end{minted}
+\end{hscode}
 
 \subsection{Datatypes}
 Similar to functions, we deal with datatypes in two different forms, definitions and applications. 
-\begin{minted}{haskell}
+\begin{hscode}
 type DTDef = Decl
 data DTApp = DTApp [Binding] Expr 
-\end{minted}
+\end{hscode}
 The function \lstmath{tapp} computes a datatype application given a datatype definition and a possible index 
-\begin{minted}{haskell}
+\begin{hscode}
 tapp :: DTDef -> Maybe Int -> DTApp 
 tapp (Data nm NoParams _) _ = DTApp [] $ App [mkArg $ nm ^. name]
 tapp (Data nm (ParamDecl binds) _) Nothing =
@@ -171,7 +171,7 @@ tapp (Data nm (ParamDecl binds) _) (Just i) =
        names = getBindingsNames newBinds 
   in DTApp binds $ App $ (mkArg (nm ^. name)) : map mkArg names  
 tapp _ _ = error "unable to generate data type application" 
-\end{minted}
+\end{hscode}
 
 \subsection{Bindings}
 \ednote{check if I need to talk about PExpr or it will be completely removed from Hom}
@@ -189,20 +189,24 @@ tapp _ _ = error "unable to generate data type application"
 
 \section{Signature}
 For a theory \lstmath{(S,F,E)}, the signature is obtained by dropping the list of axioms \lstmath{E}. 
-\begin{minted}{haskell}
+\begin{hscode}
 signature_ :: Eq.EqTheory -> Eq.EqTheory
 signature_ = over Eq.thyName (++ "Sig") . set Eq.axioms [] .  gmap ren
-\end{minted}
+\end{hscode}
 The first thing that we make here is add a suffix \lstmath{S} to all constructors. This is an overhead that we have to do so the Tog scope checker won't confuse the declarations of the theories with the ones for the signatures. This step is needed with every construction that we generate.\ednote{say something about the exporting here}. 
 Then the \lstmath{Eq.axioms} list is set to be empty. The name of the signature of a theory \lstmath{X} is set to be \lstmath{XSig}. 
 
 \section{Product Algebra} 
 For a theory \lstmath{X}, the theory \lstmath{XProd} representing its product lifts every type \lstmath{A} to a type \lstmath{Prod A A}, where \lstmath{Prod} is defined as 
-\begin{lstlisting}
+\begin{togcode}
 Prod (A : Set) (B : Set) : Set
-\end{lstlisting}
+  constructor prodC
+  field
+   fst : A 
+   snd : B  
+\end{togcode}
 The function \lstmath{productThry} uses this type to compute the product theory 
-\begin{minted}{haskell}
+\begin{hscode}
 productThry :: Eq.EqTheory -> Eq.EqTheory
 productThry t =
   let t' = gmap (simpleRen "P") t
@@ -213,63 +217,63 @@ in
   over Eq.funcTypes (map mkProd) $
   over Eq.axioms (map mkProd)
   t'
-\end{minted}
+\end{hscode}
 \lstmath{t'} is the theory after performing the rename necessary for scope checking. The \lstmath{mkPord} function does the type lifting for one appearance of the sort. The \lstmath{over} statements repeats the lifting for all usages of the sort in function symbols and axioms. 
 
 \section{Term Algebras}
 We define $4$ different flavors of term languages as follows 
-\begin{minted}{haskell}
+\begin{hscode}
 data Term = Basic
                   | Closed Name_
                   | Open Name_
                   | ExtOpen Name_ Name_ deriving (Eq,Show)
-\end{minted}
+\end{hscode}
 A \lstmath{Basic} term language is obtained by generating a constructor for every function symbol. It has the problem that it does not permit talking about elements of the carrier. For example, the \lstmath{Basic} term language for \lstmath{Monoid} is 
-\begin{lstlisting}
+\begin{togcode}
 data MonoidTerm = e | op MonoidLang MonoidLang
-\end{lstlisting}
+\end{togcode}
 \lstmath{Closed} term languages have an extra constructor \lstmath{sing} to encapsulate elements of the carrier. They are parameterized by the carrier whose name is argument to the \lstmath{Closed} constructor. 
 \lstmath{Open} term languages uses \lstmath{Fin} type to represent variables. They are created using the \lstmath{v} constructor. The open Language for \lstmath{Monoid} is 
-\begin{lstlisting}
+\begin{togcode}
 data OpMonoidTerm (n : Nat) : Set where
   v : Fin n -> OpMonoidTerm n
   eOL : OpMonoidTerm n
   opOL : OpMonoidTerm n -> OpMonoidTerm n -> OpMonoidTerm n
-\end{lstlisting}
+\end{togcode}
 The constructor \lstmath{Open} of type \lstmath{Term} takes as input the name of the variable of type \lstmath{Nat}. 
 An \lstmath{ExtOpen} given us the ability to talk about both elements of the carrier and variables, beside expressions constructed using function symbols. The representation of \lstmath{ExtOpen} term language for \lstmath{Monoid} is 
-\begin{lstlisting}
+\begin{togcode}
 data OpMonoidTerm2 (n : Nat) (A : Set) : Set where
   v2 : Fin n -> OpMonoidTerm2 n A
   sing2 : A -> OpMonoidTerm2 n A
   eOL2 : OpMonoidTerm2 n A
   opOL2 : OpMonoidTerm2 n A -> OpMonoidTerm2 n A -> OpMonoidTerm2 n A
-\end{lstlisting}
+\end{togcode}
 Note how we need to append some suffixes for the constructors name due to the requirement by the Tog scope checker. 
 
 We generate those $4$ representations, as well as staged terms, finally tagless representation, simplifier, evaluator, and induction principle. In the following subsections we detail the generation of each 
 
 \subsection{Term Language}
 A term language is represented by the type 
-\begin{minted}{haskell}
+\begin{hscode}
 data TermLang = TermLang {
   termTy  :: Term,
   tname   :: Name_,
   params  :: Params,
   cons    :: [Constr] }
-\end{minted}
+\end{hscode}
 Each of the $4$ term language is generated by a call to the \lstmath{tlang} function. 
-\begin{minted}{haskell}
+\begin{hscode}
 tlang :: EqTheory -> Term -> TermLang
 tlang eq term =
   let neq = foldren eq $ Map.toList (mapping eq term) 
   in TermLang term (declName (neq ^. thyName) term) (mkParams term) $
              constructors term  (neq ^. thyName) (neq ^. funcTypes)
-\end{minted}
+\end{hscode}
 where \lstmath{term} stands to the type of the term being generated. The name of the new type is generated by the function \lstmath{declName} by prefixing the name of the theory with a string representing the type of the term language. The parameters to the type are determined by the function \lstmath{mkParams} based on the type of the term language. A \lstmath{Basic} term language has no types, a \lstmath{Closed} term language is parameterized by the carrier, an \lstmath{Open} language is parameterized by a variable of type \lstmath{Nat}, and an \lstmath{ExtOpen} is parameterized by both the carrier and that \lstmath{Nat} variable. 
 
 The constructors of the term languages are generated using the \lstmath{constructors} function. 
-\begin{minted}{haskell}
+\begin{hscode}
 constructors :: Term -> Name_ -> [Constr] -> [Constr]
 constructors t thryNm cs =
   let typ = termType thryNm t
@@ -280,7 +284,7 @@ constructors t thryNm cs =
      (Open natVarNm) -> (vars v1 natVarNm typ) : constrs
      (ExtOpen natVarNm carrierNm) -> 
        (vars v2 natVarNm typ) : (singleton "sing2" carrierNm typ) : constrs 
-\end{minted}
+\end{hscode}
 The function \lstmath{termTyp} generates the type of one argument of the function by calling \lstmath{liftType'} that applies the name of the type to its arguments. \lstmath{constructorsHelper} converts theory fields into type constructors. It uses \lstmath{gmap}, such that a function symbol \lstmath{inv : A -> A} is converted into a type constructor \lstmath{inv : XLang -> XLang}. 
 
 \subsection{Staged Term Languages}
