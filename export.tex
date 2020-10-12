@@ -1,0 +1,148 @@
+\chapter{Exportation to Agda}
+\label{ch:export}
+
+%So far we have been working in a simplistic dependent language. The next step is to export our work in Tog into systems that are widely used for theory development and proofs. We start with Agda, as it is the one that resembles Tog the most. 
+
+One of the problems we highlight here is how design decisions lead to different presentations of the same theory, forcing developers to rewrite the same mathematical knowledge in different ways. In this chapter, we investigate the following question
+\begin{itemize}
+    \item Given the tog abstract representation, can we export to formal systems with more complex meta theory and design decision. 
+\end{itemize}
+
+To answer this question, we need to export the definitions generated in tog into as many different systems as possible. We start with agda. \todo{description of the chapter subsections}
+
+\section{Printing Combinators}
+Text.PrettyPrint.Leijen
+
+\section{Configuration File}
+
+\section{Exporting to Agda}
+The tog definitions have all the pieces needed to mathematically present the information they are describing. Exporting these definitions to agda means \emph{printing} them in a way that agda accepts. To do this, we created the type class 
+\begin{hscode}
+class PrintAgda a where
+  printAgda ::  a -> Doc   
+\end{hscode}
+For every type in the tog AST, presented in Figure~\ref{fig:togRepr}, we create an instance for the \lstmath{PrintAgda} class. 
+We use the Haskell pretty printer provided by \lstmath{Text.PrettyPrint.Leijen}, which is an implementation of the pretty printer described in~\cite{wadler2003prettier}. 
+We present here some of the interesting instances~\footnote{The full code is available at: \url{https://github.com/ysharoda/tog/blob/master/src/Tog/Exporting/agda.hs}}. 
+A declaration of type \lstmath{Constr} has a name and an expression (representing the type of the name). The instance \lstmath{PrintAgda Constr} is 
+\begin{hscode}
+instance PrintAgda Constr where 
+  printAgda (Constr nm typ)  =
+    printAgda nm <+> text ofType <+> printAgda typ
+\end{hscode}
+The operator \lstmath{(<+>)} is provided by the printer to concatenate two \lstmath{Doc} instances with a space between them. 
+Different systems have different ways of saying "x has type A"; In agda the $\colon$ symbol is used to express the "has type" relation, while in haskell the $\colon\colon$ symbol is used. Therefore part of the configuration file is the \lstmath{ofType} symbol, which we use here to print the \lstmath{Constr}. 
+
+\section{Problems}
+In the previous section we described the straight forward process of exporting the tog definitions to agda. In this section we describe the problems that we have run into. 
+
+\subsection{Universes}
+Tog does not have universes. With the exception of relational interpretation, everything that we generate belongs to the same level. Relational interpretations defines a relation between elements of the carrier of two structures. This relation has type \lstmath{Set}. 
+\begin{togcode}
+record RelInterp (A1 : Set) (A2 : Set) 
+            (Mo1 : Monoid A1) (Mo2 : Monoid A2) : Set where
+ constructor RelInterpC
+ field
+  interp : A1 -> A2 -> Set
+  interp-e : interp (e Mo1) (e Mo2)
+  interp-op : (x1 : A1) (x2 : A1) (y1 : A2) (y2 : A2) ->
+                    interp x1 y1 ->
+                    interp x2 y2 ->
+                    interp (op Mo1 x1 x2) (op Mo2 y1 y2)
+\end{togcode} 
+While this definition is accepted by tog, it is not accepted by agda, as \lstmath{RelInterp} lives in \lstmath{Set$_1$}. We solve the problem of universes with the \lstmath{universeLevel} function 
+\begin{hscode}
+universeLevel :: Fields -> Doc
+universeLevel flds =
+  text $
+   if elem "Set" $ everything (++) (mkQ [] (\(Name (_,x)) -> [x])) flds
+   then "Set$_1$" else "Set" 
+\end{hscode}
+\ednote{something wrong with the subscript in the then part}
+Which checks if any of the fields of a record has the type \lstmath{Set}. If so, then we know the record definition has the type \lstmath{Set$_1$}. 
+
+\subsection{Prelude}
+The tog generated code depends on a Prelude written using the tog infrastructure. Other systems might have different ways of defining these functions, or might even have the definitions in their standard library. A good example here is how tog defines \lstmath{Fin} versus how agda does. 
+In agda, \lstmath{Fin} is defined as 
+\begin{agdacode}
+data Fin : ~$\mathbb{N}$~ ~$\rightarrow$~ Set where
+  zero : {n : ~$\mathbb{N}$~} ~$\rightarrow$~ Fin (suc n)
+  suc  : {n : ~$\mathbb{N}$~} (i : Fin n) ~$\rightarrow$~ Fin (suc n)
+\end{agdacode}
+Tog does not support indexed types. In tog, \lstmath{Fin} is defined as 
+\begin{togcode}
+data Fin (n : Nat) : Set where
+  fzero : (m : Nat) (p : n == suc m) -> Fin n
+  fsuc  : (m : Nat) (p : n == suc m) (i : Fin m) -> Fin n
+\end{togcode}
+accordingly, the call to \lstmath{lookup} a value in a vector looks different, the order of arguments is different. In order to fix this problem we provide some variables \lstmath{includeX} to indicate whether the tog definition of \lstmath{X} should be exported or not. If not, the user is expected to provide an import statement. For agda, the imports list is 
+\begin{hscode}
+importNames :: [String]
+importNames =
+  ["Agda.Builtin.Equality",
+   "Agda.Builtin.Nat",
+   "Data.Fin", 
+   "Data.Vec"]
+\end{hscode}
+These imports are \emph{printed} in the output file in their expected position 
+\begin{hscode}
+agdaModuleWithImports (Module_ (Module nm prms (Decl_ defs))) imprts =
+  let importDecls = map (\str -> OpenImport (ImportNoArgs (mkQName str))) imprts 
+  in Module_ (Module nm prms (Decl_ (importDecls ++ defs)))
+\end{hscode}
+Now remains the problem of adjusting the call to functions. In the case of \lstmath{lookup}, the parameters are to be flipped, this is done by the following function 
+\begin{hscode}
+callFunc :: Expr -> Expr
+callFunc a@(App [nm,_,a2,a3]) =
+  if (getArgName nm == "lookup") then App [nm,a3,a2] else a
+callFunc e = e
+\end{hscode}
+Everytime a function is being printed, \lstmath{callFunc} is being called. Therefore, if any other functions have the same issue with arguments, the user need only extend \lstmath{callFunc} with that special case 
+\begin{hscode}
+printAgda (App args) =
+  let (App newargs) = callFunc (App args) 
+       pr = foldr (<+>) empty $ map (printAgda) newargs
+  in if length args == 1 then pr else parens pr  
+\end{hscode}
+
+\subsection{Simplifier}
+A possible simplification rule, in a theory that has a binary operation and an inverse, and a unit, like \lstmath{Group} is  
+\begin{agdacode}
+op x (inv x) ~$\equiv$~ e 
+\end{agdacode}
+While this simplification rule can be represented in tog, it is not accepted by agda. Agda, and many other systems, do not check equality on pattern matching. To be able to check that two variables are equal, we need descridable equality.\ednote{more discussion needed here.. not sure what to talk about.}
+
+\subsection{Field Names}
+Another problem that we faced when exporting to agda is how agda deal with numeric literals. Agda does not accept numbers as names of fields. We use the function \lstmath{replace} to solv this problem. 
+\begin{hscode}
+replace :: String -> String
+replace nm =
+  let pieces = splitOn "_" nm
+       cond = \x → if (x == "0" || x == "1") then x ++ " ~$ _i$~ " else x
+       postProcess lst = (head lst) : (map ("_"++) $ tail lst)
+  in concat $ postProcess $ map cond pieces 
+\end{hscode}
+The function \lstmath{replace} is called before any name is printed. It can be extended to adjust names based on the restrictions of the target language. 
+
+\begin{comment}
+Our algorithms generate record definitions, inductive data types and functions. We study how those three constructs look like in Agda. 
+
+\section{Record Definitions}
+A record in Tog is has the type \lstmath{Decl} and is created using the \lstmath{Record} constructor as follows 
+\begin{hscode}
+Record Name Params RecordBody
+\end{hscode}
+The parameters are either empty or contains \lstmath{[Binding]}, as discussed in \ref{ch:tog}. \lstmath{RecordBody} contains information about the kind of the record, its constructor, and the fields it contains. A simplified view of the fields is \lstmath{[Constr]}. 
+
+A record in Agda consists of 
+\begin{itemize}
+\item the keyword \lstmath{record}
+\item the name of the type 
+\item list of parameters surrounded by parenthesis  
+\item A semicolon that seperates the name and params from the type 
+\item the keyword \lstmath{where}
+\item 
+\end{itemize}
+\end{comment}
+
+
