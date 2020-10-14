@@ -1,0 +1,53 @@
+\chapter{Related Work}
+\label{ch:relatedwork}
+
+\section{Formalizing the algebraic hierarchy}
+\cite{Grabowski2020} agrees with us that current formalizations of the algebraic hierarchy are not general enough to serve multiple projects, and that they are usually created with specific formalization in mind. It presents the mizar approach to building the algebraic hierarchy in a way that captures their mathematical structure and facilitates the transfer of results between them. In mizar, a signature is defined as a structure. An example taken from~\cite{schwarzweller2007mizar} 
+\begin{lstlisting}
+definition 
+struct (ZeroStr) LoopStr
+  (# carrier -> set,
+      add -> BinOp of the carrier,
+      Zero -> Element of the carrier #);
+end;
+\end{lstlisting}
+Multiple inheritance between structures (signatures) is possible. \cite{Grabowski2020} gives the signature of rings and fields as follows 
+\begin{lstlisting}
+definition struct (addLoopStr, multLoopStr_0) doubleLoopStr
+  (# carrier -> set,
+      addF -> BinOp of the carrier,
+      multF -> BinOp of the carrier,
+      OneF -> Element of the carrier, 
+      ZeroF -> Element of the carrier
+   #);
+end;
+\end{lstlisting}
+It is not clear how this inheritance works, as all declarations are repeated in the body of the struct. 
+Axioms (properties) are added as attributes, as follows~\cite{schwarzweller2007mizar}
+\begin{lstlisting}[mathescape]
+definition 
+let L be non empty LoopStr;
+attr L is add-associative means
+  for x,y,z being Element of L holds (x + y) + z = x + (y + z);
+$\cdots$
+end;  
+\end{lstlisting}
+An algebraic structure is defined as an existential registration 
+\begin{lstlisting}
+definition 
+mode Group is add-associative right_zeroed right_complementable
+       (non empty LoopStr);
+end;
+\end{lstlisting} 
+
+The lean mathematical library is described in~\cite{lean2019}. The library focuses on classical mathematics, with an algebra library containing $2794$ declarations. The library uses type classes to capture the structure of mathematics. By providing type class constraints, the diamond structure can be presented. The choices for bundling is similar to ours, the carrier is a parameter to the type class, all other declarations are bundles. For morphisms, the source and target are arguments, with all other declarations being bundled, mainly to provide a better descriptive definition of composition. 
+
+Canonical structures are used to build the algebraic hierarchy as part of the odd order theorem proof~\cite{canonical2013}. The approach is to provide unification hints for the type inference algorithms that makes it build the connection between abstract theories, or between abstract theories and their instances. 
+
+In~\cite{Gonthier2009} an algebraic hierarchy is developed as part of the project to formalize the proof of the Thompson-Feit theorem. Unsatisfied with telescopes and canonical structures, the author suggests packed classes to solve the problems of multiple inheritance and the coercion chain problem\ednote{I don't understand what coercion chain is}. The work is criticised by \cite{cohen2020hierarchy} for being complex, needs to be a coq expert to use it, and for not being robust to small changes in the hierarchy like decomposing a structure into two simpler ones. \cite{cohen2020hierarchy} builds on packed classes by providing an ELPI plugin to coq to build and maintain the algebraic hierarchy called hierarchy builder $\mathcal{HB}$. The declarations of algebraic structures written in $\mathcal{HB}$ is then elaborated into packed classes. 
+
+\section{Generative Approaches in Theorem Provers}
+
+
+\section{Reflection Mechanisms in Theorem Provers}
+A meta programming framwork for formal verification (automation in lean)
