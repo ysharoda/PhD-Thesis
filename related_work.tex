@@ -2,24 +2,57 @@
 \label{ch:relatedwork}
 
 \section{Formalizing the algebraic hierarchy}
+The algebraic hierarchy is a main part of the libraries of theorem provers. Several efforts has been dedicated to organize them in a way that reflects their mathematical structure. 
+
+There have been several formalizations of the algebraic hierarchy in Coq.
+In~\cite{Geuvers2002}, algebraic structures are presented as dependent records and user provided coercions are used to guide the unification algorithm to infer the connections between them. An algebraic hierarchy has been developed this way to serve the proof of the fundamental theorem of algebra. As has been noted by the authors, this technique does not support multiple inheritance, which is not a big problem for their purpose as the algebraic hierarchy they develop is not so big. 
+Canonical structures~\cite{canonical2013} enriches the idea of guiding the type inference to build connections between structures, as well as between structures and their instances and notations used to describe them. They have been used to build the mathematical components library~\cite{mathCompLib} which has been used in the proof of the odd order (Feit-Thompson) theorem. 
+Another approach to building the algebraic hierarchy in Coq is using packed classes~\cite{Gonthier2009} which mainly solves the problem of multiple inheritance. This approach has been extended in~\cite{cohen2020hierarchy} and~\cite{sakaguchi2020validating} to overcome the complexity\ednote{read more about why it is complex} of using it to build and maintain the hierarchy. \cite{cohen2020hierarchy} creates an ELPI~\cite{elpi,elpiForCoq} plugin to Coq introducing a language for building the algebraic hierarchy whose expressions are elaborated into packed classes. One of the merits of this language is that the hierarchy can change without breaking users' code, i.e. it makes it possible to add new structures and connections between them, while keeping the older ones. \cite{sakaguchi2020validating} provides invariants and algorithms to validate the structure of the library.  
+
+Type classes has been used to build the algebraic hierarchy in Coq and Lean. In Coq~\cite{spitters2011type}, type class $A$ extends type class $B$ by having $B$ become a field of $A$. The unification algorithm is guided by using \verb|:>| symbol instead of \verb|:| when declaring the type. Multiple inheritance is therefore possible. Lean~\cite{lean2019}, on the other hand, provide an \verb|extends| operation through which one can state all the predecessors of a class. Lean also provide \verb|attributes| that enables describing other ways in which structure connect to each other. For example, the \verb|to_additive| attribute describes that one class is the additive version of another.
+
+Isabelle structures its library using locales~\cite{kammuller1999locales}. It provides locale expressions~\cite{ballarin2003locales} and locale interpretations~\cite{ballarin2010tutorial}. 
+
+More complex description of relationships between algebraic structures is made possible via systems that allow general morphisms similar to the ones we describe in Section~\ref{sec:background:morphisms}. Many specification systems~\cite{Goguen1980, CoFI:2004:CASL-RM, Smith99, duran2007maude} allow users to provide them. They mostly refer to them as \emph{views}. They also provide combinators to build new theories by reusing older ones. In the theorem proving world, we are only aware of IMPS~\cite{farmer1993imps} and MMT~\cite{rabe2013scalable} that allow the definition of generic morphisms. They both build a theory graph as we describe it in Section~\ref{sec:background:theorygraph}. Neither provide combinators to build the graph, which makes it hard to build a big library like the one we develop in this work. 
+
+
+
+
+%, packed classes are suggested to solve the multiple inheritance and the packaging problems\ednote{check the pakaging one}. They are used to define the algebraic hierarchy as part of the proof for Thompson-Feit theorem. Despite this improvement, packed classes need Both~\cite{cohen2020hierarchy} and~\cite{sakaguchi2020validating} criticize packed classes for the complexity of using them to build a hierarchy, as well as the complexity of maintaining a hierarchy build with them. 
+
+%Canonical structures are used to build the algebraic hierarchy as part of the odd order theorem proof~\cite{canonical2013}. The approach is to provide unification hints for the type inference algorithms that makes it build the connection between abstract theories, or between abstract theories and their instances. 
+
+%In~\cite{Gonthier2009} an algebraic hierarchy is developed as part of the project to formalize the proof of the Thompson-Feit theorem. Unsatisfied with telescopes and canonical structures, the author suggests packed classes to solve the problems of multiple inheritance and the coercion chain problem. The work is criticised by \cite{cohen2020hierarchy} for being complex, needs to be a coq expert to use it, and for not being robust to small changes in the hierarchy like decomposing a structure into two simpler ones. \cite{cohen2020hierarchy} builds on packed classes by providing an ELPI plugin to coq to build and maintain the algebraic hierarchy called hierarchy builder $\mathcal{HB}$. The declarations of algebraic structures written in $\mathcal{HB}$ is then elaborated into packed classes. Also~\cite{sakaguchi2020validating} also says that using packed classes needs expertize in Coq and its hard maintenance. 
+
+%Another algebraic hierarchy is developed in~\cite{Geuvers2002} as part of the proof for the fundamental theorem of algebra. This hierarchy favors the use of dependent records, depending on coercions to guide the unification algorithm of Coq to infer connections between structures. 
+%The inferred connections are mostly inclusions, what MMT would call implicit morphisms. Using only dependent records, the paper admits it is not possible to represent multiple inheritance, like the case that a ring has two monoids, one additive and one multiplicative. 
+
+%In~\cite{spitters2011type}, type classes are used to represent algebraic structures. Inheritance is described as record fields, so a semiring would have two fields for monoids to describe that it contains two monoids. A special symbol $:>$ is used to guide the instance resolution algorithm, building the hierarchy. 
+
+% --- lean --> type classes 
+
+%The lean mathematical library is described in~\cite{lean2019}. The library focuses on classical mathematics, with an algebra library containing $2794$ declarations. The library uses type classes to capture the structure of mathematics. By providing type class constraints, the diamond structure can be presented. The choices for bundling is similar to ours, the carrier is a parameter to the type class, all other declarations are bundles. For morphisms, the source and target are arguments, with all other declarations being bundled, mainly to provide a better descriptive definition of composition. 
+
+\begin{comment}
+% --- Mizar --> attributed types 
 \cite{Grabowski2020} agrees with us that current formalizations of the algebraic hierarchy are not general enough to serve multiple projects, and that they are usually created with specific formalization in mind. It presents the mizar approach to building the algebraic hierarchy in a way that captures their mathematical structure and facilitates the transfer of results between them. In mizar, a signature is defined as a structure. An example taken from~\cite{schwarzweller2007mizar} 
 \begin{lstlisting}
 definition 
 struct (ZeroStr) LoopStr
-  (# carrier -> set,
-      add -> BinOp of the carrier,
-      Zero -> Element of the carrier #);
+(# carrier -> set,
+add -> BinOp of the carrier,
+Zero -> Element of the carrier #);
 end;
 \end{lstlisting}
 Multiple inheritance between structures (signatures) is possible. \cite{Grabowski2020} gives the signature of rings and fields as follows 
 \begin{lstlisting}
 definition struct (addLoopStr, multLoopStr_0) doubleLoopStr
-  (# carrier -> set,
-      addF -> BinOp of the carrier,
-      multF -> BinOp of the carrier,
-      OneF -> Element of the carrier, 
-      ZeroF -> Element of the carrier
-   #);
+(# carrier -> set,
+addF -> BinOp of the carrier,
+multF -> BinOp of the carrier,
+OneF -> Element of the carrier, 
+ZeroF -> Element of the carrier
+#);
 end;
 \end{lstlisting}
 It is not clear how this inheritance works, as all declarations are repeated in the body of the struct. 
@@ -28,7 +61,7 @@ Axioms (properties) are added as attributes, as follows~\cite{schwarzweller2007m
 definition 
 let L be non empty LoopStr;
 attr L is add-associative means
-  for x,y,z being Element of L holds (x + y) + z = x + (y + z);
+for x,y,z being Element of L holds (x + y) + z = x + (y + z);
 $\cdots$
 end;  
 \end{lstlisting}
@@ -36,15 +69,11 @@ An algebraic structure is defined as an existential registration
 \begin{lstlisting}
 definition 
 mode Group is add-associative right_zeroed right_complementable
-       (non empty LoopStr);
+(non empty LoopStr);
 end;
 \end{lstlisting} 
+\end{comment}
 
-The lean mathematical library is described in~\cite{lean2019}. The library focuses on classical mathematics, with an algebra library containing $2794$ declarations. The library uses type classes to capture the structure of mathematics. By providing type class constraints, the diamond structure can be presented. The choices for bundling is similar to ours, the carrier is a parameter to the type class, all other declarations are bundles. For morphisms, the source and target are arguments, with all other declarations being bundled, mainly to provide a better descriptive definition of composition. 
-
-Canonical structures are used to build the algebraic hierarchy as part of the odd order theorem proof~\cite{canonical2013}. The approach is to provide unification hints for the type inference algorithms that makes it build the connection between abstract theories, or between abstract theories and their instances. 
-
-In~\cite{Gonthier2009} an algebraic hierarchy is developed as part of the project to formalize the proof of the Thompson-Feit theorem. Unsatisfied with telescopes and canonical structures, the author suggests packed classes to solve the problems of multiple inheritance and the coercion chain problem\ednote{I don't understand what coercion chain is}. The work is criticised by \cite{cohen2020hierarchy} for being complex, needs to be a coq expert to use it, and for not being robust to small changes in the hierarchy like decomposing a structure into two simpler ones. \cite{cohen2020hierarchy} builds on packed classes by providing an ELPI plugin to coq to build and maintain the algebraic hierarchy called hierarchy builder $\mathcal{HB}$. The declarations of algebraic structures written in $\mathcal{HB}$ is then elaborated into packed classes. 
 
 \section{Generative Approaches in Theorem Provers}
 

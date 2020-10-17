@@ -229,27 +229,26 @@
   journal={arXiv preprint arXiv:1106.1862},
 }
 
-@INPROCEEDINGS{grabowski2016mizar,
-  author={A. {Grabowski} and A. {Korniłowicz} and C. 
-  {Schwarzweller}},
-  booktitle={2016 Federated Conference on Computer Science 
-  and 
-  Information Systems (FedCSIS)},
-  title={On algebraic hierarchies in mathematical repository of 
-  Mizar},
-  year={2016},
-  volume={},
-  number={},
-  pages={363-371},
-  keywords={algebra;algebraic hierarchy;Mizar mathematical 
-  repository;group structure;rings structure;integral domain 
-  structure;field 
-  structure;vector space structure;Structural 
-  rings;Additives;Modules 
-  (abstract algebra);Concrete;Computer science},
-  doi={},
-  ISSN={null},
-  month={Sep.},}
+@Inbook{Grabowski2020,
+    author="Grabowski, Adam
+        and Korni{\l}owicz, Artur
+        and Schwarzweller, Christoph",
+    editor="Grabowski, Adam
+        and Loukanova, Roussanka
+        and Schwarzweller, Christoph",
+    title="Refining Algebraic Hierarchy in Mathematical Repository of Mizar",
+    bookTitle="AI Aspects in Reasoning, Languages, and Computation",
+    year="2020",
+    publisher="Springer International Publishing",
+    address="Cham",
+    pages="49--75",
+    abstract="Mathematics, especially algebra, uses plenty of structures: groups, rings, integral domains, fields, vector spaces to name a few of the most basic ones. Classes of structures are closely connected---usually by inclusion---naturally leading to hierarchies that has been reproduced in different forms in different mathematical repositories. We give a brief overview of some existing algebraic hierarchies and report on the latest developments in the Mizar computerized proof assistant system. In particular we present a detailed algebraic hierarchy that has been defined in Mizar and discuss extensions of the hierarchy towards more involved domains, using internal mechanisms available in the system.",
+    isbn="978-3-030-41425-2",
+    doi="10.1007/978-3-030-41425-2_2",
+    url="https://doi.org/10.1007/978-3-030-41425-2_2"
+}
+
+
 
 %----------------- Bundling Problem ------------ 
 @InProceedings{Gross2014,
@@ -971,4 +970,145 @@
     pages={223--243},
     year={2003},
     publisher={Citeseer}
+}
+
+$ ------ Misc Related Work ------ 
+@article{schwarzweller2007mizar,
+    title={Mizar attributes: A technique to encode mathematical knowledge into type systems},
+    author={Schwarzweller, Christoph},
+    journal={Studies in Logic, Grammar and Rhetoric},
+    volume={10},
+    number={23},
+    pages={387--400},
+    year={2007},
+    publisher={Citeseer}
+}
+
+
+@InProceedings{canonical2013,
+    author="Mahboubi, Assia
+    and Tassi, Enrico",
+    editor="Blazy, Sandrine
+    and Paulin-Mohring, Christine
+    and Pichardie, David",
+    title="Canonical Structures for the Working Coq User",
+    booktitle="Interactive Theorem Proving",
+    year="2013",
+    publisher="Springer Berlin Heidelberg",
+    address="Berlin, Heidelberg",
+    pages="19--34",
+    abstract="This paper provides a gentle introduction to the art of programming type inference with the mechanism of Canonical Structures. Programmable type inference has been one of the key ingredients for the successful formalization of the Odd Order Theorem using the Coq proof assistant. The paper concludes comparing the language of Canonical Structures to the one of Type Classes and Unification Hints.",
+    isbn="978-3-642-39634-2"
+}
+
+@article{sakaguchi2020validating,
+    title={Validating mathematical structures},
+    author={Sakaguchi, Kazuhiko},
+    journal={arXiv preprint arXiv:2002.00620},
+    year={2020}
+}
+
+@misc{mathCompLib,
+    title={Mathematical Components Library},
+    howpublished ={\url{https://math-comp.github.io/}}, 
+    note={Accessed on October 2020}
+}
+
+@InProceedings{elpi,
+    author="Dunchev, Cvetan
+    and Guidi, Ferruccio
+    and Sacerdoti Coen, Claudio
+    and Tassi, Enrico",
+    editor="Davis, Martin
+    and Fehnker, Ansgar
+    and McIver, Annabelle
+    and Voronkov, Andrei",
+    title="ELPI: Fast, Embeddable, $\lambda$Prolog Interpreter",
+    booktitle="Logic for Programming, Artificial Intelligence, and Reasoning",
+    year="2015",
+    publisher="Springer Berlin Heidelberg",
+    address="Berlin, Heidelberg",
+    pages="460--468",
+    isbn="978-3-662-48899-7"
+}
+
+@unpublished{elpiForCoq,
+    TITLE = {{Elpi: an extension language for Coq (Metaprogramming Coq in the Elpi $\lambda$Prolog dialect)}},
+    AUTHOR = {Tassi, Enrico},
+    URL = {https://hal.inria.fr/hal-01637063},
+    NOTE = {working paper or preprint},
+    YEAR = {2018},
+    MONTH = Jan,
+    KEYWORDS = {Coq ; $\lambda$Prolog ; metaprogramming ; extension language},
+    PDF = {https://hal.inria.fr/hal-01637063/file/coqpl2018.pdf},
+    HAL_ID = {hal-01637063},
+    HAL_VERSION = {v1},
+}
+
+@inproceedings{rabe2018structuring,
+    title={Structuring theories with implicit morphisms},
+    author={Rabe, Florian and M{\"u}ller, Dennis},
+    booktitle={International Workshop on Algebraic Development Techniques},
+    pages={154--173},
+    year={2018},
+    organization={Springer}
+}
+
+@inproceedings{kammuller1999locales,
+    title={Locales a sectioning concept for Isabelle},
+    author={Kamm{\"u}ller, Florian and Wenzel, Markus and Paulson, Lawrence C},
+    booktitle={International Conference on Theorem Proving in Higher Order Logics},
+    pages={149--165},
+    year={1999},
+    organization={Springer}
+}
+
+@inproceedings{ballarin2003locales,
+    title={Locales and locale expressions in Isabelle/Isar},
+    author={Ballarin, Clemens},
+    booktitle={International Workshop on Types for Proofs and Programs},
+    pages={34--50},
+    year={2003},
+    organization={Springer}
+}
+
+@inproceedings{ballarin2010tutorial,
+    title={Tutorial to locales and locale interpretation},
+    author={Ballarin, Clemens},
+    booktitle={Contribuciones cient{\'\i}ficas en honor de Mirian Andr{\'e}s G{\'o}mez},
+    pages={123--140},
+    year={2010},
+    organization={Universidad de La Rioja}
+}
+
+@incollection{Smith99,
+    author = "Douglas R. Smith",
+    title = "Mechanizing the Development of Software",
+    year = 1999,
+    editor = "M. Broy and R. Steinbrueggen",
+    booktitle = "Calculational System Design, Proceedings of the NATO 
+    Advanced Study Institute",
+    publisher = "IOS Press, Amsterdam",
+    pages = "251-292"
+}
+
+@article{duran2007maude,
+    title={Maude's module algebra},
+    author={Dur{\'a}n, Francisco and Meseguer, Jos{\'e}},
+    journal={Science of Computer Programming},
+    volume={66},
+    number={2},
+    pages={125--153},
+    year={2007},
+    publisher={Elsevier}
+}
+
+@article{rabe2013scalable,
+    title={A scalable module system},
+    author={Rabe, Florian and Kohlhase, Michael},
+    journal={Information and Computation},
+    volume={230},
+    pages={1--54},
+    year={2013},
+    publisher={Elsevier}
 }
