@@ -1112,3 +1112,169 @@ $ ------ Misc Related Work ------
     year={2013},
     publisher={Elsevier}
 }
+
+@inproceedings{coqDeriveEquality2019,
+    TITLE = {{Deriving proved equality tests in Coq-elpi: Stronger induction principles for containers in Coq}},
+    AUTHOR = {Tassi, Enrico},
+    URL = {https://hal.inria.fr/hal-01897468},
+    BOOKTITLE = {{ITP 2019 - 10th International Conference on Interactive Theorem Proving}},
+    ADDRESS = {Portland, United States},
+    YEAR = {2019},
+    MONTH = Sep,
+    DOI = {10.4230/LIPIcs.CVIT.2016.23},
+    KEYWORDS = {Parametricity translation ; Coq ; Equality test ; Induction ; Containers},
+    PDF = {https://hal.inria.fr/hal-01897468v2/file/induction.pdf},
+    HAL_ID = {hal-01897468},
+    HAL_VERSION = {v2},
+}
+
+@misc{coqDeriveSubterm2020,
+    title={Generating induction principles and subterm relations for inductive types using MetaCoq}, 
+    author={Bohdan Liesnikov and Marcel Ullrich and Yannick Forster},
+    year={2020},
+    eprint={2006.15135},
+    archivePrefix={arXiv},
+    primaryClass={cs.LO}
+}
+
+% --- Code Generation ----- 
+@InProceedings{IsabelleCodegen2010,
+    author="Haftmann, Florian
+    and Nipkow, Tobias",
+    editor="Blume, Matthias
+    and Kobayashi, Naoki
+    and Vidal, Germ{\'a}n",
+    title="Code Generation via Higher-Order Rewrite Systems",
+    booktitle="Functional and Logic Programming",
+    year="2010",
+    publisher="Springer Berlin Heidelberg",
+    address="Berlin, Heidelberg",
+    pages="103--117",
+    abstract="We present the meta-theory behind the code generation facilities of Isabelle/HOL. To bridge the gap between the source (higher-order logic with type classes) and the many possible targets (functional programming languages), we introduce an intermediate language, Mini-Haskell. To relate the source and the intermediate language, both are given a semantics in terms of higher-order rewrite systems (HRSs). In a second step, type classes are removed from Mini-Haskell programs by means of a dictionary translation; we prove the correctness of this step. Building on equational logic also directly supports a simple but powerful algorithm and data refinement concept.",
+    isbn="978-3-642-12251-4"
+}
+
+@InProceedings{CoqCodegen2003,
+    author="Letouzey, Pierre",
+    editor="Geuvers, Herman
+    and Wiedijk, Freek",
+    title="A New Extraction for Coq",
+    booktitle="Types for Proofs and Programs",
+    year="2003",
+    publisher="Springer Berlin Heidelberg",
+    address="Berlin, Heidelberg",
+    pages="200--219",
+    abstract="We present here a new extraction mechanism for the Coq proof assistant [17]. By extraction, we mean automatic generation of functional code from Coq proofs, in order to produce certified programs. In former versions of Coq, the extraction mechanism suffered several limitations and in particular worked only with a subset of the language. We first discuss difficulties encountered and solutions proposed to remove these limitations. Then we give a proof of correctness for a theoretical model of the new extraction. Finally we describe the actual implementation distributed in Coq version 7.3 and further.",
+    isbn="978-3-540-39185-2"
+}
+
+@inproceedings{cruz2003program,
+    title={Program extraction from large proof developments},
+    author={Cruz-Filipe, Lu{\'\i}s and Spitters, Bas},
+    booktitle={International Conference on Theorem Proving in Higher Order Logics},
+    pages={205--220},
+    year={2003},
+    organization={Springer}
+}
+
+@article{Muller2017alignment,
+    title={Alignment-based Translations Across Formal Systems Using Interface Theories},
+    volume={262},
+    ISSN={2075-2180},
+    url={http://dx.doi.org/10.4204/EPTCS.262.7},
+    DOI={10.4204/eptcs.262.7},
+    journal={Electronic Proceedings in Theoretical Computer Science},
+    publisher={Open Publishing Association},
+    author={Müller, Dennis and Rothgang, Colin and Liu, Yufei and Rabe, Florian},
+    year={2017},
+    month={Dec},
+    pages={77–93}
+}
+
+% Mizar to Isabelle 
+@InProceedings{mizarToIsabelle2018,
+    author="Kaliszyk, Cezary
+    and P{\k{a}}k, Karol",
+    editor="Rabe, Florian
+    and Farmer, William M.
+    and Passmore, Grant O.
+    and Youssef, Abdou",
+    title="Isabelle Import Infrastructure for the Mizar Mathematical Library",
+    booktitle="Intelligent Computer Mathematics",
+    year="2018",
+    publisher="Springer International Publishing",
+    address="Cham",
+    pages="131--146",
+    abstract="We present an infrastructure that allows importing an initial part of the Mizar Mathematical Library into the Isabelle/Mizar object logic. For this, we first combine the syntactic information provided by the Mizar parser with the syntactic one originating from the Mizar verifier. The proof outlines are then imported by an Isabelle package, that translates particular Mizar directives to appropriate Isabelle meta-logic constructions. This includes processing of definitions, notations, typing information, and the actual theorem statements, so far without proofs. To show that the imported 100 articles give rise to a usable Isabelle environment, we use the environment to formalize proofs in the Isabelle/Mizar environment using the imported types and their properties.",
+    isbn="978-3-319-96812-4"
+}
+
+@InProceedings{kaliszyk2019DeclProofTerms,
+    author =	{Cezary Kaliszyk and Karol Pak},
+    title =	{{Declarative Proof Translation (Short Paper)}},
+    booktitle =	{10th International Conference on Interactive Theorem Proving (ITP 2019)},
+    pages =	{35:1--35:7},
+    series =	{Leibniz International Proceedings in Informatics (LIPIcs)},
+    ISBN =	{978-3-95977-122-1},
+    ISSN =	{1868-8969},
+    year =	{2019},
+    volume =	{141},
+    editor =	{John Harrison and John O'Leary and Andrew Tolmach},
+    publisher =	{Schloss Dagstuhl--Leibniz-Zentrum fuer Informatik},
+    address =	{Dagstuhl, Germany},
+    URL =		{http://drops.dagstuhl.de/opus/volltexte/2019/11090},
+    URN =		{urn:nbn:de:0030-drops-110903},
+    doi =		{10.4230/LIPIcs.ITP.2019.35},
+    annote =	{Keywords: Declarative Proof, Translation, Isabelle/Isar, Mizar}
+}
+
+@InProceedings{impsToOmdoc2018,
+    author="Betzendahl, Jonas
+    and Kohlhase, Michael",
+    editor="Rabe, Florian
+    and Farmer, William M.
+    and Passmore, Grant O.
+    and Youssef, Abdou",
+    title="Translating the IMPS Theory Library to MMT/OMDoc",
+    booktitle="Intelligent Computer Mathematics",
+    year="2018",
+    publisher="Springer International Publishing",
+    address="Cham",
+    pages="7--22",
+    abstract="The IMPS system by Farmer, Guttman and Thayer was an influential automated reasoning system, pioneering mechanisations of features like theory morphisms, partial functions with subsorts, and the little theories approach to the axiomatic method. It comes with a large library of formalised mathematical knowledge covering a broad spectrum of different fields. Since IMPS is no longer under development, this library is in danger of being lost. In its present form, it is also not compatible for use with any other mathematical system.",
+    isbn="978-3-319-96812-4"
+}
+
+@article{iancu2013mizar,
+    title={The Mizar mathematical library in OMDoc: translation and applications},
+    author={Iancu, Mihnea and Kohlhase, Michael and Rabe, Florian and Urban, Josef},
+    journal={Journal of Automated Reasoning},
+    volume={50},
+    number={2},
+    pages={191--202},
+    year={2013},
+    publisher={Springer}
+}
+
+@article{Lewis_2017,
+    title={An Extensible Ad Hoc Interface between Lean and Mathematica},
+    volume={262},
+    ISSN={2075-2180},
+    url={http://dx.doi.org/10.4204/EPTCS.262.4},
+    DOI={10.4204/eptcs.262.4},
+    journal={Electronic Proceedings in Theoretical Computer Science},
+    publisher={Open Publishing Association},
+    author={Lewis, Robert Y.},
+    year={2017},
+    month={Dec},
+    pages={23–37}
+}
+
+@techreport{localeIntepretations2006,
+    author = {Clemens Ballarin}, 
+    title = {Interpretation of Locales in Isabelle:anaging Dependencies between Locales},
+    year = {2006},
+    institution = {},
+    keywords = {Interactive proof;theory interpretation;Isabelle},
+}
+
