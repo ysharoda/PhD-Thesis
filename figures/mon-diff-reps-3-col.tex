@@ -96,15 +96,18 @@ record Monoid c $\ell$ : Set (suc (c $\sqcup$ $\ell$)) where
     _$\bullet$_ : Op$_2$ Carrier 
     isMonoid : IsMonoid _$\approx$_ _$\bullet$_ $\varepsilon$ 
 $\text{where }$ IsMonoid $\text{ is defined as }$
-record IsMonid ($\bullet$ : Op$_2$) ($\varepsilon$ : A) 
+record IsMonoid ($\bullet$ : Op$_2$) ($\varepsilon$ : A) 
    : Set (a $\sqcup$ $\ell$) where 
     field 
      isSemiring : IsSemiring $\bullet$ 
      identity : Identity $\varepsilon$ 
-     identity$^l$ : LeftIdentity $\varepsilon$ $\bullet$ 
-     identity$^l$ : proj$_1$ identity 
-     identity$^r$ : Rightdentity $\varepsilon$ $\bullet$ 
-     identity$^r$ : proj$_2$ identity           
+    
+    open IsSemigroup isSemigroup public 
+     
+    identity$^l$ : LeftIdentity $\varepsilon$ $\bullet$ 
+    identity$^l$ = proj$_1$ identity 
+    identity$^r$ : Rightdentity $\varepsilon$ $\bullet$ 
+    identity$^r$ = proj$_2$ identity           
 \end{lstlisting}    
 \end{tabular}  
 \end{adjustbox}

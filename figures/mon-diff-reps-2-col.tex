@@ -67,10 +67,13 @@ record IsMonid ($\bullet$ : Op$_2$) ($\varepsilon$ : A)
   field 
    isSemiring : IsSemiring $\bullet$ 
    identity : Identity $\varepsilon$ 
+       
+   open IsSemigroup isSemigroup public 
+   
    identity$^l$ : LeftIdentity $\varepsilon$ $\bullet$ 
-   identity$^l$ : proj$_1$ identity 
+   identity$^l$ = proj$_1$ identity 
    identity$^r$ : Rightdentity $\varepsilon$ $\bullet$ 
-   identity$^r$ : proj$_2$ identity           
+   identity$^r$ = proj$_2$ identity           
 
 $\text{\underline{MMT}}$
 theory Semigroup : ?NatDed = 
