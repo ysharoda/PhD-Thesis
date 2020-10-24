@@ -10,7 +10,7 @@ The interpreter of our DSL generates definitions of theories and related constru
 \item Equality to represent the equations within a theory. 
 \end{itemize}
 
-These features are available by default in dependently typed systems, like Agda, Coq, and Lean. But we refrained from using any of these systems to avoid delving into their design decisions. Instead, we prefer a small language that does not have many other extra features. We use Tog~\cite{tog}, a small implementation of Martin-\"{o}f type theory. 
+These features are available by default in dependently typed systems, like Agda, Coq, and Lean. But we refrained from using any of these systems to avoid delving into their design decisions. Instead, we prefer a small language that does not have many other extra features. We use Tog~\cite{tog}, a small implementation of Martin-l\"{o}f type theory. 
 Tog is a small dependently typed language and type checker created by the Agda developers to experiment with type checking ideas. It has mainly been used to experiment with type checking through unification~\cite{mazzoli2016type}. 
 
 Tog is implemented in Haskell. Figure~\ref{fig:togRepr} shows the internal representation of Tog. 
