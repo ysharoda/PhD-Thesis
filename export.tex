@@ -1,9 +1,11 @@
-\chapter{Exportation to Agda}
+\chapter{Exporting to Agda}
 \label{ch:export}
 
 %So far we have been working in a simplistic dependent language. The next step is to export our work in Tog into systems that are widely used for theory development and proofs. We start with Agda, as it is the one that resembles Tog the most. 
 
-Generating the definitions of constructions from a theory presentation saves a lot of development time, but having these definitions in a feature-rich language makes it even more useful. In this chapter we investigate research questions X and Y\todo{add the references here} by implementing an automatic translator of the library theories and their related constructions to agda and lean\ednote{lean is still not implemented}. In Section\todo{put section number}, We discuss how our agda generated constructions are different from the ones in the agda standard library and what changes are needed to make them similar. 
+Generating the definitions of constructions from a theory presentation saves a lot of library development time, but having these definitions in a feature-rich language makes it even more useful. In this chapter we investigate research questions X and Y\todo{add the references here} by implementing an automatic translator of the library theories and their related constructions to agda and lean\ednote{lean is still being implemented}. 
+
+In Section~\ref{sec:exporting_agda} we describe the tog-to-agda exporter implemented in haskell. Many parts of this exporter were straight forward translation between the two syntax trees. Nevertheless, there were some challenges that we discuss in Section~\ref{sec:exporting:challenges}. We compare our generated agda code to the one in the agda standard library~\cite{agda_stdlib} and discuss how close we can get to the standard library presentation in Section~\ref{sec:compasion_agda_stdlib}. To assess how our approach scale up, we discuss how we extended the exporter to support lean, as a target language, in Section~\ref{sec:exporting_lean}. We wrap the by a discussion in Section~\ref{sec:exporting:discussion}. 
 
 \begin{comment}
 One of the problems we highlight here is how design decisions lead to different presentations of the same theory, forcing developers to rewrite the same mathematical knowledge in different ways. In this chapter, we investigate the following question
@@ -13,6 +15,7 @@ One of the problems we highlight here is how design decisions lead to different 
 \end{comment}
 
 \section{Exporting to Agda}
+\label{sec:exporting_agda}
 The tog definitions have all the information needed to mathematically present the concepts they are describing. The process of exporting these definitions from tog to agda can be seen as \emph{presenting} them in a way that agda understands (type checks). The type class, \lstmath{PrintAgda}, takes care of that. It prints the tog definitions in a form accepted by agda, then the agda type checker is called on them. 
 \begin{hscode}
 class PrintAgda a where
@@ -22,7 +25,7 @@ For every type in the tog AST, presented in Figure~\ref{fig:togRepr}, we create 
 We use the Haskell pretty printer provided by \lstmath{Text.PrettyPrint.Leijen}, which is an implementation of the pretty printer described in~\cite{wadler2003prettier}. 
 
 \subsection{Background}
-In~\cite{wadler2003prettier} an algebra for defining pretty printers is introduced, based on $6$ primitives 
+In~\cite{wadler2003prettier}, an algebra for defining pretty printers is introduced, based on $6$ primitives 
 \begin{hscode}
 (<>) :: Doc -> Doc -> Doc 
 empty  :: Doc 
@@ -32,7 +35,7 @@ nest :: Int -> Doc -> Doc
 layout :: Doc -> String 
 \end{hscode}
 Where \lstmath{Doc} is the type of a document. The \lstmath{(<>)} operation concatenates two documents. It is an associative operation with \lstmath{empty} being its right and left unit\footnote{\cite{wadler2003prettier} refers to \lstmath{empty} as \lstmath{nil}}. 
-\%begin{comment}
+%\begin{comment}
 On top of these primitives, we have used the following functions provided by the 
 \lstmath{Text.PrettyPrint.Leijen}. 
 \begin{itemize}
@@ -42,7 +45,7 @@ On top of these primitives, we have used the following functions provided by the
 
 \subsection{The Exporter}
 We present here some of the interesting instances of the \lstmath{PrintAgda} type class~\footnote{The full code is available at: \url{https://github.com/ysharoda/tog/blob/master/src/Tog/Exporting/agda.hs}}. 
-Our generator defines every theory along with its generated constructions in \lstmath{Module}, which is exported to agda using the following instance 
+Our generator defines every theory along with its generated constructions in a  \lstmath{Module}, which is exported to agda using the following instance 
 \begin{hscode} 
 instance PrintAgda Module where
   printAgda (Module nm params decls) =
@@ -89,11 +92,12 @@ instance PrintAgda Decl where
 With instances of \lstmath{PrintAgda} for every type in the tog abstract syntax, a single call to \lstmath{printAgda} on the top level module of the tog library generates the equivalent agda definitions\footnote{the generated files available at:\url{https://github.com/ysharoda/tog/tree/master/Library/generated}}.
 
 \section{Challenges}
-The \lstmath{PrintAgda} type class gives us the direct translation between tog and agda. Tog is an experimental minimal implementation of Martin-l\"{o}f type theory. There are some features present in agda that tog does not support, and therefore some adjustments of the syntax is needed. We discuss these adjustments in this sections. 
+\label{sec:exporting:challenges}
+The \lstmath{PrintAgda} type class gives us the direct translation between tog and agda. Tog is an experimental minimal implementation of Martin-l\"{o}f type theory. There are some features present in agda that tog does not support, and therefore some adjustments of the syntax is needed. We discuss these adjustments in this section. 
 
 \subsection{Universes}
 Tog provides only one kind \lstmath{Set}. It does not support universes, and so \lstmath{Set : Set}. On the other hand, agda has an infinite number of universes, and so 
-\lstmath{Set : Set$_{1}$, Set$_{1}$ : Set$_{2}$, $\cdots$}. 
+\lstmath{Set$_{n}$ : Set$_{n+1}$} for any natural number $n$. 
 All the constructions we generate belong to the same level, except for relational interpretations, which describe a structure-preserving relation between two instances of the theoy, see Section~\ref{sec:generation:relInterp}. In tog, relational interpretations are records and the relation is a field of the record represented as 
 \begin{togcode}
 interp : A1 -> A2 -> Set
@@ -179,6 +183,7 @@ replace nm =
 A name which is just \lstmath{0} or \lstmath{1} is concatenated with a suffix \lstmath{$_i$}. The suffix is also added if the \lstmath{0} or \lstmath{1} is part of a name, but is separated by \lstmath{_}. This accounts for the naming convention of the MathScheme library for axioms. 
 
 \section{Comparison With Agda Standard Library}
+\label{sec:compasion_agda_stdlib}
 We have generated axiomatic presentations of algebraic structures, as well as constructions related to them. Some of the constructions we generate are part of the agda standard library and some are not. We look at out generated theories and constructions and compare them with the ones that agda provides in its standard library, highlighting how close we can get to them. 
 
 Algebraic structures in agda is a fully bundled telescopes. For example, \lstmath{Monoid} is defined as
@@ -261,10 +266,33 @@ There are three main differences between the \lstmath{IsMonoid} in the agda stan
 The record \lstmath{Monoid} have the same differences. Due to the absence of universe support in tog, we prefer to keep the generated \lstmath{Monoid} record parameterized over the carrier. 
 
 \subsection{Setoids Based Presentations}
+\label{subsec:setoid-based-pres}
+The theories of algebra that we consider in this work are first order equational theories, i.e.: all the axioms are equations. The equality used in the tog development to represent these equations are based on tog's underlying propositional equality. 
+On the other hand, the agda definitions are defined over setoids, i.e. every carrier set is equipped with its own equality. 
 
+The theory of setoid can be obtained from the \lstmath{Carrier} theory using the extension combinator 
+\begin{togcode}
+Setoid = extend Carrier {eq : A -> A -> Set}
+\end{togcode}
+The problem becomes changing all the axioms to be based on \lstmath{eq} instead of the tog equality. Tog equality is part of the meta thoery, tog, and is not part of any morphism, i.e.: cannot be mapped to \lstmath{eq} to adjust how the axioms look like. \ednote{TBD: how to handle this?}
+
+%On the presentation level, this means that every theory would have one more declaration for the equality, as well as congruence axioms for all its function symbols. 
 
 \subsection{Model Morphisms}\ednote{better name?} 
+\label{subsec:model-morph}
 \label{subsec:agda:modelMorphisms}
+The definition of \lstmath{Monoid} includes a \lstmath{semigroup} definition that given a specific monoid would extract the semigroup structure of it. In our implementation, the theory graph has a morphism between \lstmath{Semigroup} and \lstmath{Monoid} that allows us to reproduce this information. 
+
+\section{Exporting to Lean}
+\label{sec:exporting_lean}
+
+\section{Discussion}
+\label{sec:exporting:discussion}
+The idea of exporting from one language to another has been discussed various times, as we show in~\ednote{refer to the section in related work}. Our work take advantage from the fact that we export from a small language, and therefore the source syntax tree is small and can be manipulated easily. Having a minmial source language gives us the opportunity to add design decisions without having to observe how it affects the multiple other features that would be present in a feature-rich language. That makes the export process easier to manage. 
+
+On the other hand, tog lakes some essential features, like universes. Other features may be less obvious, like indexed types. It is hard to decide which features are needed for a core language that fits our purpose. This is one way our work can be extended. We suggest strudying theorem provers as a program family, capturing their commonalities and variabilities via techniques like feature models~\cite{czarnecki2000generative}. If we have this model, one can write a staged exporter to different languages in the model, similar to what is explained in~\cite{stagedConfig}. 
+
+The theory graph organization structure has proven useful in the exporting process. The fact that the morphisms carry information about It made it possible to add design decisions, like exporting to the setoids-based graph, and to add the model morphisms as we discussed in Section has also made it possible to incorporate model definitions, as we discuss in Section~\ref{subsec:model-morph}. 
 
 \begin{comment}
 Our algorithms generate record definitions, inductive data types and functions. We study how those three constructs look like in Agda. 
