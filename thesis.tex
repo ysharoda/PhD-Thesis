@@ -3,7 +3,7 @@
 %\usepackage{gscale_thesis_singlespace} % Single spaced thesis
 \usepackage{style_files/gscale_thesis_doublespace} % Double spaced thesis
 \usepackage{style_files/fancyheadings}                   % Header and footer styling
-\usepackage{style_files/natbib}                               % Bibliography formatting
+\usepackage[square]{style_files/natbib}                               % Bibliography formatting
 \usepackage{style_files/setspace}                           % Allows double spacing but skips headers/footers
 \include{definitions}                                % LaTeX variables for preface pages/headers
 \setcounter{tocdepth}{1}                        % Limits the TOC to chapter and section names
@@ -44,12 +44,17 @@
 \usepackage{style_files/tpcj_macros}
 \usepackage{style_files/combinators}
 
+
+
+%\setcitestyle{authoryear,open={[},close={]}}
+
 %\definecolor{ourblue}{rgb}{0.90,0.98,1.0}
 %\definecolor{ourpink}{rgb}{1.0,0.96,0.99}
 %\newcommand{\tog}{tog}
 %\newcommand{\etc}{etc.}
 \newcommand{\bigdot}{\ensuremath{\boldsymbol{\cdot}}}
 \newcommand{\sembr}[1]{\ensuremath{\llbracket  #1 \rrbracket}}
+\renewcommand{\cite}[1]{\citep{#1}}
 
 \usepackage{tcolorbox}
 \tcbuselibrary{minted,skins}
@@ -143,8 +148,8 @@
 \input{related_work.tex}
 
 %\input{discussion.tex}
-  
-\bibliographystyle{plain}
+%\bibliographystyle{authoryear}
+\bibliographystyle{natbib}
 \bibliography{thesis}
  
 \end{document}
