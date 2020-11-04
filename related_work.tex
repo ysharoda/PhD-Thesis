@@ -1,6 +1,8 @@
 \chapter{Related Work}
 \label{ch:relatedwork}
-
+\ednote{Another thing to look at, simplification and rewrite tactics}  
+\ednote{look at: Generic Derivation of Induction for Impredicative Encodings in Cedille \url{http://homepage.cs.uiowa.edu/~astump/papers/cpp-2018.pdf}}
+\ednote{various works have mentioned that to formalize informal math, one need to work on providing definitions for things that are obvious from an informal point of view. One of these is capretta's universal algebra in type theory that try to close this gap by translating definitions of set theory into type theory. Part of what we do is generate the definitions that they provide by hand}. 
 \section{Formalizing the algebraic hierarchy}
 The algebraic hierarchy is a main part of the libraries of theorem provers. Several efforts has been dedicated to organize them in a way that reflects their mathematical structure. 
 The simplest way is to use inclusions to describe inheritance between two structures. This is used in~\cite{Geuvers2002} where algebraic structures are presented as dependent records and user provided coercions are used to guide the unification algorithm to infer the connections between them. As has been noted by the authors, this technique does not support multiple inheritance, so there is no way to describe that a ring is both a monoid and an abelian group. \cite{Geuvers2002} develops a hierarchy using this technique and uses it to prove the fundamental theorem of algebra. The hierarchy developed is not very deep. 
