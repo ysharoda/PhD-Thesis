@@ -1,65 +1,115 @@
 \chapter{Constructions For Free!}
 \label{ch:generation}
 
-Starting from a flattened theory presentation, the second part of the interpreter is used to generate useful constructions. Our generator manipulates Tog internal representation of theories to create useful definitions. Our generated definitions are guaranteed to be well-formed, but still needs to be type checked. The tog type checker is used for this purpose. 
+The flattener interprets theory expressions into a graph of flat theories and morphisms between them. The resulting flat theories are then used by the generator to produce some useful tools (constructions) related to them, which is the topic of this chapter. 
 
-In Section~\ref{sec:toBeGenerated} we introduce a list of operations that can be generated from flattened theory presentations. In Section~\ref{sec:togFramework} we introduce the basic components of our framework. We use these components to generate some of the constructions in the list of Section~\ref{sec:toBeGenerated}. We discuss the generation algorithms in Section~\ref{sec:generatedConstructions}. 
+We define some meta programs written in haskell (the meta language) to generate tog (the object language) definitions. 
+The input to these programs are flat theory presentations in unisorted equational logic. Their common structure is captured by universal algebra. We use the haskell type \lstmath{EqTheory} to describe the structure of equational theories represented as tog records. Because this type is built using the tog abstract syntax, manipulating it is more or less manipulating tog syntax. The output of the generator is guaranteed to be well-formed. The tog type checker is run on this input to check for well-typedness. 
+
+\todo{the sections description}
+In Section~\ref{sec:toBeGenerated} we introduce a list of operations that can be generated from flattened theory presentations. In Section~\ref{sec:togFamework} we introduce the basic components of our framework. We use these components to generate some of the constructions in the list of Section~\ref{sec:toBeGenerated}. We discuss the generation algorithms in Section~\ref{sec:generatedConstructions}. 
 
 \section{What can be generated}
 \label{sec:toBeGenerated}
-Given a theory presentation \lstmath{(S,F,E)} in first order equational logic, The following constructions can be generated 
+Algebra makes the basis of many areas of computer science. We are interested in theorem proving and specification systems. \ednote{relate this to the background section} \ednote{uniform notation and citation} In many places the term algebra is used to refer to the 
+
+The axiomatic presentation of a class of algebras is defined as \lstmath{Th = (S,F,E}) where \lstmath{S} is a single sort, \lstmath{F} is a set of operations, and \lstmath{E} is a set of equations.  In the following, we will describe some constructions in terms of the three components of \lstmath{Th}. The definition are adapted from~\cite{ehrig1985fundamentals} and~\cite{handbook1993Maibaum}.  
+
 \begin{itemize}
-    \item Signature 
+    \item The \emph{signature} of a theory \lstmath{(S,F,E)}  is \lstmath{SIG = (S,F)} consisting of the sort and $n$-ary function symbols, where $n \geq 0$. The signature specifies the language of the theory, without any laws. 
     \item Product theory 
-    \item Project from a product theory 
-    \item SubTheory 
-    \item Trivial SubTheory 
+    \item Projection from a product theory 
+    \item SubTheory: An algebra \lstmath{B} is the subalgebra of \lstmath{A} if the following conditions are satisfied %source: ehrig and mehr book 
+    \begin{enumerate}
+    \item \lstmath{S$_B$} \lstmath{$\subseteq$} \lstmath{S$_{A}$}
+    \item \lstmath{c$_B$} \lstmath{=} \lstmath{c$_{A}$} for every constant symbol in the set of function symbols \lstmath{OP}. 
+    \item \lstmath{f$_B$(x$_1$ $\cdots$ x$_n$)} \lstmath{=} \lstmath{f$_A$(x$_1$ $\cdots$ x$_n$)}, for all \lstmath{f $\ \in\ $ OP}, {x$_1$ $\cdots$ x$_n$ $\in$ S}, and \lstmath{n $\in$\ $\mathbb{N},\ n\ \geq\ 1$}. 
+    \end{enumerate}
+    \item Trivial SubTheory, the subtheory with they empty carrier. Because the carrier is empty, the $3$ axioms above trivially hold. 
     \item The theory of subsets of the carrier 
-    \item Homomorphisms 
-    \item Isomorphisms 
-    \item Monomorphism 
-    \item Endomorphism 
-    \item Automorphism 
-    \item Epimorphism 
+    \item let \lstmath{A} and \lstmath{B} be algebras of the same specification, the \emph{homomorphism} between them is a function \lstmath{hom : A $\to$ B} such that 
+    \begin{itemize}
+        \item for every constant symbol in \lstmath{OP}: \lstmath{hom c$_A$ = c$_B$} 
+        \item for every function symbol in \lstmath{OP}: 
+           \lstmath{hom(f$_A$ x$_1$  $\cdots$ x$_n$) = f$_B$ (hom x$_1$)  $\cdots$ (hom x$_n$)} 
+    \end{itemize}
+    \item Monomorphisms are injective homomorphisms 
+    \item Epimorphisms are surjective homomorphisms 
+    \item Endomorphism homomorphism from an object to itself 
+    \item Isomorphisms are bijective homomorphisms. In a generative sense, this means generating one more axiom 
+    \item Automorphisms are isomorphisms from an object to itself. 
     \item The kernel of a morphism 
-    \item The composition of morphisms 
+    \item The composition of two morphisms \lstmath{f : A $\ \to\ $ B} and \lstmath{g : B $\ \to\ $ C} is denoted by the function \lstmath{g $\ \circ\ $ f : A $\ \to\ $ C} and is defined as 
+    \lstmath{(g $\ \circ\ $ f) a = g (f a)} for every \lstmath{a $\ \in\ $ A}   
     \item Homomorphism Equality 
-    \item Congruence relations 
-    \item Quotient Algebras
-    \item Monotonicity proofs 
-    \item Closed term language 
-    \item Open term language 
+    \item Relational Interpretation 
+    \item Quotient Algebras: let \lstmath{A} be a Sig-algebra and \lstmath{R} be a congruent relation on \lstmath{A}. The quotient algebra \lstmath{A/R = (S$_Q$,OP$_Q$)} is defined as
+    \begin{itemize}
+       \item The carrier elements are sets of equivalence classes \lstmath{S$_Q$ = $\{$[a] $\mid$ a $\in$ S$\}$} where \lstmath{[a] = $\{$b $\mid$ b $\in$ S, (a,b) $\in$ R$\}$}. 
+       \item \lstmath{c$_Q$ = [c]}, for every constant symbol \lstmath{c} in \lstmath{A}
+       \item A function \lstmath{f x$_1$ $\cdots$ x$_n$} \ednote{check this} 
+    \end{itemize}      
+    \item congruence of functions 
+    \item The monotonicity of a function 
+    \item Closed term language:  The set of terms of an algebra are defined inductively as 
+    \begin{itemize}
+        \item all constants belong to the language (basic terms) 
+        \item A term \lstmath{t$_f$ t$_1$ $\cdots$ t$_n$} for every function symbol \lstmath{f : s $\to$ $\cdots$ $\to$ s} of arity $n$, such that  \lstmath{t$_1$ $\cdots$ t$_n$} belongs to the language. 
+    \end{itemize}
+    \item Open term language: similar to the closed term language, except the basic terms includes a set of variables.  
     \item Staged term language 
-    \item Structural induction 
-    \item Evaluation functions 
-    \item Simplification via rewriting 
-    \item Structural induction 
-    \item Equivalence of terms 
-    \item Applying functors to terms 
-    \item Setters and getters for instances of data types (lenses in Haskell) 
+    \item Structural induction: Let \lstmath{p} be a predicate defined on terms \lstmath{t $\in$ T$_{OP}$(X)} of a signature \lstmath{SIG = (S,OP)} with variables \lstmath{X}. The assertion \lstmath{p(t)} is true for all \lstmath{t $\in$ T$_{OP}$} if the following conditions are satisfied: 
+    \begin{itemize}
+        \item \lstmath{p(t)} is true for all constant and variable symbols 
+        \item for each term \lstmath{f t$_1$ $\cdots$ t$_n$}, we have that if \lstmath{p(t$_1$) $\cdots$ p(t$_n$)} are true then also \lstmath{p(f t$_1$ $\cdots$ t$_n$)} is true.  
+    \end{itemize}     
+    \item Evaluation functions: Given a theory \lstmath{SIG = (S,OP,E)}, a term language defined as above, and an algebra over a carrier \lstmath{A}. The function \lstmath{eval : T$_{OP}$ $\to$ A} is defined recursively as 
+    \begin{itemize}
+        \item \lstmath{eval(c) = c$_{A}$}
+        \item \lstmath{eval(f t$_1$ $\cdots$ t$_n$)} = f$_A$ (eval t$_1$) $\cdots$ (eval t$_n$) where an assignment function maps the constants of the language to the constants defined by the algebra. The evaluation function for open term language would be similar except it has an additional environment that assigns value of the carrier to variables. 
+    \end{itemize}      
+    \item Simplification via rewriting: Given a set of equations, each represented as \lstmath{(X,L,R)}, where \lstmath{X} is a set of variables, \lstmath{L} is the term on the left of the equation, and \lstmath{R} is the term on the right side. By fixing the set of variables, we can represent equations as  (L,R). Each equation represented this form gives rise to two substitutions \lstmath{1) L $\ \Rightarrow\ $ R} and \lstmath{2) R $\ \Rightarrow\ $ L}. Any of these substitutions can result in rewriting systems, but when simplifying one need to define an ordering relation that decides which term is \emph{simpler} than the other. When having the equations and the ordering relation, rewriting systems can be defined. 
+    \item Equivalence of terms: two terms can be denoted equal in one or more of the following cases 
+    \begin{itemize}
+        \item by calling the eval function on both terms they yield the same value.  
+        \item by calling the simplify function on both terms they yield the same value. 
+        \item using structural equivalence, the two terms have the same parse tree. 
+    \end{itemize}
+    \item A printing function similar to the show function in haskell. 
+  %  \item Applying functors to terms: 
+    \item Setters and getters for instances of data types (lenses in Haskell). the same way haskell does it to data types using template haskell. 
     \item Theory Actions 
     \item Subset Actions
     \item Coset of a theory 
-\end{itemize}
+\end{itemize}\ednote{Is there more that can be added here?} 
+We give the definitions of these constructs based on set theory, as one would find them in a standard text book. It has been formalized in type theory in  both Coq in~\cite{capretta99, Spitters2010} and agda~\cite{Gunther2018Agda}. In~\cite{capretta99}, the formalization of algebraic structures in type theory is done using record types. 
+%A reddit post have observed that these structures can be generated~\cite{redditGenHom}. The discussion went on\ednote{continue this} and~\cite{agdaGenPull}
 
 \section{Tog Framework}
 \label{sec:togFamework}
+With so many construction to be generated, we develop an infrastructure that can be used to generate them. The main component is the type \lstmath{EqTheory}, which is a representation of uni-sorted equational theories described in Secion~\ref{subsec:generation:eqTheories}. 
+In order to operate on equational theories and generate the constructions we are interested in, we provide some utilities to manipulate tog representation of functions, datatypes, and parameters in Sections~\ref{subsec:generation:functions}, and~\ref{subsec:generation:datatypes}, resepectively. 
+Another important operation that we use in the generator is renaming, which we discuss in Section~\ref{subsec:generation:renaming}. Some of the definitions we generate may depend on definitions of standard operations, like looking up a value in a vector. We discuss how to add definitions to a prelude in Section~\ref{subsec:generation:prelude}. 
 
-As we discussed in Chapter~\ref{ch:tog}, Tog provides us with the internal representations of dependent records, which we use to represent theories. We extend the Tog implementation to generate algebraic constructions by providing metaprograms that operate on Tog internal representation of dependent records. In this section we discuss some of the basic utiities that we use in the generation algorithms. 
+
+%As we discussed in Chapter~\ref{ch:tog}, Tog provides us with the internal representations of dependent records, which we use to represent theories. We extend the Tog implementation to generate algebraic constructions by providing metaprograms that operate on Tog internal representation of dependent records. In this section we discuss some of the basic utiities that we use in the generation algorithms. 
 
 \subsection{Equational Theories}
+\label{subsec:generation:eqTheories}
 An equational theory in universal algebra abstracts over theory presentations of algebraic structures and consists of a sort, a list of function symbols and a list of axioms, as discussed in Section~\ref{sec:background:theory}. We capture this definition of equational theories by the type \lstmath{EqTheory}. 
 \begin{hscode}
 data EqTheory = EqTheory {
-  _thyName   :: Name_  ,   -- the name of the theory 
+  _thyName    :: Name_  ,   -- the name of the theory 
   _sort       :: Constr ,      
-  _funcTypes  :: [Constr],
+  _funcTypes  :: [Constr], -- function symbols 
   _axioms     :: [Constr],
-  _waist      :: Int }
+  _waist      :: Int }     -- the number of parameters 
 \end{hscode}
 The \lstmath{waist} is used in the same way as in \lstmath{GTheory} from Section~\ref{sec:impl:expressions}. 
 
-Tog internalization of dependent records is converted into \lstmath{EqTheory} using the function \lstmath{recordToEqTheory}
+The input to the generator is a list of tog dependent records. The first step the generator needs to do is to cast them into instances of \lstmath{EqTheory}. 
+\begin{comment}
+This is done using the function \lstmath{recordToEqTheory}. 
 \begin{hscode}
 recordToEqTheory :: TRecord -> Eq.EqTheory
 recordToEqTheory record@(TRecord nm params _) =
@@ -69,135 +119,129 @@ recordToEqTheory record@(TRecord nm params _) =
     (getRecordComps isAxiom record)
     (paramsNum params)
 \end{hscode}
-We use \lstmath{TRecord} instead of the \lstmath{Record} constructor of \lstmath{Decl} to specialize this function to only records instead of any \lstmath{Decl}.\ednote{change this in the implementation to go from GTheory to EqTheory direclty }
+In tog, records definitions are declared using the \lstmath{Record} constructor of the type \lstmath{Decl}, which contains many other constructors used to define functions, types, and others. We prefer to use a type dedicated to records, and therefore use the \lstmath{TRecord} type instead. \lstmath{TRecord} has the exact same parameters as the \lstmath{Record} constructor. 
+\end{comment}
 
-An instance of a theory can be obtained by calling the function \lstmath{eqApp}. 
-
-The input to this function is the definition of the theory, and in some cases an integer number. This is useful in case many instances of the theory are needed, and so they are indexed by number. The instance is represented as a tuple of two components \lstmath{([Binding],Expr)}. The \lstmath{Binding} list is useful when the theory has parameter, i.e.: \lstmath{waist > 0}. In this case the  bindings are the arguments to the theory instance. The \lstmath{Expr} corresponds to the instance expression of the theory. The instance expression is represented using the constructor \lstmath{App [Expr]}, where the first element of the list is the constructor. If there are any arguments, they follow after it. 
-
-Another useful utility function related to theories is a \lstmath{projectConstr} that projects a declaration of the theory. 
+We define an instance of an \lstmath{EqTheory} in terms of its name, the bindings that constitute its parameters and the expression representing the type of this instance. 
 \begin{hscode}
-projectConstr :: EqTheory -> String -> Constr -> Expr 
-projectConstr thry instName c@(Constr n _)  =
-  if isArg thry c then App [mkArg (n ^. name)]
-  else App [mkArg (n ^. name),mkArg instName]
+ type EqInstance = (Name_,[Binding],Expr) 
 \end{hscode}
-The projection of a declaration depends on whether it is a parameter or a field. A parameter is projected unqualified, while a field needs to be qualified by the instance name. 
+Instances are computed by the function 
+\lstmath{eqInstance :: EqTheory -> Maybe Int -> EqInstance} 
+where the second argument is used to index the instance in cases where more than one is needed, like with the parameters of homomorphisms. The bindings of the instance are computed based on the arguments. 
+\begin{hscode}
+ indexBindings True i ~$\$$~ map fldsToHiddenBinds (args thry)
+\end{hscode}
+The expression denoting the type of the instance is an application of the name of the type to the bindings, as follows 
+\begin{hscode}
+App ~$\$$~ mkArg (thry ^. thyName) : map mkArg bnames
+\end{hscode} 
+
+Instances of a theory would also contain fields corresponding to those in the theory. Instead of having this as part of the type, we provide functions \lstmath{projectConstr} and \lstmath{applyProjConstr} to compute them. 
+When projecting a member from a record, be it a representation of a theory or an instance, one might want to have the projected member as a type declaration or as a term in the language. The function \lstmath{projectConstr} provides the projected member type declaration, while \lstmath{applyProjConstr} provides it as a term. 
+The \lstmath{projectConstr} function checks if the member being projects is an argument. If so, then its name of the binding list is used to construct the expresion. If not, then it needs to be qualified by the instance name. 
+\begin{hscode} 
+ if isArg thry c then App [mkArg ~$\$$~ findInBindings binds c]
+ else App [mkArg (n ^. name),mkArg instName]
+\end{hscode} 
+When constructing a term using that member, we need to also generate the binding for the variables in the term. The function \lstmath{applyProjConstr} returns a tuple \lstmath{([Binding],Expr)} represnting the two components. As we work in a uni-sorted setup, we know all bindings have the type of the carrier, which we project using the \lstmath{projectConstr} function. The expression is constructed by projecting the member and applying it to the bindings using the \lstmath{App} constructor. 
+\begin{hscode} 
+let vars = case varName of
+       Nothing -> genVars ~$\$$~ farity typ
+       Just s -> genVarsWSymb s ~$\$$~ farity typ
+     bindingsType = projectConstr thry i (thry ^. sort) 
+in  ([HBind (map mkArg vars) bindingsType],
+      App ~$\$$~ (Arg ~$\$$~ projectConstr thry i c) : map mkArg vars) 
+\end{hscode} 
+
+%The input to this function is the definition of the theory, and in some cases an integer number. This is useful in case many instances of the theory are needed, and so they are indexed by number. The instance is represented as a tuple of two components \lstmath{([Binding],Expr)}. The \lstmath{Binding} list is useful when the theory has parameter, i.e.: \lstmath{waist > 0}. In this case the  bindings are the arguments to the theory instance. The \lstmath{Expr} corresponds to the instance expression of the theory. The instance expression is represented using the constructor \lstmath{App [Expr]}, where the first element of the list is the constructor. If there are any arguments, they follow after it. 
 
 \subsection{Functions}
-We distinguish between two uses of a function symbol. The function declaration, of type \lstmath{Constr} has a name and type. The function application is an expression of type \lstmath{Expr} created using the constructor \lstmath{App}. We capture these two forms with the following types 
+\label{subsec:generation:functions}
+Our generation algorithms manipulates function symbols in different ways. It is essential to provide the key tools for this manipulation. A function symbol as a member of a theory has the type \lstmath{Constr}. It gives rise to terms in the language of the theory based on its arity. The arguments to the terms are bindings, and that's why we define the type \lstmath{FApp} of function application to variables, as follows 
 \begin{hscode}
 type FType = Constr
-data FApp = FApp [Binding] Expr
+type FApp = ([Binding],Expr)
 \end{hscode}
-
-In many cases when we generate definitions, we want to define a function application given the type of the function symbol. This is done using \lstmath{fapp}. 
-\begin{hscode}
-fapp :: FType -> FApp
-fapp (Constr n typ) =
-  let nm = n ^. name
-       arity = farity typ
-       vars = genVars arity
-       etyp (Fun e _) = e -- this works because we are in unisorted setup
-       etyp (App args) = App args
-       etyp _ = error "not a function"
-  in if (arity == 0) then FApp [] $ App [mkArg nm]
-      else FApp [HBind (map mkArg vars) (etyp typ)]$
-                  App $ mkArg nm : map mkArg vars       
-\end{hscode}
-\lstmath{vars} is the list of variables generated according to the arity of the function symbol. Their types are determined based on the type of any of the arguments of the function. As we work in a unisorted environment, we don't need to check the types of all function arguments. 
+A function application is generated by \lstmath{fapp}. The types of all the bindings is set to be the sort of the theory. The expression is the name of the constr applied to its arguments 
+\begin{hscode} 
+ if (arity == 0) then ([],App [mkArg nm])
+ else ([HBind (map mkArg vars) (etyp typ)],
+            App ~$\$$~ mkArg nm : map mkArg vars)   
+\end{hscode} 
+%\lstmath{vars} is the list of variables generated according to the arity of the function symbol. Their types are determined based on the type of any of the arguments of the function. As we work in a unisorted environment, we don't need to check the types of all function arguments. 
 
 One common operation on functions is pattern matching. We define the type class \lstmath{mkPattern} and its two instances for \lstmath{FType} and \lstmath{Expr}. 
 \begin{hscode}
 class MkPattern a where
   mkPattern :: a -> Pattern
+\end{hscode} 
+The pattern depends on the arity of the function symbol, and is generally the application of the name of the function symbol to its parameters. 
+\begin{hscode} 
+ if (arity == 0)
+ then IdP ~$\$$~ mkQName nm 
+ else ConP (mkQName nm) ~$\$$~ map (IdP . mkQName) vars 
+\end{hscode} 
 
-instance MkPattern FType where 
-  mkPattern (Constr n typ) =
-    let nm = n ^. name 
-         arity = farity typ
-         vars = genVars arity 
-    in if (arity == 0)
-        then IdP $ mkQName nm 
-        else ConP (mkQName nm) $ map (IdP . mkQName) vars 
-
-instance MkPattern Expr where
-  mkPattern (Id qn) = IdP qn
-  mkPattern (App ars) =
-    let qname (Arg (Id qn)) = qn
-         qname _ = error "unknown pattern"
-    in case ars of
-      [Arg (Id x)] -> IdP x  -- the case of a constant 
-      [Arg (App (a:as))] -> -- the case of function application 
-      ConP (qname a) (map (\(Arg x)  -> mkPattern x) as)  
-      (a:as) -> ConP (qname a) (map (\(Arg x)  -> mkPattern x) as) 
-                                      -- nested function applicaions
-      _ -> error "unknown pattern"
-mkPattern _ = error "unknown pattern"   
-\end{hscode}
-
-Other functions support applying a functor to an expression 
-\begin{hscode}
-functor :: Name_ -> Expr -> Expr
-functor fnm (Id (NotQual (Name (_,n)))) = App [mkArg fnm, mkArg n]
-functor fnm (App (a:as)) = App $ a : map (\x -> Arg $ App [mkArg fnm,x]) as
-functor _ _ = error "invalid function application" 
-\end{hscode}
-In some cases we are mapping an expression, like a function application, instead of only a function name. In this case the function \lstmath{functor'} is used. 
-\begin{hscode}
-functor' :: Expr -> Expr -> Expr
-functor' (App args) (Id (NotQual (Name (_,n)))) = 
-  App (args ++ [mkArg n])
-functor' (App args) (App (a:as)) = 
-  App $ a : (map (\x -> Arg $ App (args ++ [x])) as)
-functor' _ _ = error "invalid function application" 
-\end{hscode}
+The functions \lstmath{functor} and \lstmath{functor'} supports applying a functor to an expression, be it the name of a function symbol, or a more complex expressions.
 
 \subsection{Datatypes}
-Similar to functions, we deal with datatypes in two different forms, definitions and applications. 
+\label{subsec:generation:datatypes}
+Some of the constructions that can be generated from theory presentations are represented as datatypes, like term languages. A datatype in tog has the type \lstmath{Decl}. The type \lstmath{DTInst} captures the instances of a datatype in the same way as \lstmath{EqInstance}.
+Similar to functions, we deal with datatypes in two different forms, definitions and instances. 
 \begin{hscode}
 type DTDef = Decl
-data DTApp = DTApp [Binding] Expr 
+type DTInstance = (Name_,[Binding],Expr) 
 \end{hscode}
-The function \lstmath{tapp} computes a datatype application given a datatype definition and a possible index 
-\begin{hscode}
-tapp :: DTDef -> Maybe Int -> DTApp 
-tapp (Data nm NoParams _) _ = DTApp [] $ App [mkArg $ nm ^. name]
-tapp (Data nm (ParamDecl binds) _) Nothing =
-  let names = getBindingsNames binds 
-  in DTApp binds $ App $ (mkArg (nm ^. name)) : map mkArg names  
-tapp (Data nm (ParamDecl binds) _) (Just i) =
-  let newBinds = indexBindings True i binds
-       names = getBindingsNames newBinds 
-  in DTApp binds $ App $ (mkArg (nm ^. name)) : map mkArg names  
-tapp _ _ = error "unable to generate data type application" 
-\end{hscode}
+Instances are computed by the function \lstmath{tinstance}. The bindings are computed based on the parameters of the datatype. The expression denoting the type of the instance is computed by applying the name of the datatype to the bindings used the \lstmath{App} constructor. 
+
+\begin{comment}
+\subsection{Renaming}
+\label{subsec:generation:renaming}
+In multiple positions what we do is substitution, i.e. traverse the datatype and replace the occurence of one variable with another. 
+
+\end{comment}
 
 \subsection{Bindings}
-\ednote{check if I need to talk about PExpr or it will be completely removed from Hom}
-
-\subsection{Renaming}
+\label{subsec:generation:bindings}
+Bindings are pervasive in definitions and are so important to deal with. We provide several utility functions for indexing bindings, repeating them, and other basic operations. 
+The most interesting of all is the case when the bindings of two different entities need to be combined together, like in the case when both entities are arguments to a function.\ednote{Q: Is there literature on this?}  
+\ednote{Q: How useful is the bindings section? Should I keep it?}
 
 \subsection{Prelude Definitions}
-
+\label{subsec:generation:prelude}
+The constructions that we defined here depends on some definitions that act as the prelude of the library. We declare these definitions as \lstmath{[String]} as follows: 
+\begin{hscode}
+nat :: [String]
+nat =
+  ("data Nat : Set where { " ++ 
+     "zero : Nat ;" ++ 
+     "suc  : Nat -> Nat }") : []
+\end{hscode}
+These strings are parsed by the function \lstmath{parseDecl}, wich turns it to a tog definition of type \lstmath{Decl}. 
 
 %In order to develop a meta program that generates the constructions above, and possible more, we need a way to manipulate theory presentations, i.e. a program that given a theory presentation would generate theories, types, and functions representing the constructions above. Therefore, the program 
 %equality, substitution, .. 
 
 \section{Generated Constructions}
 \label{sec:generatedConstructions}
+By providing the appropriate tools to operate over the internal syntax of tog, we are ready to generate the universal algebra constructions related to equational theory presentations. In the following sections we describe the generation of these constructions. 
 
-\section{Signature}
-For a theory \lstmath{(S,F,E)}, the signature is obtained by dropping the list of axioms \lstmath{E}. 
+\subsection{Signature}
+Signatures represent the language of the theory, without any properties governing them. It is common in mathematics to talk about algebras over some signature. 
+For a theory \lstmath{(S,F,E)}, the signature is obtained by dropping the list of axioms \lstmath{E}. In tog, the process of generating the signature is done in $3$ steps via the \lstmath{signature_} function. 
 \begin{hscode}
 signature_ :: Eq.EqTheory -> Eq.EqTheory
 signature_ = over Eq.thyName (++ "Sig") . set Eq.axioms [] .  gmap ren
 \end{hscode}
-The first thing that we make here is add a suffix \lstmath{S} to all constructors. This is an overhead that we have to do so the Tog scope checker won't confuse the declarations of the theories with the ones for the signatures. This step is needed with every construction that we generate.\ednote{say something about the exporting here}. 
-Then the \lstmath{Eq.axioms} list is set to be empty. The name of the signature of a theory \lstmath{X} is set to be \lstmath{XSig}. 
+First, one need to rename the fields of the theory, to be able to reuse them in the signature definition. This is because the tog scope checker would not accept overloaded names of fields within the same module. The \lstmath{gmap ren} part of the function definition traverses the \lstmath{EqTheory} renaming fields by adding a suffix \lstmath{S} to each of them. In case the code is exported into a system that support this kind of overloading, the suffix can be removed. Note that this rename will be needed when generating any new construction. 
+Next, the \lstmath{Eq.axioms} list is set to be empty, dropping the axioms of the theory. 
+Last, The name of the signature of a theory \lstmath{t} is set to be \lstmath{tSig}. 
 
-\section{Product Algebra} 
-For a theory \lstmath{X}, the theory \lstmath{XProd} representing its product lifts every type \lstmath{A} to a type \lstmath{Prod A A}, where \lstmath{Prod} is defined as 
+\subsection{Product Algebra} 
+Product algebras group together algebras of the same theories. 
+For a theory \lstmath{t}, the theory \lstmath{tProd} representing its product lifts every type \lstmath{A} to a type \lstmath{Prod A A}, where \lstmath{Prod} is standard product type. 
+\begin{comment}
 \begin{togcode}
 Prod (A : Set) (B : Set) : Set
   constructor prodC
@@ -205,107 +249,80 @@ Prod (A : Set) (B : Set) : Set
    fst : A 
    snd : B  
 \end{togcode}
+\end{comment}
+The lifting of the type \lstmath{A} is done via substitution of every \lstmath{A} with \lstmath{Prod A A}. 
 The function \lstmath{productThry} uses this type to compute the product theory 
 \begin{hscode}
-productThry :: Eq.EqTheory -> Eq.EqTheory
-productThry t =
-  let t' = gmap (simpleRen "P") t
-       srt = t' ^. Eq.sort
-       mkProd = productField $ getConstrName srt
-in 
-  over Eq.thyName (++ "Prod") $
-  over Eq.funcTypes (map mkProd) $
+  over Eq.thyName (++ "Prod") ~$\$$~
+  over Eq.funcTypes (map mkProd) ~$\$$~
   over Eq.axioms (map mkProd)
   t'
 \end{hscode}
-\lstmath{t'} is the theory after performing the rename necessary for scope checking. The \lstmath{mkPord} function does the type lifting for one appearance of the sort. The \lstmath{over} statements repeats the lifting for all usages of the sort in function symbols and axioms. 
+\lstmath{t'} is isomorphic to the input theory and is obtained by adding suffix \lstmath{P} to the fields of the theory. The \lstmath{mkPord} function does the type lifting for the sort. 
 
-\section{Term Algebras}
-We define $4$ different flavors of term languages as follows 
+\subsection{Homomorphism}
+Theories are presented as record declarations in tog, and so are their homomorphisms. To generate homomorphism one needs to first define instances of the theory. We use the \lstmath{eqInstance} function to get those instances with the three components; the name of the instance, a list of bindings that represent arguments of the theory, and an expression representing the type of instances of the theory. 
 \begin{hscode}
-data Term = Basic
-                  | Closed Name_
-                  | Open Name_
-                  | ExtOpen Name_ Name_ deriving (Eq,Show)
-\end{hscode}
-A \lstmath{Basic} term language is obtained by generating a constructor for every function symbol. It has the problem that it does not permit talking about elements of the carrier. For example, the \lstmath{Basic} term language for \lstmath{Monoid} is 
-\begin{togcode}
-data MonoidTerm = e | op MonoidLang MonoidLang
-\end{togcode}
-\lstmath{Closed} term languages have an extra constructor \lstmath{sing} to encapsulate elements of the carrier. They are parameterized by the carrier whose name is argument to the \lstmath{Closed} constructor. 
-\lstmath{Open} term languages uses \lstmath{Fin} type to represent variables. They are created using the \lstmath{v} constructor. The open Language for \lstmath{Monoid} is 
-\begin{togcode}
-data OpMonoidTerm (n : Nat) : Set where
-  v : Fin n -> OpMonoidTerm n
-  eOL : OpMonoidTerm n
-  opOL : OpMonoidTerm n -> OpMonoidTerm n -> OpMonoidTerm n
-\end{togcode}
-The constructor \lstmath{Open} of type \lstmath{Term} takes as input the name of the variable of type \lstmath{Nat}. 
-An \lstmath{ExtOpen} given us the ability to talk about both elements of the carrier and variables, beside expressions constructed using function symbols. The representation of \lstmath{ExtOpen} term language for \lstmath{Monoid} is 
-\begin{togcode}
-data OpMonoidTerm2 (n : Nat) (A : Set) : Set where
-  v2 : Fin n -> OpMonoidTerm2 n A
-  sing2 : A -> OpMonoidTerm2 n A
-  eOL2 : OpMonoidTerm2 n A
-  opOL2 : OpMonoidTerm2 n A -> OpMonoidTerm2 n A -> OpMonoidTerm2 n A
-\end{togcode}
-Note how we need to append some suffixes for the constructors name due to the requirement by the Tog scope checker. 
+ i1@(n1,b1,e1) = Eq.eqInstance thry (Just 1) 
+\end{hscode} 
+with the second instance replacing every $1$ with $2$. 
+The parameters of the homomorphism declaration is then created by appending the bindings of the first and second instances, and creating the instance declarations as  
+\begin{hscode} 
+ map (~$\backslash$~(n,e) -> Bind [mkArg n] e) [(n1,e1),(n2,e2)])
+\end{hscode} 
+The declarations of the homomorphism record are the homomorphism function and the preservation axioms. The function is generated by \lstmath{genHomFunc}. The function \lstmath{projConstr} is used to project the carriers of the instances and generate the type of the homomorphism function as follows 
+\begin{hscode} 
+Fun (Eq.projectConstr thry i1 carrier) (Eq.projectConstr thry i2 carrier)
+\end{hscode}  
+where \lstmath{i1} and \lstmath{i2} are the instances, \lstmath{thry} is the variable representing the equational theory and \lstmath{carrier} is the field in the theory representing the sort. 
 
-We generate those $4$ representations, as well as staged terms, finally tagless representation, simplifier, evaluator, and induction principle. In the following subsections we detail the generation of each 
-
-\subsection{Term Language}
-A term language is represented by the type 
+Equations of the preservation axioms are generated by the \lstmath{equation} function. It uses \lstmath{applyProjConstr}, explained in~\ednote{put the ref}, which given an instance and a field, would generate the expression representing the application of the projected field from the instance, as well as the bindings needed for this application. 
+\begin{hscode} 
+(bind1,expr1) = Eq.applyProjConstr thry i1 constr Nothing
+     (_,expr2) = Eq.applyProjConstr thry i2 constr Nothing 
+\end{hscode} 
+These pieces are used to construct the \lstmath{Pi}-type as follows 
 \begin{hscode}
-data TermLang = TermLang {
-  termTy  :: Term,
-  tname   :: Name_,
-  params  :: Params,
-  cons    :: [Constr] }
-\end{hscode}
-Each of the $4$ term language is generated by a call to the \lstmath{tlang} function. 
-\begin{hscode}
-tlang :: EqTheory -> Term -> TermLang
-tlang eq term =
-  let neq = foldren eq $ Map.toList (mapping eq term) 
-  in TermLang term (declName (neq ^. thyName) term) (mkParams term) $
-             constructors term  (neq ^. thyName) (neq ^. funcTypes)
-\end{hscode}
-where \lstmath{term} stands to the type of the term being generated. The name of the new type is generated by the function \lstmath{declName} by prefixing the name of the theory with a string representing the type of the term language. The parameters to the type are determined by the function \lstmath{mkParams} based on the type of the term language. A \lstmath{Basic} term language has no types, a \lstmath{Closed} term language is parameterized by the carrier, an \lstmath{Open} language is parameterized by a variable of type \lstmath{Nat}, and an \lstmath{ExtOpen} is parameterized by both the carrier and that \lstmath{Nat} variable. 
+Pi (Tel bind1) ~$\$$~ Eq (lhs homFunc expr1) (rhs homFunc expr2)
+\end{hscode} 
 
-The constructors of the term languages are generated using the \lstmath{constructors} function. 
-\begin{hscode}
-constructors :: Term -> Name_ -> [Constr] -> [Constr]
-constructors t thryNm cs =
-  let typ = termType thryNm t
-       constrs = map (constructorsHelper $ termType thryNm t) cs
-  in case t of
-     Basic -> constrs
-     (Closed carrierNm) -> (singleton sing carrierNm typ) : constrs
-     (Open natVarNm) -> (vars v1 natVarNm typ) : constrs
-     (ExtOpen natVarNm carrierNm) -> 
-       (vars v2 natVarNm typ) : (singleton "sing2" carrierNm typ) : constrs 
-\end{hscode}
-The function \lstmath{termTyp} generates the type of one argument of the function by calling \lstmath{liftType'} that applies the name of the type to its arguments. \lstmath{constructorsHelper} converts theory fields into type constructors. It uses \lstmath{gmap}, such that a function symbol \lstmath{inv : A -> A} is converted into a type constructor \lstmath{inv : XLang -> XLang}. 
-
-\subsection{Staged Term Languages}
-We generate functions that given a term language computes its staged version. 
-
-\subsection{Finally Tagless Representation}
-
-\subsection{Simplifiers}
-\label{sec:generation:simplifier}
-
-\subsection{Evaluators}
-\label{sec:generation:evaluator}
-
-\subsection{Induction Principle}
-\label{sec:generation:induction}
-
-
-
-\section{Homomorphism}
-
-\section{Relational Interpretation}
+\subsection{Relational Interpretation}
 \label{sec:generation:relInterp}
+A relational interpretation is a structure preserving relation. Its implementation looks very similar to that of homomorphism -- a structure preserving function. Some of the similarities are that they are both records, and have the same parameters. However the fields are different. Instead of having a function between the two carriers, we have a relation. To generate the type of the relation field, we use the same function \lstmath{projectConstr} as follows 
+\begin{hscode} 
+Fun (Eq.projectConstr thry i1 carrier) ~$\$$~ 
+     Fun (Eq.projectConstr thry i2 carrier) setTypeAsId
+\end{hscode} 
+Then we generate the axioms that guarantees preserving structure. For a binary operation, this axiom would look as follows 
+\begin{lstlisting} [mathescape]
+ interp-op : {x1 x2 : A1} {y1 y2 : A2} $\to$ interp x1 y1 -> interp x2 y2 -> interp (op x1 x2) (op y1 y2)
+\end{lstlisting}
+By using \lstmath{applyProjConstr} as is done in the generation of homomorphism, we get the two expressions \lstmath{op x1 x2} and \lstmath{op y1 y2} along with their bindings. 
+\begin{hscode}  
+ (bind1,expr1) = Eq.applyProjConstr thry i1 constr (Just 'x')
+ (bind2,expr2) = Eq.applyProjConstr thry i2 constr (Just 'y')
+\end{hscode} 
+we make sure they use different names for the bindings by sending the variables names \lstmath{x} and \lstmath{y}. 
+We create lists for the argumetns and the expressions as follows 
+\begin{hscode} 
+ args1 = concatMap getBindingArgs bind1 ++ [Arg expr1] 
+ args2 = concatMap getBindingArgs bind2 ++ [Arg expr2]
+\end{hscode} 
+which generates lists \lstmath{[x1,x2,op x1 x2]} and \lstmath{[y1,y2,op y1 y2]}, which we align to generate the interpretation axiom as follows 
+\begin{hscode} 
+ zipWith (\x y -> App [mkArg (interpName ^. name),x,y]) args1 args2 
+\end{hscode}
 
+\input{term-algebra.tex}
 
+\section{Discussion}
+Given a tog dependent record, we have generated multiple constructions; some of which are records, like signatures, products, and homomorphisms, some are datatypes, like the different forms of term langauges, and others are functions, like all the utility functions for term languages. 
+
+A key part to this chapter is the knowledge representation aspect of the different constructions included. The representation of \lstmath{EqTheory} follows from the axiomatic representation of algebraic structures as presented in universal algebra. The definitions of \lstmath{FType} and \lstmath{DType} corresponds to the representation of functions and datatype, respectively, in tog. Less obvious was the representations of instances \lstmath{EqInstance} and \lstmath{DTInstance} and function application. The presentation we provide for them captures what is new information about the instance that is not part of the theory or the datatype. These are the name, binding, and type of the instance. 
+%Another interesting problem here is related to dealing with bindings of two different inputs, how to determine if they are the same, different, hidden or explicit. 
+Once the knowledge capture and utility functions presented in Section~\ref{sec:togFamework} are in place, generating new constructions becomes a straight forward task. 
+
+Another useful lesson we learn here is about the importance of having a strong and small core language for manipulating structures. Many things were easy to do in tog because it is a small system. But we also faced difficulties due to the immaturity of some features in tog, like handling hidden arguments and passing constructors to functions. 
+
+Using this framework we are able to generate a library of $106468$ lines of code from the representation of $230$ theories. Appendix~\ednote{add the appendix and reference} shows the generated definition for \lstmath{Monoid} theory. All the generated files are present on github under~\url{https://github.com/ysharoda/tog/blob/master/Library/mathscheme-generated.tog}~\ednote{put theories in separate files like in agda output, and update the url}. 
+ 
