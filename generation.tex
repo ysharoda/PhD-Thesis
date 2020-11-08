@@ -11,62 +11,83 @@ In Section~\ref{sec:toBeGenerated} we introduce a list of operations that can be
 
 \section{What can be generated}
 \label{sec:toBeGenerated}
-Algebra makes the basis of many areas of computer science. We are interested in theorem proving and specification systems. \ednote{relate this to the background section} \ednote{uniform notation and citation} In many places the term algebra is used to refer to the 
+%Algebra makes the basis of many areas of computer science. We are interested in theorem proving and specification systems. \ednote{relate this to the background section} \ednote{uniform notation and citation} In many places the term algebra is used to refer to the 
 
 The axiomatic presentation of a class of algebras is defined as \lstmath{Th = (S,F,E}) where \lstmath{S} is a single sort, \lstmath{F} is a set of operations, and \lstmath{E} is a set of equations.  In the following, we will describe some constructions in terms of the three components of \lstmath{Th}. The definition are adapted from~\cite{ehrig1985fundamentals} and~\cite{handbook1993Maibaum}.  
 
 \begin{itemize}
-    \item The \emph{signature} of a theory \lstmath{(S,F,E)}  is \lstmath{SIG = (S,F)} consisting of the sort and $n$-ary function symbols, where $n \geq 0$. The signature specifies the language of the theory, without any laws. 
-    \item Product theory 
-    \item Projection from a product theory 
-    \item SubTheory: An algebra \lstmath{B} is the subalgebra of \lstmath{A} if the following conditions are satisfied %source: ehrig and mehr book 
+    \item The \emph{signature} of a theory \lstmath{(S,F,E)}  is \lstmath{Sig = (S,F)} consisting of the sort and $n$-ary function symbols, where $n \geq 0$. The signature specifies the language of the theory, without any laws. 
+    \item The \emph{product} of two algebras \lstmath{A} and \lstmath{B} of the same theory \lstmath{Th} is the algebra with sort \lstmath{(S$_A$ $\times$ S$_B$)}. In a uni-sorted setup, the sort of the product algebra is \lstmath{(S$\times$S)}. 
+    \begin{itemize}
+    \item \lstmath{c$_\times$ : (S$_A$ $\ \times\ $ S$_B$)}, for every constant symbol \lstmath{c} in \lstmath{Th}. 
+    \item \lstmath{op$_\times$ : (S$_A$ $\ \times\ $ S$_B$) $\ \to$ $\ \cdots\ $  $\to\ $ (S$_A$ $\ \times\ $ S$_B$)}, for every function symbol \lstmath{op} in \lstmath{Th} based on its arity. 
+    \item The set of equations \lstmath{E$_\times$} is given by substituting the new sort, constant and function symbols in the set \lstmath{E}.  
+    \end{itemize}
+    \item The \emph{sub-theory} \lstmath{B} of a theory \lstmath{A} is defined as 
     \begin{enumerate}
     \item \lstmath{S$_B$} \lstmath{$\subseteq$} \lstmath{S$_{A}$}
-    \item \lstmath{c$_B$} \lstmath{=} \lstmath{c$_{A}$} for every constant symbol in the set of function symbols \lstmath{OP}. 
-    \item \lstmath{f$_B$(x$_1$ $\cdots$ x$_n$)} \lstmath{=} \lstmath{f$_A$(x$_1$ $\cdots$ x$_n$)}, for all \lstmath{f $\ \in\ $ OP}, {x$_1$ $\cdots$ x$_n$ $\in$ S}, and \lstmath{n $\in$\ $\mathbb{N},\ n\ \geq\ 1$}. 
+    \item \lstmath{c$_B$} \lstmath{=} \lstmath{c$_{A}$} for every constant symbol in the set of function symbols \lstmath{F}. 
+    \item \lstmath{f$_B\ $ x$_1\ $ $\ \cdots\ $ x$_n$} \lstmath{=} \lstmath{f$_A\ $x$_1\ $ $\ \cdots\ $ x$_n$}, for all \lstmath{f $\ \in\ $ F}, {x$_1$ $\cdots$ x$_n$ $\in$ S}, and \lstmath{n $\ \in\ $ $\mathbb{N}$, n $\ \geq\ $ 1}. 
     \end{enumerate}
-    \item Trivial SubTheory, the subtheory with they empty carrier. Because the carrier is empty, the $3$ axioms above trivially hold. 
-    \item The theory of subsets of the carrier 
-    \item let \lstmath{A} and \lstmath{B} be algebras of the same specification, the \emph{homomorphism} between them is a function \lstmath{hom : A $\to$ B} such that 
+    \item The \emph{trivial sub-theory} is the subtheory with the empty carrier. Because the carrier is empty, the $3$ axioms above trivially hold. 
+    \item The \emph{homomorphism} between two algebras \lstmath{A} and \lstmath{B} of the same theory \lstmath{Th} is a function \lstmath{hom : S$_A$ $\ \to\ $ S$_B$} such that 
     \begin{itemize}
-        \item for every constant symbol in \lstmath{OP}: \lstmath{hom c$_A$ = c$_B$} 
-        \item for every function symbol in \lstmath{OP}: 
-           \lstmath{hom(f$_A$ x$_1$  $\cdots$ x$_n$) = f$_B$ (hom x$_1$)  $\cdots$ (hom x$_n$)} 
+        \item for every constant symbol in \lstmath{F}: \lstmath{hom c$_A$ = c$_B$} 
+        \item for every function symbol in \lstmath{F}: 
+           \lstmath{hom(f$_A\ $ x$_1\ $ $\ \cdots\ $ x$_n$) = f$_B\ $ (hom x$_1$)  $\ \cdots\ $ (hom x$_n$)} 
     \end{itemize}
-    \item Monomorphisms are injective homomorphisms 
-    \item Epimorphisms are surjective homomorphisms 
-    \item Endomorphism homomorphism from an object to itself 
-    \item Isomorphisms are bijective homomorphisms. In a generative sense, this means generating one more axiom 
-    \item Automorphisms are isomorphisms from an object to itself. 
-    \item The kernel of a morphism 
+    There are some variants of homomorphism that can be easily generated from it. These variants are  
+    \begin{itemize}
+    	\item \emph{monomorphisms} are injective homomorphisms 
+  	  	\item \emph{epimorphisms} are surjective homomorphisms 
+    	\item \emph{endomorphisms} are homomorphisms from an object to itself 
+    	\item \emph{isomorphisms} are bijective homomorphisms. 
+    	\item \emph{automorphisms} are isomorphisms from an object to itself. 
+    \end{itemize}
+    \item The \emph{kernel} of a homomorphism from algebra \lstmath{A} to algebra \lstmath{B} is defined as the binary relation \lstmath{$\equiv_{hom}$} on the sort of \lstmath{A}, such that 
+    \begin{lstlisting}[mathescape] 
+    a $\equiv_{hom}$ b $\Leftrightarrow$ hom a $\equiv_{hom}$ hom b
+    \end{lstlisting}
+    for every \lstmath{a} and \lstmath{b} in \lstmath{S$_A$}. 
     \item The composition of two morphisms \lstmath{f : A $\ \to\ $ B} and \lstmath{g : B $\ \to\ $ C} is denoted by the function \lstmath{g $\ \circ\ $ f : A $\ \to\ $ C} and is defined as 
     \lstmath{(g $\ \circ\ $ f) a = g (f a)} for every \lstmath{a $\ \in\ $ A}   
-    \item Homomorphism Equality 
-    \item Relational Interpretation 
-    \item Quotient Algebras: let \lstmath{A} be a Sig-algebra and \lstmath{R} be a congruent relation on \lstmath{A}. The quotient algebra \lstmath{A/R = (S$_Q$,OP$_Q$)} is defined as
+ %   \item Homomorphism Equality 
+    \item The \emph{relational interpretation} between two algebras \lstmath{A} and \lstmath{B} of the same theory is a relation \lstmath{interp a b}, for all \lstmath{a $\ \in\ $ S$_A$} and \lstmath{b $\ \in\ $ S$_B$} such that 
     \begin{itemize}
-       \item The carrier elements are sets of equivalence classes \lstmath{S$_Q$ = $\{$[a] $\mid$ a $\in$ S$\}$} where \lstmath{[a] = $\{$b $\mid$ b $\in$ S, (a,b) $\in$ R$\}$}. 
-       \item \lstmath{c$_Q$ = [c]}, for every constant symbol \lstmath{c} in \lstmath{A}
-       \item A function \lstmath{f x$_1$ $\cdots$ x$_n$} \ednote{check this} 
+    \item interp c$_A$ c$_B$, for every constant \lstmath{c $\ \in\ $ A}.  
+    \item interp x$_1$ y$_1$ $\ \wedge\ $ $\ \cdots\ $ $\ \wedge\ $ interp x$_n$ y$_n$ $\Rightarrow$ interp (op$_A$ x$_1$ $\ \cdots\ $ x$_n$) (op$_B$ y$_1$ $\ \cdots\ $ y$_n$) for all function symbols \lstmath{op $\ \in\ $ F}, where \lstmath{x$_1$ $\ \cdots\ $ x$_n$ $\ \in\ $ S$_A$} and \lstmath{y$_1$ $\ \cdots\ $ y$_n$ $\ \in\ $ S$_B$}. 
+    \end{itemize}
+    
+    \item The \emph{quotient algebra} for a theory \lstmath{Th} with respect to some congruence relation \lstmath{$\equiv$} is defined as the theory \lstmath{Th/$\equiv\ $ = (S$_{Q}$,F$_{Q}$,E$_{Q}$)} such that\ednote{Q: How to define \lstmath{E$_{Q}$}} 
+    \begin{itemize}
+       \item \lstmath{S$_Q$} is the factor set of \lstmath{S}, defined as 
+       	\begin{lstlisting}[mathescape]
+       	S$_Q$ = {[x] $\mid$ x $\in$ S}
+       	\end{lstlisting} 
+       	where \lstmath{[x]} is the equivalence class defined as \lstmath{[x] = $\{$y $\ \in\ $ S $\ \mid\ $ x $\ \equiv\ $ y$\}$}
+       \item \lstmath{c$_Q$ = [c]}, for constant symbols \lstmath{c $\ \in\ $ F} and \lstmath{c$_Q$ $\ \in\ $ F$_Q$}.  
+       \item \lstmath{f$_Q$ [x$_1$] $\ \cdots\ $ [x$_n$]} = [f x$_1$ $\ \cdots\ $ x$_n$]
+       for function symbols \lstmath{f$_Q$ $\ \in\ $ F$_Q$} and \lstmath{f $\ \in\ $ F}.
     \end{itemize}      
-    \item congruence of functions 
-    \item The monotonicity of a function 
-    \item Closed term language:  The set of terms of an algebra are defined inductively as 
+
+%    \item congruence of functions 
+%    \item The monotonicity of a function 
+    \item The \emph{closed term language} induced by a theory is a set of terms that are defined inductively as 
     \begin{itemize}
         \item all constants belong to the language (basic terms) 
-        \item A term \lstmath{t$_f$ t$_1$ $\cdots$ t$_n$} for every function symbol \lstmath{f : s $\to$ $\cdots$ $\to$ s} of arity $n$, such that  \lstmath{t$_1$ $\cdots$ t$_n$} belongs to the language. 
+        \item A term \lstmath{t$_f$ $\ $ t$_1$ $\ \cdots\ $ t$_n$} for every function symbol \lstmath{f : s $\ \to\ $ $\ \cdots\ $ $\ \to\ $ s} of arity $n$, such that  \lstmath{t$_1$ $\ \cdots\ $ t$_n$} belongs to the language. 
     \end{itemize}
-    \item Open term language: similar to the closed term language, except the basic terms includes a set of variables.  
-    \item Staged term language 
-    \item Structural induction: Let \lstmath{p} be a predicate defined on terms \lstmath{t $\in$ T$_{OP}$(X)} of a signature \lstmath{SIG = (S,OP)} with variables \lstmath{X}. The assertion \lstmath{p(t)} is true for all \lstmath{t $\in$ T$_{OP}$} if the following conditions are satisfied: 
+    \item The \emph{open term language} of a theory is similar to the closed term language, except that basic terms includes a set of variables.  
+    \item The \emph{staged term language} of a theory is the term language in which expressions can be marked for execution in compile or runtime stages \ednote{Q: Can I find any better decisions}.  
+    \item Structural induction: Let \lstmath{p} be a predicate defined on terms \lstmath{t $\ \in\ $ T$_{F}$(X)} of a signature \lstmath{SIG = (S,F)} with variables \lstmath{X}. The assertion \lstmath{p(t)} is true for all \lstmath{t $\ \in\ $ T$_{F}$} if the following conditions are satisfied: 
     \begin{itemize}
         \item \lstmath{p(t)} is true for all constant and variable symbols 
-        \item for each term \lstmath{f t$_1$ $\cdots$ t$_n$}, we have that if \lstmath{p(t$_1$) $\cdots$ p(t$_n$)} are true then also \lstmath{p(f t$_1$ $\cdots$ t$_n$)} is true.  
+        \item for each term \lstmath{f t$_1$ $\ \cdots\ $ t$_n$}, we have that if \lstmath{p(t$_1$) $\cdots$ p(t$_n$)} are true then also \lstmath{p(f t$_1$ $\ \cdots\ $ t$_n$)} is true.  
     \end{itemize}     
-    \item Evaluation functions: Given a theory \lstmath{SIG = (S,OP,E)}, a term language defined as above, and an algebra over a carrier \lstmath{A}. The function \lstmath{eval : T$_{OP}$ $\to$ A} is defined recursively as 
+    \item Evaluation functions: Given a theory \lstmath{SIG = (S,F,E)}, a term language defined as above, and an algebra over a carrier \lstmath{A}. The function \lstmath{eval : T$_{F}$ $\ \to\ $ A} is defined recursively as 
     \begin{itemize}
         \item \lstmath{eval(c) = c$_{A}$}
-        \item \lstmath{eval(f t$_1$ $\cdots$ t$_n$)} = f$_A$ (eval t$_1$) $\cdots$ (eval t$_n$) where an assignment function maps the constants of the language to the constants defined by the algebra. The evaluation function for open term language would be similar except it has an additional environment that assigns value of the carrier to variables. 
+        \item \lstmath{eval(f t$_1$ $\ \cdots\ $ t$_n$)} = f$_A$ (eval t$_1$) $\cdots$ (eval t$_n$) where an assignment function maps the constants of the language to the constants defined by the algebra. The evaluation function for open term language would be similar except it has an additional environment that assigns value of the carrier to variables. 
     \end{itemize}      
     \item Simplification via rewriting: Given a set of equations, each represented as \lstmath{(X,L,R)}, where \lstmath{X} is a set of variables, \lstmath{L} is the term on the left of the equation, and \lstmath{R} is the term on the right side. By fixing the set of variables, we can represent equations as  (L,R). Each equation represented this form gives rise to two substitutions \lstmath{1) L $\ \Rightarrow\ $ R} and \lstmath{2) R $\ \Rightarrow\ $ L}. Any of these substitutions can result in rewriting systems, but when simplifying one need to define an ordering relation that decides which term is \emph{simpler} than the other. When having the equations and the ordering relation, rewriting systems can be defined. 
     \item Equivalence of terms: two terms can be denoted equal in one or more of the following cases 
@@ -81,7 +102,7 @@ The axiomatic presentation of a class of algebras is defined as \lstmath{Th = (S
     \item Theory Actions 
     \item Subset Actions
     \item Coset of a theory 
-\end{itemize}\ednote{Is there more that can be added here?} 
+\end{itemize}
 We give the definitions of these constructs based on set theory, as one would find them in a standard text book. It has been formalized in type theory in  both Coq in~\cite{capretta99, Spitters2010} and agda~\cite{Gunther2018Agda}. In~\cite{capretta99}, the formalization of algebraic structures in type theory is done using record types. 
 %A reddit post have observed that these structures can be generated~\cite{redditGenHom}. The discussion went on\ednote{continue this} and~\cite{agdaGenPull}
 
@@ -89,7 +110,8 @@ We give the definitions of these constructs based on set theory, as one would fi
 \label{sec:togFamework}
 With so many construction to be generated, we develop an infrastructure that can be used to generate them. The main component is the type \lstmath{EqTheory}, which is a representation of uni-sorted equational theories described in Secion~\ref{subsec:generation:eqTheories}. 
 In order to operate on equational theories and generate the constructions we are interested in, we provide some utilities to manipulate tog representation of functions, datatypes, and parameters in Sections~\ref{subsec:generation:functions}, and~\ref{subsec:generation:datatypes}, resepectively. 
-Another important operation that we use in the generator is renaming, which we discuss in Section~\ref{subsec:generation:renaming}. Some of the definitions we generate may depend on definitions of standard operations, like looking up a value in a vector. We discuss how to add definitions to a prelude in Section~\ref{subsec:generation:prelude}. 
+%Another important operation that we use in the generator is renaming, which we discuss in Section~\ref{subsec:generation:renaming}. 
+Some of the definitions we generate may depend on definitions of standard operations, like looking up a value in a vector. We discuss how to add definitions to a prelude in Section~\ref{subsec:generation:prelude}. 
 
 
 %As we discussed in Chapter~\ref{ch:tog}, Tog provides us with the internal representations of dependent records, which we use to represent theories. We extend the Tog implementation to generate algebraic constructions by providing metaprograms that operate on Tog internal representation of dependent records. In this section we discuss some of the basic utiities that we use in the generation algorithms. 
@@ -127,7 +149,9 @@ We define an instance of an \lstmath{EqTheory} in terms of its name, the binding
  type EqInstance = (Name_,[Binding],Expr) 
 \end{hscode}
 Instances are computed by the function 
-\lstmath{eqInstance :: EqTheory -> Maybe Int -> EqInstance} 
+\begin{hscode} 
+eqInstance :: EqTheory -> Maybe Int -> EqInstance
+\end{hscode}
 where the second argument is used to index the instance in cases where more than one is needed, like with the parameters of homomorphisms. The bindings of the instance are computed based on the arguments. 
 \begin{hscode}
  indexBindings True i ~$\$$~ map fldsToHiddenBinds (args thry)
@@ -295,7 +319,9 @@ Fun (Eq.projectConstr thry i1 carrier) ~$\$$~
 \end{hscode} 
 Then we generate the axioms that guarantees preserving structure. For a binary operation, this axiom would look as follows 
 \begin{lstlisting} [mathescape]
- interp-op : {x1 x2 : A1} {y1 y2 : A2} $\to$ interp x1 y1 -> interp x2 y2 -> interp (op x1 x2) (op y1 y2)
+ interp-op : {x1 x2 : A1} {y1 y2 : A2} $\to$ 
+           interp x1 y1 $\to$  interp x2 y2 $\to$ 
+           interp (op x1 x2) (op y1 y2)
 \end{lstlisting}
 By using \lstmath{applyProjConstr} as is done in the generation of homomorphism, we get the two expressions \lstmath{op x1 x2} and \lstmath{op y1 y2} along with their bindings. 
 \begin{hscode}  
