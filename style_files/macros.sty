@@ -11,3 +11,72 @@
 \newcommand{\tpcat}{\ensuremath{\mathbb{P}}}
 \newcommand{\tpcatOp}{\ensuremath{\mathbb{P}^{op}}}
 \newcommand{\extcat}{\ensuremath{\mathbb{E}}}
+
+\newcommand{\bigdot}{\ensuremath{\boldsymbol{\cdot}}}
+\newcommand{\sembr}[1]{\ensuremath{\llbracket  #1 \rrbracket}}
+\renewcommand{\cite}[1]{\citep{#1}}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{minted,skins}
+
+\newtcblisting{hscode}{
+    listing engine=minted,
+    colframe=white,
+    colback=white,
+    listing only,
+    minted style=colorful,
+    minted language=haskell,
+    minted options={escapeinside=~~,mathescape=true}, %linenos=true,
+    left=1mm
+}
+
+\newtcblisting{agdacode}{
+    listing engine=minted,
+    colframe=white,
+    colback=white,
+    listing only,
+    minted style=colorful,
+    minted language=agda,
+    minted options={escapeinside=~~,mathescape=true}, %linenos=true,
+    left=1mm
+}
+
+\newtcblisting{isabellecode}{
+    listing engine=minted,
+    colframe=white,
+    colback=white,
+    listing only,
+    minted style=colorful,
+    minted language=isabelle,
+    minted options={escapeinside=~~,mathescape=true}, %linenos=true,
+    left=1mm
+}
+
+\newtcblisting{leancode}{
+    listing engine=minted,
+    colframe=white,
+    colback=white,
+    listing only,
+    minted style=colorful,
+    minted language=lean,
+    minted options={escapeinside=~~,mathescape=true}, %linenos=true,
+    left=1mm
+}
+
+\newtcblisting{caslcode}{
+    listing engine=minted,
+    colframe=white,
+    colback=white,
+    listing only
+}
+
+\newtcblisting{togcode}{
+    listing engine=minted,
+    colframe=white,
+    colback=white,
+    listing only,
+    minted style=trac,
+    minted language=haskell,
+    minted options={escapeinside=~~,mathescape=true}, %linenos=true,
+    left=1mm
+}
