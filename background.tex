@@ -1,22 +1,29 @@
 \chapter{Background}
 \todo{JC: Have an overview telling us: 1. what background information we’re going to need 2. and where each of those ideas will in fact be used. [If they are not, then don’t put them in!]}
 
-\section{Equational Logic}
+\section{Axiomatic theory}
+A logic is defined in~\cite{Gries1993FormalLogic} to be a set of rules defined in terms of 
+\begin{itemize}
+\item a set of symbols, like \lstmath{=}, \lstmath{$\wedge$}, \lstmath{$\vee$}, constants, like \lstmath{true} and \lstmath{false}, and variables, like \lstmath{p} and \lstmath{q}. 
+\item a set of formulas constructed from the symbols.  
+\item a set of axioms stating the properties of the symbols  
+\item a set of inference rules used to derive new formulas.  
+\end{itemize}
+%The set of formulas is called the language of the logic. The language is defined syntactically; there is no notion of meaning or semantics in a  logic per se. 
+The language of the logic provides the meta-primitives that theories in that logic uses to describe their own languages. 
+An axiomatic theory \lstmath{T} in some logic is defined as the tuple \lstmath{(L,$\Gamma$)} such that 
+\begin{itemize}
+\item \lstmath{L} is the language of the theory consisting of sorts and function symbols. 
+\item \lstmath{$\Gamma$} is the set of formulas that holds in \lstmath{T}. 
+\end{itemize}
+The set \lstmath{$\Gamma$} is closed under logical consequence and can be infinite in some cases. A \emph{theory presentation} of some theory \lstmath{T} is the tuple \lstmath{(L,A)} where the language is the same as \lstmath{T}, but the set of formulas \lstmath{A} is subset of \lstmath{$\Gamma$}. Note that the same theory can have different theory presentations. In this work, as is traditionally the case, we use the term theory to refer to theory presentations. 
 
-\section{Algebraic Structures}
+A theory in equational logic, like the ones we deal with in this work, restricts the set \lstmath{$\Gamma$} to be a set of equations of the form \lstmath{t$_1$ = t$_2$}. We refer to this set as \lstmath{E}. 
+This exposes the question of which equality is to  be used~\cite{oneThingSame2008, equalityInTPs2015}. In many cases the underlying logic offers its own propositional equality, like in tog\todo{check at this point the reader is aware of tog}. In some other cases, the equality is defined by the language of the theory as is the case when using setoids. We discuss the equality issue more in~\todo{Do we need to discuss it? Where?}.
 
-\section{Substitution}
+Most algebra text books would refer to the language of the theory presentation as the signature and would separate its two components, writing it as \lstmath{(S,F)}. They often do not use the term \lstmath{theory}, but refer to sigantures with specific properties that are satisfied by the algebras. The use of axiomatic theories as we define them here is, to the best of our knowledge, tied to using them in computerized systems as in Clear~\cite{Goguen1980}. 
 
-\section{Axiomatic Theory}
-\label{sec:background:theory}
-\todo{Give a formal definition to a theory}
-\todo{Talk about what well-formed means}
-\todo{talk about primitive theories, the ones that only has function symbols and axioms, no definitions, theorems or proofs}
-A theory is a specification of a class of algebras, that share some properties. 
-An axiomatic theory is a pair \lstmath{(L,$\Sigma$)}, where \lstmath{L} describes the language of the theory. It consists of \lstmath{(S,F)}. \lstmath{S} is a set of sorts and \lstmath{F} is a set of function symbols. The function symbols we refer to here are restricted functions, i.e. functions over simple types that are expressible in first order logic. We discuss the generalization of our approach to functions operating over complex domains, like power sets or sequences, in Chapter~\ref{ch:discussion}. 
-\lstmath{$\Sigma$} is a set of axioms describing properties of objects in the language. A theory is closed under logical consequences, therefore we speak of a \emph{theory presentation}, in which only necessary axioms are given. Theory presentations are defined in a logic that provides the inference rules used to derive useful theorems.  
-
-In a dependently typed setup, the distinction between sorts, functions symbols, and axioms need not exist. Instead a theory is seen as a telescope~\cite{de1991telescopic}. Every declaration \lstmath{$c : t$} within the telescope is defined within a context \lstmath{$\Gamma$}. This is described as \lstmath{$\Gamma \vdash c : t$}.  
+With dependent types and curry-howard correspondance in place, the distinction between the three components, sorts, function symbols, and axioms, is not needed anymore. Instead a theory is seen as a telescope~\cite{de1991telescopic}. Every declaration \lstmath{$c : t$} within the telescope is defined within a context \lstmath{$\Gamma$}. This is described as \lstmath{$\Gamma \vdash c : t$}.  
 
 A theory presentation is well-typed if every declaration \lstmath{$c : t$} is well-typed given its context. The formation rules for theory presentations are given in Figure~\ref{fig:ctx}, where $\syms{\Gamma}$ refers to the list of symbols defined in the context $\Gamma$. 
 $$ \syms{\context{\varnothing}} = \EmptyThy \qquad
@@ -145,6 +152,10 @@ theory Unital = {
 }   
 \end{lstlisting}
 These definition overlook that in some cases one might want to talk about an operation with only right unit, like in the case of subtraction on integers. One will then need to add a new theory that is similar to \lstmath{Unital} without the \lstmath{lunit} declaration. Any theorems proved in the context of \lstmath{Unital} cannot be used, even if it only depends on \lstmath{lunit}. 
+
+\section{Universal Algebra}
+
+\section{Substitution}
 
 \section{Category Theory}
 explain pushout and how it is calculated 
