@@ -411,13 +411,38 @@ OPTannote = {•}
 }
 
 @inbook{handbook1993Maibaum,
-editor = {Abramsky, S. and Maibaum, T. S. E.},
+editor = {Abramsky, S. and Gabbay, Dov M. and Maibaum, S. E.},
 title = {Universal Algebra} ,
 bookTitle = {Handbook of Logic in Computer Science (Vol. 1): Background: Mathematical Structures},
 isbn = {0198537352},
 publisher = {Oxford University Press, Inc.},
 year = {1993},
 address = {USA}
+}
+
+@inbook{handbook1993CategoricalLogic,
+editor = {Abramsky, S. and Gabbay, Dov M. and Maibaum, S. E.},
+title = {Categorical Logic}, 
+bookTitle = {Handbook of Logic in Computer Science (Vol. 5): Logic and algebraic methods},
+year = {1993},
+isbn = {0198537611},
+publisher = {Oxford University Press, Inc.},
+address = {USA}
+}
+
+@Inbook{Gries1993EquationalLogic,
+author="Gries, David
+and Schneider, Fred B.",
+title="Propositional Calculus",
+bookTitle="A Logical Approach to Discrete Math",
+year="1993",
+publisher="Springer New York",
+address="New York, NY",
+pages="41--61",
+abstract="We study the general notion of a formal logical system and its interpretations. Thus, we discuss both syntax (proof theory) and semantics (model theory) for logics. We also study constructive logic in a propositional setting.",
+isbn="978-1-4757-3837-7",
+doi="10.1007/978-1-4757-3837-7_8",
+url="https://doi.org/10.1007/978-1-4757-3837-7_8"
 }
 
 @Inbook{Gries1993FormalLogic,
@@ -532,6 +557,17 @@ url="https://doi.org/10.1007/978-1-4757-3837-7_8"
   pages={189 -- 204},
   year={1991},
   publisher={Citeseer}
+}
+
+@article{pollack2002dependently,
+  title={Dependently typed records in type theory},
+  author={Pollack, Robert},
+  journal={Formal aspects of computing},
+  volume={13},
+  number={3-5},
+  pages={386--402},
+  year={2002},
+  publisher={Springer}
 }
 
 
@@ -1393,3 +1429,66 @@ $ ------ Misc Related Work ------
   year={2015},   
   pages={45-54},  
   doi={10.15439/2015F229}}
+  
+@phdthesis{taha1999multi,
+  title={Multi-stage programming: Its theory and applications},
+  author={Taha, Walid},
+  year={1999},
+  school={Oregon Graduate Institute of Science and Technology}
+}  
+
+@inproceedings{yallop2016StagingGeneric,
+author = {Yallop, Jeremy},
+title = {Staging Generic Programming},
+year = {2016},
+isbn = {9781450340977},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2847538.2847546},
+doi = {10.1145/2847538.2847546},
+abstract = { Generic programming libraries such as Scrap Your Boilerplate eliminate the need to write repetitive code, but typically introduce significant performance overheads. This leaves programmers with the unfortunate choice of writing succinct but slow programs or writing tedious but efficient programs. We show how to systematically transform an implementation of the Scrap Your Boilerplate library in the multi-stage programming language MetaOCaml to eliminate the overhead, making it possible to combine the benefits of high-level abstract programming with the efficiency of low-level code. },
+booktitle = {Proceedings of the 2016 ACM SIGPLAN Workshop on Partial Evaluation and Program Manipulation},
+pages = {85–96},
+numpages = {12},
+keywords = {MetaOCaml, generic programming, multi-stage programming, partial evaluation, ML},
+location = {St. Petersburg, FL, USA},
+series = {PEPM '16}
+}
+
+@article{sheard2000stagingDSL,
+author = {Sheard, Tim and Benaissa, Zine-el-abidine and Pasalic, Emir},
+title = {DSL Implementation Using Staging and Monads},
+year = {2000},
+issue_date = {Jan. 2000},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {35},
+number = {1},
+issn = {0362-1340},
+url = {https://doi.org/10.1145/331963.331975},
+doi = {10.1145/331963.331975},
+abstract = {The impact of Domain Specific Languages (DSLs) on software design is considerable. They allow programs to be more concise than equivalent programs written in a high-level programming languages. They relieve programmers from making decisions about data-structure and algorithm design, and thus allows solutions to be constructed quickly. Because DSL's are at a higher level of abstraction they are easier to maintain and reason about than equivalent programs written in a high-level language, and perhaps most importantly they can be written by domain experts rather than programmers.The problem is that DSL implementation is costly and prone to errors, and that high level approaches to DSL implementation often produce inefficient systems. By using two new programming language mechanisms, program staging and monadic abstraction, we can lower the cost of DSL implementations by allowing reuse at many levels. These mechanisms provide the expressive power that allows the construction of many compiler components as reusable libraries, provide a direct link between the semantics and the low-level implementation, and provide the structure necessary to reason about the implementation.},
+journal = {SIGPLAN Not.},
+month = dec,
+pages = {81–94},
+numpages = {14}
+}
+
+@InProceedings{farmer2013quoteEval,
+author="Farmer, William M.",
+editor="Carette, Jacques
+and Aspinall, David
+and Lange, Christoph
+and Sojka, Petr
+and Windsteiger, Wolfgang",
+title="The Formalization of Syntax-Based Mathematical Algorithms Using Quotation and Evaluation",
+booktitle="Intelligent Computer Mathematics",
+year="2013",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="35--50",
+abstract="Algorithms like those for differentiating functional expressions manipulate the syntactic structure of mathematical expressions in a mathematically meaningful way. A formalization of such an algorithm should include a specification of its computational behavior, a specification of its mathematical meaning, and a mechanism for applying the algorithm to actual expressions. Achieving these goals requires the ability to integrate reasoning about the syntax of the expressions with reasoning about what the expressions mean. A syntax framework is a mathematical structure that is an abstract model for a syntax reasoning system. It contains a mapping of expressions to syntactic values that represent the syntactic structures of the expressions; a language for reasoning about syntactic values; a quotation mechanism to refer to the syntactic value of an expression; and an evaluation mechanism to refer to the value of the expression represented by a syntactic value. We present and compare two approaches, based on instances of a syntax framework, to formalize a syntax-based mathematical algorithm in a formal theory T. In the first approach the syntactic values for the expressions manipulated by the algorithm are members of an inductive type in T, but quotation and evaluation are functions defined in the metatheory of T. In the second approach every expression in T is represented by a syntactic value, and quotation and evaluation are operators in T itself.",
+isbn="978-3-642-39320-4"
+}
+
+
