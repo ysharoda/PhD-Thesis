@@ -1,0 +1,50 @@
+\footnotesize
+\begin{tabular}[t]{p{6.3cm} p{6.3cm}}
+\begin{agdacode}
+-- Basic 
+data MonoidTerm  : Set where
+  opL : MonoidTerm ~$\to$~ 
+        MonoidTerm ~$\to$~ 
+        MonoidTerm
+  eL  : MonoidTerm   
+
+
+
+
+
+-- Closed 
+data ClMonoidTerm (A  : Set )  
+          : Set where
+  sing : A ~$\to$~ ClMonoidTerm A
+  opCl : ClMonoidTerm A ~$\to$~ 
+         ClMonoidTerm A ~$\to$~ 
+         ClMonoidTerm A
+  eCl : ClMonoidTerm A
+  
+  
+    
+\end{agdacode}
+&
+\begin{agdacode}
+    
+-- Basic Open 
+data OpMonoidTerm (n  : Nat)  
+          : Set where
+  v : Fin n ~$\to$~ OpMonoidTerm n
+  opOL : OpMonoidTerm n ~$\to$~ 
+         OpMonoidTerm n ~$\to$~ 
+         OpMonoidTerm n 
+  eOL : OpMonoidTerm n  
+
+
+-- Open
+data OpMonoidTerm2 (n  : Nat ) (A  : Set )  
+        : Set where
+  v2 : Fin n ~$\to$~ OpMonoidTerm2 n A 
+  sing2 : A ~$\to$~ OpMonoidTerm2 n A 
+  opOL2 : OpMonoidTerm2 n A ~$\to$~ 
+          OpMonoidTerm2 n A ~$\to$~ 
+          OpMonoidTerm2 n A
+  eOL2 : OpMonoidTerm2 n A  
+\end{agdacode}
+\end{tabular}
