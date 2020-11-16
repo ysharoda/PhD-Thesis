@@ -1,0 +1,42 @@
+\begin{tikzpicture}[node distance=2cm]
+    \node(NodeName1){
+\begin{tcolorbox}[colback=white, width= 0.45\textwidth,left=0pt,right=0pt,top=0pt,bottom=0pt]
+\begin{caslcode}
+spec BaseSpec = sort A end 
+spec Ext1 = BaseSpec then 
+ ops e  :A 
+   __*__:A * A -> A,unit e 
+end 
+spec Ext2 = BaseSpec then 
+ ops e :A 
+   __+__:A * A -> A, unit e 
+end 
+spec Combine = 
+   Ext1 and Ext2 
+end
+\end{caslcode}   
+\end{tcolorbox}
+    };
+\node(NodeName2) [right=of NodeName1] {  % added position of second box
+    \begin{tcolorbox}[colback=white, width= 0.45\textwidth,left=0pt,right=0pt,top=0pt,bottom=0pt]
+\begin{caslcode}
+  sorts A
+  op __*__ : A * A -> A
+  op __+__ : A * A -> A
+  op e : A
+  forall x : A . x + e = x 
+   %(ga_right_unit___+__)%
+  forall x : A . e + x = x 
+   %(ga_left_unit___+__)%
+  forall x : A . x * e = x 
+   %(ga_right_unit___*__)%
+  forall x : A . e * x = x 
+   %(ga_left_unit___*__)%
+\end{caslcode} 
+        \end{tcolorbox}
+        };
+\draw[black, line width=2mm,-{Triangle[angle=60:1pt 3]}] (NodeName1) -- (NodeName2);
+\end{tikzpicture}
+\caption{CASL union operation: On the left, the specification \lstinline|Combine| is defined as the union of \lstinline|Ext1| and \lstinline|Ext2|. On the right, the declarations of specification 
+\lstinline|Combine| as computed by CASL.}
+\label{fig:casl_expr}
