@@ -3,7 +3,7 @@
 
 In this chapter, we introduce the two logics that we are interested in in Section~\ref{sec:background:logic}. Equational logic forms the bases for universal algbera. It is based in set theory. Dependent type theory (DTT) is a version of type theory in which types can depend on values. We want to represent theories of equational logic as contexts in DTT. We introduce the notion of contexts in Section~\ref{sec:background:context} and theories in Section~\ref{sec:background:theory}. Then we discuss how we use concepts of universal algebra in Section~\ref{sec:background:ualgebra}. 
 
-The organization structure that we use to build our library is a theory graph, in which theories are connected via morphisms. We introduce morphisms in Section~\ref{sec:background:morphisms} and discuss theory graphs and different approaches to building them in Section~\ref{sec:background:theorygraph}. 
+The organization structure that we use to build our library is a theory graph, in which theories are connected via morphisms. We introduce morphisms in Section~\ref{sec:background:morphisms} and discuss theory graphs and different approaches to building them in Section~\ref{sec:background:theorygraph}. To build the library we use combinators motivated by category theory, so we give a brief introduction for it in Section~\ref{sec:categoryTh}. 
 One of the constructions we generate, that is not typically defined within universal algebra texts is multi-staged programming, so we define it in Section~\ref{sec:background:msp}. 
 
 \section{Logic}
@@ -229,6 +229,7 @@ Defining \lstmath{Unital} this way overlooks that in some cases one might want t
 Using tiny theories, one would first define \lstmath{LeftUnital} theory adding the \lstmath{lunit} axiom to \lstmath{PointedMagma}, a \lstmath{RightUnital} theory adding \lstmath{runit} axiom, and the theory of \lstmath{Unital} would be connected to both \lstmath{LeftUnital} and \lstmath{RightUnital}, creating more connections and therefore, allowing more reuse of results. Systematically using tiny theories to develop a large library leads to the need for support to diamond structures, which we discuss in Chapter~\ref{ch:library} based on the work in \cite{carette2018building}.  
 
 \section[title]{Category Theory\footnote{This section is based on~\cite{pierce1990taste}}}
+\label{sec:categoryTh}
 Category theory is a foundational framework, like set and type theory, that is abstract and structured enough to allow hidden commonalities of concepts to emerge. 
 
 While set theory has elements of sets as the main concept, category theory is built around the concept of morphisms. The source and target of a morphism are objects in the category. Category theory is not concerned with the internal structure of the objects, but rather by how they relate to other objects. 
@@ -279,7 +280,7 @@ $v_\Delta \cdot w = w_\Delta$ and $v_\Phi \cdot w = w_\Phi$
 
 
 \paragraph{Colimits.}
-Colimits are defined in terms of cocones. 
+Colimits are defined in terms of cocones. The definitions we present here are adapted from~\cite{sannella2012foundations}. 
 
 A cocone over a diagram consists of an object $\Gamma$ and a family of morphisms $u_0 : \Delta_0 \to \Gamma, ..., u_n : \Delta_n \to \Gamma$, where $n$ is the number of nodes in the diagram other than $\Gamma$, such that for every morphism $v : \Delta_i \to \Delta_j$ in the diagram $v \cdot u_j = u_i$, i.e. the following diagram commutes 
 \begin{tikzcd} 
