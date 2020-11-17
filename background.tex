@@ -40,7 +40,10 @@ Having types that depends on values adds to the expressiveness of the logic. A c
 
 Dependent types are referred to as $\Pi$ types. So \lstmath{Vec} can be represented as \lstmath{$\Pi_{\text{n:Nat}}\ $ Vec A n}. A dependent tuple, in which later elements depends on values of earlier ones, are referred to as $\Sigma$-types. The type \lstmath{$\Sigma_{\text{n:Nat}}\ $ Vec A n} refer to a tuple that contains the value of \lstmath{n} in the first position and a vector of length \lstmath{n} in the second one. 
 The concept of $\Sigma$ types is generalized into that of \emph{telescopes}, or equivalently,  \lstmath{dependent-type records}~\cite{pollack2002dependently}. A telescope $\mathbb{T}$ is defined as 
-\[ \mathbb{T} \equiv [x_1 : A_1][x_2 : A_2(x_1)][x_k : A_k(x_1,\cdots,x_{k-1})] \] 
+\begin{equation}
+\mathbb{T} \equiv [x_1 : A_1][x_2 : A_2(x_1)][x_k : A_k(x_1,\cdots,x_{k-1})]
+\label{eq:telescope}
+\end{equation} 
 %Another related concept is the packaging of definitions in a structure in which a definition depends on earlier ones. This is called a dependent record type, and is referred to as $\Sigma$-types. The types \lstmath{A} and \lstmath{P:A $\;\to\;$ Type} can be grouped is a dependent pair $\Sigma A P$. 
 
 %\section{Curry Howard Correspondence}
@@ -201,6 +204,7 @@ The little theories approach is introduced in~\cite{LittleTheories}. The idea is
 Using little theories increases the reuse of results. Results proven in the theory \lstmath{$\Gamma$} can be transported to all theories \lstmath{$\Delta$} whenever a morphism $m : \Gamma \to \Delta$ exists. This emphasizes the role of morphisms for increasing usability and reducing redundancy when dealing with formal systems.  
 
 \subsection{Tiny Theories}
+\label{sec:background:tinytheories}
 Tiny theories is a refinement of little theories, in which only one new piece of information is added at a time~\cite{mathscheme2011experiments}. To make this more clear, let's consider a library that has the theories \lstmath{PointedMagma} and \lstmath{Unital} defined as follows. \\
 \begin{tabular}{p{7cm} p{7cm}}
 \begin{lstlisting}[mathescape]
@@ -223,8 +227,75 @@ theory Unital = {
 Defining \lstmath{Unital} this way overlooks that in some cases one might want to talk about an operation with only right unit, like in the case of subtraction on integers. One will then need to add a new theory that is similar to \lstmath{Unital} without the \lstmath{lunit} declaration. Any theorems proved in the context of \lstmath{Unital} cannot be used, even if it only depends on \lstmath{lunit}. 
 
 Using tiny theories, one would first define \lstmath{LeftUnital} theory adding the \lstmath{lunit} axiom to \lstmath{PointedMagma}, a \lstmath{RightUnital} theory adding \lstmath{runit} axiom, and the theory of \lstmath{Unital} would be connected to both \lstmath{LeftUnital} and \lstmath{RightUnital}, creating more connections and therefore, allowing more reuse of results. Systematically using tiny theories to develop a large library leads to the need for support to diamond structures, which we discuss in Chapter~\ref{ch:library} based on the work in \cite{carette2018building}.  
-%\section{Category of Contexts}
-%explain pushout and how it is calculated 
+
+\section[title]{Category Theory\footnote{This section is based on~\cite{pierce1990taste}}}
+Category theory is a foundational framework, like set and type theory, that is abstract and structured enough to allow hidden commonalities of concepts to emerge. 
+
+While set theory has elements of sets as the main concept, category theory is built around the concept of morphisms. The source and target of a morphism are objects in the category. Category theory is not concerned with the internal structure of the objects, but rather by how they relate to other objects. 
+
+A category $\mathcal{C}$ consists of 
+\begin{itemize}
+\item A collection of objects, $\syms{\mathcal{C}}$
+\item A collection of morphisms between the objects. A morphism is represented as $u : \Gamma \to \Delta$.  
+\item Operations assigning to every morphism to its domain and codomain 
+\item A composition function $\cdot$ assigning to each pair of arrows  $u : \Gamma \to \Delta$ and $v : \Delta \to \Phi$, an arrow $u \cdot v : \Gamma \to \Phi$, such that 
+\[ u \cdot (v \cdot w) = (u \cdot v) \cdot w \]
+\item For every object $\Gamma$ in $\mathcal{C}$, an identity arrow $id_\Gamma : \Gamma \to \Gamma$, such that for $u : \Gamma \to \Delta$ 
+\[ id_\Gamma \cdot u = u \cdot id_\Delta = u \]
+\end{itemize}
+
+A diagram in a category is a collection of objects and morphisms. An example is shown in Figure~\ref{fig:diagram}. 
+\begin{figure}
+\centering{
+\begin{tikzcd}
+ & \Gamma \arrow[loop] \arrow[dr]& \\
+\Delta \arrow[loop left] \arrow[rr] \arrow[ur] & & \Phi \arrow[loop right] 
+\end{tikzcd}}
+\caption{A diagram in a category with at least $3$ objects}
+\label{fig:diagram}
+\end{figure}
+A diagram is said to commute if for every pair of vertices, $\Gamma$ and $\Delta$, all paths from $\Gamma$ to $\Delta$ are equal. 
+
+In the following we introduce two concepts related to categories that we use in Chapter~\ref{ch:library}. These are pushouts and colimits. \cite{nlab:colimit} gives an intuition of what they are as 
+\begin{quote}
+``The intuitive general idea of a colimit is that it defines an object obtained by sewing together the objects of the diagram, according to the instructions given by the morphisms of the diagram"
+\end{quote}
+A pushout is a special case of a colimit. In~\cite{nlab:pushout}, it is mentioned that 
+\begin{quote}
+``A pushout is the colimit of the diagram 
+\begin{tikzcd} 
+\bullet & \bullet \arrow[l] \arrow[r] & \bullet
+\end{tikzcd}"
+\end{quote}
+Because pushouts and colimits are Now we give the formal definitions of the two constructions 
+
+\paragraph{Pushouts.}
+The pushout of a pair of arrows $u_\Delta : \Gamma \to \Delta$ and $u_\Phi : \Gamma \to \Phi$ is an object $\Xi$ and a pair of arrows $v_\Delta : \Delta \to \Xi$ and $v_\Phi : \Phi \to \Xi$ such that 
+\begin{itemize}
+\item $u_\Delta \cdot v_\Delta = u_\Phi \cdot v_\Phi $
+\item for morphisms $w_\Delta : \Delta \to \Omega$ and $w_\Phi : \Phi \to \Omega$, there is a unique $w : \Xi \to \Omega$, such that 
+$v_\Delta \cdot w = w_\Delta$ and $v_\Phi \cdot w = w_\Phi$
+\end{itemize}
+
+
+\paragraph{Colimits.}
+Colimits are defined in terms of cocones. 
+
+A cocone over a diagram consists of an object $\Gamma$ and a family of morphisms $u_0 : \Delta_0 \to \Gamma, ..., u_n : \Delta_n \to \Gamma$, where $n$ is the number of nodes in the diagram other than $\Gamma$, such that for every morphism $v : \Delta_i \to \Delta_j$ in the diagram $v \cdot u_j = u_i$, i.e. the following diagram commutes 
+\begin{tikzcd} 
+& \Gamma & \\ 
+\Delta_i \arrow[ur,"u_i"] \arrow[rr,"v"] & & \Delta_j \arrow[ul,"u_j"] 
+\end{tikzcd}
+The notation used to descrine cocones is 
+$\langle u_i : \Gamma \to \Delta_i \rangle_{i\leq n}$.
+
+The colimit of a diagram is a cocone  
+$\langle u_i : \Gamma \to \Delta_i \rangle_{i\leq n}$ such that for any cocone 
+$\langle u_i^{\prime} : \Gamma^{\prime} \to \Delta_i \rangle_{i\leq n}$ there is a unique morphism $v : \Gamma \to \Gamma^\prime$ such that for every $u_i$, the following diagram commutes 
+\begin{tikzcd} 
+\Gamma \arrow[ rr,dashed, "v"] && \Gamma^\prime \\ 
+& \Delta_i \arrow[ul,"u_i"] \arrow [ur," u_i^{\prime}"] & 
+\end{tikzcd} 
 
 \section{Multi-Staged Programming}
 \label{sec:background:msp}
