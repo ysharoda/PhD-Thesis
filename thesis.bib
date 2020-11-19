@@ -740,6 +740,13 @@ url="https://doi.org/10.1007/978-1-4757-3837-7_8"
     note = {version 4.19.1; Accessed: 2020-03-22}
 }
 
+@Misc{syb,
+    key = "Scrap Your Boilerplate",
+    title = {Haskell Scrap-your-boilerplate Package},
+    howpublished = {\url{https://hackage.haskell.org/package/syb}},
+    note = {version 0.7.1; Accessed: 2020-11-18}
+}
+
 @inproceedings{LittleTheories,
     author = {W. M. Farmer and J. D. Guttman and F. J. Thayer},
     title = {Little Theories},
@@ -1523,3 +1530,47 @@ isbn="978-3-642-39320-4"
   month = nov,
   year = 2020
 }
+
+% Implementation of combinators 
+@misc{TPCProto,
+  title = {Prototype of {M}athScheme {C}ombinators},
+  author = {Jacques Carette and Russell O'Connor},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/JacquesCarette/MathScheme/tree/master/prototype}}
+}
+
+@misc{msLibDecls,
+  title = {{M}athScheme Library Declarations},
+  author = {Jacques Carette and Russell O'Connor},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/JacquesCarette/MathScheme/blob/master/prototype/src/Algebra/Base.msl}}
+}
+
+@misc{meta-prim-blog,
+  author = {Al-hassy, Musa},
+  title = {Making {M}odules with {M}eta-{P}rogrammed {M}eta-{P}rimitives},
+  howpublished = 
+  {\url{https://alhassy.github.io/next-700-module-systems/prototype/package-former.html#hundreds-of-theories}},
+  note = {Accessed: 2019-11-20}
+}
+
+@article{syb2003Jones,
+author = {L\"{a}mmel, Ralf and Jones, Simon Peyton},
+title = {Scrap Your Boilerplate: A Practical Design Pattern for Generic Programming},
+year = {2003},
+issue_date = {March 2003},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {38},
+number = {3},
+issn = {0362-1340},
+url = {https://doi.org/10.1145/640136.604179},
+doi = {10.1145/640136.604179},
+abstract = {We describe a design pattern for writing programs that traverse data structures built from rich mutually-recursive data types. Such programs often have a great deal of "boilerplate" code that simply walks the structure, hiding a small amount of "real" code that constitutes the reason for the traversal.Our technique allows most of this boilerplate to be written once and for all, or even generated mechanically, leaving the programmer free to concentrate on the important part of the algorithm. These generic programs are much more adaptive when faced with data structure evolution because they contain many fewer lines of type-specific code.Our approach is simple to understand, reasonably efficient, and it handles all the data types found in conventional functional programming languages. It makes essential use of rank-2 polymorphism, an extension found in some implementations of Haskell. Further it relies on a simple type-safe cast operator.},
+journal = {SIGPLAN Not.},
+month = jan,
+pages = {26–37},
+numpages = {12},
+keywords = {generic programming, traversal, type cast, rank-2 types}
+}
+
