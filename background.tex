@@ -1,9 +1,11 @@
 \chapter{Background}
 \todo{I believe notation in this chapter is consistent. check notation with other chapters}. 
 
-In this chapter, we introduce the two logics that we are interested in in Section~\ref{sec:background:logic}. Equational logic forms the bases for universal algbera. It is based in set theory. Dependent type theory (DTT) is a version of type theory in which types can depend on values. We want to represent theories of equational logic as contexts in DTT. We introduce the notion of contexts in Section~\ref{sec:background:context} and theories in Section~\ref{sec:background:theory}. Then we discuss how we use concepts of universal algebra in Section~\ref{sec:background:ualgebra}. 
+Equational logic is based in set theory and forms the bases for universal algbera.  Dependent type theory (DTT) is a rich type theory in which types can depend on values. We want to represent theories of equational logic as contexts in DTT. We first introduce equational logic and DTT in Section~\ref{sec:background:logic}. 
+Contexts are defined in Section~\ref{sec:background:context} and theories in Section~\ref{sec:background:theory}. We then briefly introduce universal algebra and how it is used in our work in Section~\ref{sec:background:ualgebra}. 
 
-The organization structure that we use to build our library is a theory graph, in which theories are connected via morphisms. We introduce morphisms in Section~\ref{sec:background:morphisms} and discuss theory graphs and different approaches to building them in Section~\ref{sec:background:theorygraph}. To build the library we use combinators motivated by category theory, so we give a brief introduction for it in Section~\ref{sec:categoryTh}. 
+Part of our work is building a library of axiomatic theories. The library is organized as a theory graph, in which theories are connected via morphisms. We introduce morphisms in Section~\ref{sec:background:morphisms} and discuss theory graphs and different approaches to building them in Section~\ref{sec:background:theorygraph}. 
+To build the library we use combinators motivated by category theory, so we give a brief introduction for it in Section~\ref{sec:categoryTh}. 
 One of the constructions we generate, that is not typically defined within universal algebra texts is multi-staged programming, so we define it in Section~\ref{sec:background:msp}. 
 
 \section{Logic}
@@ -36,7 +38,7 @@ The rightmost rule states that if $t$ is true under all assignments, then it is 
 \label{subsec:background:dtt}
 Dependently types theory (DTT) is a version of type theory that enables writing types like \lstmath{$\lambda\ $ x : A $\ \cdot\ $ M} where the type \lstmath{M} depends on the value of \lstmath{x}. 
 % source: Type theory and formal proof, P. 103 - Ch.5 
-Having types that depends on values adds to the expressiveness of the logic. A common example for introducing dependent types is the type of a vector of \lstmath{n} elements of type \lstmath{A}. Polymorphism allow us to represent the type of vectors in terms of the type of its elements as \lstmath{Vec A}. This type will not prevent defining a function that accesses an element at position \lstmath{n+1} in a vector of size \lstmath{n}. In this case, the user of this function will get a runtime error. Using dependent types, the type of a vector can be defined to depend on both the carrier of its elements and also its length, \lstmath{$\lambda\ $ n : Nat $\ \cdot\ $ Vec A n}. In this case, if a developer attempts to access an element at index \lstmath{n+1}, a compile error would be thrown. More descriptive types allows for more accurate specifications and hence capturing errors in earlier stages. 
+Having types that depends on values adds to the expressiveness of the logic. A common example for introducing dependent types is the type of a vector of \lstmath{n} elements of type \lstmath{A}. Polymorphism is expressive enough to represent the type of vectors in terms of the type of its elements as \lstmath{Vec A}. This type will not prevent defining a function that accesses an element at position \lstmath{n+1} in a vector of size \lstmath{n}. In this case, the user of this function will get a runtime error. Using dependent types, the type of a vector can be defined to depend on both the type of its elements and also its length, \lstmath{$\lambda\ $ n : Nat $\ \cdot\ $ Vec A n}. In this case, if a developer attempts to access an element at index \lstmath{n+1}, a compile error would be thrown. More descriptive types allows for more accurate specifications and hence capturing errors in earlier stages. 
 
 Dependent types are referred to as $\Pi$ types. So \lstmath{Vec} can be represented as \lstmath{$\Pi_{\text{n:Nat}}\ $ Vec A n}. A dependent tuple, in which later elements depends on values of earlier ones, are referred to as $\Sigma$-types. The type \lstmath{$\Sigma_{\text{n:Nat}}\ $ Vec A n} refer to a tuple that contains the value of \lstmath{n} in the first position and a vector of length \lstmath{n} in the second one. 
 The concept of $\Sigma$ types is generalized into that of \emph{telescopes}, or equivalently,  \lstmath{dependent-type records}~\cite{pollack2002dependently}. A telescope $\mathbb{T}$ is defined as 
@@ -51,11 +53,11 @@ The concept of $\Sigma$ types is generalized into that of \emph{telescopes}, or 
 
 \section{Contexts}
 \label{sec:background:context}
-In logic, one often talks about the derivability of a proposition from others using inference rules, usually written as $\varphi_1 ... \varphi_n \vdash \psi$.  In categorical logic, instead of talking about propositions, we talk about contexts. \cite{handbook1993CategoricalLogic} defines a context as 
+In logic, A proposition is true if it is an axiom or is derivable from other true propositions using inference rules. This is usually written as $\varphi_1 ... \varphi_n \vdash \psi$.  In categorical logic, instead of talking about propositions, one talk about contexts. \cite{handbook1993CategoricalLogic} defines a context as 
 \begin{quote}
 A context, $\Gamma$, is a finite list $[x_1 : \sigma_1, ... , x_n : \sigma_n]$ of (variable,sort) pairs, subject to the condition that $x_1, ... , x_n$ is distinct.  
 \end{quote}
-When using dependent types, the context becomes a telescope, where every element on the list can depends on those before it as defined in Section~\ref{subsec:background:dtt}. The statement $\Gamma \vdash \psi$ means that the type judgement $\psi$ follows from the context $\Gamma$. The concatenation of two contexts $\Gamma_1$ and $\Gamma_2$ is declared as $\Gamma_1 ; \Gamma_2$.  
+When using dependent types, the context becomes a telescope, where every element on the list can depends on those before it as described by Equation~\ref{eq:telescope}. The statement $\Gamma \vdash \psi$ means that the type judgement $\psi$ follows from the context $\Gamma$. The concatenation of two contexts $\Gamma_1$ and $\Gamma_2$ is declared as $\Gamma_1 ; \Gamma_2$.  
 %\paragraph{The category of contexts}
 
 \section{Axiomatic theory}
@@ -79,11 +81,11 @@ This exposes the question of which equality is to  be used~\cite{oneThingSame200
 %Most algebra text books would refer to the language of the theory presentation as the signature and would separate its two components, writing it as \lstmath{(S,F)}. They often do not use the term \lstmath{theory}, but refer to sigantures with specific properties that are satisfied by the algebras. The use of axiomatic theories as we define them here is, to the best of our knowledge, tied to using them in computerized systems as in Clear~\cite{Goguen1980}. 
 
 \paragraph{Theories as Contexts}
-With dependent types and curry-howard correspondance in place, the distinction between the three components, sorts, function symbols, and axioms, is not needed anymore. Instead a theory is seen as a telescope~\cite{de1991telescopic}. 
+With dependent types and curry-howard correspondance in place, the distinction between the three components of an axiomatic theory, sorts, function symbols, and axioms, is not needed anymore. Instead a theory is seen as dependently-typed context, or a telescope as described by Equation~\ref{eq:telescope}. 
 %The telescopic representation of a sort would be \lstmath{$\sort$:$\square$} where $\square$ is a kind defined in the type theory. A function symbol within a telescope is defined in terms of the type of its parameters. Propositions-as-types make it possible to present axioms as part of telescopes. is declared as $\sort : Type$. 
-Every declaration \lstmath{c:t} within the telescope is defined within a context \lstmath{$\Gamma$}. This is described as \lstmath{$\Gamma \vdash\;$ c:t}. 
+%Every declaration \lstmath{c:t} within the telescope is defined within a context \lstmath{$\Gamma$}. This is described as \lstmath{$\Gamma \vdash\;$ c:t}. 
 
-Theories in DTT are seen as contexts. This is how they are presented in~\cite{carette2018building} which forms the basis of this work. Therefore, we use the term context to also mean a theory in DTT. 
+%Theories in DTT are seen as contexts. This is how they are presented in~\cite{carette2018building} which forms the basis of this work. Therefore, we use the term context to also mean a theory in DTT. 
 
 A theory presentation is well-typed if every declaration \lstmath{c:t} is well-typed given its context. The formation rules for theory presentations are given in Figure~\ref{fig:ctx}, where $\syms{\Gamma}$ refers to the list of symbols defined in the context $\Gamma$. 
 $$ \syms{\context{\varnothing}} = \EmptyThy \qquad
@@ -105,11 +107,10 @@ $$
 
 \section{Universal Algebra}
 \label{sec:background:ualgebra}
-Algebraic structures, like monoids, groups, and rings studies classes of algebra that have similar properties. Universal algbera studies algebras in a more generic way. It abstracts over the specific properties of classes of algebras and deals with them as axiomatic theories in equational first-order as described in Section~\ref{sec:background:theory}. With this abstraction in place, universal algebra define some constructions useful when dealing with algebras and prove some of their properties. In Section~\ref{sec:toBeGenerated} we introduce the definitions of some of the constructions defined by universal algebra. 
+Algebraic structures, like monoids, groups, and rings studies classes of algebra that have similar properties. Universal algbera studies algebras in a more generic way. It abstracts over the specific properties of classes of algebras and deals with them as axiomatic theories in equational first-order logic as described in Section~\ref{sec:background:theory}. With this abstraction in place, universal algebra define some constructions useful when dealing with algebras and prove some of their properties. In Section~\ref{sec:toBeGenerated} we introduce the definitions of some of the constructions defined by universal algebra. Chapter~\ref{ch:generation} is all about automating the generation of these definitions for every algebraic structure. 
 
 \section{Theory Morphisms}
 \label{sec:background:morphisms}
-\todo{If T1 |= phi then T2 |= view-from-T1-to-T2(phi)}
 Morphisms are used to capture the structure of mathematics, by describing how theories are related to each other. In mathematical texts, a theorem proved for an arbitrary \lstmath{Monoid} would be used when considering an arbitrary \lstmath{Group} without extra work. In formal mathematics, this can only be done if a morphism between \lstmath{Monoid} and \lstmath{Group} exists. The morphism specifies how results in \lstmath{Monoid} can be interpreted in \lstmath{Group}. 
 
 A morphism $\arrow{[v]}{\Gamma}{\Delta}$ consist of a list of assignments $[v]$, a source theory \lstmath{$\Gamma$}, and a target theory \lstmath{$\Delta$}. $[v]$ assigns to every symbol in $\Gamma$ an expression of $\Delta$. A term \lstmath{t} in the language of $\Gamma$ can be translated into a term \lstmath{t$^\prime$} in the language of $\Delta$ using substitution, such that  \lstmath{t$^\prime$ = t$[v]$}. 
@@ -135,7 +136,7 @@ We distinguish between three type of morphisms
 
 \subsection{Identity Morphism}
 \label{sec:idmorph}
-If $\arrow{[v]}{\Gamma}{\Delta}$ is an identity morphism, then $[v]$ maps every symbol $x \in \syms{\Gamma}$ to itself. This implies that $[v]$ is a bijection and that $x[v] = x$. While it is common to name source and target of identities with the same name, we do not do that here as $\Gamma$ and $\Delta$ are two different theory presentations. The identity between them reflects the fact that symbols in $\Gamma$ are interpreted the same way in $\Delta$. 
+If $\arrow{[v]}{\Gamma}{\Delta}$ is an identity morphism, then $[v]$ maps every symbol $x \in \syms{\Gamma}$ to itself. This implies that $[v]$ is a bijection and that $x[v] = x$. While it is common to name source and target of identities with the same name, we do not do that here as $\Gamma$ and $\Delta$ are two different theory presentations. The identity between them means that symbols in $\Gamma$ are interpreted the same way in $\Delta$. 
 
 Identity morphisms exist between two theories if the source is included verbatim in the destination, like in the case when \lstmath{Group} is defined as an extension of \lstmath{Monoid}. It is the simplest form of morphisms and allow transport of results without the need to perform substitution 
 
@@ -191,14 +192,14 @@ An example is a morphism that flips a binary operation, i.e.: maps \lstmath{op x
 %Mappings acts on theories by substitution, i.e.: Given a list of assignments of terms to symbols $[x \mapsto y]$ and an expression e, a substitution replaces every free occurence of $x$ in the theory by y. 
 
 \section{Theory Graph}\label{sec:background:theorygraph}
-One way to organize theories is using theory graphs. They are needed when dealing with large libraries~\cite{kohlhase2010towards}. A theory graph is an acyclic directed graph consisting of theories, as nodes, and morphisms, as edges between them. 
+One way to organize theories is using theory graphs. A theory graph is an acyclic directed graph consisting of theories, as nodes, and morphisms, as edges between them. It is helpful in managing large libraries~\cite{kohlhase2010towards}.
 
 In systems that are based on categorical semantics, a theory graph is seen as a diagram in the category of theories and theory morphisms. Specware uses the keyword \emph{diagram} to build them. The work in~\cite{developmentGraph2000}, based on CASL, refer to them as \emph{development graphs}. 
 
 Theory graphs leverage the structure of mathematics by relying on morphisms to connect them. Therefore, we are able to decompose the development of theories. Here we discuss two techniques for decomposing theories; little and tiny theories.  
 
 \subsection{Little Theories}
-\ednote{Q: Dr. Carette's comment: 2.6 ‘transport’ and conservative extensions are very important for little theories to work well, on top of what you already mention}
+\ednote{@JC: You mentioned the following comment before "‘transport’ and conservative extensions are very important for little theories to work well, on top of what you already mention". Can we talk more about it.}
 The little theories approach is introduced in~\cite{LittleTheories}. The idea is to ensure that if a statement \lstmath{s} is proven in context \lstmath{$\Gamma$}, then every statement in \lstmath{$\Gamma$} is required to prove \lstmath{s}. In this case, we say \lstmath{$\Gamma$} is the \emph{minimal axiomatization} needed to prove \lstmath{s}. This implies that theorems are proved in different contexts based on the amount of structure needed to prove them. In contrast, a big theory approach would use only one big theory for proving all results. 
 
 Using little theories increases the reuse of results. Results proven in the theory \lstmath{$\Gamma$} can be transported to all theories \lstmath{$\Delta$} whenever a morphism $m : \Gamma \to \Delta$ exists. This emphasizes the role of morphisms for increasing usability and reducing redundancy when dealing with formal systems.  
@@ -257,7 +258,7 @@ A diagram in a category is a collection of objects and morphisms. An example is 
 \end{figure}
 A diagram is said to commute if for every pair of vertices, $\Gamma$ and $\Delta$, all paths from $\Gamma$ to $\Delta$ are equal. 
 
-In the following we introduce two concepts related to categories that we use in Chapter~\ref{ch:library}. These are pushouts and colimits. \cite{nlab:colimit} gives an intuition of what they are as 
+In the following we introduce two concepts related to categories that we use in Chapter~\ref{ch:library}. These are pushouts and colimits. \cite{nlab:colimit} gives an intuition of what a colimit is as 
 \begin{quote}
 ``The intuitive general idea of a colimit is that it defines an object obtained by sewing together the objects of the diagram, according to the instructions given by the morphisms of the diagram"
 \end{quote}
@@ -268,8 +269,7 @@ A pushout is a special case of a colimit. In~\cite{nlab:pushout}, it is mentione
 \bullet & \bullet \arrow[l] \arrow[r] & \bullet
 \end{tikzcd}"
 \end{quote}
-Because pushouts and colimits are Now we give the formal definitions of the two constructions 
-
+The formal definitions of the two constructions are
 \paragraph{Pushouts.}
 The pushout of a pair of arrows $u_\Delta : \Gamma \to \Delta$ and $u_\Phi : \Gamma \to \Phi$ is an object $\Xi$ and a pair of arrows $v_\Delta : \Delta \to \Xi$ and $v_\Phi : \Phi \to \Xi$ such that 
 \begin{itemize}
@@ -324,13 +324,13 @@ Annotating an expression of type \lstmath{A} with the \lstmath{Now} constructor 
 data Comp (A : Set) (s : Stage) : Set where
   Computation : Choice -> CodeRep A s -> Comp A s
 \end{togcode} 
-Computations encapsulate quoted fragments of code. The lstmath{CodeRep} function assigns a stage \lstmath{s0} or \lstmath{s1} to the expression. 
+Computations encapsulate quoted fragments of code. The \lstmath{CodeRep} function assigns a stage \lstmath{s0} or \lstmath{s1} to the expression. 
 \begin{togcode} 
 data Wrap (A : Set) : Set where
   Q : A -> Wrap A
 CodeRep : (A : Set) (s : Stage) -> Set
-  CodeRep A (s0) = A
-  CodeRep A (s1) = Wrap (CodeRep A s0)
+  CodeRep A s0 = A
+  CodeRep A s1 = Wrap (CodeRep A s0)
 \end{togcode} 
 We also add a flag indicating whether the quoted code represent an expression (\lstmath{Expr}) or a literal, constant or variable (\lstmath{Const}).  
 \begin{togcode} 
@@ -339,7 +339,7 @@ data Choice : Set where
   Const : Choice
 \end{togcode} 
 
-There are $3$ main applications to staging; generating well-typed code as in MetaOcaml~\cite{taha1999multi}, removing abstraction overhead introduced by generic programming~\cite{yallop2016StagingGeneric}, and developing domain specific languages~\cite{sheard2000stagingDSL}. MetaOcaml and haskell templates provide staging constructs under the names emph{quote} and \emph{eval} instead of \emph{Now} and \emph{Later}. In logical reasoning the same ideas are used for reflection, as in~\cite{farmer2013quoteEval}. 
+There are $3$ main applications to staging; generating well-typed code as in MetaOcaml~\cite{taha1999multi}, removing abstraction overhead introduced by generic programming~\cite{yallop2016StagingGeneric}, and developing domain specific languages~\cite{sheard2000stagingDSL}. MetaOcaml and haskell templates provide staging constructs under the names \emph{quote} and \emph{eval} instead of \emph{Now} and \emph{Later}. In logical reasoning the same ideas are used for reflection, as in~\cite{farmer2013quoteEval}. 
 
 %MSP gives the developers of the meta program the control over it by annotating which pieces can be evaluated at runtime\ednote{better writing}.  
 %Writing program generators typically involve multiple stages; generation, compilation, and runtime stage. 

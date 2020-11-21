@@ -13,28 +13,29 @@ In Section~\ref{sec:toBeGenerated} we introduce a list of operations that can be
 \label{sec:toBeGenerated}
 %Algebra makes the basis of many areas of computer science. We are interested in theorem proving and specification systems. \ednote{relate this to the background section} \ednote{uniform notation and citation} In many places the term algebra is used to refer to the 
 
-The axiomatic presentation of a class of algebras is defined as \lstmath{Th = (S,F,E}) where \lstmath{S} is a single sort, \lstmath{F} is a set of operations, and \lstmath{E} is a set of equations.  In the following, we will describe some constructions in terms of the three components of \lstmath{Th}. The definition are adapted from~\cite{ehrig1985fundamentals} and~\cite{handbook1993Maibaum}.  
+The axiomatic presentation of a class of algebras is defined as $\Gamma = (\sort, \fsyms, \equations)$.  where $\sort$ is a single sort, $\fsyms$ is a set of operations, and $\equations$ is a set of equations.  In the following, we will describe some constructions in terms of the three components of $\Gamma$. The definitions are adapted from~\cite{ehrig1985fundamentals} and~\cite{handbook1993Maibaum}.  
 
 \begin{itemize}
-    \item The \emph{signature} of a theory \lstmath{(S,F,E)}  is \lstmath{Sig = (S,F)} consisting of the sort and $n$-ary function symbols, where $n \geq 0$. The signature specifies the language of the theory, without any laws. 
-    \item The \emph{product} of two algebras \lstmath{A} and \lstmath{B} of the same theory \lstmath{Th} is the algebra with sort \lstmath{(S$_A$ $\times$ S$_B$)}. In a uni-sorted setup, the sort of the product algebra is \lstmath{(S$\times$S)}. 
+    \item The \emph{signature} of a theory $(\sort, \fsyms, \equations)$ is $(\sort, \fsyms)$ consisting of the sort and $n$-ary function symbols, where $n \geq 0$. The signature specifies the language of the theory, without any laws. 
+    \item The \emph{product} of two algebras \lstmath{A} and \lstmath{B} of the same theory $\Gamma$ is the algebra with sort $(\sort_A \times \sort_B)$. In a uni-sorted setup, the sort of the product algebra is $(\sort \times \sort)$. 
     \begin{itemize}
-    \item \lstmath{c$_\times$ : (S$_A$ $\ \times\ $ S$_B$)}, for every constant symbol \lstmath{c} in \lstmath{Th}. 
-    \item \lstmath{op$_\times$ : (S$_A$ $\ \times\ $ S$_B$) $\ \to$ $\ \cdots\ $  $\to\ $ (S$_A$ $\ \times\ $ S$_B$)}, for every function symbol \lstmath{op} in \lstmath{Th} based on its arity. 
-    \item The set of equations \lstmath{E$_\times$} is given by substituting the new sort, constant and function symbols in the set \lstmath{E}.  
+    \item \lstmath{c$_\times$ : $(\sort \times \sort)$}, for every constant symbol 
+      \lstmath{c $\;\in\;\mid\Gamma\mid$}. 
+    \item \lstmath{op$_\times$ : $(\sort \times \sort) \to \cdots \to (\sort \times \sort)$}, for every function symbol \lstmath{op $\;\in\; \mid\Gamma\mid$} based on its arity. 
+    \item The set of equations $\equations_\times$ is given by substituting the new sort, constant and function symbols in the set $\sort$.  
     \end{itemize}
-    \item The \emph{sub-theory} \lstmath{B} of a theory \lstmath{A} is defined as 
+    \item The \emph{sub-theory} $\Delta$ of a theory $\Gamma$ is defined as 
     \begin{enumerate}
-    \item \lstmath{S$_B$} \lstmath{$\subseteq$} \lstmath{S$_{A}$}
-    \item \lstmath{c$_B$} \lstmath{=} \lstmath{c$_{A}$} for every constant symbol in the set of function symbols \lstmath{F}. 
-    \item \lstmath{f$_B\ $ x$_1\ $ $\ \cdots\ $ x$_n$} \lstmath{=} \lstmath{f$_A\ $x$_1\ $ $\ \cdots\ $ x$_n$}, for all \lstmath{f $\ \in\ $ F}, {x$_1$ $\cdots$ x$_n$ $\in$ S}, and \lstmath{n $\ \in\ $ $\mathbb{N}$, n $\ \geq\ $ 1}. 
+    \item $\sort_\Delta \subseteq \sort_\Gamma$ 
+    \item \lstmath{c$_\Delta$} \lstmath{=} \lstmath{c$_{\Gamma}$} for every constant symbol in the set of function symbols $\fsyms$. 
+    \item \lstmath{op$_\Delta\ $ x$_1$ $\;...\;$ x$_n$} \lstmath{=} \lstmath{op$_\Gamma\ $x$_1$ $\;...\;$ x$_n$}, for all \lstmath{op$\ \in\;\mid\fsyms\mid$}, {x$_1$ $\cdots$ x$_n$ $\in \sort$}, and \lstmath{n $\ \in \mathbb{N}$, n $\;\geq\;$ 1}. 
     \end{enumerate}
     \item The \emph{trivial sub-theory} is the subtheory with the empty carrier. Because the carrier is empty, the $3$ axioms above trivially hold. 
-    \item The \emph{homomorphism} between two algebras \lstmath{A} and \lstmath{B} of the same theory \lstmath{Th} is a function \lstmath{hom : S$_A$ $\ \to\ $ S$_B$} such that 
+    \item The \emph{homomorphism} between two algebras \lstmath{A} and \lstmath{B} of the same theory $\Gamma$ is a function \lstmath{hom : $\;\sort_A \to \sort_B$} such that 
     \begin{itemize}
-        \item for every constant symbol in \lstmath{F}: \lstmath{hom c$_A$ = c$_B$} 
-        \item for every function symbol in \lstmath{F}: 
-           \lstmath{hom(f$_A\ $ x$_1\ $ $\ \cdots\ $ x$_n$) = f$_B\ $ (hom x$_1$)  $\ \cdots\ $ (hom x$_n$)} 
+        \item for every constant symbol in $\fsyms$: \lstmath{hom c$_A$ = c$_B$} 
+        \item for every function symbol in $\fsyms$: 
+           \lstmath{hom (op$_A\ $ x$_1$ $\;\cdots\;$ x$_n$) = op$_B\ $ (hom x$_1$)  $\;...\;$ (hom x$_n$)} 
     \end{itemize}
     There are some variants of homomorphism that can be easily generated from it. These variants are  
     \begin{itemize}
@@ -44,30 +45,30 @@ The axiomatic presentation of a class of algebras is defined as \lstmath{Th = (S
     	\item \emph{isomorphisms} are bijective homomorphisms. 
     	\item \emph{automorphisms} are isomorphisms from an object to itself. 
     \end{itemize}
-    \item The \emph{kernel} of a homomorphism from algebra \lstmath{A} to algebra \lstmath{B} is defined as the binary relation \lstmath{$\equiv_{hom}$} on the sort of \lstmath{A}, such that 
+    \item The \emph{kernel} of a homomorphism from algebra \lstmath{A} to algebra \lstmath{B} of the same theory $\Gamma$ is defined as the binary relation \lstmath{$\equiv_{hom}$} on the sort of \lstmath{A}, such that 
     \begin{lstlisting}[mathescape] 
     a $\equiv_{hom}$ b $\Leftrightarrow$ hom a $\equiv_{hom}$ hom b
     \end{lstlisting}
-    for every \lstmath{a} and \lstmath{b} in \lstmath{S$_A$}. 
+    for every \lstmath{a} and \lstmath{b} in $\sort_A$. 
     \item The composition of two morphisms \lstmath{f : A $\ \to\ $ B} and \lstmath{g : B $\ \to\ $ C} is denoted by the function \lstmath{g $\ \circ\ $ f : A $\ \to\ $ C} and is defined as 
     \lstmath{(g $\ \circ\ $ f) a = g (f a)} for every \lstmath{a $\ \in\ $ A}   
  %   \item Homomorphism Equality 
-    \item The \emph{relational interpretation} between two algebras \lstmath{A} and \lstmath{B} of the same theory is a relation \lstmath{interp a b}, for all \lstmath{a $\ \in\ $ S$_A$} and \lstmath{b $\ \in\ $ S$_B$} such that 
+    \item The \emph{relational interpretation} between two algebras \lstmath{A} and \lstmath{B} of the same theory is a relation \lstmath{interp a b}, for all \lstmath{a $\;\in \sort_A$} and \lstmath{b $\;\in \sort_B$} such that 
     \begin{itemize}
-    \item interp c$_A$ c$_B$, for every constant \lstmath{c $\ \in\ $ A}.  
-    \item interp x$_1$ y$_1$ $\ \wedge\ $ $\ \cdots\ $ $\ \wedge\ $ interp x$_n$ y$_n$ $\Rightarrow$ interp (op$_A$ x$_1$ $\ \cdots\ $ x$_n$) (op$_B$ y$_1$ $\ \cdots\ $ y$_n$) for all function symbols \lstmath{op $\ \in\ $ F}, where \lstmath{x$_1$ $\ \cdots\ $ x$_n$ $\ \in\ $ S$_A$} and \lstmath{y$_1$ $\ \cdots\ $ y$_n$ $\ \in\ $ S$_B$}. 
+    \item interp c$_A$ c$_B$, for every constant \lstmath{c $\;\in\;$ A}.  
+    \item interp x$_1$ y$_1$ $\ \wedge\ $ $\ \cdots\ $ $\ \wedge\ $ interp x$_n$ y$_n$ $\Rightarrow$ interp (op$_A$ x$_1$ $\ \cdots\ $ x$_n$) (op$_B$ y$_1$ $\ \cdots\ $ y$_n$) for all function symbols \lstmath{op $\;\in \mid\fsyms\mid$}, where \lstmath{x$_1$ $\; ... \;$ x$_n$ $\ \in\ $ $\sort_A$} and \lstmath{y$_1$ $\; ... \;$ y$_n$ $\;\in \sort_B$}. 
     \end{itemize}
     
-    \item The \emph{quotient algebra} for a theory \lstmath{Th} with respect to some congruence relation \lstmath{$\equiv$} is defined as the theory \lstmath{Th/$\equiv\ $ = (S$_{Q}$,F$_{Q}$,E$_{Q}$)} such that\ednote{Q: How to define \lstmath{E$_{Q}$}} 
+    \item The \emph{quotient algebra} for a theory $\Gamma$ with respect to some congruence relation \lstmath{$\equiv$} is defined as the theory \lstmath{$\Gamma/\equiv \;= (\sort_Q, \fsyms_Q, \equations_Q)$} such that\ednote{Q: How to define \lstmath{E$_{Q}$}} 
     \begin{itemize}
-       \item \lstmath{S$_Q$} is the factor set of \lstmath{S}, defined as 
+       \item \lstmath{$\sort_Q$} is the factor set of $\sort$, defined as 
        	\begin{lstlisting}[mathescape]
-       	S$_Q$ = {[x] $\mid$ x $\in$ S}
+       	$\sort_Q$ = {[x] $\mid$ x $\in \sort$}
        	\end{lstlisting} 
-       	where \lstmath{[x]} is the equivalence class defined as \lstmath{[x] = $\{$y $\ \in\ $ S $\ \mid\ $ x $\ \equiv\ $ y$\}$}
-       \item \lstmath{c$_Q$ = [c]}, for constant symbols \lstmath{c $\ \in\ $ F} and \lstmath{c$_Q$ $\ \in\ $ F$_Q$}.  
+       	where \lstmath{[x]} is the equivalence class defined as \lstmath{[x] = $\{$y $\ \in \sort \mid\ $ x $\ \equiv\ $ y$\}$}
+       \item \lstmath{c$_Q$ = [c]}, for constant symbols \lstmath{c $\ \in\fsyms$} and \lstmath{c$_Q$ $\ \in \fsyms_Q$}.  
        \item \lstmath{f$_Q$ [x$_1$] $\ \cdots\ $ [x$_n$]} = [f x$_1$ $\ \cdots\ $ x$_n$]
-       for function symbols \lstmath{f$_Q$ $\ \in\ $ F$_Q$} and \lstmath{f $\ \in\ $ F}.
+       for function symbols \lstmath{f$_Q$ $\ \in \fsyms_Q$} and \lstmath{f $\ \in \fsyms$}.
     \end{itemize}      
 
 %    \item congruence of functions 
@@ -75,19 +76,19 @@ The axiomatic presentation of a class of algebras is defined as \lstmath{Th = (S
     \item The \emph{closed term language} induced by a theory is a set of terms that are defined inductively as 
     \begin{itemize}
         \item all constants belong to the language (basic terms) 
-        \item A term \lstmath{t$_f$ $\ $ t$_1$ $\ \cdots\ $ t$_n$} for every function symbol \lstmath{f : s $\ \to\ $ $\ \cdots\ $ $\ \to\ $ s} of arity $n$, such that  \lstmath{t$_1$ $\ \cdots\ $ t$_n$} belongs to the language. 
+        \item A term \lstmath{t$_{\texttt{op}}$ $\ $ t$_1$ $\ \cdots\ $ t$_n$} for every function symbol \lstmath{op : $\sort \to ... \to \sort $} of arity $n$, such that  \lstmath{t$_1$ $\ \cdots\ $ t$_n$} belongs to the language. 
     \end{itemize}
     \item The \emph{open term language} of a theory is similar to the closed term language, except that basic terms includes a set of variables.  
-    \item The \emph{staged term language} of a theory is the term language in which expressions can be marked for execution in compile or runtime stages \ednote{Q: Can I find any better decisions}.  
-    \item Structural induction: Let \lstmath{p} be a predicate defined on terms \lstmath{t $\ \in\ $ T$_{F}$(X)} of a signature \lstmath{SIG = (S,F)} with variables \lstmath{X}. The assertion \lstmath{p(t)} is true for all \lstmath{t $\ \in\ $ T$_{F}$} if the following conditions are satisfied: 
+    \item The \emph{staged term language} of a theory is the term language in which expressions can be marked for execution in compile or runtime stages as discussed in Section~\ref{sec:background:msp}.  
+    \item Structural induction: Let \lstmath{p} be a predicate defined on terms \lstmath{t $\ \in\ $ T$_{\texttt{op}}$(X)} of a signature \lstmath{SIG = $(\sort,\fsyms)$} with a set of variables \lstmath{X}. The assertion \lstmath{p(t)} is true for all \lstmath{t $\ \in\ $ T$_{\texttt{op}}$} if the following conditions are satisfied: 
     \begin{itemize}
         \item \lstmath{p(t)} is true for all constant and variable symbols 
-        \item for each term \lstmath{f t$_1$ $\ \cdots\ $ t$_n$}, we have that if \lstmath{p(t$_1$) $\cdots$ p(t$_n$)} are true then also \lstmath{p(f t$_1$ $\ \cdots\ $ t$_n$)} is true.  
+        \item for each term \lstmath{f t$_1$ $\ \cdots\ $ t$_n$}, we have that if \lstmath{(p t$_1$) $...$ (p t$_n$)} are true, then also \lstmath{p (f t$_1$ $\ \cdots\ $ t$_n$)} is true.  
     \end{itemize}     
-    \item Evaluation functions: Given a theory \lstmath{SIG = (S,F,E)}, a term language defined as above, and an algebra over a carrier \lstmath{A}. The function \lstmath{eval : T$_{F}$ $\ \to\ $ A} is defined recursively as 
+    \item Evaluation functions: Given an algebra \lstmath{A} of a theory \lstmath{$\Gamma = (\sort,\fsyms,\equations$)}, a term of the language of the theory as defined above, the function \lstmath{eval : T$\;\to \sort_\texttt{A}$} is defined recursively as 
     \begin{itemize}
-        \item \lstmath{eval(c) = c$_{A}$}
-        \item \lstmath{eval(f t$_1$ $\ \cdots\ $ t$_n$)} = f$_A$ (eval t$_1$) $\cdots$ (eval t$_n$) where an assignment function maps the constants of the language to the constants defined by the algebra. The evaluation function for open term language would be similar except it has an additional environment that assigns value of the carrier to variables. 
+        \item \lstmath{eval c = c$_{A}$}
+        \item \lstmath{eval (op t$_1$ $\ \cdots\ $ t$_n$)} = op$_A$ (eval t$_1$) $\cdots$ (eval t$_n$) where an assignment function maps the constants of the language to the constants defined by the algebra. The evaluation function for open term language would be similar except it has an additional environment that assigns value of the carrier to variables. 
     \end{itemize}      
     \item Simplification via rewriting: Given a set of equations, each represented as \lstmath{(X,L,R)}, where \lstmath{X} is a set of variables, \lstmath{L} is the term on the left of the equation, and \lstmath{R} is the term on the right side. By fixing the set of variables, we can represent equations as  (L,R). Each equation represented this form gives rise to two substitutions \lstmath{1) L $\ \Rightarrow\ $ R} and \lstmath{2) R $\ \Rightarrow\ $ L}. Any of these substitutions can result in rewriting systems, but when simplifying one need to define an ordering relation that decides which term is \emph{simpler} than the other. When having the equations and the ordering relation, rewriting systems can be defined. 
     \item Equivalence of terms: two terms can be denoted equal in one or more of the following cases 
@@ -99,9 +100,9 @@ The axiomatic presentation of a class of algebras is defined as \lstmath{Th = (S
     \item A printing function similar to the show function in haskell. 
   %  \item Applying functors to terms: 
     \item Setters and getters for instances of data types (lenses in Haskell). the same way haskell does it to data types using template haskell. 
-    \item Theory Actions 
-    \item Subset Actions
-    \item Coset of a theory 
+%    \item Theory Actions 
+ %   \item Subset Actions
+ %   \item Coset of a theory 
 \end{itemize}
 We give the definitions of these constructs based on set theory, as one would find them in a standard text book. It has been formalized in type theory in  both Coq in~\cite{capretta99, Spitters2010} and agda~\cite{Gunther2018Agda}. In~\cite{capretta99}, the formalization of algebraic structures in type theory is done using record types. 
 %A reddit post have observed that these structures can be generated~\cite{redditGenHom}. The discussion went on\ednote{continue this} and~\cite{agdaGenPull}
@@ -109,10 +110,9 @@ We give the definitions of these constructs based on set theory, as one would fi
 \section{Tog Framework}
 \label{sec:togFamework}
 With so many construction to be generated, we develop an infrastructure that can be used to generate them. The main component is the type \lstmath{EqTheory}, which is a representation of uni-sorted equational theories described in Secion~\ref{subsec:generation:eqTheories}. 
-In order to operate on equational theories and generate the constructions we are interested in, we provide some utilities to manipulate tog representation of functions, datatypes, and parameters in Sections~\ref{subsec:generation:functions}, and~\ref{subsec:generation:datatypes}, resepectively. 
+In order to operate on equational theories and generate the constructions we are interested in, we provide some utilities to manipulate tog representation of functions and datatypes in Sections~\ref{subsec:generation:functions} and~\ref{subsec:generation:datatypes}, resepectively. 
 %Another important operation that we use in the generator is renaming, which we discuss in Section~\ref{subsec:generation:renaming}. 
 Some of the definitions we generate may depend on definitions of standard operations, like looking up a value in a vector. We discuss how to add definitions to a prelude in Section~\ref{subsec:generation:prelude}. 
-
 
 %As we discussed in Chapter~\ref{ch:tog}, Tog provides us with the internal representations of dependent records, which we use to represent theories. We extend the Tog implementation to generate algebraic constructions by providing metaprograms that operate on Tog internal representation of dependent records. In this section we discuss some of the basic utiities that we use in the generation algorithms. 
 
@@ -129,7 +129,7 @@ data EqTheory = EqTheory {
 \end{hscode}
 The \lstmath{waist} is used in the same way as in \lstmath{GTheory} from Section~\ref{sec:impl:expressions}. 
 
-The input to the generator is a list of tog dependent records. The first step the generator needs to do is to cast them into instances of \lstmath{EqTheory}. 
+The input to the generator is a list of tog dependent records representing the flattened theories described by the combinators as presented in the previous chapter. The first step the generator needs to do is to cast them into instances of \lstmath{EqTheory}, i.e. deal with a DTT context as an equational logic theory. 
 \begin{comment}
 This is done using the function \lstmath{recordToEqTheory}. 
 \begin{hscode}
@@ -146,7 +146,7 @@ In tog, records definitions are declared using the \lstmath{Record} constructor 
 
 We define an instance of an \lstmath{EqTheory} in terms of its name, the bindings that constitute its parameters and the expression representing the type of this instance. 
 \begin{hscode}
- type EqInstance = (Name_,[Binding],Expr) 
+type EqInstance = (Name_,[Binding],Expr) 
 \end{hscode}
 Instances are computed by the function 
 \begin{hscode} 
@@ -158,15 +158,17 @@ where the second argument is used to index the instance in cases where more than
 \end{hscode}
 The expression denoting the type of the instance is an application of the name of the type to the bindings, as follows 
 \begin{hscode}
-App ~$\$$~ mkArg (thry ^. thyName) : map mkArg bnames
+ App ~$\$$~ mkArg (thry ^. thyName) : map mkArg bnames
 \end{hscode} 
+where \lstmath{thyName} and \lstmath{bnames} are the names of the theory and the bindings as described by the first and second elements of \lstmath{EqInstance}, respectively. 
 
-Instances of a theory would also contain fields corresponding to those in the theory. Instead of having this as part of the type, we provide functions \lstmath{projectConstr} and \lstmath{applyProjConstr} to compute them. 
-When projecting a member from a record, be it a representation of a theory or an instance, one might want to have the projected member as a type declaration or as a term in the language. The function \lstmath{projectConstr} provides the projected member type declaration, while \lstmath{applyProjConstr} provides it as a term. 
-The \lstmath{projectConstr} function checks if the member being projects is an argument. If so, then its name of the binding list is used to construct the expresion. If not, then it needs to be qualified by the instance name. 
+Instances of a theory would also contain fields corresponding to those in the theory presentation. Instead of having this as part of the type of the instances, we provide functions \lstmath{projectConstr} and \lstmath{applyProjConstr} to compute them. 
+%When projecting a member from a record, be it a representation of a theory or an instance, one might want to have the projected member as a type declaration or as a term in the language. 
+The function \lstmath{projectConstr} provides the projected member type declaration, while \lstmath{applyProjConstr} provides the term corresponding to it. 
+In both cases, the function needs to check if the declaration being projected is an argument or a field of the record. In case it is an argument, then its name in the list of bindings is used to refer to it. If not, then it needs to be qualified by the instance name. 
 \begin{hscode} 
  if isArg thry c then App [mkArg ~$\$$~ findInBindings binds c]
- else App [mkArg (n ^. name),mkArg instName]
+ else App [mkArg (n ^. name), mkArg instName]
 \end{hscode} 
 When constructing a term using that member, we need to also generate the binding for the variables in the term. The function \lstmath{applyProjConstr} returns a tuple \lstmath{([Binding],Expr)} represnting the two components. As we work in a uni-sorted setup, we know all bindings have the type of the carrier, which we project using the \lstmath{projectConstr} function. The expression is constructed by projecting the member and applying it to the bindings using the \lstmath{App} constructor. 
 \begin{hscode} 
@@ -177,12 +179,13 @@ let vars = case varName of
 in  ([HBind (map mkArg vars) bindingsType],
       App ~$\$$~ (Arg ~$\$$~ projectConstr thry i c) : map mkArg vars) 
 \end{hscode} 
+\lstmath{varName} allows choosing the name of the variables used in the term. If \lstmath{varName} is set to \lstmath{x}, then the bindings are \lstmath{x$_1$ ... x$_n$} where $n$ is arity of the declaration. 
 
 %The input to this function is the definition of the theory, and in some cases an integer number. This is useful in case many instances of the theory are needed, and so they are indexed by number. The instance is represented as a tuple of two components \lstmath{([Binding],Expr)}. The \lstmath{Binding} list is useful when the theory has parameter, i.e.: \lstmath{waist > 0}. In this case the  bindings are the arguments to the theory instance. The \lstmath{Expr} corresponds to the instance expression of the theory. The instance expression is represented using the constructor \lstmath{App [Expr]}, where the first element of the list is the constructor. If there are any arguments, they follow after it. 
 
 \subsection{Functions}
 \label{subsec:generation:functions}
-Our generation algorithms manipulates function symbols in different ways. It is essential to provide the key tools for this manipulation. A function symbol as a member of a theory has the type \lstmath{Constr}. It gives rise to terms in the language of the theory based on its arity. The arguments to the terms are bindings, and that's why we define the type \lstmath{FApp} of function application to variables, as follows 
+Our generation algorithms manipulates function symbols in different ways. It is essential to provide the key tools for this manipulation. A function symbol as a member of a theory has the type \lstmath{Constr}. It contributes to the terms in the language of the theory based on its arity. The arguments to the terms are bindings, and that's why we define the type \lstmath{FApp} of function application to variables, as follows 
 \begin{hscode}
 type FType = Constr
 type FApp = ([Binding],Expr)
@@ -224,13 +227,12 @@ Instances are computed by the function \lstmath{tinstance}. The bindings are com
 \label{subsec:generation:renaming}
 In multiple positions what we do is substitution, i.e. traverse the datatype and replace the occurence of one variable with another. 
 
-\end{comment}
-
 \subsection{Bindings}
 \label{subsec:generation:bindings}
 Bindings are pervasive in definitions and are so important to deal with. We provide several utility functions for indexing bindings, repeating them, and other basic operations. 
 The most interesting of all is the case when the bindings of two different entities need to be combined together, like in the case when both entities are arguments to a function.\ednote{Q: Is there literature on this?}  
 \ednote{Q: How useful is the bindings section? Should I keep it?}
+\end{comment}
 
 \subsection{Prelude Definitions}
 \label{subsec:generation:prelude}
@@ -252,13 +254,12 @@ These strings are parsed by the function \lstmath{parseDecl}, wich turns it to a
 By providing the appropriate tools to operate over the internal syntax of tog, we are ready to generate the universal algebra constructions related to equational theory presentations. In the following sections we describe the generation of these constructions. 
 
 \subsection{Signature}
-Signatures represent the language of the theory, without any properties governing them. It is common in mathematics to talk about algebras over some signature. 
-For a theory \lstmath{(S,F,E)}, the signature is obtained by dropping the list of axioms \lstmath{E}. In tog, the process of generating the signature is done in $3$ steps via the \lstmath{signature_} function. 
+Signatures represent the language of the theory, without any properties governing them. It is common in mathematics to talk about algebras over some signature. Signatures are obtained from theory presentations by dropping axioms. In tog, the process of generating the signature is done in $3$ steps via the \lstmath{signature_} function. 
 \begin{hscode}
 signature_ :: Eq.EqTheory -> Eq.EqTheory
 signature_ = over Eq.thyName (++ "Sig") . set Eq.axioms [] .  gmap ren
 \end{hscode}
-First, one need to rename the fields of the theory, to be able to reuse them in the signature definition. This is because the tog scope checker would not accept overloaded names of fields within the same module. The \lstmath{gmap ren} part of the function definition traverses the \lstmath{EqTheory} renaming fields by adding a suffix \lstmath{S} to each of them. In case the code is exported into a system that support this kind of overloading, the suffix can be removed. Note that this rename will be needed when generating any new construction. 
+First, one need to rename the fields of the theory, to be able to use them in the signature definition. This is because the tog scope checker would not accept overloaded names of fields within the same module. The \lstmath{gmap ren} part of the function definition traverses the \lstmath{EqTheory} renaming fields by adding a suffix \lstmath{S} to each of them. In case the code is exported into a system that support this kind of overloading, the suffix can be removed. Note that this rename will be needed when generating any new construction. 
 Next, the \lstmath{Eq.axioms} list is set to be empty, dropping the axioms of the theory. 
 Last, The name of the signature of a theory \lstmath{t} is set to be \lstmath{tSig}. 
 
@@ -342,13 +343,15 @@ which generates lists \lstmath{[x1,x2,op x1 x2]} and \lstmath{[y1,y2,op y1 y2]},
 \input{term-algebra.tex}
 
 \section{Discussion}
-Given a tog dependent record, we have generated multiple constructions; some of which are records, like signatures, products, and homomorphisms, some are datatypes, like the different forms of term langauges, and others are functions, like all the utility functions for term languages. 
+\label{sec:generation:discussion}
+%We have introduced many constructions that can be derived from a theory presentation and implemented a framework in which we generate some of them. 
 
-A key part to this chapter is the knowledge representation aspect of the different constructions included. The representation of \lstmath{EqTheory} follows from the axiomatic representation of algebraic structures as presented in universal algebra. The definitions of \lstmath{FType} and \lstmath{DType} corresponds to the representation of functions and datatype, respectively, in tog. Less obvious was the representations of instances \lstmath{EqInstance} and \lstmath{DTInstance} and function application. The presentation we provide for them captures what is new information about the instance that is not part of the theory or the datatype. These are the name, binding, and type of the instance. 
-%Another interesting problem here is related to dealing with bindings of two different inputs, how to determine if they are the same, different, hidden or explicit. 
+Knowledge representation is a key part of a generation framework. Our representation of \lstmath{EqTheory} follows from the axiomatic representation of algebraic structures as presented in universal algebra. The definitions of \lstmath{FType} and \lstmath{DType} corresponds to the representation of functions and datatype, respectively, in tog. Less obvious was the representations of instances \lstmath{EqInstance} and \lstmath{DTInstance} and function application. 
 Once the knowledge capture and utility functions presented in Section~\ref{sec:togFamework} are in place, generating new constructions becomes a straight forward task. 
+%Given a tog dependent record, we have generated multiple constructions; some of which are records, like signatures, products, and homomorphisms, some are datatypes, like the different forms of term langauges, and others are functions, like all the utility functions for term languages. 
+%Another interesting problem here is related to dealing with bindings of two different inputs, how to determine if they are the same, different, hidden or explicit. 
 
 Another useful lesson we learn here is about the importance of having a strong and small core language for manipulating structures. Many things were easy to do in tog because it is a small system. But we also faced difficulties due to the immaturity of some features in tog, like handling hidden arguments and passing constructors to functions. 
 
-Using this framework we are able to generate a library of $106468$ lines of code from the representation of $230$ theories. Appendix~\ednote{add the appendix and reference} shows the generated definition for \lstmath{Monoid} theory. All the generated files are present on github under~\url{https://github.com/ysharoda/tog/blob/master/Library/mathscheme-generated.tog}~\ednote{put theories in separate files like in agda output, and update the url}. 
+Using this framework we are able to generate a library of $106468$ lines of code from the representation of $227$ theories. Appendix~\ednote{add the appendix and reference} shows the generated definition for \lstmath{Monoid} theory. All the generated files are present on github under~\url{https://github.com/ysharoda/tog/blob/master/Library/mathscheme-generated.tog}~\ednote{put theories in separate files like in agda output, and update the url}. 
  

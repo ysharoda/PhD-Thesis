@@ -3,9 +3,12 @@
 
 %So far we have been working in a simplistic dependent language. The next step is to export our work in Tog into systems that are widely used for theory development and proofs. We start with Agda, as it is the one that resembles Tog the most. 
 
-Generating the definitions of constructions from a theory presentation saves a lot of library development time, but having these definitions in a feature-rich language makes it even more useful. In this chapter we investigate research questions X and Y\todo{add the references here} by implementing an automatic translator of the library theories and their related constructions to agda and lean\ednote{lean is still being implemented}. 
+Generating the definitions of constructions from a theory presentation saves a lot of library development time, but having these definitions in a feature-rich language makes it even more useful. In this chapter we investigate research questions X and Y\todo{add the references here} by implementing an automatic translator of the library theories and their related constructions to agda.
+%and lean\ednote{lean is still being implemented} 
 
-In Section~\ref{sec:exporting_agda} we describe the tog-to-agda exporter implemented in haskell. Many parts of this exporter were straight forward translation between the two syntax trees. Nevertheless, there were some challenges that we discuss in Section~\ref{sec:exporting:challenges}. We compare our generated agda code to the one in the agda standard library~\cite{agda_stdlib} and discuss how close we can get to the standard library presentation in Section~\ref{sec:compasion_agda_stdlib}. To assess how our approach scale up, we discuss how we extended the exporter to support lean, as a target language, in Section~\ref{sec:exporting_lean}. We wrap the by a discussion in Section~\ref{sec:exporting:discussion}. 
+In Section~\ref{sec:exporting_agda} we describe the tog-to-agda exporter implemented in haskell. Many parts of this exporter were straight forward translation between the two syntax trees. Nevertheless, there were some challenges that we discuss in Section~\ref{sec:exporting:challenges}. We compare our generated agda code to the one in the agda standard library~\cite{agda_stdlib} and discuss how close we can get to the standard library presentation in Section~\ref{sec:compasion_agda_stdlib}. 
+%To assess how our approach scale up, we discuss how we extended the exporter to support lean, as a target language, in Section~\ref{sec:exporting_lean}. 
+We wrap the by a discussion in Section~\ref{sec:exporting:discussion}. 
 
 \begin{comment}
 One of the problems we highlight here is how design decisions lead to different presentations of the same theory, forcing developers to rewrite the same mathematical knowledge in different ways. In this chapter, we investigate the following question
@@ -14,7 +17,7 @@ One of the problems we highlight here is how design decisions lead to different 
 \end{itemize}
 \end{comment}
 
-\section{Exporting to Agda}
+\section{The Exporter}
 \label{sec:exporting_agda}
 The tog definitions have all the information needed to mathematically present the concepts they are describing. The process of exporting these definitions from tog to agda can be seen as \emph{presenting} them in a way that agda understands (type checks). The type class, \lstmath{PrintAgda}, takes care of that. It prints the tog definitions in a form accepted by agda, then the agda type checker is called on them. 
 \begin{hscode}
@@ -110,8 +113,8 @@ To solve the universes problem, we provide the function \lstmath{universeLevel} 
 \begin{hscode}
 universeLevel :: Fields -> Doc
 universeLevel flds =
-  text $
-    if elem "Set" $ everything (++) (mkQ [] (\(Name (_,x)) -> [x])) flds
+  text ~$\$$~
+    if elem "Set" ~$\$$~ everything (++) (mkQ [] (\ (Name (_,x)) -> [x])) flds
     then "Set$_1$" else "Set" 
 \end{hscode}
 \ednote{something wrong with the subscript in the then part} 
@@ -177,15 +180,17 @@ We provide a function \lstmath{replace} that is called before any \lstmath{Name}
 replace :: String -> String
 replace nm =
   let pieces = splitOn "_" nm
-      cond = \x -> if (x == "0" || x == "1") then x ++ " ~$ _i$~ " else x
-      postProcess lst = (head lst) : (map ("_"++) $ tail lst)
-  in concat $ postProcess $ map cond pieces 
+      cond = \x -> if (x == "0" || x == "1") then x ++ ~$_i$~ else x
+      postProcess lst = (head lst) : (map ("_"++) ~$\$$~ tail lst)
+  in concat ~$\$$~ postProcess ~$\$$~ map cond pieces 
 \end{hscode}
 A name which is just \lstmath{0} or \lstmath{1} is concatenated with a suffix \lstmath{$_i$}. The suffix is also added if the \lstmath{0} or \lstmath{1} is part of a name, but is separated by \lstmath{_}. This accounts for the naming convention of the MathScheme library for axioms. 
 
 \section{Comparison With Agda Standard Library}
 \label{sec:compasion_agda_stdlib}
-We have generated axiomatic presentations of algebraic structures, as well as constructions related to them. Some of the constructions we generate are part of the agda standard library and some are not. We look at out generated theories and constructions and compare them with the ones that agda provides in its standard library, highlighting how close we can get to them. 
+%Some of the constructions generated in this work is part of the agda standard library and some are not. 
+We compare the theories in our framework to the ones in the agda standard library, highlighting how close we can get to them. 
+%look at our generated theories and constructions and compare them with the ones that agda provides in its standard library, highlighting how close we can get to them. 
 
 Algebraic structures in agda is a fully bundled telescopes. For example, \lstmath{Monoid} is defined as
 \begin{agdacode}
@@ -222,7 +227,7 @@ record IsMonoid (~$\bullet$~ : Op~$_2$~) (~$\varepsilon$~ : A) : Set (a ~$\sqcup
   identity~$^r$~ : Rightdentity ~$\varepsilon$~ ~$\bullet$~ 
   identity~$^r$~ = proj~$_2$~ identity           
 \end{agdacode}
-Our generated structures are flat theories parametereized over the carrier, as we show in Section~\ednote{not written yet}. By comparing the two representations we find that they mainly differ in three aspects that we detail in the following sections 
+The flattener described in Chapter~\ref{ch:library} computes flat theories parametereized over the carrier. By comparing the two representations we find that they mainly differ in three aspects that we detail in the following sections. 
 \subsection{Predicate Style Presentations}
 Starting from flattened theories, we generate the \lstmath{isX} presentation of each theory by adjusting the waist of the theory
 \begin{hscode}
@@ -239,10 +244,10 @@ adjustTheory :: Name_ -> GTheory -> GTheory
 adjustTheory thryName (GTheory constrs wst) =
   let isXName = "Is"++thryName
       fsyms = notAxiom constrs
-      fsymNames = map (\(Constr (Name (_,nm)) _) -> nm) fsyms
+      fsymNames = map (\ (Constr (Name (_,nm)) _) -> nm) fsyms
       processName n = if elem n ["+","-","*"] then "("++n++")" else n 
-      callIsX = [Constr (mkName $ "is"++thryName)
-                     (App $ (mkArg isXName) 
+      callIsX = [Constr (mkName ~$\$$~ "is"++thryName)
+                     (App ~$\$$~ (mkArg isXName) 
                           : (map (mkArg . processName) fsymNames))]
   in GTheory (fsyms ++ callIsX) wst 
 \end{hscode} 
@@ -262,38 +267,45 @@ record Monoid (A  : Set )  : Set where
    e : A 
    isMonoid : (IsMonoid A op e ) 
 \end{agdacode}
-There are three main differences between the \lstmath{IsMonoid} in the agda standard library and the one generated here. First, the one is the carrier is not a parameter in the agda library's version. Despite that it is still in the context, as it is declared as an implicit argument to the parent module. Second, the standard library represents axioms as instances of records, like \lstmath{IsSemiring} and \lstmath{Identity}. Automating this introduces a layer of complexity that we discuss in Section~\ref{subsec:agda:modelMorphisms}. The third difference is related to universes. Library definitions are universe polymorphic. Tog does not have universes and all our generated records have the type \lstmath{Set}. 
+There are three main differences between the \lstmath{IsMonoid} in the agda standard library and the one generated here. First, the carrier in the agda library is not a parameter is still in the context, declared as an implicit argument to the parent module. 
+Second, the standard library represents axioms as instances of records, like \lstmath{IsSemiring} and \lstmath{Identity}. Automating this introduces a layer of complexity that we discuss in Section~\ref{subsec:agda:modelMorphisms}. The third difference is related to universes. Library definitions are universe polymorphic. Tog does not have universes and all our generated records have the type \lstmath{Set}. 
 
 The record \lstmath{Monoid} have the same differences. Due to the absence of universe support in tog, we prefer to keep the generated \lstmath{Monoid} record parameterized over the carrier. 
 
 \subsection{Setoids Based Presentations}
 \label{subsec:setoid-based-pres}
-The theories of algebra that we consider in this work are first order equational theories, i.e.: all the axioms are equations. The equality used in the tog development to represent these equations are based on tog's underlying propositional equality. 
-On the other hand, the agda definitions are defined over setoids, i.e. every carrier set is equipped with its own equality. 
-
+The algebraic hierarchy in agda are defined over setoids, i.e. every carrier set is equipped with its own equality. 
 The theory of setoid can be obtained from the \lstmath{Carrier} theory using the extension combinator 
 \begin{togcode}
 Setoid = extend Carrier {eq : A -> A -> Set}
 \end{togcode}
-The problem becomes changing all the axioms to be based on \lstmath{eq} instead of the tog equality. Tog equality is part of the meta thoery, tog, and is not part of any morphism, i.e.: cannot be mapped to \lstmath{eq} to adjust how the axioms look like. \ednote{TBD: how to handle this?}
+In our development, the equality used to represent the equations is tog's underlying propositional equality. It is part of the meta theory and is not reflected in the theories or the morphisms of the graph. Therefore, switching to a different equality would require doing that on the meta theory level. 
+
+On the other hand, if we start with a graph developed with equality at the theories level, using setoids, one can switch to built in equality by substitution. 
+
+
+% The data being manipulated in this work is theories in equational logic. The theories of algebra that we consider in this work are first order equational theories, i.e.: all the axioms are equations.
+
+%The problem becomes changing all the axioms to be based on \lstmath{eq} instead of the tog equality. Tog equality is part of the meta thoery, tog, and is not part of any morphism, i.e.: cannot be mapped to \lstmath{eq} to adjust how the axioms look like. \ednote{TBD: how to handle this?}
 
 %On the presentation level, this means that every theory would have one more declaration for the equality, as well as congruence axioms for all its function symbols. 
 
 \subsection{Model Morphisms}\ednote{better name?} 
 \label{subsec:model-morph}
 \label{subsec:agda:modelMorphisms}
-The definition of \lstmath{Monoid} includes a \lstmath{semigroup} definition that given a specific monoid would extract the semigroup structure of it. In our implementation, the theory graph has a morphism between \lstmath{Semigroup} and \lstmath{Monoid} that allows us to reproduce this information. 
+The definition of \lstmath{Monoid} in agda standard library includes model morphisms to  \lstmath{semigroup} definition that given a specific monoid would extract the semigroup structure of it. Our theory presentation does not have this references. The information to generate these model morphisms is present in the theory graph. The graph has a theory presentation morphism between \lstmath{Semigroup} and \lstmath{Monoid}, which triggers a model morphism from \lstmath{Monoid} to \lstmath{Semigroup}. It is worth mentioning that a mechanism to generate model morphisms in our setup will not, in all cases, produce the same model morphisms as the one in the agda standard library. In this case, we are depending on the structure of the graph which is different than the one in agda's library. 
 
-\section{Exporting to Lean}
-\label{sec:exporting_lean}
+%\section{Exporting to Lean}
+%\label{sec:exporting_lean}
 
 \section{Discussion}
 \label{sec:exporting:discussion}
-The idea of exporting from one language to another has been discussed various times, as we show in~\ednote{refer to the section in related work}. Our work take advantage from the fact that we export from a small language, and therefore the source syntax tree is small and can be manipulated easily. Having a minmial source language gives us the opportunity to add design decisions without having to observe how it affects the multiple other features that would be present in a feature-rich language. That makes the export process easier to manage. 
+The idea of exporting from one language to another has been discussed various times, as we show in~\ednote{refer to the section in related work}. Our work take advantage from the fact that we export from a small language, and therefore the source syntax tree is small and can be manipulated easily.  
+%Having a minimal source language gives us the opportunity to add design decisions without having to observe how it affects the multiple other features that would be present in a feature-rich language. That makes the export process easier to manage. 
 
-On the other hand, tog lakes some essential features, like universes. Other features may be less obvious, like indexed types. It is hard to decide which features are needed for a core language that fits our purpose. This is one way our work can be extended. We suggest strudying theorem provers as a program family, capturing their commonalities and variabilities via techniques like feature models~\cite{czarnecki2000generative}. If we have this model, one can write a staged exporter to different languages in the model, similar to what is explained in~\cite{stagedConfig}. 
+Like in Section~\ref{sec:generation:discussion}, we noted here that some missing features in tog makes the exporting process a bit harder, like universes and indexed types. It is hard to decide which features are needed for a core language that fits our purpose. This is one way our work can be extended. We suggest studying theorem provers as a program family, capturing their commonalities and variabilities via techniques like feature models~\cite{czarnecki2000generative}. If we have this model, one can write a staged exporter to different languages in the model, similar to what is explained in~\cite{stagedConfig}. 
 
-The theory graph organization structure has proven useful in the exporting process. The fact that the morphisms carry information about It made it possible to add design decisions, like exporting to the setoids-based graph, and to add the model morphisms as we discussed in Section has also made it possible to incorporate model definitions, as we discuss in Section~\ref{subsec:model-morph}. 
+%The theory graph organization structure is useful to add model morphisms has proven useful in the exporting process. The fact that the morphisms carry information about It made it possible to add design decisions, like exporting to the setoids-based graph, and to add the model morphisms as we discussed in Section has also made it possible to incorporate model definitions, as we discuss in Section~\ref{subsec:model-morph}. 
 
 \begin{comment}
 Our algorithms generate record definitions, inductive data types and functions. We study how those three constructs look like in Agda. 
