@@ -190,7 +190,7 @@ In this work, we attempt to answer the following research questions\todo{refer t
 
 \section{Broader Context}\todo{Make a bridge to it being broader context, readers say they don't see the context}. 
 \label{sec:broader_context}
-There are different ways of organizing knowledge within a formal system. Our work contributes to building a large math library organized as a theory graph in the heart of a tetrapodal structure. Theory graphs, explained in details in Section~\ref{sec:background:theorygraph}, capture the structure of mathematical knowledge by enabling the description of relationships between the different pieces using morphisms. Using them, we can express facts like `a group is a monoid` and that `monoid and additive monoid are isomorphic`. 
+There are different ways of organizing knowledge within a formal system. Our work contributes to building a large math library organized as a theory graph in the heart of a tetrapodal structure. Theory graphs, explained in details in Section~\ref{sec:background:theorygraph}, capture the structure of mathematical knowledge by enabling the description of relationships between the different pieces using morphisms. Using them, we can express facts like `a group is a monoid` and that `monoid and additive monoid are isomorphic`. 
 
 The nodes of a theory graph can be any kind of theories. Ideally, they would be biform theories~\cite{biformCICM2018}, as they connect axiomatic theories (used by theorem provers), and algorithmic theories (used by computer algebra systems) using meaning formulas. That way it facilitates communication between reasoning and computational systems; it becomes possible to reason about algorithmic theories, and to use results of computer algebra systems in theorem provers. In this work we only look at axiomatic theories. 
 
@@ -201,19 +201,35 @@ In~\cite{carette2020bigMath}, the authors argue that modern mathematics is organ
 We support the building of this library by providing combinators to define the library theories and algorithms to compute related constructions
 
 \section{Publications}
-This thesis lead to the following publications\ednote{how should I refer to myself here, I? the author?}\todo{write my contribution in~\cite{biformCICM2018}}\ednote{should I also include the abstract submitted to CICM2019 doctoral program?}: 
+This thesis lead to the following publications\ednote{Q: how should I refer to myself here, I? the author?}\ednote{Q: should I also include the abstract submitted to CICM2019 doctoral program?}: 
 \begin{itemize}
-    \item In \cite{biformCICM2018},
-    \item The MathScheme library is built using combinators that has been first published in~\cite{CaretteOConnorTPC}. The author contributed to an extended version of the paper, submitted to iournal of automated reasoning\cite{carette2018building}. The author's contribution to this work can be summarized as follows: 
+    \item \cite{biformCICM2018} 
+        \begin{itemize}
+        \item[] contributed to writing the project description of biform theories, mainly the motivation. The project description appeared in the proceedings of CICM 2018. 
+        \end{itemize}
+    \item \cite{carette2018building} 
+    \begin{itemize} 
+    \item[] contibuted to an extended paper discussing the MathScheme combinators that were initially published in~\cite{CaretteOConnorTPC}. The extended paper is submitted to the journal of automated reasoning. I contributed to surveying related work and framing the novelty of the work with respect to them. I contributed to developing the type systems for the combinators. I also implemented the combinators as discussed here in Section~\ref{sec:lib_implementation}. I used my implementation to build a revised version of the MathScheme library. 
+    %The development of the initial version of the library was part of the experiments~\cite{mathscheme2011experiments} that lead to the development of the combinators. To rebuild the library, we put some effort towards redefining the definitions that went wrong in the experiments. I also took part in developing the type systems for the combinators. 
+%Surveying theory expressions in different formal systems to frame the novelty of the paper. 
+%Taking part in developing the type system for the combinators 
+%Providing the first arrow-based implementation of the paper, as we discuss in Section~\ref{sec:lib_implementation}. 
+%Using the combinators to build a library of over $200$ theories. Although the library definitions pre-existed, many of them were not correct because they were based on theories. Shifting the implementation to arrows mandated figuring out the right arrows to build the theories, which was never done before this work.
+   \end{itemize}
+    \item ~\cite{diagrams_mmt} 
     \begin{itemize}
-        \item Taking part in developing the type system for the combinators 
-        \item Surveying theory expressions in different formal systems to frame the novelty of the paper. 
-        \item Providing the first arrow-based implementation of the paper, as we discuss in Section~\ref{sec:lib_implementation}. 
-        \item Using the combinators to build a library of over $200$ theories. Although the library definitions pre-existed, many of them were not correct because they were based on theories. Shifting the implementation to arrows mandated figuring out the right arrows to build the theories, which was never done before this work.
-    \end{itemize}
-    \item ~\cite{diagrams_mmt} discusses diagram combinators in MMT~\cite{MMT}. We used the diagram combinators to implement the MathScheme library~\cite{mathscheme2011experiments}. This was our first attempt to implement the combinators and also the first time diagrams combinators is tested. As the combinators computes a theory and some arrows, we considered treating them as diagrams. There were promising results, but did not scale up as - by that time - there were problems with how MMT supports the diagram combinators. 
-    \item In \cite{leverageCICM2020}, we present redundancy in libraries of formal systems, as well as our approach to generate many of those redundant definitions. The author collected the examples of redundancy, implemented the framework, and made most of the paper writing.
-    \item The paper~\cite{bercic2020space} surveys the software used by producers and consumers of mathematical knowledge, categorizing them in $5$ different aspects; inference, computation, concretization, narration, and organization. The author contributed mainly to the organization aspect, finding how to best categorize how different system organize knowledge within them. 
+    \item[] used the diagram infrastructure developed in MMT~\cite{MMT} and described in the paper to implement the MathScheme combinators described in~\cite{carette2018building}. Since the combinators computes a theory and some arrows, we considered treating their inputs and outputs as diagrams.
+This was an earlier attempt to implement the combinators and also the first time diagrams combinators in MMT are tested.  There were promising results, but did not scale up as - by that time - there were problems with how MMT supports the diagram combinators. 
+    \end{itemize}        
+    \item \cite{leverageCICM2020} 
+    \begin{itemize}
+    \item[]  presented redundancy in existing libraries and highlighted some of the problems we tackle in this thesis. Some of the main results of this thesis are published in the paper. I collected the examples of redundancy, implemented and tested the framework.
+    \end{itemize} 
+    \item \cite{bercic2020space} 
+    \begin{itemize}
+    \item[] contributed to surveying and categorizing how different mathematics software organize knowledge. Knowledge organization is one of $5$ categories of mathematics software the paper surveys. The other $4$ are inference, computation, concretization, and narration. 
+%    The paper introduces a tetrapodal  organization of knowledge is in the cent paper discusses software used by producers and consumers of mathematical knowledge. 
+    \end{itemize}        
 \end{itemize}
 
 \section{Outline}
