@@ -1,7 +1,9 @@
 \chapter{Tog}
 \label{ch:tog}
 
-The interpreter of our DSL generates definitions of theories and related constructions. We need a meta-theory to provide the language to represent and interpret those definitions. We have the following prerequisites for our language 
+%The interpreter of our DSL generates definitions of theories and related constructions. 
+Theories are written in some formal language, the object language. To manipulate them we need to investigate and manipulate the syntax of the object language. This can be done in the same language if it has a strong reflection mechanism, or in the meta language in which the object language is embedded. As the main goal of our work is to investigate the usefulness of a generative approach, we do not want to be constrained by the amount of support for the reflection mechanisms. Working in the meta language gives us the full control over manipulating the object language syntax. 
+We need our meta language to support the following features: 
 \begin{itemize}
 \item $\Pi$-Types: The semantics of the combinators we are using is given in categorical dependent logic. Having $\Pi$-types is needed to represent the types of views in terms of their source and target theories. 
 \item Dependent records to represent theories as telescopes. 
@@ -10,12 +12,12 @@ The interpreter of our DSL generates definitions of theories and related constru
 \item Equality to represent the equations within a theory. 
 \end{itemize}
 
-These features are available by default in dependently typed systems, like Agda, Coq, and Lean. But we refrained from using any of these systems to avoid delving into their design decisions. Instead, we prefer a small language that does not have many other extra features. We use Tog~\cite{tog}, a small implementation of Martin-l\"{o}f type theory. 
-Tog is a small dependently typed language and type checker created by the Agda developers to experiment with type checking ideas. It has mainly been used to experiment with type checking through unification~\cite{mazzoli2016type}. 
+These features are available in most dependently typed systems, like Agda, Coq, and Lean. But we refrained from using any of these systems to avoid delving into their design decisions. Instead, we prefer a small language that does not have many other extra features. We use Tog~\cite{tog}, a small implementation of Martin-l\"{o}f type theory. 
+It provides a small dependently typed language and type checker. It is created by the Agda developers to experiment with type checking ideas. It has mainly been used to experiment with type checking through unification~\cite{mazzoli2016type}. 
 
-Tog is implemented in Haskell. Figure~\ref{fig:togRepr} shows the internal representation of Tog. 
+Tog is implemented in Haskell. Figure~\ref{fig:togRepr} shows its internal representation. 
 \begin{figure}
-\begin{minted}[fontsize=\scriptsize,escapeinside=~~,mathescape=true]{haskell}
+\begin{minted}[fontsize=\scriptsize,escapeinside=~~,mathescape=true, style=trac]{haskell}
 data Decl
     = TypeSig TypeSig
     | FunDef Name [Pattern] FunDefBody
@@ -83,16 +85,16 @@ data Pattern
 \label{fig:togRepr}
 \end{figure}
 
-A Tog module is a list of declaration, such that each declaration is either a type signature, function definition, datatype declaration, record definition, or a nested module represented using the \lstmath{Module$\_$}, \lstmath{Record}, and \lstmath{Data} constructors, resp. 
-A function type is defined using \lstmath{TypeSig} and its definition using \lstmath{FunDef}. 
+A Tog module is a list of declaration, such that each declaration is either a type signature, function definition, datatype declaration, record definition, or a nested module represented using the  \lstmath{TypeSig}, \lstmath{FunDef}, \lstmath{Data}, \lstmath{Record}, and \lstmath{Module$\_$} constructors, respectively. 
 According to the type \lstmath{Decl} modules can import and open other modules, but our experiences shows that this features isn't supported. 
 
 Parameters to modules, records, and datatypes are represented by the \lstmath{Params} type. A single parameter has the type \lstmath{Binding} and can be declared implicit by using the constructor \lstmath{HBind}. 
 
-A record field and a datatype constructor are both of type \lstmath{Constr}, each having a \lstmath{Name} and a type expression \lstmath{Expr}. Dependent types are created with the \lstmath{Pi} constructor. Function types are curried and represented with the \lstmath{Fun} constructor. Axioms that are equation are represented with \lstmath{Eq} constructor. Type and function applications are created using the \lstmath{App} constructor. If a type has no arguments, then the \lstmath{Id} constructor is used to refer to it by name. 
+A record field and a datatype constructor are both of type \lstmath{Constr}, each having a name and a type expression \lstmath{Expr}. Dependent types are created with the \lstmath{Pi} constructor. Function types are curried and represented with the \lstmath{Fun} constructor. Axioms that are equation are represented with \lstmath{Eq} constructor. Type and function applications are created using the \lstmath{App} constructor. If a type has no arguments, then the \lstmath{Id} constructor is used to refer to it by name. 
 
-To perform pattern matching, the \lstmath{Pattern} type is used. Matching with a $0$-ary constructor is done using \lstmath{IdP}. If the constructor take parameters, then \lstmath{ConP} is used. \lstmath{HideP} represents pattern matching on implicit arguments (when needed) and \lstmath{EmptyP} represents the don't care \lstmath{$\_$} character. 
+To perform pattern matching, the \lstmath{Pattern} type is used. Matching with a $0$-ary constructor is done using \lstmath{IdP}. If the constructor take parameters, then \lstmath{ConP} is used. \lstmath{HideP} represents pattern matching on implicit arguments and \lstmath{EmptyP} represents the don't care \lstmath{$\_$} character. 
 
-We use this internal representation to generate our constructions. This language come with a dependent type checker that we use to check our generated definitions. 
+We extend tog to support the input theory expressions and flatten them into tog dependent records and morphisms between them. 
+The structure of these dependent records is used to generate new constructions. The generated constructions can be records, datatypes, or functions presented in tog syntax. The well-typedness of the generated constructions is esnured by the tog type checker. 
 \ednote{We probably need to say something about universes in Tog. In tog, it is true that \lstmath{Set : Set}. We decided then that this is not a big deal, but I don't know why.}
 
