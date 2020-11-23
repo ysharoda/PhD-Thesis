@@ -6,9 +6,14 @@ A large library of formalized, ready-to-use mathematics has long been the pursui
 The influential QED manifesto~\citep{boyer1994qed}, released in 1994, envisioned a library in which all mathematics is formalized and rigorously checked. The QED manifesto believed in one-formalization-fits-all approach to building this library.
 Diversity in mathematical formalizations was a big obstacle towards realizing the library described by QED. There was not an agreement even on which foundation to use for formalizing all of mathematics~\cite{qedrealoaded2016}.  Since then, mathematical knowledge management (MKM) became an active area of research framing a new vision for the large math library. The universal digital math library (UDML), described in~\cite{farmer2004mkm}, is a collection of heterogeneous, intercommunicating systems and building this library is described as a grand challenge facing MKM. 
 
-Despite the many efforts dedicated to building math libraries\ednote{some references}, a universal large library has not become a reality. One reason is that developing and maintaining libraries of mathematics requires a lot of manpower. One would want to believe that this human effort is put into the creative work of formalizing new pieces of knowledge. By examining current libraries of theorem provers, we know this is not always the case. The process of creating libraries for theorem provers involve a lot of redundancy. We give examples from libraries of formal systems in Chapter~\ref{ch:redundancy}. To understand why this redundancy exists, we examine the formalization of \lstmath{Monoid} in algebra textbooks versus in interactive theorem provers. 
+Despite the many efforts dedicated to building math libraries, a universal large library has not become a reality. One reason is that developing and maintaining libraries of mathematics requires a lot of manpower. One would want to believe that this human effort is put into the creative work of formalizing new pieces of knowledge. By examining current libraries of theorem provers, we know this is not always the case. Focusing our attention to the algebraic hierarchy, they have been formalized various times, sometimes even within the same system. In every formalization, the library developers had to provide all the definitions of the structures in the hierarchy and their related constructions, like homomorphisms. We want to add more automation to the process of building libraries. We define two sources of redundancy that can be elevated and use the theory of \lstmath{Monoid} as our running example. \lstmath{Monoid} is an algebraic structure, a member of the algebraic hierarchy, that describes algebras with carrier set and associative binary operation over that set that has a unit.
+%The libraries for theorem provers contain definitions provided by library developers that . 
+%We give examples of redundancies associated with defining the algebraic hierarchy in libraries of formal systems in Chapter~\ref{ch:redundancy}. 
+%By investigating the formalization of the algebraic hierarchy in libraries of formal systems, we can see 
+%It mainly requires developers to To understand why this redundancy exists, we examine the formalization of \lstmath{Monoid} in algebra textbooks versus in interactive theorem provers. 
 
-\lstmath{Monoid} is an algebraic structure that describes algebras with carrier set and associative binary operation over that set that has a unit. The definition given in~\cite{jacobson1985basic}  is 
+\paragraph{Handwritten Boilerplate.}
+\lstmath{Monoid} is defined in~\cite{jacobson1985basic} as
 \begin{quote}
     A monoid is a triple $(M,p,1)$ in which $M$ is a non-vacuous set, $p$ is an associative binary composition (or product) in $M$, and $1$ is an element of $M$ such that $p(1,a)= a = p(a,1)$ for all $a \in M$ 
 \end{quote}
@@ -26,7 +31,7 @@ If $M$ and $M^\prime$ are monoids, then a map $\eta$ of $M$ into $M^\prime$ is c
 More monoid-related constructions are defined, like submonoid, and quotient monoids. The same constructions are defined for \lstmath{Group} and \lstmath{Ring}. 
 %Mathematics presented in textbooks rely on the human understanding to be able to generalize these concepts. For example, \cite{jacobson1985basic} does not provide an explicit definition for group homomorphism, but proceeds to use it. 
 
-Formal systems\footnote{We use the term \emph{formal systems} to refer to all computer systems with logical foundations, be it automatic theorem prover (ATP), interactive theorem prover (ITP), specification system, or others.} present algebraic structures using axiomatic theories\ednote{should I define axiomatic theories?}. \lstmath{Monoid} and its homomorphism are presented axiomatically in a minimal (imaginary) computer language as follows 
+Formal systems\footnote{We use the term \emph{formal systems} to refer to all computer systems with logical foundations, be it automatic theorem prover (ATP), interactive theorem prover (ITP), specification system, or others.} present algebraic structures using axiomatic theories. \lstmath{Monoid} and its homomorphism are presented axiomatically in a minimal (imaginary) computer language as follows 
 \begin{lstlisting}[mathescape]
 theory Monoid { 
   A : type 
@@ -41,7 +46,8 @@ theory MonoidHom {
   M1, M2 : Monoid  
   hom : M1.A $\to$ M2.A 
   pres-e : hom (M1.e) = M2.e
-  pres-op : (x y : M1.A) $\to$ hom (M1.op x y) = M2.op (hom x) (hom y) 
+  pres-op : (x y : M1.A) $\to$ 
+             hom (M1.op x y) = M2.op (hom x) (hom y) 
 }
 \end{lstlisting}
 Let's now define \lstmath{Group} and \lstmath{Group} homomorphism within the same language
@@ -62,61 +68,53 @@ theory GroupHom {
   G1, G2 : Group 
   hom : G1.A $\to$ G2.A
   pres-e : hom (G1.e) = G2.e
-  pres-op : (x y : G1.A) $\to$ hom (G1.op x y) = G2.op (hom x) (hom y)
+  pres-op : (x y : G1.A) $\to$ 
+               hom (G1.op x y) = G2.op (hom x) (hom y)
   pres-inv : (x : G1.A) $\to$ hom (G1.inv x) = G2.inv (hom x)
 }
 \end{lstlisting}
-Notice how the two definitions of homomorphisms are similar and do not depend so much on the details of the theory. Generally, the homomorphism of a theory \lstmath{X} is a mapping between two instances of \lstmath{X} and has $3$ components 1) the $2$ instances of the theory, 2) the function \lstmath{hom} that maps the carriers of the $2$ instances, and 3) preservation axioms \lstmath{pres-x} for every operation symbol \lstmath{x}. The preservation axioms follow the pattern
+Notice how the two definitions of homomorphisms are similar and do not depend so much on the details of the theory. This observation is not specific to \lstmath{Monoid} and \lstmath{Group}. Generally, the homomorphism of a theory \lstmath{X} is a mapping between two instances (algebras) of \lstmath{X} and has $3$ components 1) the two instances of the theory, 2) the function \lstmath{hom} that maps the carriers of the $2$ instances, and 3) preservation axioms \lstmath{pres-x} for every operation symbol \lstmath{x}. The preservation axioms follow the pattern
 \begin{lstlisting}[mathescape]
 hom (op$_1$ x$_1$ .. x$_n$) = op$_2$ (hom x$_1$) .. (hom x$_n$)
 \end{lstlisting}
-Observing this pattern gives rise to some questions
- 
-\begin{itemize}
-\item[Q1] Is this pattern specific to \lstmath{Monoid}, \lstmath{Group}, and their homomorphisms? 
-\end{itemize}    
-\lstmath{Monoid} and \lstmath{Group} are two of many algebraic structures used in abstract algebra. The commonalities between these structures is the subject of study of universal algebra, and is captured by the following definition~\cite{mckenzie1987algebras}
+
+This definition of homomorphism is given to us by universal algebra, which studies commonalities between algebraic structures and define their related constructions.
+%\lstmath{Monoid} and \lstmath{Group} are two of many algebraic structures used in abstract algebra. The commonalities between these structures is the subject of study of universal algebra, 
+It defines an algebra as~\cite{mckenzie1987algebras}\footnote{An axiomatic theory that describes an algebra will also have a field in the ordered pair for the axioms describing its properties.}. 
 \begin{quote}
     An algebra is an ordered pair $\langle A, F \rangle$ such that $A$ is a nonempty set and $F = \langle F_i : i \in I \rangle$ where $F_i$ is a finitary operation on $A$ for each $i \in I$. $A$ is called the universe of $\langle A, F \rangle$, $F_i$ is referred to as a fundamental or basic operation of $\langle A, F \rangle$ for each $i \in I$, and $I$ is called the index set of the set of operation symbols for $\langle A, F \rangle$. 
 \end{quote}
-\ednote{look for a text book that explicitly state axioms. The properties of the function symbols, which are mentioned in mathematics textbooks but not always stated, are stated as axioms in formal systems, and so we defined an algebraic theory to be a type ($\langle A, F \rangle$,$E$), where $E$ is the set of axioms.}
-\todo{check the sanella software specification book for this definition. }
+%\ednote{look for a text book that explicitly state axioms. The properties of the function symbols, which are mentioned in mathematics textbooks but not always stated, are stated as axioms in formal systems, and so we defined an algebraic theory to be a type ($\langle A, F \rangle$,$E$), where $E$ is the set of axioms.}
+%\todo{check the sanella software specification book for this definition. }
+Libraries formalizing the algebriac hierarchy would have axiomatic theories describing algebras and their related constructions, like homomorphism, subalgebra, quotient algebra, term language and others. 
+For every one of those constructions, universal algebra provides a uniform definition in terms of the components of the theory. 
+It gives us the strong meta theory and the right abstractions to be able to instantiate those definitions for every theory. This suggests that we can have a program generate those constructions for the individual theories, instead of having library developers provide them manually. As there are many algebraic structures in mathematics and computer science and many constructions for each of them, this automation can save a lot of human effort. In this work, we provide a framework to generate these constructions. 
+%There are many algebraic structures and many constructions related to each of them. Their definitions are part of libraries of algebra in formal systems. Universal algebra provides a strong meta-theory for abstracting over the details of those structures and their related constructions. In this work, we want to use those abstractions to define algorithms that given a theory would compute the constructions. 
 
-For every theory that fit in this definition, we have a uniform definition of homomorphism, subalgebra, quotient algebra, term language and others. 
-
-\begin{itemize}
-    \item[Q2] What meta theory is used? 
-\end{itemize}
-While libraries of mathematics contain many different pieces of mathematical knowledge, we choose to focus on abstract algebra. Mathematicians have already studied the commonalities in this field and created universal algebra to describe it. Hence, we have a strong meta theory to understand how the definitions relate to each other. On the other hand, the MKM community have not utilized these abstraction in library building. This is the gap we are trying to fill in this work.  
-
-\begin{itemize}
-    \item[Q3] Is there enough information that can be generated? 
-\end{itemize}
-There is a lot of information that can be generated for one algebraic structure.  We list X\ednote{find the number} of them in Section~\ref{sec:toBeGenerated}. There are also many algebraic structures used in mathematics and computer science. While the hierarchy the comes in mind usually is \\
-\lstmath{Semigroup $\to$ Monoid $\to$ Group $\to$ Semiring $\to$ Ring}, there are many more and are structured in a more complex way, as we discuss in Chapter~\ref{ch:library}. 
-The list in~\cite{jipsen} defines over $300$ structure. There are also many being used in the meta theory of programming languages, like \lstmath{Applicative} and \lstmath{Monad}. 
-Algebraic software specification is another area that uses algebraic theories to describe software. The broad scope of software systems make us believe there is a lot of algebraic structures being produced by this community.  
-
-\begin{itemize}
-    \item[Q4] What abstractions are needed (barriers exists) to generate this knowledge?
-\end{itemize}\todo{This question can be written in a better way}.  
-\lstmath{Monoid} theory is one of those captured by this abstraction. We have given a definition of \lstmath{Monoid} in an imaginary language that fits in this abstraction. In Figure~\ref{fig:mon-diff-lang}, we show the definitions of \lstmath{Monoid} in $5$ different language. 
+\paragraph{Variabilities in Theory Presentations.}
+We have the right abstractions to implement the generation framework, but we need to start with a choice of a the theory presentation from which the construction will be generated. We have shown the definition of \lstmath{Monoid} in an imaginary minimal language. But formal systems have different ways to define \lstmath{Monoid}. 
+In Figure~\ref{fig:mon-diff-lang}, we show the definitions of \lstmath{Monoid} in $5$ different language. 
 \begin{figure}
     \input{figures/mon-diff-reps-2-col.tex}
     \caption{Representation of \lstinline|Monoid| theory in different languages.}
     \label{fig:mon-diff-lang}
 \end{figure}
-Although the $5$ definitions refer to the same mathematical concept, they look very different. The reason is that every system employ different design decisions. In some cases, as in Haskell and MMT, the theory \monoid is defined as an extension of \semigroup. Despite this being useful, there is no reason why a developer might not want to add a theory \unital (a non-associative \monoid), to the hierarchy. Exposing this hierarchy to the user makes their code vulnerable in case the hierarchy changes. This problem occurred when Haskell changed the hierarchy of type classes when \lstmath{Applicative} became a superclass for \lstmath{Monad} ~\cite{wiki:haskell_hierarch}. The work in \cite{cohen2020hierarchy} discusses this problem. The two Coq definitions takes two extreme views to the bundling problem~\cite{lean2019,alhassy2019,spitters2011type} by either having the carrier and all the function symbols as arguments (the first definition) or having all elements of the theory as declarations of a record type (the second definition). 
+The $5$ definitions refer to the same mathematical concept, but they look very different. 
+Each one has all the components needed to describe a \verb|Monoid|. Yet, they also reflect the design decisions taken by the librry developers. 
+For example, the Haskell and MMT definitions encode the fact that \monoid in these libraries is defined as an extension of \semigroup. This forces users of the definition to deal with \semigroup theory even if their formalization does not need to. 
+%the theory \monoid is defined as an extension of \semigroup. Despite this being useful, there is no reason why a developer might not want to add a theory \unital (a non-associative \monoid), to the hierarchy. Exposing this hierarchy to the user makes their code vulnerable in case the hierarchy changes. This problem occurred when Haskell changed the hierarchy of type classes when \lstmath{Applicative} became a superclass for \lstmath{Monad} ~\cite{wiki:haskell_hierarch}. The work in \cite{cohen2020hierarchy} discusses this problem. 
+The two Coq definitions takes two extreme views to the bundling problem~\cite{lean2019,alhassy2019,spitters2011type} by either having the carrier and all the function symbols as arguments (the first definition) or having all elements of the theory as declarations of a record type (the second definition). 
 The formalization of the Algebraic hierarchy in the Agda standard library is based on setoids (sets equipped with the equivalence relation). Therefore, we find an extra field of the definition of \monoid corresponding to the equivalence relation $\_\approx\_$. 
 
-Not only are library definitions diverse, but so are user projects. When design decisions are embedded that much into the definitions of the library, users find it difficult to reuse it in their projects and are forced to redefine many pieces. That leads to many libraries formalizing the same knowledge, even in the same language. Coq has at least $4$ different algebra libraries~\cite{Gonthier2009,Geuvers2002,coq-contribs-algebra,Spitters2010}. In~\cite{Gonthier2009}, the authors mention, referring to other libraries:  
+Having design decisions embedded into the library definitions is a big usability problem. Users won't be able to use them in their projects unless they employ the same decisions. Otherwise, they are forced to redefine them. That leads to many libraries formalizing the same knowledge, even in the same language. Coq has at least $4$ different algebra libraries~\cite{Gonthier2009,Geuvers2002,coq-contribs-algebra,Spitters2010}. In~\cite{Gonthier2009}, the authors mention, referring to other libraries:  
 \begin{quote}
     ``In spite of this body of prior work, however, we have found it
     difficult to make practical use of the algebraic hierarchy in our project to
     formalize the Feit-Thompson Theorem in the Coq system."
 \end{quote}
 
-This kind of redundancy is addressed in this thesis using generative programming. We define an abstraction over design decisions, from which different constructions defined by universal algebra can be automatically generated. By minimizing the design decisions that are embedded into the definition we aim to reduce redundancy and increase usability. 
+We seek to use a generative approach to building libraries that would generate definitions of constructions that can be generated from a theory presentation. We want to abstract over design decisions, so our generated definitions become accessible to more platforms and user projects.  
+%We want to abstract over design decisionsIn this work, we This kind of redundancy is addressed in this thesis using generative programming. We define an abstraction over design decisions, from which different constructions defined by universal algebra can be automatically generated. By minimizing the design decisions that are embedded into the definition we aim to reduce redundancy and increase usability. 
 
 
 
@@ -130,24 +128,40 @@ When choosing the language, we don't want to be burdened with system-specifc det
 \end{comment}
 
 \section{Research Problem}
-Our work contributes to the efforts of building large library of mathematics. The problem we are solving is that human developers manually provide definitions of constructions related to algebraic structures that are mathematically known to have definitions in terms of the structure. This suggest that we can have an algorithm that manipulates definitions of structures to produce definitions of their related constructions. 
+\label{sec:questions}
+%Our work contributes to the efforts of building large library of mathematics. We want to reduce the human effort needed to build such libraries by employing generative programming. 
 
-We define two sources of redundancy in algebra libraries 
-\begin{itemize}
-    \item Handwritten library definitions that can be automatically generated by manipulating the definitions of the algebraic structures. 
-    \item Redundancy in defining algebraic structures in libraries of formal systems. 
-\end{itemize}
+%\begin{itemize}
+%\item[O1:] Some constructions related to algebra can be automatically generated by manipulating theory presentations describing the algebras on the bases of universal algebra definitions. 
+%\item[O2:] 
+%\end{itemize}
 
-Elevating this human effort is possible because of two main reasons 
+We want to enhance the process of library development. Instead of having library developers provide every piece of detail in the library, we want to employ a generative approach to the development. The library developers would be providing expressions describing what definitions are to be included. The generative algorithm would generate those definitions. 
+
+We believe a generative approach is possible because definitions within a library are written in formal languages which provide uniform syntax for expressing information and universal algebra provides the definitions of many constructions in terms of the components of the algebraic structure. 
+
+ A generative approach would have the following benefits 
 \begin{itemize}
-    \item Definitions are written in a formal language which provide uniform syntax for expressing information. 
-    %By having a suitable way to manipulate theories, we can generate information from them. This can happen if theories are first class citizens, if the needed reflection mechanisms are in place, or using a meta program in the hosting language. We use Tog~\cite{tog} as our language and type checker. We discuss Tog in Chapter~\ref{ch:tog}.  
-    \item Universal algebra provides the definitions of many constructions in terms of the components of the algebraic structure. 
-\end{itemize}
+    \item Save the human effort put in producing standard knowledge by internalizing this knowledge in the generation algorithm.
+    \item Maintain a level of flexibility towards changing design decisions by understanding how they affect the generated definitions.
+    \item Increase the usability of library definitions by reducing the amount of design decisions embedded into them. 
+\end{itemize}  
+
+%The problem we are solving is that libraries of algebra have handwritten boilerplate provided by the library developers. Providing these definitions increases the human effort needed to build the library. On the other hand, we know that the right abstractions needed to generate those definitions have been well studied in universal algebra. This suggests that we can have algorithms that manipulate definitions of structures to produce definitions of their related constructions. 
+
+%We have highlighted two sources of 
+
+%By investigating definitions in algebra libraries, we find that there are two sources of redundancies We define two sources of redundancy in algebra libraries 
+%\begin{itemize}
+%    \item Handwritten library definitions that can be automatically generated by manipulating the definitions of the algebraic structures. 
+%    \item Variabilities in theory presentations across the different formal systems due to the different design decisions they employ. 
+%\end{itemize}
+
+
 %This human work can be saved if universal algebra can be used to \emph{generate} some definitions. Many problems face this generative approach, some are 1) having design decisions baked into library definitions makes universal algebra abstractions not directly applicable, 2) Manipulating definitions require going to the meta-level using either strong reflection mechanisms or meta programs in the host language 
 
-We suggest a generative approach in which a developer can \emph{describe} the information they need in the library and the design decisions they are employing, then library definitions get generated based on this description. This way we provide a domain specific langage (DSL) for theory development\ednote{introduce theory development}. 
-\ednote{talk more about DSLs and why they are used}. 
+%We suggest a generative approach in which a developer can \emph{describe} the information they need in the library and the design decisions they are employing, then library definitions get generated based on this description. This way we provide a domain specific langage (DSL) for theory development\ednote{introduce theory development}. 
+%\ednote{talk more about DSLs and why they are used}. 
 %It would lift the burden of having to define utilities that are needed to perform the task in hand, but are standard information to the point that writing them is boring and distracting from the original task. 
 %The DSL approach is useful in various ways. First, providing well-studied combinators to build algebraic theories can elevate their structure and connect them the right way, as we discuss in chapter~\cite{ch:library}. Also, library developers can use this DSL to generate parts of their library. Last, users of formal systems can use this DSL to automatically create utilities they need to get the systematic stuff done and focus on the novelty of their task. 
 
@@ -159,46 +173,68 @@ Also, the Lens library~\cite{lensesLib} in Haskell, use template Haskell~\cite{s
     \label{fig:deriving-via-example}
 \end{figure}
 
-This DSL would change the activity of theory development in the following way 
-\begin{itemize}
-    \item Save the human effort put in reproducing standard knowledge by internalizing this knowledge in the generation algorithm.
-    \item Maintain a level of flexibility towards changing design decisions by understanding how they affect the generated definitions.
-    \item Increase the usability of library definitions by reducing the amount of design decisions baked into them. 
-\end{itemize}  
-
 %The definitions we use in our development are based on universal algebra abstractions. Universal algebra abstracts over algebraic structures and their related constructions and provides the meta theory that explains how the generation algorithms should work. A theory presentation in universal algebra has three components \verb|(S,F,E)|; a sort \verb|S|, a list of function symbols along with their types \verb|F|, and a list of axioms (equations) that describe properties of the function symbols \verb|E|. If we can abstract over the details of theory presentations to extract this information, we are able to generate the constructions defined by universal algebra, like morphisms, product algebras, term languages, and others. 
 
-In this work, we attempt to answer the following research questions\todo{refer to the questions later, make sure they are all addressed in the thesis and the conclusion} 
+In this work, we address the following research questions\todo{refer to the questions later, make sure they are all addressed in the thesis and the conclusion} 
 \begin{enumerate}
-    \item[RQ1] Can the uniformity provided by universal algebra be captured by a meta program that generates parts of an algebra library?
-    \item[RQ2] What design decisions need to be abstracted from and which ones can be reintroduced after the generation of new?
-    \item[RQ3] Which information need to be provided by the developer and which ones can be generated? 
-    \item[RQ4] What are the preconditions for generating this new information? 
-    \item[RQ5] How would this affect the activity of library building?
-    \item[RQ6] Can these generation algorithms be extended beyond uni-sorted first-order theories, the ones that universal algebra captures? 
+    \item[RQ1] Can the uniformity provided by universal algebra be captured by a meta program that generates parts of an algebra library? 
+    \item[RQ2] What are the preconditions for generating this new information? 
+%    \item[RQ3] Which information need to be provided by the developer and which ones can be generated?     
+    \item[RQ3] What design decisions can be abstracted from and which ones can be reintroduced after the generation of new constructs?
+    \item[RQ4] How would this affect the activity of library building?
+    \item[RQ5] Can these generation algorithms be extended beyond the structure captured by universal algebra? 
 \end{enumerate}
 
 \section{Contributions}
-\todo{forward reference to chapter+section where contribution is documented}
 \begin{itemize}
-    \item Highlight the redundancy in algebra libraries
-    \item Compile a list of structures that can be generated from theory presentations
-    \item Generate some of these constructions in Tog, a small implementation of a dependently typed language, in the style of Agda, Coq and Lean. 
-    \item Export this implementation to Agda 
-    \item Test our framework on a library of over $200$ theories implemented using the combinators defined in~\cite{carette2018building}. 
+    \item Highlight the redundancy in libraries formalizing the algebraic hierarchy, in Chapter~\ref{ch:redundancy}. 
+    \item Build a library of over $200$ theories describing the algebraic hierarchy, implemented using the combinators in~\cite{carette2018building}, in Chapter~\ref{ch:library}. 
+    \item Compile a list of structures that can be generated from theory presentations, in Section~\ref{sec:toBeGenerated}. 
+    \item Generate some of these constructions in Tog, a small implementation of a dependently typed language, in the style of Agda, Coq and Lean, Chapter~\ref{ch:generation}. 
+    \item Export this implementation to Agda, Chapter~\ref{ch:export}. 
 \end{itemize}  
 
-\section{Broader Context}\todo{Make a bridge to it being broader context, readers say they don't see the context}. 
+\section{Broader Context}
 \label{sec:broader_context}
-There are different ways of organizing knowledge within a formal system. Our work contributes to building a large math library organized as a theory graph in the heart of a tetrapodal structure. Theory graphs, explained in details in Section~\ref{sec:background:theorygraph}, capture the structure of mathematical knowledge by enabling the description of relationships between the different pieces using morphisms. Using them, we can express facts like `a group is a monoid` and that `monoid and additive monoid are isomorphic`. 
+%Our aim to support building large libraries contributes to 
+%work fits in the effort of building a
+The tetrapod project~\cite{carette2020bigMath} envisions a software system in which $5$ aspects of doing mathematics are integrated. These $5$ aspects are organization, inference, computation, narration, and concretization. The system will have a tetrapodal structure with knowledge organization in the center and each of the $4$ modes making one of the legs of the tetrapod, as shown in Figure~\ref{fig:tetrapod}. 
+\begin{figure}[h]
+\centering{
+\begin{tikzpicture}[scale=\myscale]
+  \node (center) at (0,.15) {Organization};
+  \node (left) at (.2,-.3) {Computation};
+  \node (right) at (.4,0) {Inference};
+  \node (back) at (-.5,0) {Narration};
+  \node (up) at (0,.5) {Concretization};
 
-The nodes of a theory graph can be any kind of theories. Ideally, they would be biform theories~\cite{biformCICM2018}, as they connect axiomatic theories (used by theorem provers), and algorithmic theories (used by computer algebra systems) using meaning formulas. That way it facilitates communication between reasoning and computational systems; it becomes possible to reason about algorithmic theories, and to use results of computer algebra systems in theorem provers. In this work we only look at axiomatic theories. 
+  \draw[very thick] (center) -- (left);
+  \draw[very thick] (center) -- (right);
+  \draw[very thick] (center) -- (back);
+  \draw[very thick] (center) -- (up);
+  \draw[dotted] (left) -- (right) -- (back) -- (left);
+  \draw[dotted] (up) -- (left);
+  \draw[dotted] (up) -- (right);
+  \draw[dotted] (up) -- (back);
+\end{tikzpicture}}
+\caption{The tetrapodal structure of a mathematical software systems that supports the five aspects of doing mathematics. }
+\label{fig:tetrapod}
+\end{figure}
 
-Morphisms are meaning preservation maps. The simplest form of a morphism is inclusion. Morphisms are used to transfer results from one theory to another. So, a morphism between \lstmath{Monoid} and \lstmath{AdditiveMonoid} that describes they are isomorphic, allows us to transfer results between them. 
+The organization aspect of mathematics is reflected in the efforts of building libraries of mathematics. The tetrapod project supports building a large library of mathematical knowledge organized as theory graph of biform theories~\cite{biformCICM2018}. The theory graph structure connects theories by describing how the symbols of a source theory can be interpreted in the target one. In a graph, one can express facts like `a group is a monoid` and that `monoid and additive monoid are isomorphic`. We explain theories, morphisms and graphs in more details in Chapter~\ref{ch:background}. 
+Ideally, we want the nodes of the theory graph to be biform theories~\cite{biformCICM2018} which connect axiomatic theories  (used by theorem provers) and algorithmic theories (used by computer algebra systems) using meaning formulas. This way communication between reasoning and computation systems becomes possible. Communication can take the form reasoning about algorithmic theories or using results of computer algebra systems in theorem provers.\ednote{@WF: do biform theories still sound odd here?}  
 
-In~\cite{carette2020bigMath}, the authors argue that modern mathematics is organized as a tetrapod with knowledge organization being at its center. We are working towards a library organized as a theory graph of biform theories that serves as this center. Different aspects of the tetrapod will be consumers and producers of knowledge in this library. This implies that the size of this library would be huge, and that using generative approach to support its building would be a great asset. 
+This work contributes to the tetrapod project by investigating how a generative approach can contribute to building the library at the center of the tetrapod. We focus on building the algebraic hierarchy and the constructions related to the theories in it, mainly as described by universal algebra. The library we build has a theory graph structure, but the nodes are axiomatic, rather than biform, theories. 
+%The theories we consider here are axiomatic theroies. that automatically generates a theory graph from theory expressions described in~\cite{carette2018building}. The nodes of this graph are axiomatic theories. We then work on the nodes of the graph to extract information from them. Finally, we make this information available in a agda. 
+%There are different ways of organizing knowledge within a formal system. Our work contributes to building a large math library organized as a theory graph in the heart of a tetrapodal structure. Theory graphs, explained in details in Section~\ref{sec:background:theorygraph}, capture the structure of mathematical knowledge by enabling the description of relationships between the different pieces using morphisms. Using them, we can express facts like `a group is a monoid` and that `monoid and additive monoid are isomorphic`. 
 
-We support the building of this library by providing combinators to define the library theories and algorithms to compute related constructions
+%The nodes of a theory graph can be any kind of theories. Ideally, they would be biform theories~, as they connect axiomatic theories
+
+%Morphisms are meaning preservation maps. The simplest form of a morphism is inclusion. Morphisms are used to transfer results from one theory to another. So, a morphism between \lstmath{Monoid} and \lstmath{AdditiveMonoid} that describes they are isomorphic, allows us to transfer results between them. 
+
+%In, the authors argue that modern mathematics is organized as a tetrapod with knowledge organization being at its center. We are working towards a library organized as a theory graph of biform theories that serves as this center. Different aspects of the tetrapod will be consumers and producers of knowledge in this library. This implies that the size of this library would be huge, and that using generative approach to support its building would be a great asset. 
+
+%We support the building of this library by providing combinators to define the library theories and algorithms to compute related constructions
 
 \section{Publications}
 This thesis lead to the following publications\ednote{Q: how should I refer to myself here, I? the author?}\ednote{Q: should I also include the abstract submitted to CICM2019 doctoral program?}: 
@@ -233,7 +269,9 @@ This was an earlier attempt to implement the combinators and also the first time
 \end{itemize}
 
 \section{Outline}
-\todo{This section}
+We start by introducing some background knowledge in Chapter~\ref{ch:background}. We discuss the current practice of theory development within theorem provers, highlighting the redundancies that can be avoided in Chapter~\ref{ch:redundancy}. The methodology we use to remove those redundancies is introduced in Chapter~\ref{ch:design}. We present tog, the language and type checker that we use to develop our framework in Chapter~\ref{ch:tog}. The development of the algebraic hierarchy is presented in Chapter~\ref{ch:library}. In Chapter~\ref{ch:generation}, we discuss what information can be generated from theory presentations and how we extend tog to support generating them. We also present the constructions that we generate. The theories and the generated constructions are exported to Agda. We discuss the exporter in Chapter~\ref{ch:export}. 
+We present related work in Chapter~\ref{ch:relatedwork}. Conclusion and future work are discussed in Chapter~\ref{ch:conclusion}. 
+\todo{always check that this desciption of chapters still hold}
 
 \begin{comment}  
 These algebraic concepts are very important in mathematics and computer science that they are a main component in libraries of almost every mechanized system\ednote{add citations on research of algebra library development}. We consider the \lstmath{Monoid} structure for our running example. a \lstmath{Monoid} consists of a carrier over which there is an associative binary operation that has a unit. If we look at algebra textbooks, we find that~\cite{mckenzie1987algebras} defines it as 
