@@ -95,6 +95,7 @@ A record field and a datatype constructor are both of type \lstmath{Constr}, eac
 To perform pattern matching, the \lstmath{Pattern} type is used. Matching with a $0$-ary constructor is done using \lstmath{IdP}. If the constructor take parameters, then \lstmath{ConP} is used. \lstmath{HideP} represents pattern matching on implicit arguments and \lstmath{EmptyP} represents the don't care \lstmath{$\_$} character. 
 
 We extend tog to support the input theory expressions and flatten them into tog dependent records and morphisms between them. 
-The structure of these dependent records is used to generate new constructions. The generated constructions can be records, datatypes, or functions presented in tog syntax. The well-typedness of the generated constructions is esnured by the tog type checker. 
-\ednote{We probably need to say something about universes in Tog. In tog, it is true that \lstmath{Set : Set}. We decided then that this is not a big deal, but I don't know why.}
+The structure of these dependent records is used to generate new constructions. The generated constructions can be records, datatypes, or functions presented in tog syntax. The well-typedness of the generated constructions is ensured by the tog type checker. 
+
+%\ednote{We probably need to say something about universes in Tog. In tog, it is true that \lstmath{Set : Set}. We decided then that this is not a big deal, but I don't know why.}
 
