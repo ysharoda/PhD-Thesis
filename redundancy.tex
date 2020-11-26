@@ -1,148 +1,74 @@
-\chapter{Theory Development Practice}
+\begin{comment} 
+Dr. Carette's remarks: 
+“formal systems community” – I have rarely heard it called that. You might want to be more precise. You only cover ITPs that use logics more expressive than FOL.
+I think you’ll need to justify (and least via examples) your first sentence, if you’re going to include it at all. I would seriously consider deleting it.
+3.2 focuses way too much on stuff that I’ve done. You need to diversify more!
+I was expecting some actual statistics to show up here, not just examples! 
+this chapter, as written has too little actual content in it. I’m pretty sure you’ve looked much deeper and harder into those libraries. I think reporting on that could be a solid, tangible contribution.
+\end{comment} 
+
+\chapter[Boilerplate In Libraries]{Boilerplate In Libraries\footnote{This chapter is adapted from~\cite{leverageCICM2020}.}}
 \label{ch:redundancy}
-
-The formal systems community has mostly focused on making necessary things possible. Our focus is more oriented to making uniform definitions free. In this chapter we highlight the redundancy that is currently a part of the development of theories in formal systems. In Section~\ref{sec:redun:libraries} we focus our attention to libraries of formal systems, while in Section~\ref{sec:redun:user_projects} we show how some projects are redfines algebraic structure and some other constructions because they are unable to use the definitions provided by libraries of the system they are using. 
-
-\section{Algebra Theories in Libraries}\ednote{currently a copy-paste from the paper}
-\label{sec:redun:libraries}
+%One of the observations we build our work on is that libraries of formal systems contain developer provided definitions that can be automatically generated. In this chapter we support this observation by listing 
+%The formal systems community has mostly focused on making necessary things possible. Our focus is more oriented to making uniform definitions free. In this chapter we highlight the redundancy that is currently a part of the development of theories in formal systems. In Section~\ref{sec:redun:libraries} we focus our attention to libraries of formal systems, while in Section~\ref{sec:redun:user_projects} we show how some projects are redfines algebraic structure and some other constructions because they are unable to use the definitions provided by libraries of the system they are using. 
+%\section{Algebra Theories in Libraries}\ednote{currently a copy-paste from the paper}
+%\label{sec:redun:libraries}
 
 One of our observations is that current formalizations of Algebra contain quite a
 bit of information that is ``free'' in the sense that it can be
 mechanically generated from basic definitions. For example, given a theory
-X, it is mechanical to define X-homomorphisms. To do this within a system
-is extremely difficult, as it would require introspection and for theory
-\emph{definitions} to be first-class citizens, which is not the case for any
-system based on type-theory that we are aware of. Untyped systems
-in the Lisp tradition do this routinely, as does Maude~\cite{Maude}, which
-is based on \emph{rewriting logic}; the downside is that there is no
-difference between meaningful and meaningless transformations in these
-systems, only between ``runs successfully'' and ``crashes''. However,
-these constructions are fully typeable and, moreover, are not system-specific
-(as they can be phrased meta-theoretically within Universal
-Algebra), even though an implementation has to be aware of the syntactic
-details of each system.
+X, it is mechanical to define X-homomorphisms. 
+
+%To do this within a system is extremely difficult, as it would require introspection and for theory
+%\emph{definitions} to be first-class citizens, which is not the case for any
+%system based on type-theory that we are aware of\ednote{still checking idris}. Untyped systems
+%in the Lisp tradition do this routinely, as does Maude~\cite{Maude}, which
+%is based on \emph{rewriting logic}; the downside is that there is no
+%difference between meaningful and meaningless transformations in these
+%systems, only between ``runs successfully'' and ``crashes''. However,
+%these constructions are fully typeable and, moreover, are not system-specific
+%(as they can be phrased meta-theoretically within Universal
+%Algebra), even though an implementation has to be aware of the syntactic
+%details of each system.
 
 Lest the reader think that our quest is a little quixotic, we first look at
 current libraries from a variety of systems, to find concrete examples of
 human-written code that could have been generated. We look at Agda,
 Isabelle/HOL and Lean in particular. More specifically, we look at
-\href{https://github.com/agda/agda-stdlib/releases/tag/v1.3}
-{version 1.3 of the Agda standard library},
-the \href
-{https://isabelle.in.tum.de/website-Isabelle2019/dist/library/HOL/HOL-Algebra/index.html} 
-{2019 release of the Isabelle/HOL library}
+\href{https://github.com/agda/agda-stdlib/releases/tag/v1.4}
+{version 1.4 of the Agda standard library}
 and 
 \href
 {https://github.com/leanprover-community/mathlib/releases/tag/snapshot-2019-10}
-{Lean's mathlib}, where we link to the proper release tag.
+{2019 release of Lean's mathlib}, where we link to the proper release tag.
 
 We use the theory \verb|Monoid| as our running example, and we 
 highlight the reusable components that the systems use to make writing the
 definitions easier and more robust. 
 
-\subsection{Homomorphism}
-How do the libraries of our three systems\footnote{We do not have enough room
-    to give an introduction to each system; hopefully each system's syntax is
-    clear enough for the main ideas to come through.}
-represent homomorphism?
+%Between those definitions provided by the developers in different libraries, the overhead of having to change them when new design decisions are taken, and the missing constructions for some of the theories in the libraries, we have tried to quantify to some degree the effort that is being done by developers that can be elevated by providing automatic generators. 
 
-\subsubsection{Agda}
-defines \lstmath{Monoid} homomorphism, indirectly, in two ways. First,
-a predicate encapsulating the proof obligations is defined, which is
-layered on top of the predicate for 
-\href
-{https://github.com/agda/agda-stdlib/blob/4a8d8f5ffbdbd967ca1bb708895ea63709e0063d/src/Algebra/Morphism.agda} 
-{Semigroup homomorphism}.
-This is then used to define homomorphisms themselves.
+\section{Agda Standard Library}
+%How do the libraries of our three systems\footnote{We do not have enough room
+%    to give an introduction to each system; hopefully each system's syntax is
+%    clear enough for the main ideas to come through.}
+%represent homomorphism?
+The agda standard library defines the following constructions related to \lstmath{Monoid} 
+\begin{enumerate}
+\item \href{https://github.com/agda/agda-stdlib/blob/4099f6184a7d8cd4c02931c3ef5a95966ab4cbb6/src/Algebra/Bundles.agda}{Raw Monoid}: The \emph{raw} representation of a theory is a definition of its signature.. \lstmath{RawMonoid} is defined in the standard library as 
+\begin{agdacode} 
+record RawMonoid c ~$\ell$~ : Set (suc (c ~$\sqcup$~ ~$\ell$~)) where 
+  infixl 7 _~$\bullet$~_
+  infix 4 _~$\approx$~_
+  field 
+   Carrier : Set c 
+   _~$\approx$~_ : Rel Carrier ~$\ell$~ 
+   _~$\bullet$~_ : Op~$_2$~ Carrier 
+   ~$\varepsilon$~   : Carrier 
+\end{agdacode} 
+The definition of \lstmath{RawMonoid} is identical to that of \lstmath{Monoid} except for one declaration that instantiates the \lstmath{isMonoid} record that checks for the properties of a \lstmath{Monoid}. 
 
-\begin{agdacode}
-module _ {c~$_1$~ ~$\ell_1$~ c~$_2$~ ~$\ell_2$~}
-(From : Monoid c~$_1$~ ~$\ell_1$~)
-(To   : Monoid c~$_2$~ ~$\ell_2$~) where
-
-private
-module F = Monoid From
-module T = Monoid To
-
-record IsSemigroupMorphism (~$\llbracket$~_~$\rrbracket$~:Morphism)
-: Set(c~$_1$~ ~$\sqcup$~ ~$\ell_1$~ ~$\sqcup$~ c~$_2$~ ~$\sqcup$~ ~$\ell_2$~) where 
-field
-~$\llbracket\rrbracket$~-cong : ~$\llbracket$~_~$\rrbracket$~ Preserves F._~$\approx$~_ ~$\to$~ T._~$\approx$~_
-~$\bigdot$~-homo  : Homomorphic~$_2$~ ~$\llbracket$~_~$\rrbracket$~ F._~$\bigdot$~_ T._~$\bigdot$~_
-~$\cdots$~
-record IsMonoidMorphism (~$\llbracket$~_~$\rrbracket$~:Morphism)
-: Set(c~$_1$~ ~$\sqcup$~ ~$\ell_1$~ ~$\sqcup$~ c~$_2$~ ~$\sqcup$~ ~$\ell_2$~) where 
-field
-sm-homo : IsSemigroupMorphism F.semigroup T.semigroup ~$\llbracket$~_~$\rrbracket$~
-~$\varepsilon$~-homo   : Homomorphic~$_0$~ ~$\llbracket$~_~$\rrbracket$~ F.~$\varepsilon$~ T.~$\varepsilon$~
-
-open IsSemigroupMorphism sm-homo public
-\end{agdacode}
-
-There are many design decisions embedded in the above definitions. These
-decisions are not canonical, so we need to understand them to later
-be able to both abstract them out and make them variation points in our
-generator. Namely, these decisions are:
-\begin{itemize}
-    \item The choice of which declarations are parameters and which are fields.
-    The monoids (\verb|From| and \verb|To|) over which we define homomorphism
-    are parameters, not fields, as is the function
-    \lstinline[mathescape]|$\llbracket$_$\rrbracket$|.
-    \item The preservation axioms can be defined based on their arity
-    patterns, as type-level function such as
-    \lstinline[mathescape]|Homomorphic$_{2}$|:
-    \begin{agdacode}
-Homomorphic~$_{2}$~ : (A ~$\to$~ B) ~$\to$~ Op~$_2$~ A ~$\to$~ Op~$_2$~ B ~$\to$~ Set _ 
-Homomorphic~$_{2}$~ ~$\llbracket$~_~$\rrbracket$~ _~$\bigdot$~_ _~$\circ$~_ =
-  ~$\forall$~ x y ~$\to$~ ~$\sembr{\text{ x } \bigdot \text{ y }}$~ ~$\approx$~ (~$\sembr{\text{ x }}$~ ~$\circ$~ ~$\sembr{\text{ y }}$~)
-    \end{agdacode}
-    The library also provides shortcuts for $0$-ary and $1$-ary function
-    symbols, the most common cases.
-    \item The definition of structures over setoids. Thus equalities need 
-    to be preserved, and that is what the 
-    \lstinline[mathescape]|$\llbracket\rrbracket$-cong| axiom states.
-\end{itemize}
-
-\subsubsection{Isabelle/HOL}
-provides the following definition of \href{https://isabelle.in.tum.de/website-Isabelle2019/dist/library/HOL/HOL-Algebra/Group.html}{monoid homomorphism}:
-
-\begin{isabellecode}
-definition  _ ~$\Rightarrow$~ _ ~$\Rightarrow$~ ('a ~$\Rightarrow$~ 'b) set where 
-hom G H =
-  {h ~$\cdot$~ h ~$\in$~ carrier G ~$\to$~ carrier H ~$\wedge$~ 
-  (~$\forall$~ x ~$\in$~ carrier G ~$\cdot$~ ~$\forall$~ y ~$\in$~ carrier G  ~$\cdot$~ 
-    h (x ~$\oplus_\text{G}$~ y) = h x ~$\oplus_\text{H}$~ h y)}
-\end{isabellecode}
-\ednote{The problem of minted accpeting double quotes}
-
-The reader might notice a discrepancy in the above: unit preservation is
-missing.  The Isabelle library does not provide this version.
-There is, however, a proof that such a multiplication-preserving homomorphism
-necessarily maps the source unit to a unit of the image (sub)monoid, but that
-unit is not necessarily that of the full image. The above definition is also
-used to define group homomorphism and other structures. We consider
-this to be missing information in the library. 
-
-
-\subsubsection{Lean}\hspace{-0.4em}'s
-definition of \href{https://github.com/leanprover-community/mathlib/blob/3c58f160fd51ebf989138ed7c8981f821f08f860/src/algebra/group/hom.lean}
-{monoid homomorphism}
-is the one that most resembles the one found in textbooks. 
-\begin{leancode}
-structure monoid_hom (M : Type*) (N : Type*) 
-[monoid M] [monoid N] :=
-(to_fun : M ~$\to$~ N)
-(map_one' : to_fun 1 = 1)
-(map_mul' : ~$\forall$~ x y, to_fun (x * y) = to_fun x * to_fun y)
-\end{leancode}
-
-However, in the same file, there is another definition of \verb|add_monoid_hom| that looks ``the same'' up to renaming. This points
-to a weakness of Lean: there is no renaming operation on 
-\verb|structure|, and for a \verb|Ring| to contain two ``monoids'', one
-is forced to duplicate definitions. This redundancy is unpleasant.
-
-\subsection{Term Language}
-
+\item \href{https://github.com/agda/agda-stdlib/blob/c61b159363ce2390049ce8e1e5422f61f17ec3b7/src/Algebra/Solver/Monoid.agda}{Open Term Language and Evaluator}:
 The ``term language'' of a theory is the (inductive) data type
 that represents the syntax of well-formed terms of that theory,
 along with an interpretation function from \emph{expressions} 
@@ -152,9 +78,9 @@ its denotational semantics.
 In Agda, the definition of \lstinline|Monoid| term language is straightforward:
 \begin{agdacode}
 data Expr (n : ~$\mathbb{N}$~) where 
-var : Fin n ~$\to$~ Expr n 
-id : Expr n 
-_~$\oplus$~_ : Expr n ~$\to$~ Expr n ~$\to$~ Expr n 
+  var : Fin n ~$\to$~ Expr n 
+  id : Expr n 
+  _~$\oplus$~_ : Expr n ~$\to$~ Expr n ~$\to$~ Expr n 
 \end{agdacode}
 Defining the interpretation function requires the concept of an environment.
 An environment associates a value to every variable, and the semantics
@@ -169,59 +95,148 @@ Env = ~$\lambda$~ n ~$\rightarrow$~ Vec Carrier n
 ~$\llbracket$~ e~$_1$~ ~$\oplus$~ e~$_2$~ ~$\rrbracket$~ ~$\upvarrho$~ = ~$\llbracket$~ e~$_1$~ ~$\rrbracket$~ ~$\upvarrho$~ ~$\cdot$~ ~$\llbracket$~ e~$_2$~ ~$\rrbracket$~ ~$\upvarrho$~ 
 \end{agdacode}
 
-
 In Agda, these definitions are not found with the definitions of the
 algebraic structures themselves, but rather as part of the
-\emph{Solver} for equations over that theory. Here, we find more
-duplication, as the above definitions
-are repeated for the following three highly related structures: 
-\href{https://github.com/agda/agda-stdlib/blob/4a8d8f5ffbdbd967ca1bb708895ea63709e0063d/src/Algebra/Solver/Monoid.agda}
-{\lstinline|Monoid|},
-\href{https://github.com/agda/agda-stdlib/blob/4a8d8f5ffbdbd967ca1bb708895ea63709e0063d/src/Algebra/Solver/CommutativeMonoid.agda}
-{\lstinline|CommutativeMonoid|}
-and 
-\href{https://github.com/agda/agda-stdlib/blob/4a8d8f5ffbdbd967ca1bb708895ea63709e0063d/src/Algebra/Solver/IdempotentCommutativeMonoid.agda}
-{\lstinline|IdempotentCommutativeMonoid|}.
+\emph{Solver} for equations over that theory.
 
-Despite its usefulness, we were not able to find the definition of the term
-language of a theory in Isabelle/HOL or Lean.  
-
-\subsection{Product}
+%\item \href{https://github.com/agda/agda-stdlib/blob/35253c831b3e996cb8633c8f12b353231535dfe7/src/Algebra/Construct/Zero.agda}{Zero Monoid}
+%The zero theory is the trivial theory 
+\item \href{https://github.com/agda/agda-stdlib/blob/5365791e21af9abb324aa3721571bdceee919932/src/Algebra/Construct/DirectProduct.agda}{Product}:
 Until recently, there was no definition of the product of algebraic
 structures in the Agda library.  A 
 \href{https://github.com/agda/agda-stdlib/pull/1109}{recent pull request}
 has suggested adding these, along with other constructions.  The
 following hand-written definition has now been added:
 \begin{agdacode}
-rawMonoid : RawMonoid c c~$\ell$~ ~$\to$~ RawMonoid d d~$\ell$~ ~$\to$~ 
-RawMonoid (c ~$\sqcup$~ d) (c~$\ell$~ ~$\sqcup$~ d~$\ell$~)
-rawMonoid M N = record
-{ Carrier = M.Carrier ~$\times$~ N.Carrier
-; _~$\approx$~_ = Pointwise M._~$\approx$~_ N._~$\approx$~_
-; _~$\bigdot$~_ = zip M._~$\bigdot$~_ N._~$\bigdot$~_
-; ~$\varepsilon$~ = M.~$\varepsilon$~ , N.~$\varepsilon$~
-}
-where
-module M = RawMonoid M
-module N = RawMonoid N
+monoid : Monoid a ~$\ell_1$~ ~$\to$~ Monoid b ~$\ell_2$~ ~$\to$~ Monoid (a ~$\sqcup$~ b) (~$\ell_1$~ ~$\sqcup$~ ~$\ell_2$~)
+monoid M N = record
+  { ~$\varepsilon$~ = M.~$\varepsilon$~ , N.~$\varepsilon$~
+  ; isMonoid = record 
+     { isSemigroup = Semigroup.isSemigroup 
+                     (semigroup M.semigroup N.semigroup)
+     ; identity = (M.identity~$^{l}$~ , N.identity~$^{l}$~ <*>_)
+                  , (M.identity~$^{r}$~ , N.identity~$^{r}$~ <*>_)
+     }
+  } where Module M = Monoid M; module N = Monoid N 
 \end{agdacode}
+where \lstmath{semigroup} is the definition of the product theory of \lstmath{Semigroup}. 
 
-These could have been mechanically generated from the definition
-of \verb|Monoid|.
+\item \href{https://github.com/agda/agda-stdlib/blob/e34a31f80b215812ab26c10f84c9a658eeda3110/src/Algebra/Morphism/Structures.agda}{Morphisms}
+\lstmath{Monoid} homomorphism is defined in the agda standard library using \lstmath{Magma} homomorphism as follows 
+\begin{togcode} 
+record IsMonoidHomomorphism (~$\llbracket$~_~$\rrbracket$~: A ~$\to$~ B) : Set(a ~$\sqcup$~ ~$\ell_1$~ ~$\sqcup$~ ~$\ell_2$~) where 
+ field
+   isMagmaHomomorphism : IsMagmaHomomorphism ~$\llbracket$~_~$\rrbracket$~
+   ~$\varepsilon$~-homo   : Homomorphic~$_0$~ ~$\llbracket$~_~$\rrbracket$~ ~$\varepsilon_1$~ ~$\varepsilon_2$~
+\end{togcode} 
 
-Both 
-\href{https://isabelle.in.tum.de/website-Isabelle2019/dist/library/HOL/HOL-Algebra/Group.html}
-{Isabelle/HOL}
+Monomorphism and isomorphism are also provided in the library, defined in terms of homomorphisms. 
+\end{enumerate}
+These constructions constitute $7$ definitions spanning over $35$ lines for only the theory \lstmath{Monoid}. They are also repeated for other theories. The term language and evaluator for \lstmath{Monoid} are repeated verbatim for 
+\href{https://github.com/agda/agda-stdlib/blob/c61b159363ce2390049ce8e1e5422f61f17ec3b7/src/Algebra/Solver/CommutativeMonoid.agda}
+{\lstinline|CommutativeMonoid|}
 and 
-\href{https://github.com/leanprover-community/mathlib/blob/3c58f160fd51ebf989138ed7c8981f821f08f860/src/algebra/pi_instances.lean}
-{Lean}
-provide definitions of product algebras for monoids, which we omit for space.
-It is worth mentioning that the Lean library has $15$ definitions for products
-of structures that look very similar and could be generated. 
+\href{https://github.com/agda/agda-stdlib/blob/c61b159363ce2390049ce8e1e5422f61f17ec3b7/src/Algebra/Solver/IdempotentCommutativeMonoid.agda}
+{\lstinline|IdempotentCommutativeMonoid|}. The \lstmath{Raw} versions are provided for $7$ theories; \lstmath{Magma}, \lstmath{Monoid}, \lstmath{NearSemiring}, \lstmath{Semiring}, \lstmath{Ring}, and \lstmath{Lattice}. The definitions of the $3$ morphisms are provided for the same theories. 
 
+The direct product is defined for $10$ theories. From the $7$ that we defined above, only \lstmath{Magma}, \lstmath{Monoid}, and \lstmath{Group} have definitions of direct product. In addition to those $3$ theories, It is defined for \lstmath{Semigroup}, \lstmath{Band}\lstmath{CommutativeSemigroup}, \lstmath{Semilattice}, \lstmath{CommutativeMonoid}, \lstmath{IdempotentCommutativeMonoid}, and \lstmath{AbelianGroup}. Beside these definitions, the products of the signatures of \lstmath{Magma}, \lstmath{Monoid}, and \lstmath{Group} is given in the library.  
 
-\section{Algebra Theories in User Projects}
-\label{sec:redun:user_projects}
+These numbers gives us a total of $47$ definitions that are provided by the library developers, but can instead be generated. Bearing in mind that not all constructions are provided for all theories. Also, constructions are not provided for additive or multiplicative versions of theories like \lstmath{Monoid} and \lstmath{Group}. A generation algorithm would be able to provide those variants of the constructions, at no extra cost. 
+% 2 * 3 (term langs) 
+% + 7 (raw definitions) 
+% + 3 * 7 (the morphisms) 
+% + 10 (direct products) 
+% + 3 (the raw direct products) 
+%The $3$ morphisms are repreated for $6$ theories;  
+%The product theories are repeated for $10$ theories 
+%The raw theories are defined for $7$ theories 
+%Note that for each of these theories, there are the additive and multiplicative versions which agda overlooks in its library depending on its module rename function. 
+
+It is worth noting that the defintions in the agda standard library employs modularity when defining structures, like the definition of \lstmath{IsMonoidHomomorphism} which depends on \lstmath{IsMagmaHomomorphism}. Universal algebra definitions do not support this modularity and, therefore, the generated expressions would be more \emph{flat}, i.e. include the actual declarations instead of importing them from a different structure. Having flat definitions is, in some cases, a good way to abstract over library design. Nevertheless, we don't want to lose the connections between different theories. To solve this problem, we support a library organized as theory graph on which a flattener can be built.  
+
+\section{Lean MathLib}
+The \href{https://github.com/leanprover-community/mathlib/blob/4bb8d4475f897c8997100d31fe84b33050444374/src/algebra/group/hom.lean}
+{\lstmath{homomorphism}} 
+of monoids is defined in two ways in mathlib\ednote{Q: This is the definition in release 1.3. The definition on master branch is now different. Which one should I include here?}. 
+One way is the \emph{unbundled} predicate style definition in which the homomorphism function is a parameter to the class definition.  
+\begin{leancode} 
+class is_monoid_hom [monoid ~$\alpha$~] [monoid ~$\beta$~] (f : ~$\alpha \to \beta$~) 
+   extends is_mul_hom f : Prop :=
+    (map_one : f 1 = 1)
+\end{leancode} 
+where \lstmath{is_mul_hom} is the definition of homomorphism of multiplicative magma, which lean refers to as \lstmath{mul}. A very similar definition is provided for \lstmath{add_monoid}
+The other is the \emph{bundled} definition in which the homomorphism function is part of the declarations of the structure, not a parameter to it. 
+\begin{leancode}     
+structure monoid_hom (M : Type*) (N : Type*) [monoid M] [monoid N] :=
+  (to_fun : M ~$\to$~ N)
+  (map_one' : to_fun 1 = 1)
+  (map_mul' : ~$\forall$~ x y, to_fun (x * y) = to_fun x * to_fun y)    
+\end{leancode} 
+The library provide the unbundled (class) definitions for many theories, including \lstmath{group}, \lstmath{semiring}, and \lstmath{ring}. These definitions are marked deprecated. We were able to only find the bundled definitions for 
+\href{https://github.com/leanprover-community/mathlib/blob/4bb8d4475f897c8997100d31fe84b33050444374/src/algebra/group/hom.lean}
+{\lstmath{monoid_hom}} and 
+\href{https://github.com/leanprover-community/mathlib/blob/4bb8d4475f897c8997100d31fe84b33050444374/src/algebra/ring.lean}
+{\lstmath{ring_hom}}. 
+
+The lean library also have definitions for the 
+\href{https://github.com/leanprover-community/mathlib/blob/4bb8d4475f897c8997100d31fe84b33050444374/src/algebra/pi_instances.lean}{product} 
+of some theories. In a hierarchy ranging from \lstmath{has_add} and \lstmath{has_mul} to \lstmath{nonzero_comm_ring}, $21$ definitions of products are defined. 
+%has_add, has_mul, has_zero, has_one, has_neg, has_inv, add_semigroup, semigroup, add_monoid, monoid, add_group, group, add_comm_semigroup, comm_semigroup, add_comm_monoid, comm_monoid, add_comm_group, comm_group, semiring, ring, comm_ring, nonzero_comm_ring, 
+It contains definitions of 
+\href{https://github.com/leanprover-community/mathlib/blob/4bb8d4475f897c8997100d31fe84b33050444374/src/group_theory/submonoid.lean}{\lstmath{is_submonoid}},
+\href{https://github.com/leanprover-community/mathlib/blob/4bb8d4475f897c8997100d31fe84b33050444374/src/group_theory/subgroup.lean}{\lstmath{is_subgroup}}, 
+their additive variants, and  
+\href{https://github.com/leanprover-community/mathlib/blob/4bb8d4475f897c8997100d31fe84b33050444374/src/ring_theory/subring.lean}{\lstmath{is_subring}} . The \href
+{https://isabelle.in.tum.de/website-Isabelle2020/dist/library/HOL/HOL-Algebra/index.html} 
+{Isabelle/HOL library} also contains definitions for homomorphisms and quotient of \lstmath{monoid} and multiple other theories. 
+
+% is_add_submonoid, is_submonoid
+% is_add_subgroup, is_subgroup
+
+\begin{comment} 
+The product for \lstmath{monoid} theory is defined as 
+\begin{leancode} 
+instance [monoid ~$\alpha$~] [monoid ~$\beta$~] : monoid (~$\alpha \times \beta$~) :=
+{ one_mul := assume a, 
+       prod.rec_on a ~$\$$~ 
+        ~$\lambda$~ a b, mk.inj_iff.mpr ~$\langle$~one_mul _, one_mul _ ~$\rangle$~,
+  mul_one := assume a, 
+       prod.rec_on a ~$\$$~ 
+        ~$\lambda$~ a b, mk.inj_iff.mpr ⟨mul_one _, mul_one _⟩,
+  .. prod.semigroup, .. prod.has_one }
+\end{leancode} 
+\end{comment} 
+
+\begin{comment}
+
+The mathlib library contain definitions of 
+\href{https://github.com/leanprover-community/mathlib/blob/700d5761d288e0498b141818c6482f01d9c02f1a/src/algebra/group/defs.lean}{\lstmath{monoid}}
+and its additive version as follows 
+\begin{leancode}
+class monoid (M : Type u) extends semigroup M, has_one M :=
+  (one_mul : ~$\forall$~ a : M, 1 * a = a) (mul_one : ~$\forall$~ a : M, a * 1 = a)
+class add_monoid (M : Type u) extends add_semigroup M, has_zero M :=
+  (zero_add : ~$\forall$~ a : M, 0 + a = a) (add_zero : ~$\forall$~ a : M, a + 0 = a)
+attribute [to_additive] monoid
+\end{leancode}
+This example shows redundancy in theory definition. The \lstmath{add_monoid} class can be obtained from \lstmath{monoid} by renaming \lstmath{1 to 0}, \lstmath{* to +}, and the names of the axioms. 
+%add_comm_semigroup
+%add_left_cancel_semigroup
+%add_right_cancel_semigroup
+%add_comm_monoid
+%add_left_cancel_monoid
+%add_left_cancel_comm_monoid
+%add_right_cancel_monoid
+%add_right_cancel_comm_monoid
+%add_cancel_monoid
+%add_cancel_comm_monoid
+%add_group
+%add_comm_group
+\end{comment} 
+
+\begin{comment} 
+%\section{Algebra Theories in User Projects}
+%\label{sec:redun:user_projects}
 
 We continue investigating the redundancy in code written by developers. In the previous section we looked into general purpose libraries. We now turn our attention to user projects highlighting the cases when users had to redefine information already existing in libraries. 
 
@@ -269,4 +284,4 @@ instance Monoid Staged Integer where
 \end{hscode}
 and for rationals in Rational.lhs\ednote{Problem with this example is the repo has limited accessibility.}
 
-
+\end{comment} 
