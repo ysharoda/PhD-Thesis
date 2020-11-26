@@ -1,2 +1,16 @@
 \chapter{Conclusion}
 \label{ch:conclusion}
+
+The fact that tog has no universes (Set : Set). that we couldn't find a better experimental language, and that this would not affect the generated constructions because we do not perform any reasoning and our code is backed by universal algebra, so we have a meta theory that tell us that we are not generating nonsense 
+
+To do this within a system is extremely difficult, as it would require introspection and for theory
+\emph{definitions} to be first-class citizens, which is not the case for any
+system based on type-theory that we are aware of\ednote{still checking idris}. Untyped systems
+in the Lisp tradition do this routinely, as does Maude~\cite{Maude}, which
+is based on \emph{rewriting logic}; the downside is that there is no
+difference between meaningful and meaningless transformations in these
+systems, only between ``runs successfully'' and ``crashes''. However,
+these constructions are fully typeable and, moreover, are not system-specific
+(as they can be phrased meta-theoretically within Universal
+Algebra), even though an implementation has to be aware of the syntactic
+details of each system.
