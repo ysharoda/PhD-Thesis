@@ -1,16 +1,15 @@
 \chapter{Background}
 \label{ch:background}
-
-
 \todo{WF comment about equational FOL definition: the transitivity rule is not needed and the last rule is universal instantiation} 
 \todo{conservative extensions: why would they act better under little theories than under big theories?}
-Equational logic is based in set theory and forms the bases for universal algbera.  Dependent type theory (DTT) is a rich type theory in which types can depend on values. We want to represent theories of equational logic as contexts in DTT. We first introduce equational logic and DTT in Section~\ref{sec:background:logic}. 
-Contexts are defined in Section~\ref{sec:background:context} and theories in Section~\ref{sec:background:theory}. We then briefly introduce universal algebra and how it is used in our work in Section~\ref{sec:background:ualgebra}. 
+In this chapter, we discuss some background concepts needed for presenting our work. 
+Our ideas and implementation are based on dependent type theory (DTT). It is the meta theory for this work. We introduce it in Section~\ref{subsec:background:dtt} and define the notion of a theory and a context in Section~\ref{sec:background:theory}.
+% Equational logic is based in set theory and forms the bases for universal algbera.  Dependent type theory (DTT) is a rich type theory in which types can depend on values. We want to represent theories of equational logic as contexts in DTT. We first introduce equational logic and DTT in Section~\ref{sec:background:logic}. 
+%Contexts are defined in Section~\ref{sec:background:context} and theories in Section~\ref{sec:background:theory}. We then briefly introduce universal algebra and how it is used in our work in Section~\ref{sec:background:ualgebra}. 
 
-Part of our work is building a library of axiomatic theories. The library is organized as a theory graph, in which theories are connected via morphisms. We introduce morphisms in Section~\ref{sec:background:morphisms} and discuss theory graphs and different approaches to building them in Section~\ref{sec:background:theorygraph}. 
+Part of our work is building a library of axiomatic theories. The library is organized as a theory graph, in which theories are connected via morphisms. We introduce morphisms in Section~\ref{sec:background:morphisms} and discuss theory graphs and different strategies to building them in Section~\ref{sec:background:theorygraph}. 
 To build the library we use combinators motivated by category theory, so we give a brief introduction for it in Section~\ref{sec:categoryTh}. 
 One of the constructions we generate, that is not typically defined within universal algebra texts is multi-staged programming, so we define it in Section~\ref{sec:background:msp}. 
-
 
 \section{Dependent Type Theory}
 \label{subsec:background:dtt}
