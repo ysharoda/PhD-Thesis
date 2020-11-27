@@ -233,7 +233,7 @@ The theory \lstmath{RingoidSig} has declarations for two binary operations, whil
 
 It is worth noting that by implementing the combinators we mean computing a flattened version of the theory presentation described by the given expressions. This is performed by the flattener that given a theory presentation produces a tog dependent record of declarations within the described theory presentation. 
 
-In Section~\ref{subsec:coreDecisions} we discuss a modification in the syntax of combine and why we have it. We introduce the syntax of the language we implement in Section~\ref{sec:impl:expressions} and start discussing the implementation in Section~\ref{subsec:theoriesMorphisms} by presenting how we represent theories and morphisms in our framework. In Section~\ref{subsec:graph} we present the type of the theory graph. The implementation of the combinators that build the graph is presented in Section~\ref{subsec:combinatorsImpl}. 
+In Section~\ref{subsec:overPart} we discuss a modification in the syntax of combine and why we have it. We introduce the syntax of the language we implement in Section~\ref{sec:impl:expressions} and start discussing the implementation in Section~\ref{subsec:theoriesMorphisms} by presenting how we represent theories and morphisms in our framework. In Section~\ref{subsec:graph} we present the type of the theory graph. The implementation of the combinators that build the graph is presented in Section~\ref{subsec:combinatorsImpl}. 
 
 \subsection{Referring to arrows}
 \label{subsec:overPart}
@@ -360,7 +360,7 @@ theory nm cList =
 
 
 \subsubsection{Theory Expressions}
-The syntac for the theory expression is introduced in Section~\ref{subsec:coreDecisions}. We now discuss their implementation. 
+The syntax for the theory expression is introduced in Section~\ref{subsec:overPart}. We now discuss their implementation. 
 We start with the function \lstmath{updateGraph} which adds theories and morphisms to the graph, assuming they already have been computed by the combinator
 \begin{hscode}
 updateGraph ::   Name_ -> Either GView PushOut -> TGraph -> TGraph

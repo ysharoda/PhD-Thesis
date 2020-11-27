@@ -16,8 +16,9 @@ These features are available in most dependently typed systems, like Agda, Coq, 
 It provides a small dependently typed language and type checker. It is created by the Agda developers to experiment with type checking ideas. It has mainly been used to experiment with type checking through unification~\cite{mazzoli2016type}. 
 
 Tog is implemented in Haskell. Figure~\ref{fig:togRepr} shows its internal representation. 
+% , style=trac
 \begin{figure}
-\begin{minted}[fontsize=\scriptsize,escapeinside=~~,mathescape=true, style=trac]{haskell}
+\begin{minted}[fontsize=\scriptsize,escapeinside=~~,mathescape=true]{haskell}
 data Decl
     = TypeSig TypeSig
     | FunDef Name [Pattern] FunDefBody
