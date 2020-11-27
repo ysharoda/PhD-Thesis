@@ -1,9 +1,11 @@
 \chapter{Methodology}
 \label{ch:design}
 
-We highlighted two of the factors  that make library building labor intensive and suggest that by automating them we can lift some burden from the library developer. In this chapter, we give more details on how automation can be used for this purpose. 
+We highlighted some of the problems that make library building labor intensive and suggest that by automating them we can lift some burden from the library developer.s In this chapter, we give more details on how we use automation for this purpose. 
+%focusing our attention to the algebraic hierarchy and the constructions relate to its theories. 
+%The algebraic hierarchy is a core component of libraries of formal systems and their structure is well-studies in universal algebra. Therefore, they are good candidates for providing automation. 
 
-One of the main components of an algebra library is the axiomatic theory presentation of the algebraic structures, like the different formalizations of \lstmath{Monoid} shown in Figure~\ref{fig:mon-diff-lang}. In some cases, as is mostly the case in theorem provers, developers provide all the declarations of the theory. Another way is to define theories by using combinators which describes how the new theory can be formed in terms of existing ones. 
+One of the main components of an algebra library is the axiomatic theory presentation of the algebraic structures, like the different formalizations of \lstmath{Monoid} shown in Figure~\ref{fig:mon-diff-lang}. In most theorem provers, developers provide all the declarations of the theory. Another way is to define theories by using combinators which describe how the new theory can be formed in terms of existing ones. 
 Combinators are also a useful tool to leverage the structure of the theories by relating them to each other, which is useful when organizing the library as a theory graph. A \emph{flattener} is used to compute the theory and morphisms resulting from the combinator. We discuss our implementation of the flattener in Chapter~\ref{ch:library}. Using these ideas, \lstmath{Monoid} can be defined as 
 \begin{togcode} 
 Monoid = combine Unital and Semigroup over Magma
