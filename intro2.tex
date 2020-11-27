@@ -31,52 +31,71 @@ If $M$ and $M^\prime$ are monoids, then a map $\eta$ of $M$ into $M^\prime$ is c
 More monoid-related constructions are defined, like submonoid, and quotient monoids. The same constructions are defined for \lstmath{Group} and \lstmath{Ring}. 
 %Mathematics presented in textbooks rely on the human understanding to be able to generalize these concepts. For example, \cite{jacobson1985basic} does not provide an explicit definition for group homomorphism, but proceeds to use it. 
 
-Formal systems\footnote{We use the term \emph{formal systems} to refer to all computer systems with logical foundations, be it automatic theorem prover (ATP), interactive theorem prover (ITP), specification system, or others.} present algebraic structures using axiomatic theories. \lstmath{Monoid} and its homomorphism are presented axiomatically in a minimal (imaginary) computer language as follows 
-\begin{lstlisting}[mathescape]
+Formal systems\footnote{We use the term \emph{formal systems} to refer to all computer systems with logical foundations, be it automatic theorem prover (ATP), interactive theorem prover (ITP), specification system, or others.} present algebraic structures using axiomatic theories. \lstmath{Monoid} and its homomorphism are presented axiomatically in a minimal (imaginary) computer language as follows \\
+\begin{tabular}[t]{p{6.3cm} p{1cm} p{6.3cm}}
+\begin{lstlisting}[mathescape, basicstyle=\footnotesize]
 theory Monoid { 
   A : type 
   e : A
   op : A $\to$ A $\to$ A
-  lunit : (x : A) $\to$ op e x = x 
-  runit : (x : A) $\to$ op x e = x 
-  assoc : (x y z : A) $\to$ op x (op y z) = op (op x y) z
+  lunit : {x : A} $\to$ op e x = x 
+  runit : {x : A} $\to$ op x e = x 
+  assoc : {x y z : A} $\to$ 
+      op x (op y z) = op (op x y) z
 }
-
+\end{lstlisting}
+& &
+\begin{lstlisting}[mathescape, basicstyle=\footnotesize]
 theory MonoidHom { 
   M1, M2 : Monoid  
   hom : M1.A $\to$ M2.A 
   pres-e : hom (M1.e) = M2.e
   pres-op : (x y : M1.A) $\to$ 
-             hom (M1.op x y) = M2.op (hom x) (hom y) 
-}
+             hom (M1.op x y) = 
+             M2.op (hom x) (hom y) }
+             
+             
+             
 \end{lstlisting}
-Let's now define \lstmath{Group} and \lstmath{Group} homomorphism within the same language
-\begin{lstlisting}[mathescape]
+\end{tabular}
+
+Let's now define \lstmath{Group} and \lstmath{Group} homomorphism within the same language \\
+\begin{tabular}[t]{p{6.3cm} p{1cm} p{6.3cm}}
+\begin{lstlisting}[mathescape, basicstyle=\footnotesize]
 theory Group {
   A : type 
   e : A
   op : A $\to$ A $\to$ A
   inv : A $\to$ A
-  lunit_e : (x : A) $\to$ op e x = x
-  runit_e : (x : A) $\to$ op x e = x
-  linverse : (x : A) $\to$ op x (inv x) == e
-  rinverse : (x : A) $\to$ op (inv x) x == e
-  associative : (x y z : A) $\to$ op x (op y z) = op (op x y) z
-}
-
+  lunit_e : {x : A} $\to$ op e x = x
+  runit_e : {x : A} $\to$ op x e = x
+  linverse : {x : A} $\to$ 
+          op x (inv x) == e
+  rinverse : {x : A} $\to$ 
+          op (inv x) x == e
+  assoc : {x y z : A} $\to$ 
+          op x (op y z) = op (op x y) z }
+\end{lstlisting}
+& &
+\begin{lstlisting}[mathescape, basicstyle=\footnotesize]
 theory GroupHom { 
   G1, G2 : Group 
   hom : G1.A $\to$ G2.A
   pres-e : hom (G1.e) = G2.e
   pres-op : (x y : G1.A) $\to$ 
-               hom (G1.op x y) = G2.op (hom x) (hom y)
-  pres-inv : (x : G1.A) $\to$ hom (G1.inv x) = G2.inv (hom x)
-}
+            hom (G1.op x y) = 
+            G2.op (hom x) (hom y)
+  pres-inv : (x : G1.A) $\to$ 
+            hom (G1.inv x) = 
+            G2.inv (hom x)  }
 \end{lstlisting}
-Notice how the two definitions of homomorphisms are similar and do not depend so much on the details of the theory. This observation is not specific to \lstmath{Monoid} and \lstmath{Group}. Generally, the homomorphism of a theory \lstmath{X} is a mapping between two instances (algebras) of \lstmath{X} and has $3$ components 1) the two instances of the theory, 2) the function \lstmath{hom} that maps the carriers of the $2$ instances, and 3) preservation axioms \lstmath{pres-x} for every operation symbol \lstmath{x}. The preservation axioms follow the pattern
+\end{tabular}
+
+Notice how the two definitions of homomorphisms are similar and do not depend so much on the details of the theory. This observation is not specific to \lstmath{Monoid} and \lstmath{Group}. Generally, the homomorphism of a theory \lstmath{X} is a mapping between two instances (algebras) of \lstmath{X} and has $3$ components 1) the two instances of the theory, 2) the function \lstmath{hom} that maps the carriers of the $2$ instances, and 3) preservation axioms, such that there is an axiom \lstmath{pres-op} for every operation symbol \lstmath{op}. The preservation axioms follow the pattern
 \begin{lstlisting}[mathescape]
-hom (op$_1$ x$_1$ .. x$_n$) = op$_2$ (hom x$_1$) .. (hom x$_n$)
+{x$_1$ .. x$_n$ $\in$ A$_1$} $\to$ hom (op$_1$ x$_1$ .. x$_n$) = op$_2$ (hom x$_1$) .. (hom x$_n$)
 \end{lstlisting}
+where \lstmath{A$_1$} is the carrier of the first instance and the domain of the \lstmath{hom} function. \lstmath{op$_1$} and \lstmath{op$_2$} are the projections of the function symbol \lstmath{op} from the first and the second instances, respectively. 
 
 This definition of homomorphism is given to us by universal algebra, which studies commonalities between algebraic structures and define their related constructions.
 %\lstmath{Monoid} and \lstmath{Group} are two of many algebraic structures used in abstract algebra. The commonalities between these structures is the subject of study of universal algebra, 
@@ -92,7 +111,7 @@ It gives us the strong meta theory and the right abstractions to be able to inst
 %There are many algebraic structures and many constructions related to each of them. Their definitions are part of libraries of algebra in formal systems. Universal algebra provides a strong meta-theory for abstracting over the details of those structures and their related constructions. In this work, we want to use those abstractions to define algorithms that given a theory would compute the constructions. 
 
 \paragraph{Variabilities in Theory Presentations.}
-We have the right abstractions to implement the generation framework, but we need to start with a choice of a the theory presentation from which the construction will be generated. We have shown the definition of \lstmath{Monoid} in an imaginary minimal language. But formal systems have different ways to define \lstmath{Monoid}. 
+We have the right abstractions to implement the generation framework, but we need to start with a choice of a the theory presentation from which the constructions will be generated. We have shown the definition of \lstmath{Monoid} in an imaginary minimal language. But formal systems have different ways to define \lstmath{Monoid}. 
 In Figure~\ref{fig:mon-diff-lang}, we show the definitions of \lstmath{Monoid} in $5$ different language. 
 \begin{figure}
     \input{figures/mon-diff-reps-2-col.tex}
@@ -101,7 +120,7 @@ In Figure~\ref{fig:mon-diff-lang}, we show the definitions of \lstmath{Monoid} i
 \end{figure}
 The $5$ definitions refer to the same mathematical concept, but they look very different. 
 Each one has all the components needed to describe a \verb|Monoid|. Yet, they also reflect the design decisions taken by the librry developers. 
-For example, the Haskell and MMT definitions encode the fact that \monoid in these libraries is defined as an extension of \semigroup. This forces users of the definition to deal with \semigroup theory even if their formalization does not need to. 
+For example, the Haskell and MMT definitions exposes the fact that \monoid in these libraries is defined as an extension of \semigroup. This forces users of the definition to deal with \semigroup theory even if their formalization does not need to. 
 %the theory \monoid is defined as an extension of \semigroup. Despite this being useful, there is no reason why a developer might not want to add a theory \unital (a non-associative \monoid), to the hierarchy. Exposing this hierarchy to the user makes their code vulnerable in case the hierarchy changes. This problem occurred when Haskell changed the hierarchy of type classes when \lstmath{Applicative} became a superclass for \lstmath{Monad} ~\cite{wiki:haskell_hierarch}. The work in \cite{cohen2020hierarchy} discusses this problem. 
 The two Coq definitions takes two extreme views to the bundling problem~\cite{lean2019,alhassy2019,spitters2011type} by either having the carrier and all the function symbols as arguments (the first definition) or having all elements of the theory as declarations of a record type (the second definition). 
 The formalization of the Algebraic hierarchy in the Agda standard library is based on setoids (sets equipped with the equivalence relation). Therefore, we find an extra field of the definition of \monoid corresponding to the equivalence relation $\_\approx\_$. 
@@ -165,11 +184,11 @@ We believe a generative approach is possible because definitions within a librar
 %It would lift the burden of having to define utilities that are needed to perform the task in hand, but are standard information to the point that writing them is boring and distracting from the original task. 
 %The DSL approach is useful in various ways. First, providing well-studied combinators to build algebraic theories can elevate their structure and connect them the right way, as we discuss in chapter~\cite{ch:library}. Also, library developers can use this DSL to generate parts of their library. Last, users of formal systems can use this DSL to automatically create utilities they need to get the systematic stuff done and focus on the novelty of their task. 
 
-We are inspired by the \emph{deriving} mechanism in Haskell. When defining a new datatype, a Haskell user can ask for some utilities to be readily available for them to use on that type. The Haskell compiler would then generate these functions for the user. Some of these are basic, like equality and printer, but the community has gone as far as giving users the chance to define their own templates for deriving instances, knows as the \emph{deriving-via} technique. A pretty impressive example of deriving information is shown in Figure~\ref{fig:deriving-via-example}\ednote{find a better way to put the link to the source}. 
+We are inspired by the \emph{deriving} mechanism in Haskell. When defining a new datatype, a Haskell user can ask for some utilities to be readily available for them to use on that type. The Haskell compiler would then generate these functions for the user. Some of these are basic, like equality and printer, but the community has gone as far as giving users the chance to define their own templates for deriving instances, knows as the \emph{deriving-via} technique. A pretty impressive example of deriving information is shown in Figure~\ref{fig:deriving-via-example}. 
 Also, the Lens library~\cite{lensesLib} in Haskell, use template Haskell~\cite{sheard2002TH} for the same purpose. 
 \begin{figure}
     \includegraphics[scale=0.5,width=\linewidth]{figures/deriving-via-example.png}
-    \caption{Example of deriving information in Haskell. source:\url{https://github.com/jhgarner/Xest-Window-Manager/blob/3741b35a69eb2cf8cd7320e186fd40134d1c1a56/src/Base/DoAll.hs}}
+    \caption{Example of deriving information in Haskell. \\ source: \href{https://github.com/jhgarner/Xest-Window-Manager/blob/3741b35a69eb2cf8cd7320e186fd40134d1c1a56/src/Base/DoAll.hs}{Xest Window Manager Project} on github.}
     \label{fig:deriving-via-example}
 \end{figure}
 
@@ -245,7 +264,7 @@ This thesis lead to the following publications\ednote{Q: how should I refer to m
         \end{itemize}
     \item \cite{carette2018building} 
     \begin{itemize} 
-    \item[] contibuted to an extended paper discussing the MathScheme combinators that were initially published in~\cite{CaretteOConnorTPC}. The extended paper is submitted to the journal of automated reasoning. I contributed to surveying related work and framing the novelty of the work with respect to them. I contributed to developing the type systems for the combinators. I also implemented the combinators as discussed here in Section~\ref{sec:lib_implementation}. I used my implementation to build a revised version of the MathScheme library. 
+    \item[] contibuted to an extended paper discussing the MathScheme combinators that were initially published in~\cite{CaretteOConnorTPC}. The extended paper is submitted to the journal of automated reasoning. I contributed to surveying related work and framing the novelty of the work with respect to them, developing the type systems for the combinators, and implementing them as discussed here in Section~\ref{sec:lib_implementation}. I used this implementation to build a revised version of the MathScheme library. 
     %The development of the initial version of the library was part of the experiments~\cite{mathscheme2011experiments} that lead to the development of the combinators. To rebuild the library, we put some effort towards redefining the definitions that went wrong in the experiments. I also took part in developing the type systems for the combinators. 
 %Surveying theory expressions in different formal systems to frame the novelty of the paper. 
 %Taking part in developing the type system for the combinators 
@@ -269,7 +288,14 @@ This was an earlier attempt to implement the combinators and also the first time
 \end{itemize}
 
 \section{Outline}
-We start by introducing some background knowledge in Chapter~\ref{ch:background}. We discuss the current practice of theory development within theorem provers, highlighting the redundancies that can be avoided in Chapter~\ref{ch:redundancy}. The methodology we use to remove those redundancies is introduced in Chapter~\ref{ch:design}. We present tog, the language and type checker that we use to develop our framework in Chapter~\ref{ch:tog}. The development of the algebraic hierarchy is presented in Chapter~\ref{ch:library}. In Chapter~\ref{ch:generation}, we discuss what information can be generated from theory presentations and how we extend tog to support generating them. We also present the constructions that we generate. The theories and the generated constructions are exported to Agda. We discuss the exporter in Chapter~\ref{ch:export}. 
+We start by introducing some background knowledge in Chapter~\ref{ch:background}. 
+We introduce universal algebra and the constructions of interest to this work in Chapter~\ref{ch:ualgebra}. 
+We give examples of how some of these constructions are currently presented in libraries of formal systems, highlighting the redundancies that can be avoided in Chapter~\ref{ch:redundancy}. 
+We present tog, the language and type checker that we use to develop our framework in Chapter~\ref{ch:tog}. 
+In Chapter~\ref{ch:design}, we introduce the methodology we use to enhance the library development process. 
+We discuss how we extend tog to support combinators for building the algebraic hierarchy in Chapter~\ref{ch:library}. 
+In Chapter~\ref{ch:generation}, we discuss our generation framework that computes the constructions related to a specific theory.  
+The theories and the generated constructions are exported to Agda. We discuss the exporter in Chapter~\ref{ch:export}. 
 We present related work in Chapter~\ref{ch:relatedwork}. Conclusion and future work are discussed in Chapter~\ref{ch:conclusion}. 
 \todo{always check that this desciption of chapters still hold}
 
