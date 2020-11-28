@@ -3,8 +3,8 @@
 %\usepackage{gscale_thesis_singlespace} % Single spaced thesis
 \usepackage{style_files/gscale_thesis_doublespace} % Double spaced thesis
 \usepackage{style_files/fancyheadings}                   % Header and footer styling
-\usepackage[square]{style_files/natbib}                               % Bibliography formatting
-\usepackage{style_files/setspace}                           % Allows double spacing but skips headers/footers
+\usepackage[square]{natbib}                               % Bibliography formatting
+\usepackage{setspace}                           % Allows double spacing but skips headers/footers
 \include{definitions}                                % LaTeX variables for preface pages/headers
 \setcounter{tocdepth}{1}                        % Limits the TOC to chapter and section names
 \setcounter{secnumdepth}{3}
@@ -18,7 +18,7 @@
 \usepackage{graphicx}                                   % Allows the inclusion of figures
 \usepackage{subcaption}                               % Allows captions to be added to subfigures
 \usepackage[justification=centering]{caption} % Centres caption text
-\usepackage[colorlinks=true]{hyperref}                    % Linking to LaTeX labels and external URLs
+\usepackage[colorlinks=true, citecolor=blue]{hyperref}                    % Linking to LaTeX labels and external URLs
 \usepackage{array}                                        % Used for table formatting
 \newcolumntype{P}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \usepackage{booktabs}                                 % Fancy-style tables
