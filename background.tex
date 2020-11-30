@@ -18,8 +18,9 @@ Having types that depends on values adds to the expressiveness of the logic. A c
 In most programming languages, the type of this vector is defined in terms of the type of its elements as \lstmath{Vec A}. Using dependent types, the type of a vector can depend on both the type of its elements and also its length, \lstmath{$\lambda\;$ n : Nat $\;\cdot\;$ Vec A n}, also written as \lstmath{$\Pi\;$ n : Nat $\;\cdot\;$ Vec A n}.
  
 Having this extra piece of information in the type allow detection of some errors, like accessing out of bounds elements, on the type checker level. Type checking, then, guarantees that this kind of error does not exist in the given implementation. 
-DTT has gained popularity and is used as 
-Powerful type systems like DTT paves the way to building correct-by-construction software where the type of a function is its specification and type checkers are used to verify that the implementation follows the specification. 
+
+DTT is seen by many as a convenient foundation for representing mathematics~\cite{whyDttCoq, whyDTTbauer, nCatShulman}\ednote{Q: am I citing them the write way?}. The powerful type system allows for expressing ideas frequentally used in mathematics. Statements like "the non-zero element", operations like projecting the first unit vector in a specific dimension, or representation of a family of sets. 
+The constructive nature of DTT adds the advantage that proofs can be run as programs. 
 
 %,  the specification is the type of the function 
 %The descriptive power of DTT makes it more suitable for capturing mathematical knowledge. Therefore, many of the modern mechanized mathematics systems use variants of DTT as their foundations.\ednote{check this}  
