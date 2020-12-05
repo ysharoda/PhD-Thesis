@@ -1,0 +1,78 @@
+
+\newcommand{\ottdrule}[4][]{{\displaystyle\frac{\begin{array}{l}#2\end{array}}{#3}\quad\ottdrulename{#4}}}
+\newcommand{\ottusedrule}[1]{\[#1\]}
+\newcommand{\ottpremise}[1]{ #1 \\}
+\newenvironment{ottdefnblock}[3][]{ \framebox{\mbox{#2}} \quad #3 \\[0pt]}{}
+\newenvironment{ottfundefnblock}[3][]{ \framebox{\mbox{#2}} \quad #3 \\[0pt]\begin{displaymath}\begin{array}{l}}{\end{array}\end{displaymath}}
+\newcommand{\ottfunclause}[2]{ #1 \equiv #2 \\}
+\newcommand{\ottnt}[1]{\mathit{#1}}
+\newcommand{\ottmv}[1]{\mathit{#1}}
+\newcommand{\ottkw}[1]{\mathbf{#1}}
+\newcommand{\ottsym}[1]{#1}
+\newcommand{\ottcom}[1]{\text{#1}}
+\newcommand{\ottdrulename}[1]{\textsc{#1}}
+\newcommand{\ottcomplu}[5]{\overline{#1}^{\,#2\in #3 #4 #5}}
+\newcommand{\ottcompu}[3]{\overline{#1}^{\,#2<#3}}
+\newcommand{\ottcomp}[2]{\overline{#1}^{\,#2}}
+\newcommand{\ottgrammartabular}[1]{\begin{supertabular}{llcllllll}#1\end{supertabular}}
+\newcommand{\ottmetavartabular}[1]{\begin{supertabular}{ll}#1\end{supertabular}}
+\newcommand{\ottrulehead}[3]{$#1$ & & $#2$ & & & \multicolumn{2}{l}{#3}}
+\newcommand{\ottprodline}[6]{& & $#1$ & $#2$ & $#3 #4$ & $#5$ & $#6$}
+\newcommand{\ottfirstprodline}[6]{\ottprodline{#1}{#2}{#3}{#4}{#5}{#6}}
+\newcommand{\ottlongprodline}[2]{& & $#1$ & \multicolumn{4}{l}{$#2$}}
+\newcommand{\ottfirstlongprodline}[2]{\ottlongprodline{#1}{#2}}
+\newcommand{\ottbindspecprodline}[6]{\ottprodline{#1}{#2}{#3}{#4}{#5}{#6}}
+\newcommand{\ottprodnewline}{\\}
+\newcommand{\ottinterrule}{\\[5.0mm]}
+\newcommand{\ottafterlastrule}{\\}
+\newcommand{\ottmetavars}{
+    \ottmetavartabular{
+        
+}}
+
+\newcommand{\ottt}{
+\ottrulehead{\ottnt{t}}{::=}{\mbox{terms:}}   \ottprodnewline
+\ottfirstprodline{|}{\ottkw{x}}{}{}{}{} \mbox{variable} \ottprodnewline
+\ottprodline{|}{\ottsym{\mbox{$\lambda{}$}(x}  \ottsym{:}  \ottsym{T)}  \ottsym{.}  \ottnt{t}}{}{}{}{} \mbox{abstraction} \ottprodnewline
+\ottprodline{|}{\ottnt{t} \, \ottnt{t}}{}{}{}{} \mbox{application} \ottprodnewline
+\ottprodline{|}{\ottsym{(t,}  \ottnt{t}  \ottsym{:} \, \ottkw{\mbox{$\Sigma{}$}} \, \ottsym{(x}  \ottsym{:}  \ottsym{T)}  \ottsym{.}  \ottsym{T)}}{}{}{}{} \mbox{typed pair} \ottprodnewline
+\ottprodline{|}{\ottsym{t.1}}{}{}{}{} \mbox{first projection} \ottprodnewline
+\ottprodline{|}{\ottsym{t.2}}{}{}{}{} \mbox{second projection} } 
+
+\newcommand{\ottT}{
+\ottrulehead{\ottnt{T}}{::=}{\mbox{types:}} \ottprodnewline
+\ottfirstprodline{|}{\ottkw{X}}{}{}{}{} \mbox{type/ family variable} \ottprodnewline
+\ottprodline{|}{\ottkw{\mbox{$\Pi{}$}} \, \ottkw{x} \, \ottsym{:}  \ottnt{T}  \ottsym{.}  \ottnt{T'}}{}{}{}{} \mbox{dependent product type} \ottprodnewline
+\ottprodline{|}{\ottnt{T} \, \ottnt{t}}{}{}{}{} \mbox{type family application} \ottprodnewline
+\ottprodline{|}{\ottkw{\mbox{$\Sigma{}$}} \, \ottkw{x} \, \ottsym{:}  \ottnt{T}  \ottsym{.}  \ottnt{T'}}{}{}{}{} \mbox{dependent sum type} }
+
+\newcommand{\ottK}{
+\ottrulehead{\ottnt{K}}{::=}{\mbox{kinds:}}\ottprodnewline
+\ottfirstprodline{|}{\ottsym{*}}{}{}{}{} \mbox{kind of proper types} \ottprodnewline
+\ottprodline{|}{\ottkw{\mbox{$\Pi{}$}} \, \ottkw{x} \, \ottsym{:}  \ottnt{T}  \ottsym{.}  \ottnt{K}}{}{}{}{} \mbox{kind of type families}}
+
+\newcommand{\ottGamma}{
+\ottrulehead{\ottnt{\mbox{$\Gamma{}$}}}{::=}{\mbox{contexts:}}\ottprodnewline
+\ottfirstprodline{|}{\ottkw{\mbox{$\emptyset{}$}}}{}{}{}{} \mbox{empty context} \ottprodnewline
+\ottprodline{|}{\ottsym{\mbox{$\Gamma{}$},} \, \ottkw{x} \, \ottsym{:}  \ottnt{T}}{}{}{}{} \mbox{term variable binding} \ottprodnewline
+\ottprodline{|}{\ottsym{\mbox{$\Gamma{}$},} \, \ottkw{X} \, \ottsym{:}  \ottnt{K}}{}{}{}{} \mbox{type variable binding}}
+
+\newcommand{\ottgrammar}{\ottgrammartabular{
+\ottt\ottinterrule
+\ottT\ottinterrule
+\ottK\ottinterrule
+\ottGamma\ottinterrule
+}}
+
+% defnss
+\newcommand{\ottdefnss}{
+}
+
+\newcommand{\ottall}{\ottmetavars\\[0pt]
+\ottgrammar\\[5.0mm]
+\ottdefnss}
+
+%\begin{document}
+%\ottall
+
+%\end{document}

@@ -21,9 +21,19 @@ Having this extra piece of information in the type allow detection of some error
 
 DTT is seen by many as a convenient foundation for representing mathematics~\cite{whyDttCoq, whyDTTbauer, nCatShulman}\ednote{Q: am I citing them the write way?}. The powerful type system allows for expressing ideas frequentally used in mathematics. Statements like "the non-zero element", operations like projecting the first unit vector in a specific dimension, or representation of a family of sets. 
 The constructive nature of DTT adds the advantage that proofs can be run as programs. 
-
 %,  the specification is the type of the function 
 %The descriptive power of DTT makes it more suitable for capturing mathematical knowledge. Therefore, many of the modern mechanized mathematics systems use variants of DTT as their foundations.\ednote{check this}  
+
+Figures~\ref{fig:dttGrammar} and~\ref{fig:dtt-w-sigma} shows the grammar and typing rules of a small version of dependent type theory with $\Sigma$-types like the one we use in this work. The terms permissible in this type theory are variables, $\lambda$-abstraction, function application, dependently types pair, and its projections. In additions to types and type applications, the DTT we present here allows $\Pi$- and $\Sigma$-types. The concepts of $\Sigma$-types and contexts will be discussed shortly in this section.
+
+\begin{figure}
+\centering{
+\includegraphics[scale=0.9]{ott/dttFig.pdf}
+\caption{Grammar for first order dependent type language with dependent sum types. Adapted from~\cite{pierce2005advanced}.}
+\label{fig:dttGrammar}
+}
+\end{figure}
+\input{figures/dtt-w-sigma.tex}
 
 \paragraph{$\Sigma$-types.}
 A dependent pair, in which later elements depends on values of earlier ones, are referred to as $\Sigma$-types. The type \lstmath{$\Sigma\;$ (n : Nat, Vec A n)} refer to a pair that contains the value of \lstmath{n} in the first position and a vector of length \lstmath{n} in the second one. 
@@ -49,6 +59,10 @@ A context, $\Gamma$, is a finite list $[x_1 : \sigma_1, ... , x_n : \sigma_n]$ o
 \end{quote}
 When using dependent types, the context becomes a telescope, where every type in the list can contain reference to variables before it as described by Equation~\ref{eq:telescope}. The statement $\Gamma \vdash \psi$ means that the type judgement $\psi$ follows from the context $\Gamma$. The concatenation of two contexts $\Gamma_1$ and $\Gamma_2$ is noted by $\Gamma_1 ; \Gamma_2$.  
 %\paragraph{The category of contexts}
+
+%\todo{The ott grammar isn't showing up for some reason} 
+%\include{ott/dttFig.tex}
+
 
 \section{Theories}
 \label{sec:background:theory}

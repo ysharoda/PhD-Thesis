@@ -1,0 +1,35 @@
+\begin{figure}
+    \begin{proofrules}
+        \[ x : T \in \context{\Gamma} \qquad \Gamma \vdash T : *
+        \justifies
+        \context{\Gamma} \vdash x : T 
+        \]
+        \[ \Gamma \vdash S : * \qquad \Gamma, x : S \vdash t : T 
+        \justifies 
+        \Gamma \vdash \lambda x : S \cdot t : \Pi x : S \cdot T 
+        \]
+        \[ \Gamma \vdash t_1 : \Pi x : S \cdot T \qquad \Gamma \vdash t_2 : S 
+        \justifies 
+        \Gamma \vdash t_1 t_2 : T[x \mapsto t_2] 
+        \]
+        \[ \Gamma \vdash t : T \qquad \Gamma \vdash T \equiv T^\prime : * 
+        \justifies 
+        \Gamma \vdash t : T^\prime 
+        \]
+        \[ \Gamma \vdash \Sigma x : S \cdot T : * \qquad 
+            \Gamma \vdash t_1 : S \qquad  \Gamma \vdash t_2 : T[x \mapsto t_1] 
+        \justifies 
+        \Gamma \vdash (t_1, t_2 : \Sigma x : S \cdot T) : \Sigma x : S \cdot T 
+        \] 
+        \[ \Gamma \vdash t : \Sigma x : S \cdot T 
+        \justifies 
+        \Gamma \vdash t.1 : S 
+        \]
+        \[ \Gamma \vdash t : \Sigma x : S \cdot T 
+        \justifies 
+        \Gamma \vdash t.2 : T[x \mapsto t.1] 
+        \]
+    \end{proofrules}
+\caption{Typing rules for first order dependent type language with dependent sum types. Adapted from~\cite{pierce2005advanced}.}
+\label{fig:dtt-w-sigma}
+\end{figure}

@@ -1,0 +1,25 @@
+
+grammar
+t :: 't_' ::=            
+  | x              :: variable    :: Var
+  | \(x : T) . t  :: abstraction :: Lam
+  | t t'           :: application :: App
+  | (t, t' : Sigma (x : T) . T) :: typed pair :: Sigma 
+  | t.1            :: first projection :: Proj1    
+  | t.2            :: second projection  :: Proj2
+
+T :: 'T_' ::=
+  | X                 :: type or family variable :: TypeFamily
+  | Pi x : T . T'    :: dependent product type :: DependentProd 
+  | T t               :: type family application  :: TypeFamilyApp
+  | Sigma x : T . T' :: dependent sum type :: DependentSumType
+
+K :: 'K_' ::=
+  | *   :: kind of proper types :: Kind
+  | Pi x : T . K :: kind of type families :: KindFamily
+
+Gamma :: 'G_' ::=
+  | Phi  :: empty context :: EmptyContext 
+  | Gamma, x : T   :: term variable binding :: TermVBind 
+  | Gamma, X : K  :: type variable binding :: TypeVBind
+
