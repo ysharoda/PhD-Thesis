@@ -89,12 +89,8 @@
 }
 
 @InProceedings{spivak2014coqcats,
-    author="Gross, Jason
-    and Chlipala, Adam
-    and Spivak, David I.",
-    title="Experience Implementing a Performant Category-Theory 
-    Library in 
-    {Coq}",
+    author="Gross, Jason, and Chlipala, Adam, and Spivak, David I.",
+    title="Experience Implementing a Performant Category-Theory Library in {Coq}",
     booktitle="Interactive Theorem Proving",
     year="2014",
     publisher="Springer International Publishing",
@@ -1416,16 +1412,6 @@ isbn="978-3-540-31977-1"
     year = {2005}
 }
 
-
-    author (most likely, the username)
-    Title of post: Comments (what did the poster title the post)
-    Website (in this case, Reddit)
-    Publisher (Reddit, Inc.)
-    Date of post (if available)
-    Medium of publication (Web)
-    Date of access
-
-
 % Reddit post 
 @misc{redditGenHom,
   title = {Is there a way to define a type of homomorphisms?},
@@ -1439,7 +1425,7 @@ isbn="978-3-540-31977-1"
 
 @misc{agdaGenPull, 
   title = {Add some standard algebraic constructs (unit and pairing)},
-  howPublished = {Github pull request # 1109: https://github.com/agda/agda-stdlib/pull/1109},
+  howPublished = {Github pull request 1109: https://github.com/agda/agda-stdlib/pull/1109},
   month = {March}, 
   year = {2020}, 
   note = {Accessed: November 3, 2020}
@@ -1611,11 +1597,11 @@ keywords = {generic programming, traversal, type cast, rank-2 types}
 }
 
 @misc{whyDttCoq,
-    author = {Jason Gross, Ken Kubota, Serge D. Mechveliani, and others},  
-    title = {Why dependent type theory?}, 
-    date = {March 3},  
-    year = {2020}, 
-    note = {posted at: \url{https://coq.discourse.group/t/why-dependent-type-theory/657}} 
+    author={Jason Gross and Ken Kubota and Serge D. Mechveliani and others},  
+    title={Why dependent type theory?}, 
+    date={March 3},  
+    year={2020}, 
+    note={posted at:  \url{https://coq.discourse.group/t/why-dependent-type-theory/657}} 
 }
 
 @misc{whyDttBauer,
@@ -1633,4 +1619,246 @@ keywords = {generic programming, traversal, type cast, rank-2 types}
     date = {March 3}, 
     year = {2010}, 
     note = {\url{https://golem.ph.utexas.edu/category/2010/03/in_praise_of_dependent_types.html}} 
+}
+
+@inbook{pierce2005advanced,
+  title={Advanced topics in types and programming languages},
+  chapter={Dependent types},
+  pages={45-86},
+  author={Pierce, Benjamin C},
+  year={2005},
+  publisher={MIT press}
+}
+
+@article{lean2017metaprogramming,
+  title={A metaprogramming framework for formal verification},
+  author={Ebner, Gabriel and Ullrich, Sebastian and Roesch, Jared and Avigad, Jeremy and de Moura, Leonardo},
+  journal={Proceedings of the ACM on Programming Languages},
+  volume={1},
+  number={ICFP},
+  pages={1--29},
+  year={2017},
+  publisher={ACM New York, NY, USA}
+}
+
+@mastersthesis{van2012reflection,
+  title={Reflection in agda},
+  author={van der Walt, PD},
+  school={Utrecht University}, 
+  year={2012}
+}
+
+@misc{agdaReflection,
+  title = {Allow metaprogramming to generate top level definitions other than functions},
+  author={Dylan Ede},
+  month={April},
+  year={2019}, 
+  howPublished = {Github issue 3699: https://github.com/agda/agda/issues/3699}, 
+  note={Accessed: December 2,2020}
+}
+
+@inproceedings{templateCoq2018,
+  TITLE = {{Towards Certified Meta-Programming with Typed Template-Coq}},
+  AUTHOR = {Anand, Abhishek and Boulier, Simon and Cohen, Cyril and Sozeau, Matthieu and Tabareau, Nicolas},
+  URL = {https://hal.archives-ouvertes.fr/hal-01809681},
+  BOOKTITLE = {{ITP 2018 - 9th Conference on Interactive Theorem Proving}},
+  ADDRESS = {Oxford, United Kingdom},
+  HAL_LOCAL_REFERENCE = {ACTI+},
+  PUBLISHER = {{Springer}},
+  SERIES = {LNCS},
+  VOLUME = {10895},
+  PAGES = {20-39},
+  YEAR = {2018},
+  MONTH = Jul,
+  DOI = {10.1007/978-3-319-94821-8\_2},
+  PDF = {https://hal.archives-ouvertes.fr/hal-01809681/file/paper_39.pdf},
+  HAL_ID = {hal-01809681},
+  HAL_VERSION = {v1},
+}
+
+@article{metcCoq2018,
+author = {Kaiser, Jan-Oliver and Ziliani, Beta and Krebbers, Robbert and R\'{e}gis-Gianas, Yann and Dreyer, Derek},
+title = {Mtac2: Typed Tactics for Backward Reasoning in Coq},
+year = {2018},
+issue_date = {September 2018},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {2},
+number = {ICFP},
+url = {https://doi.org/10.1145/3236773},
+doi = {10.1145/3236773},
+journal = {Proc. ACM Program. Lang.},
+month = jul,
+articleno = {78},
+numpages = {31},
+keywords = {Metaprogramming, Tactic Languages, Dependent Types, Theorem Proving, Coq}
+}
+
+@InProceedings{inversPrincp1996Coq,
+author="Cornes, Cristina
+and Terrasse, Delphine",
+editor="Berardi, Stefano
+and Coppo, Mario",
+title="Automating inversion of inductive predicates in Coq",
+booktitle="Types for Proofs and Programs",
+year="1996",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="85--104",
+abstract="An inductive definition of a set is often informally presented by giving some rules that explain how to build the elements of the set. The closure property states that any object is in the set if and only if it has been generated according to the formation rules. This is enough to justify case analysis reasoning: we can read the formation rules backwards to derive the necessary conditions for a given instance to hold. The problem of inversion consists in finding out these conditions.",
+isbn="978-3-540-70722-6"
+}
+
+@article{blanchette2016hammering,
+  title={Hammering towards QED},
+  author={Blanchette, Jasmin Christian and Kaliszyk, Cezary and Paulson, Lawrence C and Urban, Josef},
+  journal={Journal of Formalized Reasoning},
+  volume={9},
+  number={1},
+  pages={101--148},
+  year={2016}
+}
+
+@article{czajka2018hammer,
+  title={Hammer for Coq: Automation for dependent type theory},
+  author={Czajka, {\L}ukasz and Kaliszyk, Cezary},
+  journal={Journal of automated reasoning},
+  volume={61},
+  number={1-4},
+  pages={423--453},
+  year={2018},
+  publisher={Springer}
+}
+
+@InProceedings{Gibbons2007DGP,
+	author="Gibbons, Jeremy",
+	editor="Backhouse, Roland
+	and Gibbons, Jeremy
+	and Hinze, Ralf
+	and Jeuring, Johan",
+	title="Datatype-Generic Programming",
+	booktitle="Datatype-Generic Programming",
+	year="2007",
+	publisher="Springer Berlin Heidelberg",
+	address="Berlin, Heidelberg",
+	pages="1--71"
+}
+
+@incollection{hinze2007comparing,
+	title={Comparing approaches to generic programming in Haskell},
+	author={Hinze, Ralf and Jeuring, Johan and L{\"o}h, Andres},
+	booktitle={Datatype-Generic Programming},
+	pages={72--149},
+	year={2007},
+	publisher={Springer}
+}
+
+@Inbook{Hinze2003GenericHs,
+	author="Hinze, Ralf
+	and Jeuring, Johan",
+	editor="Backhouse, Roland
+	and Gibbons, Jeremy",
+	title="Chapter 1. Generic Haskell: Practice and Theory",
+	bookTitle="Generic Programming: Advanced Lectures",
+	year="2003",
+	publisher="Springer Berlin Heidelberg",
+	address="Berlin, Heidelberg",
+	pages="1--56"
+}
+
+@inproceedings{Jansson1997PolyP,
+	author = {Jansson, Patrik and Jeuring, Johan},
+	title = {PolyP\&Mdash;a Polytypic Programming Language Extension},
+	booktitle = {Proceedings of the 24th ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages},
+	series = {POPL '97},
+	year = {1997},
+	isbn = {0-89791-853-3},
+	location = {Paris, France},
+	pages = {470--482},
+	numpages = {13},
+	url = {http://doi.acm.org/10.1145/263699.263763},
+	doi = {10.1145/263699.263763},
+	acmid = {263763},
+	publisher = {ACM},
+	address = {New York, NY, USA}
+} 
+
+@inproceedings{winstanley1997type,
+	title={A type-sensitive preprocessor for Haskell},
+	author={Winstanley, Noel},
+	booktitle={Glasgow Workshop on Functional Programming, Ullapool},
+	year={1997},
+	organization={Citeseer}
+}
+
+@InProceedings{Norell2004TemplateHs,
+	author="Norell, Ulf
+	and Jansson, Patrik",
+	editor="Kozen, Dexter",
+	title="Prototyping Generic Programming in Template Haskell",
+	booktitle="Mathematics of Program Construction",
+	year="2004",
+	publisher="Springer Berlin Heidelberg",
+	address="Berlin, Heidelberg",
+	pages="314--333" 
+}
+
+@inproceedings{Dowek2019LogipediaAM,
+  title={Logipedia: a multi-system encyclopedia of formal proofs},
+  author={G. Dowek and François Thir{\'e}},
+  year={2019}
+}
+
+@article{lem2014,
+author = {Mulligan, Dominic P. and Owens, Scott and Gray, Kathryn E. and Ridge, Tom and Sewell, Peter},
+title = {Lem: Reusable Engineering of Real-World Semantics},
+year = {2014},
+issue_date = {September 2014},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {49},
+number = {9},
+issn = {0362-1340},
+url = {https://doi.org/10.1145/2692915.2628143},
+doi = {10.1145/2692915.2628143},
+month = aug,
+pages = {175–188},
+numpages = {14},
+keywords = {lem, specification languages, real-world semantics, proof assistants}
+}
+
+@misc{ocaml2019ppx, 
+  author = {Rebours, Nathan},
+  title = {An introduction to OCaml PPX ecosystem}, 
+  month = {May},
+  year = {2019},
+  howpublished = {Tutorial: \url{https://tarides.com/blog/2019-05-09-an-introduction-to-ocaml-ppx-ecosystem}}, 
+  note = {Accessed on December 2020}
+}
+
+@inproceedings{firsov2018generic,
+  title={Generic derivation of induction for impredicative encodings in Cedille},
+  author={Firsov, Denis and Stump, Aaron},
+  booktitle={Proceedings of the 7th ACM SIGPLAN International Conference on Certified Programs and Proofs},
+  pages={215--227},
+  year={2018}
+}
+
+@article{macros2001msp,
+author = {Ganz, Steven E. and Sabry, Amr and Taha, Walid},
+title = {Macros as Multi-Stage Computations: Type-Safe, Generative, Binding Macros in MacroML},
+year = {2001},
+issue_date = {October 2001},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {36},
+number = {10},
+issn = {0362-1340},
+url = {https://doi.org/10.1145/507669.507646},
+doi = {10.1145/507669.507646},
+abstract = {With few exceptions, macros have traditionally been viewed as operations on syntax trees or even on plain strings. This view makes macros seem ad hoc, and is at odds with two desirable features of contemporary typed functional languages: static typing and static scoping. At a deeper level, there is a need for a simple, usable semantics for macros. This paper argues that these problems can be addressed by formally viewing macros as multi-stage computations. This view eliminates the need for freshness conditions and tests on variable names, and provides a compositional interpretation that can serve as a basis for designing a sound type system for languages supporting macros, or even for compilation. To illustrate our approach, we develop and present MacroML, an extension of ML that supports inlining, recursive macros, and the definition of new binding constructs. The latter is subtle, and is the most novel addition in a statically typed setting. The semantics of a core subset of MacroML is given by an interpretation into MetaML, a statically-typed multi-stage programming language. It is then easy to show that MacroML is stage- and type-safe: macro expansion does not depend on runtime evaluation, and both stages do not "go wrong.},
+journal = {SIGPLAN Not.},
+month = oct,
+pages = {74–85},
+numpages = {12}
 }

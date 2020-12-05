@@ -1,22 +1,28 @@
 \chapter{Related Work}
 \label{ch:relatedwork}
-\ednote{Another thing to look at, simplification and rewrite tactics}  
-\ednote{look at: Generic Derivation of Induction for Impredicative Encodings in Cedille \url{http://homepage.cs.uiowa.edu/~astump/papers/cpp-2018.pdf}}
-\ednote{various works have mentioned that to formalize informal math, one need to work on providing definitions for things that are obvious from an informal point of view. One of these is capretta's universal algebra in type theory that try to close this gap by translating definitions of set theory into type theory. Part of what we do is generate the definitions that they provide by hand}. 
+
+Theorem provers have developed different techniques for developing the algebraic hierarchy. We discuss them in Section~\ref{sec:relwork:hierarchy}. In~\ref{sec:relwork:automation} we present the current support for automation provided by theorem provers. 
+A language with strong reflection mechanisms can be extended to support the generative approach we discuss here. We discuss reflection mechanisms in theorem provers in Section~\ref{sec:relwork:reflectionTPs}. 
+%We discuss theory and proof development automation in Section~\ref{sec:relwork:genDefs} and the efforts to export definitions and proofs between systems in Section~\ref{sec:relwork:exporting}.  
+
 \section{Formalizing the algebraic hierarchy}
+\label{sec:relwork:hierarchy}
 The algebraic hierarchy is a main part of the libraries of theorem provers. Several efforts has been dedicated to organize them in a way that reflects their mathematical structure. 
-The simplest way is to use inclusions to describe inheritance between two structures. This is used in~\cite{Geuvers2002} where algebraic structures are presented as dependent records and user provided coercions are used to guide the unification algorithm to infer the connections between them. As has been noted by the authors, this technique does not support multiple inheritance, so there is no way to describe that a ring is both a monoid and an abelian group. \cite{Geuvers2002} develops a hierarchy using this technique and uses it to prove the fundamental theorem of algebra. The hierarchy developed is not very deep. 
 
-Various techniques have been developed to incorporate multiple inheritance. Canonical structures~\cite{canonical2013} is a mechanism for programming the type inference, originally introduced to handle overloading of symbols. It has been used to enable multiple inheritance in the development of the mathematical components library~\cite{mathCompLib} which has been used in the proof of the odd order (Feit-Thompson) theorem. 
+Many formalizations depends on the unification algorithm to figure connections between the different theories in the hierarchy. 
+The simplest way is to use inclusions to describe inheritance between two structures. This is used in~\cite{Geuvers2002} where algebraic structures are presented as dependent records and user provided coercions are used to guide the unification algorithm. The hierarchy developed using this approach has been used to prove the fundamental theorem of algebra. As has been noted by the authors, this technique does not support multiple inheritance, so there is no way to describe that a ring is both a monoid and an abelian group. 
+%Multiple inheritance is important to capture the structure of mathematics. 
+%Various techniques have been developed to incorporate multiple inheritance. 
+Canonical structures~\cite{canonical2013} is a mechanism for programming the type inference, originally introduced to handle overloading of symbols. It has been used to enable multiple inheritance in the development of the mathematical components library~\cite{mathCompLib} which has been used in the proof of the odd order (Feit-Thompson) theorem. 
 % Canonical mul_monoid := Monoid.Law mulrA mul1r mulr1. 
-% 
-Another approach to building the algebraic hierarchy in Coq is using packed classes~\cite{Gonthier2009} which mainly solves the problem of multiple inheritance. This approach has been extended in~\cite{cohen2020hierarchy} and~\cite{sakaguchi2020validating} to overcome the complexity\ednote{read more about why it is complex} of using it to build and maintain the hierarchy. \cite{cohen2020hierarchy} creates an ELPI~\cite{elpi,elpiForCoq} plugin to Coq introducing a language for building the algebraic hierarchy whose expressions are elaborated into packed classes. One of the merits of this language is that the hierarchy can change without breaking users' code, i.e. it makes it possible to add new structures and connections between them, while keeping the older ones. \cite{sakaguchi2020validating} provides invariants and algorithms to validate the structure of the library.  
-
+Another approach to building the algebraic hierarchy in Coq is using packed classes~\cite{Gonthier2009} which mainly solves the problem of multiple inheritance. This approach has been extended in~\cite{cohen2020hierarchy} and~\cite{sakaguchi2020validating} to overcome the complexity of using it to build and maintain the hierarchy. \cite{cohen2020hierarchy} creates an ELPI~\cite{elpi,elpiForCoq} plugin to Coq introducing a language for building the algebraic hierarchy whose expressions are elaborated into packed classes. One of the merits of this language is that the hierarchy can change without breaking users' code, i.e. it makes it possible to add new structures and connections between them, while keeping the older ones. \cite{sakaguchi2020validating} provides invariants and algorithms to validate the structure of the library.  
 Type classes has been used to build the algebraic hierarchy in Coq and Lean. In Coq~\cite{spitters2011type}, type class $A$ extends type class $B$ by having $B$ become a field of $A$. The unification algorithm is guided by using \verb|:>| symbol instead of \verb|:| when declaring the type. Multiple inheritance is therefore possible. Lean~\cite{lean2019}, on the other hand, provide an \verb|extends| operation through which one can state all the predecessors of a class. Lean also provide \verb|attributes| that enables describing other ways in which structure connect to each other. For example, the \verb|to_additive| attribute describes that one class is the additive version of another.
 
-These different techniques restrict the morphisms between theories to the identity. Even in the case of a rename, it is performed first and then the inclusion happens. In some cases it is not clear whether there is actually a rename morphisms between the two versions of the theory or not. On the other hand, some systems allow general morphisms, as we explain in Section~\ref{sec:background:morphisms}, which are capable of describing more complex relations between theories. Many specification systems~\cite{Goguen1980, CoFI:2004:CASL-RM, Smith99, duran2007maude} allow user provided general morphisms. They mostly refer to them as \emph{views}. It is common for these systems to provide combinators to build new theories by reusing older ones. General morphisms In the theorem proving world, Isabelle provides locale interpretations~\cite{localeIntepretations2006}, IMPS provides theory interpretations~\cite{farmer1993imps}, and MMT provides morphisms~\cite{rabe2013scalable}. Neither IMPS nor MMT provides combinators, which makes it hard to build large libraries, like the one we develop in this work, as the library developer needs to provide all theories and morphisms manually. Isabelle provide locale expressions~\cite{ballarin2003locales}, which are combinators to build locales and locale intepretations. However its \lstmath{combine} operator is based on same-name-same-thing principle, which has limitations that we discuss in~\cite{carette2018building}\ednote{probably somewhere in the thesis too, refer to the section}. 
+Depending on unification to infer connections between theories restricts the ways in which they can be connected. 
+%These different techniques restrict the morphisms between theories to the identity. Even in the case of a rename, it is performed first and then the inclusion happens. In some cases it is not clear whether there is actually a rename morphisms between the two versions of the theory or not. 
+Therefore, some systems allow general morphisms, as explained in Section~\ref{sec:background:morphisms}, which are capable of describing more complex relations between theories. Many specification systems~\cite{Goguen1980, CoFI:2004:CASL-RM, Smith99, duran2007maude} allow user provided general morphisms. They mostly refer to them as \emph{views}. It is common for these systems to provide combinators to build new theories by reusing older ones. In the theorem proving world, Isabelle provides locale interpretations~\cite{localeIntepretations2006}, IMPS provides theory interpretations~\cite{farmer1993imps}, and MMT provides morphisms~\cite{rabe2013scalable}. Neither IMPS nor MMT provides combinators, which makes it hard to build libraries of hundreds of theories, as the library developer needs to provide all theories and morphisms manually. Isabelle provide locale expressions~\cite{ballarin2003locales}, which are combinators to build locales and locale intepretations. However its \lstmath{combine} operator is based on same-name-same-thing principle, which has limitations that we discuss in Section~\ref{thry_graph_in_action}. 
 
-The approach introduced in~\cite{carette2018building} allows general morphisms. The \lstmath{mixin} operation allows reusing them in a way that makes all morphisms in a theory graph commutes. Our implementation of the approach does not support general morphisms, as we indicate in Section~\ednote{put the ref}. It still allows describing names-to-names mappings, via \lstmath{rename}, which makes it more powerful than the ones that only support identity morphisms. 
+%The approach introduced in~\cite{carette2018building} supports general morphisms, via the \lstmath{mixin} combinator. Our implementation does not support them. It still allows describing names-to-names mappings, via \lstmath{rename}, which makes it more powerful than the ones that only support identity morphisms. 
 
 
 %, packed classes are suggested to solve the multiple inheritance and the packaging problems\ednote{check the pakaging one}. They are used to define the algebraic hierarchy as part of the proof for Thompson-Feit theorem. Despite this improvement, packed classes need Both~\cite{cohen2020hierarchy} and~\cite{sakaguchi2020validating} criticize packed classes for the complexity of using them to build a hierarchy, as well as the complexity of maintaining a hierarchy build with them. 
@@ -74,48 +80,89 @@ mode Group is add-associative right_zeroed right_complementable
 end;
 \end{lstlisting} 
 \end{comment}
-\ednote{Check: Modular structures as dependent types in Isabelle: 
-\url{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.33.2135&rep=rep1&type=pdf}}
 
-\section{Generative Approaches in Theorem Provers}
+\section{Automation in Theorem Provers}
+\label{sec:relwork:automation}
 
-\subsection{Generating Definitions}
-In Coq, given an inductive type, the induction principle is generated in $4$ flavors. Equality can also be generated using \verb|Scheme Equality| command. The Coq approach to generating both is criticized in~\cite{coqDeriveEquality2019} and~\cite{coqDeriveSubterm2020}. The generated induction principles are weak, especially if the type has containers.  In~\cite{coqDeriveEquality2019} equality tests and proofs are generated for inductive types using Coq-ELPI plugin. In~\cite{coqDeriveSubterm2020}, MetaCoq is used to define equality and subterm relations.\ednote{also talk about the report: Adding support for induction in Dedukti and Automating Inversion of Inductive Predicates in Coq} 
+%\subsection{Generating Definitions}
+%\label{sec:relwork:genDefs}
+\paragraph{Automatic Generation of Information}
+Although universal algebra constructions have been formalized in type theory~\cite{capretta99, Gunther2018Agda}, we did not encounter any big efforts to automate the generations of its constructions, like we do in this work. In this section we discuss the limited efforts for generating information that we encountered in the literature. 
 
-\ednote{check this paper: A Certified Multi-prover Verification Condition Generator}
-\ednote{check this: automating inversion of inductive predicates in Coq}
- 
+Coq generates the induction principle for inductive types. Equality functions can also be generated using \verb|Scheme Equality| command. Coq's approach for generating them is criticized in~\cite{coqDeriveEquality2019}. In the cases when the inductive type uses a container, the generated principle does not require that the predicate holds for elements of the container. Equality cannot be generated in these cases. 
+~\cite{coqDeriveEquality2019} presents a Coq-ELPI plugin that generates equality tests and proofs for inductive types. In~\cite{coqDeriveSubterm2020}, MetaCoq is used to define equality and subterm relations.
+\cite{inversPrincp1996Coq} suggests the inversion principle can also be generated for inductive types.
+%\ednote{also talk about the report: Adding support for induction in Dedukti} 
 
-\subsection{Translation / Exporting Between Systems}
-Both Coq~\cite{CoqCodegen2003, cruz2003program} and Isabelle~\cite{IsabelleCodegen2010} provides code extraction mechanisms from their theories and proofs into functional programs. They face problems like how to deal with logical parts, we are not facing these problems because of the nature of what we export and because we export to theorem provers, no programming languages yet. 
+%checked, not very relevant\ednote{check this paper: A Certified Multi-prover Verification Condition Generator}
+A common form of automation in theorem provers is using hammers for proving lemmas. The idea is to search a library for premises that are useful to prove the given lemma and construct the proof accordingly. It is reported that hammers can automatically find proofs for $40\%$ of the Mizar library and close results in HOL systems~\cite{blanchette2016hammering}. The hammer technique is extended to Coq in~\cite{czajka2018hammer}. 
 
-Several translations between libraries of formal proofs has been done~\cite{impsToOmdoc2018, mizarToIsabelle2018, iancu2013mizar}. translating proof terms~\cite{kaliszyk2019DeclProofTerms}, and between a theorem prover and a computer algebra system~\cite{Lewis_2017}. 
+\paragraph{Automatic Exporting between Theorem Provers}
+%\subsection{Translation / Exporting Between Systems}
+%\label{sec:relwork:exporting}
+Several translations between libraries of formal proofs has been done~\cite{impsToOmdoc2018, mizarToIsabelle2018, iancu2013mizar}. In~\cite{kaliszyk2019DeclProofTerms}, declarative proof outlines are exported from Mizar to Isabelle/Isar. 
 The work in~\cite{Muller2017alignment} share our motivation of contributing to building large libraries of mathematics. The idea is to provide concept alignment between different theorem provers. We can see this approach useful as we expand our exporter to support different systems with different underlying foundations.  
 
-Lem: reusable engineering of real-world semantics (https://www.cl.cam.ac.uk/~pes20/lem/built-doc/lem-icfp-2014.pdf)
+Code generation from theorem provers into one or more programming languages has also been discussed in the literature. Both Coq~\cite{CoqCodegen2003, cruz2003program} and Isabelle~\cite{IsabelleCodegen2010} provides code extraction mechanisms from their theories and proofs into functional programs. 
 
-Verification and code generation for invariant diagrams in Isabelle
+Logipedia~\cite{Dowek2019LogipediaAM} exports proofs written in the logical framework Dedukti to multiple theorem provers. The supported targets are Coq, Lean, Matita, OpenTheory, HOL-Light, and PVS. 
+Lem~\cite{lem2014} exports specifications to a programming language (Ocaml), multiple theorem provers (Coq, HOL4, Isabelle/HOL), Latex and HTML. 
 
-Automating Test Case Generation from Z Specifications with Isabelle
-\url{file:///Users/Yasmine/Downloads/Helke1997_Chapter_AutomatingTestCaseGenerationFr.pdf}
+Another interesting work is the interface between Lean, a theorem prover, and Mathematics, a computer algebra system~\cite{Lewis_2017} which allows exchange of information between the two systems in both directions.  
 
-A Proof Strategy Language and Proof Script Generation for Isabelle/HOL: 
-\url{https://link.springer.com/chapter/10.1007/978-3-319-63046-5_32}
+%Automating Test Case Generation from Z Specifications with Isabelle
+%\url{file:///Users/Yasmine/Downloads/Helke1997_Chapter_AutomatingTestCaseGenerationFr.pdf}
 
-Building multi-language tools with cubix: \url{https://icfp20.sigplan.org/details/icfp-2020-tutorials/6/Building-Multi-Language-Tools-with-Cubix} 
+%A Proof Strategy Language and Proof Script Generation for Isabelle/HOL: 
+%\url{https://link.springer.com/chapter/10.1007/978-3-319-63046-5_32}
 
-RL: a language for formal engineering: https://zhehou.github.io/papers/RL-a-Language-for-Formal-Engineering.pdf 
+\paragraph{Automation in Programming Languages (PL)}
+Eliminating boilerplate is a main field of research in the PL research community, either by providing abstractions that eliminates the need for the boilerplate code as in the scrap your boilerplate approach~\cite{syb2003Jones} or by generating this boierplate for the users.  
+
+We have already mentioned deriving and its extensions~\cite{loeh2010genericDeriving, loeh2018derivingVia}, and lenses~\cite{lensesLib}. Those techniques are pervasively used in Haskell projects.
+Ocaml provides the PPX preprocessor that manipulates the OCaml AST corresponding to an input program~\cite{ocaml2019ppx}. One form in which PPX transforms ocaml programs is using derivers that allow writing a deriving definition as in Haskell. 
+Macros, which are provided by multiple programming languages can also be seen as a form of code generation with one application being removing boilerplate. The work in~\cite{macros2001msp} presents a typed macro system that can be used to develop domain specific languages. 
 
 
 \section{Reflection Mechanisms in Theorem Provers}
-\label{sec:reflectionTPs}
-A meta programming framwork for formal verification (automation in lean)
+\label{sec:relwork:reflectionTPs}
 
-Generating Datatypes and Functions at Compile Time
-http://docs.idris-lang.org/en/latest/elaboratorReflection/generatingData.html
+%\todo{A meta programming framwork for formal verification (automation in lean)}
+%\todo{Agda reflection mechanism: check related work in~\cite{brady2016reflection}}
+%\todo{Coq Ltac, Mtac, MetaCoq, SSReflect} 
 
-\section{PL}
+Both Idris~\cite{brady2016reflection} and Lean~\cite{lean2017metaprogramming} provides meta programming facilities that are very similar.
+In case of Idris, the meta programming API provides tactics to query and manipulate proof states in the core language TT. Lean uses the same philosophy, but instead of a core language, the tactics are based on C++ procedures. 
+In both cases, declarations in the environment can be queried and the environment can be extended by adding new definitions. 
+This makes them convenient to generating definitions as we do in this work. Despite that, we find that all discussions and examples are dedicated to constructing proof terms. The realization that they can be used to provide definitions does not seem dominant, with the exception of using Idris reflection to provide instances of Idris type classes \lstmath{Eq} and \lstmath{Show}. 
+Another problem is that the generated definitions are part of the environment, but are not reflected back in the language of idris or lean. This makes it hard to consider them part of a library. 
+
+Agda also has a reflection mechanism~\cite{van2012reflection}. A serious limitation is that the only top level declaration that can be generated are functions~\cite{agdaReflection}. 
+Coq's Mtac is a meta language for constructing tactics that generate proof terms. MetaCoq~\cite{templateCoq2018} is a more general way for supporting meta programming in Coq by reflecting its kernel. Similar to Idris and Lean, the meta programming facilities in Coq has not been applied to the problem of eliminating boilerplate, although it's been hinted at as a possible application area in~\cite{templateCoq2018}. 
+
+%Idris uses a tactic-based elaborator to compile Idris high level language into a core language, which is then type-checked. The elaborator keeps a proof state.  
+%elaboration reflection~\cite{brady2016reflection} extends the tactic language by providing tactics that to manipulate or query the proof state. Using these tactics it is possible to write Idris code that instructs the elaborator to generate code in the core language. Functions and datatypes can also be generated and added to the environment. 
+
+%The Lean supports meta programming by exposing an API for the procedures implemented in C++. Metaprogramming in Lean~\cite{lean2017metaprogramming} is performed by writing a tactic script that manipulates the tactic state to produce expressions. and elaboration is similar to Idris in the sense that 
+\begin{comment}
+Coq allows user-defined tactics using Ocaml or Ltac (a high-level language for defining tactics). Both can generate ill-typed expressions. 
+Mtac performs code generation within the M monad. they all provide tactics that produces proof terms. 
+Template coq~\cite{templateCoq2018} has a more general approach that reflects the syntax of the calculus of inductive constructions as implemented by Coq. It still does not concern itself with generating definitions for managing boilerplate. 
+
+- coq proofs ultimately compile to proof terms on the language of the type theory 
+- tactics provide support to developing proof terms by applying tactics 
+- 
+\end{comment}
+
+
+
+\begin{comment}
+Data type generic programming (DGP) \cite{Gibbons2007DGP} abstracts over the details of data types and focus on representing its structure. There are different approaches to DGP, surveyed in \cite{hinze2007comparing}. One approach is to map a data type to a structure representation type, that only represents information about the structure. For example a type  $\alpha :+: \beta$ represents the structure of a data type with two data constructors. This approach is followed by generic Haskell \cite{Hinze2003GenericHs} and PolyP \cite{Jansson1997PolyP}. 
+Another approach uses reflection, as in DrIFT \cite{winstanley1997type} and template Haskell \cite{Norell2004TemplateHs}. DrIFT extracts type declarations and directives to fire rules that generate code at compile time. Template Haskell allows meta programming within Haskell by providing access to the abstract syntax. This way, the structure of data types can be analyzed on the meta-level, and code can be generated according to that structure.\ednote{Q: this paragraph is taken from the proposal, which has not been published anywhere, do I need to rephrase it?}  
+\todo{Prototyping Generic Programming in Template {H}askell}
+
 https://kowainik.github.io/posts/deriving
 
 https://typeclasses.com/ghc/stock-deriving-extensions
+\end{comment}
 
