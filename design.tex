@@ -12,7 +12,7 @@ Monoid = combine Unital and Semigroup over Magma
 \end{togcode} 
 Informally, this means that the theory of \lstmath{Monoid} can be constructed by the taking the union of the declarations in \lstmath{Unital}  and \lstmath{Semigroup} without repreating the declarations in \lstmath{Magma}\footnote{The \lstmath{combine} operation is explained in detail in Section~\ref{subsec:combine}}. 
 
-The theories resulting from the flattener are used to compute some universal algebra constructs that are also part of algebra libraries. Chapter~\ref{ch:redundancy} shows examples of homomorphisms, product algebra and term languages provided by library developers. These ones and more can be generated based on their definitions from universal algebra. The \emph{generator} does that by manipulating components of the theories. We discuss the generator in Chapter~\ref{ch:generation}. 
+The theories resulting from the flattener are used to compute some universal algebra constructions that are also part of algebra libraries. Chapter~\ref{ch:redundancy} shows examples of homomorphisms, product algebra and term languages provided by library developers. These ones and more can be generated based on their definitions from universal algebra. The \emph{generator} does that by manipulating components of the theories. We discuss the generator in Chapter~\ref{ch:generation}. 
 
 The flattener and generator deal with mathematical definitions while keeping system-specific details to a minimal. In order to make the constructions more useful, the \emph{exporter} makes them available in feature rich systems, like agda. We discuss the exporter in Chapter~\ref{ch:export}. 
 

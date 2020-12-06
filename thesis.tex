@@ -1,4 +1,3 @@
-\RequirePackage{amsmath}
 \documentclass[12pt,fleqn]{report}                  % Times New Roman, 12pt
 %\usepackage{gscale_thesis_singlespace} % Single spaced thesis
 \usepackage{style_files/gscale_thesis_doublespace} % Double spaced thesis
@@ -8,17 +7,16 @@
 \include{definitions}                                % LaTeX variables for preface pages/headers
 \setcounter{tocdepth}{1}                        % Limits the TOC to chapter and section names
 \setcounter{secnumdepth}{3}
+% Additional packages
 \usepackage{minted}
 \usepackage{listings}
 \usepackage[T1]{fontenc}
 \lstset{basicstyle={\ttfamily}}%\footnotesize
-%\usepackage{todonotes}
 \usepackage[show]{ed}
-% Additional packages
 \usepackage{graphicx}                                   % Allows the inclusion of figures
 \usepackage{subcaption}                               % Allows captions to be added to subfigures
 \usepackage[justification=centering]{caption} % Centres caption text
-\usepackage[colorlinks=true, citecolor=blue]{hyperref}                    % Linking to LaTeX labels and external URLs
+\usepackage[colorlinks=true, linkcolor  = black, citecolor=blue]{hyperref}                    % Linking to LaTeX labels and external URLs
 \usepackage{array}                                        % Used for table formatting
 \newcolumntype{P}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \usepackage{booktabs}                                 % Fancy-style tables
@@ -30,8 +28,10 @@
 \usepackage{amsmath}                                % Non-standard math symbols
 \usepackage{amsfonts}                                % Extended fonts for 
 %mathematics
-\usepackage{stmaryrd}
 \usepackage{xcolor}
+\numberwithin{equation}{section}                 % Numbers equations based on their section
+
+\usepackage{stmaryrd}
 \usepackage{comment}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta, % for arrows style
@@ -65,10 +65,19 @@
 
 % ********************************
 \begin{document}
+\begin{comment}
+\beforepreface                                         % Half title page, title page, declaration page   
+  %\include{layabstr}                                  % Lay Abstract
+  \include{abstr}                                      % Abstract
+  \include{dedic}                                      % Dedication
+  \include{acknowledgements}                 % Acknowledgements
+ % \referencepageswithnotations{notation} % Table of Contents, List of Figures, List of Tables, Notations
+  %\referencepages                                 % No notations version (choose one)
+\afterpreface                
+\end{comment}
 
 \tableofcontents
-%\input{intro.tex}
-%\begin{comment}  
+
 \input{intro2.tex}
 
 \input{background.tex}
@@ -104,11 +113,10 @@
 %		\setcounter{table}{0}
 \end{appendix}
 
-
 %\input{discussion.tex}
 %\bibliographystyle{authoryear}
 \bibliographystyle{natbib}
 \bibliography{thesis}
- 
+
 \end{document}
 % ********************************

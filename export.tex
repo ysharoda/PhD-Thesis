@@ -3,7 +3,7 @@
 
 %So far we have been working in a simplistic dependent language. The next step is to export our work in Tog into systems that are widely used for theory development and proofs. We start with Agda, as it is the one that resembles Tog the most. 
 
-Generating the definitions of constructions from a theory presentation saves a lot of library development time, but having these definitions in a feature-rich language makes it even more useful. In this chapter we investigate research questions X and Y\todo{add the references here} by implementing an automatic translator of the library theories and their related constructions to agda.
+Generating the definitions of constructions from a theory presentation saves a lot of library development time, but having these definitions in a feature-rich language makes it even more useful. In this chapter we implement an automatic translator of the library theories and their related constructions to agda.
 %and lean\ednote{lean is still being implemented} 
 
 In Section~\ref{sec:exporting_agda} we describe the tog-to-agda exporter implemented in haskell. Many parts of this exporter were straight forward translation between the two syntax trees. Nevertheless, there were some challenges that we discuss in Section~\ref{sec:exporting:challenges}. We compare our generated agda code to the one in the agda standard library~\cite{agda_stdlib} and discuss how close we can get to the standard library presentation in Section~\ref{sec:compasion_agda_stdlib}. 
@@ -300,7 +300,7 @@ The definition of \lstmath{Monoid} in agda standard library includes model morph
 
 \section{Discussion}
 \label{sec:exporting:discussion}
-The idea of exporting from one language to another has been discussed various times, as we show in~\ednote{refer to the section in related work}. Our work take advantage from the fact that we export from a small language, and therefore the source syntax tree is small and can be manipulated easily.  
+The idea of exporting from one language to another has been discussed various times, as we show in Section~\ref{sec:relwork:automation}. Our work take advantage from the fact that we export from a small language, and therefore the source syntax tree is small and can be manipulated easily.  
 %Having a minimal source language gives us the opportunity to add design decisions without having to observe how it affects the multiple other features that would be present in a feature-rich language. That makes the export process easier to manage. 
 
 Like in Section~\ref{sec:generation:discussion}, we noted here that some missing features in tog makes the exporting process a bit harder, like universes and indexed types. It is hard to decide which features are needed for a core language that fits our purpose. This is one way our work can be extended. We suggest studying theorem provers as a program family, capturing their commonalities and variabilities via techniques like feature models~\cite{czarnecki2000generative}. If we have this model, one can write a staged exporter to different languages in the model, similar to what is explained in~\cite{stagedConfig}. 

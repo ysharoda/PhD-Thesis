@@ -1,7 +1,5 @@
 \chapter{Universal Algebra}
 \label{ch:ualgebra}
-\todo{WF comment about equational FOL definition: the transitivity rule is not needed and the last rule is universal instantiation} 
-
 Algebraic structures, like monoids, groups, and rings studies classes of algebra that have similar properties. Universal algbera studies algebras in a more generic way. It abstracts over the specific properties of classes of algebras and deals with them as axiomatic theories in equational first-order logic. With this abstraction in place, universal algebra define some constructions useful when dealing with algebras and prove some of their properties.
 
 We use concepts of universal algebra to leverage the information in theory presentations. We internalize a representation of uni-sorted equational first order theories into DTT, our meta theory. This way we are able to manipulate them and generate the constructions as described by universal algebra. In this chapter we introduce core concepts that we use from universal algebra. In Chapter~\ref{ch:generation} we discuss how we use it in our work. In Section~\ref{sec:eqtheory} we present equational first order logic, the meta theory for universal algebra, and define the components of a theory in this logic. We then introduce some of the constructions of universal algebra that can be generated from an equational theory presentation in Section~\ref{sec:toBeGenerated}. It is worth mentioning that although our framework generate only some of these constructions, they all follow from the definition of a theory and the definitions we provide here will hopefully make this noticeable.   
@@ -11,7 +9,7 @@ We use concepts of universal algebra to leverage the information in theory prese
 Logics give us the machinery to describe properties of entities as formulas and reason about them.  
 Equational logic restricts these formulas, whether axioms or theorems, to be equations of the form \lstmath{t$_1$ = t$_2$}, where \lstmath{t$_1$} and  \lstmath{t$_2$} are terms expressible in the language of the theory. There are different notions of equality~\cite{oneThingSame2008, equalityInTPs2015}. In many cases the underlying logic offers its own equality. In some other cases, the equality is defined by the language of the theory, as is the case with setoids. 
 
-Equational logic has $3$ inference rules described in~\cite{Gries1993EquationalLogic} 
+Equational logic has $3$ inference rules described in~\cite{Gries1993EquationalLogic}\ednote{@WF: waiting for your recommendation on a better reference for equational FOL}  
 \begin{proofrules}
         \[ t_1 = t_2 \ \justifies t[x \mapsto t_1] = t[x \mapsto t_2] \]
         \[ t_1 = t_2 , t_2 = t_3 \ \justifies t_1 = t_3 \]
