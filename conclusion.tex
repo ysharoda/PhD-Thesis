@@ -1,16 +1,43 @@
-\chapter{Conclusion}
+\chapter{Conclusion and Future Work}
 \label{ch:conclusion}
 
-The fact that tog has no universes (Set : Set). that we couldn't find a better experimental language, and that this would not affect the generated constructions because we do not perform any reasoning and our code is backed by universal algebra, so we have a meta theory that tell us that we are not generating nonsense 
+The main aim of this work is to reduce the labour needed to create libraries of formal mathematics. We have introduced a $3$-phase interpreter of declarative definitions that uses combinators to define theories and morphisms of a library. Starting with $227$ declarations of theories in the algebraic hierarchy, we generated $5,902$ library definitions spanning over $32459$ lines of tog code. 
+% 10 declarations, 5 of which have 4 variants. 
+This same amount of information has been exported into agda with the theories presented in two forms, as flat theories and as theories in predicate style. 
+This huge saving of human effort proves how useful and promising a generative approach to library building can be. 
 
-To do this within a system is extremely difficult, as it would require introspection and for theory
-\emph{definitions} to be first-class citizens, which is not the case for any
-system based on type-theory that we are aware of\ednote{still checking idris}. Untyped systems
-in the Lisp tradition do this routinely, as does Maude~\cite{Maude}, which
-is based on \emph{rewriting logic}; the downside is that there is no
-difference between meaningful and meaningless transformations in these
-systems, only between ``runs successfully'' and ``crashes''. However,
-these constructions are fully typeable and, moreover, are not system-specific
-(as they can be phrased meta-theoretically within Universal
-Algebra), even though an implementation has to be aware of the syntactic
-details of each system.
+In Section~\ref{conc:summary} we summarize the contributions of this work referring to how they solve the research questions introduced in Section~\ref{sec:questions}. In Section~\ref{future_work} we discuss several extensions of this work. 
+
+%Universal algebra is a well-established abstraction over details of algebraic theories in equational first order logic. 
+
+\section{Summary of contributions}
+\label{conc:summary}
+Universal algebra is a well-established abstraction over the details of the axiomatic representation of algebraic structures. In Chapter~\ref{ch:generation} we present a framework that given a theory presentation that has the structure defined by universal algebra, generates many of its related constructions. Our framework generated $10$ constructions for each theory, but can be extended to support more structures. Specifically, we believe all structures presented in the list in Section~\ref{sec:toBeGenerated} can be generated within this framework. The development of this framework answers the first research question positively that universal algebra constructions can be automatically generated. 
+
+This leads us to the second research question about the preconditions for developing a generation platform. To generate the universal algebra constructions, one needs to introspect the contents of a theory in the object language, and be able to generate definitions in the same language. The introspection capabilities should be able to retrieve the names and types of every declaration in the theory and information about which ones are parameters. The presence of these features are sufficient for developing generation platform like the one we present here. 
+%To the best of our knowledge, the reflection mechanisms provided by dependently-typed systems do not natively support meta-programming on the module level. Reflection techniques are usually applied to proof terms and the generated constructions are not reflected back to the object language. Even when the machinery to generate module definitions are in place, like in the case of 
+
+Generating information needs to start with a theory presentation to be manipulated. We have shown in Figure~\ref{fig:mon-diff-lang} how theory presentations look different in different formal systems and how they strongly reflect the design decisions of the library builders, leading to a usability problem for projects that do not employ the same decisions. In this work, we abstracted over two design decisions. The first is the hierarchy used to develop the theory. To build our library we use the combinators in~\cite{carette2018building} which are designed such that every theory can be flattened.  By providing the flattened representation for every theory in our library. The theories are still connected in the underlying graph structure. The second design decision we abstract over is the bundling of the declarations of the theory. We follow the approach presented in~\cite{alhassy2019}. By adding a declaration to the type representing theories reflecting how many of its components are parameters, one does not have to fix specific elements as parameters. In both cases, the information being abstracted over can be reintroduced, which answers the third research question.  
+
+Our approach saves huge human effort needed to build libraries by generating the standard information that can be derived from given data. Writing these definitions by hand is boring and error-prone. By using a generative approach to library development, we can save the effort of writing thousands of definitions and make maintaining these definitions easier, as changes would then amount to writing meta programs that process the data in a different way. We answer research question 4 in more details in future work. 
+
+
+\section*{Future Work}
+\label{future_work}
+Our work can be extended in different ways. The most immediate is adding more definitions to be generated, as shown in the list in Section~\ref{sec:toBeGenerated}. Here we suggest more ways of extending this work 
+
+\paragraph{Exporting to multiple front ends.} Theory presentations look different from one system to another. Even within the same system, they might look different between the different projects. We believe that developers and users of formal systems should not be writing the different presentations of the same information. Instead, they need to describe how the presentation that fits their purpose looks like and a meta-program should produce it for them. This can be done by investigating how different language features interact and how they affect the theory presentations. This can be done using a feature model~\cite{czarnecki2000generative}. The information captured by the feature model can be using to generate a staged multiple front end exporter as in~\cite{stagedConfig}. 
+
+\paragraph{DSL for library development.}
+If we have a feature model studying design decisions and multiple front end exporter, and we use the combinators from \cite{carette2018building} as we did in Chapter~\ref{ch:library}, then we have the components to develop a domain-specific language for building libraries. We envision expressions in this language being like
+\begin{togcode}
+Monoid = combine Unital and Semigroup over Magma
+         generate homomorphism, OpenTerms, Simplifier
+         using (waist=1,eq=Agda.Builtin.Equality)
+         export_to agda 
+\end{togcode} 
+Or even referring to a whole graph and specifying the generation and exportation parameters the same way. 
+The same expression can also be used to generate knowledge ``on demand" for user-provided theories, similar to Haskell's derivings. 
+
+\paragraph{Generalized Algebraic Theories (GAT).}
+GATs consist of a set of sorts, a set of function symbols, and a set of axioms, each being the identity~\cite{cartmell1986gats}. This definition is similar to that of algebraic theories that we presented in Section~\ref{sec:background:theory}. The generalization in GATs is that its sorts can interpret sets of functions or sets of sets. A useful extension of our work is to use our meta programs to derive the same information from GATs. 
