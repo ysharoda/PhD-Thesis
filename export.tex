@@ -3,7 +3,7 @@
 
 %So far we have been working in a simplistic dependent language. The next step is to export our work in Tog into systems that are widely used for theory development and proofs. We start with Agda, as it is the one that resembles Tog the most. 
 
-Generating the definitions of constructions from a theory presentation saves a lot of library development time, but having these definitions in a feature-rich language makes it even more useful. In this chapter we implement an automatic translator of the library theories and their related constructions to agda.
+Generating the definitions of constructions from a theory presentation saves a lot of library development time, but having these definitions in a feature-rich language makes it even more useful. In this chapter we implement an automatic translator of the library theories and their related constructions to agda. This part is related to the third research question from Section~\ref{sec:questions}. 
 %and lean\ednote{lean is still being implemented} 
 
 In Section~\ref{sec:exporting_agda} we describe the tog-to-agda exporter implemented in haskell. Many parts of this exporter were straight forward translation between the two syntax trees. Nevertheless, there were some challenges that we discuss in Section~\ref{sec:exporting:challenges}. We compare our generated agda code to the one in the agda standard library~\cite{agda_stdlib} and discuss how close we can get to the standard library presentation in Section~\ref{sec:compasion_agda_stdlib}. 

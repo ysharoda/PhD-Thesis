@@ -1,7 +1,7 @@
 \chapter{Constructions For Free!}
 \label{ch:generation}
 
-The flattener interprets theory expressions into a graph of flat theories and morphisms between them. The resulting flat theories are then used by the generator to produce some useful tools (constructions) related to them, which is the topic of this chapter. 
+The flattener interprets theory expressions into a graph of flat theories and morphisms between them. The resulting flat theories are then used by the generator to produce some useful tools (constructions) related to them. In this chapter, we introduce the generator and answer the first and second research questions imposed in Section~\ref{sec:questions}.
 
 We define some meta programs written in haskell (the meta language) to generate tog (the object language) definitions. 
 The input to these programs are flat theory presentations in DTT. We know that those theories describe algebraic structures and therefore they can be represented in unisorted equational lo as described by universal algebra. In Chapter~\ref{ch:ualgebra} we introduced theories and their related constructions in universal algebra. Here we discuss our framework that uses this knowledge to generate information from theory presentations. We use the haskell type \lstmath{EqTheory} to describe the structure of equational theories. Because this type is built using the tog abstract syntax, manipulating it is more or less manipulating tog syntax. The output of the generator is guaranteed to be well-formed. The tog type checker is run on this input to check for well-typedness. 
