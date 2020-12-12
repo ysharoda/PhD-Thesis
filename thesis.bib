@@ -83,8 +83,7 @@
    key = { {Coq} User Contributions - Algebra Library},
    title = { {Coq} User Contributions - Algebra Library},
    journal = {GitHub Repository},
-   author = {Loïc Pottier},
-   year = {1999}, 
+   author = {Loïc Pottier}, 
    howpublished = {\url{https://github.com/coq-contribs/algebra}}
 }
 
@@ -152,65 +151,13 @@
 }
 
 %CASL reference manual 
-@Book{CoFI:2004:CASL-RM,
-    author =       "{CoFI (The Common Framework Initiative)}",
-    editor = "Peter D. Mosses",
-    title =        "\textsc{Casl} Reference Manual",
-    year =         "2004",
-    publisher =    "Springer",
-    series =       "Lecture Noted in Computer Science", 
-    volume = "2960",
-    abstract =     "\textsc{Casl}, the \emph{Common Algebraic
-    Specification Language}, has been designed by CoFI, the
-    \emph{Common Framework Initiative} for algebraic
-    specification and development. \textsc{Casl} is an
-    expressive language for specifying requirements and
-    design for conventional software. It is algebraic in
-    the sense that models of \textsc{Casl} specifications
-    are algebras; the axioms can be arbitrary first-order
-    formulas. \par \textsc{Casl} is a major new algebraic
-    specification language. It has been carefully designed
-    by a large group of experts as a general-purpose
-    language for practical use in software development --
-    in particular, for specifying both requirements and
-    design. \textsc{Casl} includes carefully-selected
-    features from many previous specification languages, as
-    well as some novel features that allow algebraic
-    specifications to be written much more concisely and
-    perspicuously than hitherto. It may ultimately replace
-    most of the previous languages, and provide a common
-    basis for future research and development. \par
-    \textsc{Casl} has already attracted widespread interest
-    within the algebraic specification community, and is
-    generally regarded as a de facto standard. Various
-    sublanguages of \textsc{Casl} are available --
-    primarily for use in connection with existing tools
-    that were developed in connection with previous
-    languages. Extensions of \textsc{Casl} provide
-    languages oriented toward development of particular
-    kinds of software (reactive, concurrent, etc.) \par
-    Major libraries of validated \textsc{Casl}
-    specifications are freely available on the Internet,
-    and the specifications can be reused simply by
-    referring to their names. Tools are provided to support
-    practical use of \textsc{Casl}: checking the
-    correctness of specifications, proving facts about
-    them, and managing the formal software development
-    process. \par This reference manual gives a detailed
-    presentation of the \textsc{Casl} specification
-    formalism. It reviews the main underlying concepts, and
-    carefully summarizes the intended meaning of each
-    construct of \textsc{Casl}. It formally defines both
-    the syntax and semantics of \textsc{Casl}, and presents
-    a logic for reasoning about \textsc{Casl}
-    specifications. It also provides extensive libraries of
-    \textsc{Casl} specifications of basic datatypes, and an
-    annotated bibliography of CoFI publications.",
-    annote =       "Gives full details of the design of \textsc{Casl}: an
-    informal language summary, concrete and abstract
-    syntax, well-formedness and model-class semantics, and
-    proof rules. Includes the libraries of basic
-    datatypes.",
+@book{CoFI:2004:CASL-RM,
+    title={{CASL} reference manual: The complete documentation of the common algebraic specification language},
+    author={Mosses, Peter D},
+    series={Lecture Noted in Computer Science},     
+    volume={2960},
+    year={2004},
+    publisher={Springer, Berlin, Heidelberg}
 }
 
 @book{bidoit2003casl,
@@ -396,44 +343,31 @@
   year={1985},
   publisher={Springer Berlin Heidelberg}
 }
-@InBook{•,
-ALTauthor = {•},
-ALTeditor = {•},
-title = {•},
-chapter = {•},
-publisher = {•},
-year = {•},
-OPTkey = {•},
-OPTvolume = {•},
-OPTnumber = {•},
-OPTseries = {•},
-OPTtype = {•},
-OPTaddress = {•},
-OPTedition = {•},
-OPTmonth = {•},
-OPTpages = {•},
-OPTnote = {•},
-OPTannote = {•}
+
+@incollection{handbook1993Maibaum,
+    author={Karl Meinke and John V Tucker},
+    title={Universal Algebra} ,
+    year={1993},
+    editor={Samson Abramsky and Dov M. Gabbay and Thomas S. E. Maibaum},
+    bookTitle={Handbook of Logic in Computer Science (Vol. 1): Background: Mathematical Structures},
+    isbn={0198537352},
+    publisher={Oxford University Press, Inc.},
+    address={USA}, 
+    pages={189–368},
+    numpages={180}
 }
 
-@inbook{handbook1993Maibaum,
-editor = {Abramsky, S. and Gabbay, Dov M. and Maibaum, S. E.},
-title = {Universal Algebra} ,
-bookTitle = {Handbook of Logic in Computer Science (Vol. 1): Background: Mathematical Structures},
-isbn = {0198537352},
-publisher = {Oxford University Press, Inc.},
-year = {1993},
-address = {USA}
-}
-
-@inbook{handbook1993CategoricalLogic,
-editor = {Abramsky, S. and Gabbay, Dov M. and Maibaum, S. E.},
-title = {Categorical Logic}, 
-bookTitle = {Handbook of Logic in Computer Science (Vol. 5): Logic and algebraic methods},
-year = {1993},
-isbn = {0198537611},
-publisher = {Oxford University Press, Inc.},
-address = {USA}
+@incollection{handbook1993CategoricalLogic,
+    author={Andrew M. Pitts},
+    title = {Categorical Logic}, 
+    year = {2001},
+    editor={Samson Abramsky and Dov M. Gabbay and Thomas S. E. Maibaum},
+    bookTitle = {Handbook of Logic in Computer Science (Vol. 5): Logic and algebraic methods},
+    isbn = {0198537611},
+    publisher = {Oxford University Press, Inc.},
+    address = {USA}, 
+    pages = {39–123},
+    numpages = {85}
 }
 
 @Inbook{Gries1993EquationalLogic,
@@ -634,13 +568,8 @@ url="https://doi.org/10.1007/978-1-4757-3837-7_8"
 }
 
 % --------- Algebraic Hierarchy ------------- 
-@misc{halleck,
-  author = "John Halleck",
-  howpublished = {\url{http://www.horizons-2000.org/2.%20Ideas%20and%20Meaning/John%20Halleck%27s%20Logic%20System%20Interrelationships.html}},
-  title = "Logic System Interrelationships",
-  note = {Accessed: March 20, 2020}
-}
 
+% the date here is the last updated of the page 
 @misc{jipsen,
   author = "Peter Jipsen",
   title = "List of Mathematical Structures",
@@ -1115,14 +1044,17 @@ isbn="978-3-540-31977-1"
 @article{sakaguchi2020validating,
     title={Validating mathematical structures},
     author={Sakaguchi, Kazuhiko},
-    journal={arXiv preprint arXiv:2002.00620},
+    journal={preprint, arXiv:2002.00620},
     year={2020}
 }
 
-@misc{mathCompLib,
-    title={Mathematical Components Library},
-    howpublished ={\url{https://math-comp.github.io/}}, 
-    note={Accessed on October 2020}
+@book{mathCompBook2020,
+  author={Assia Mahboubi and Enrico Tassi},
+  title={Mathematical Components},
+  publisher={Zenodo},
+  year={2020},
+  month={November},
+  url={\url{https://math-comp.github.io/mcb/}}
 }
 
 @InProceedings{elpi,
@@ -1383,9 +1315,9 @@ isbn="978-3-540-31977-1"
 
 @techreport{localeIntepretations2006,
     author = {Clemens Ballarin}, 
-    title = {Interpretation of Locales in Isabelle:anaging Dependencies between Locales},
+    title = {Interpretation of Locales in Isabelle: Managing Dependencies between Locales},
     year = {2006},
-    institution = {},
+    institution = {Technische Universität München (TUM)},
     keywords = {Interactive proof;theory interpretation;Isabelle},
 }
 
@@ -1512,7 +1444,7 @@ abstract="Algorithms like those for differentiating functional expressions manip
 isbn="978-3-642-39320-4"
 }
 
-@article{pierce1990taste,
+@misc{pierce1990taste,
   title={A taste of category theory for computer scientists},
   author={Pierce, Benjamin C},
   year={1990},
@@ -1805,28 +1737,23 @@ isbn="978-3-540-70722-6"
 	pages="314--333" 
 }
 
-@inproceedings{Dowek2019LogipediaAM,
+@misc{Dowek2019LogipediaAM,
   title={Logipedia: a multi-system encyclopedia of formal proofs},
   author={G. Dowek and François Thir{\'e}},
-  year={2019}
+  year={2019},
+  note={\url{http://www.lsv.fr/~dowek/Publi/logipedia.pdf}}
 }
 
+
 @article{lem2014,
-author = {Mulligan, Dominic P. and Owens, Scott and Gray, Kathryn E. and Ridge, Tom and Sewell, Peter},
-title = {Lem: Reusable Engineering of Real-World Semantics},
-year = {2014},
-issue_date = {September 2014},
-publisher = {Association for Computing Machinery},
-address = {New York, NY, USA},
-volume = {49},
-number = {9},
-issn = {0362-1340},
-url = {https://doi.org/10.1145/2692915.2628143},
-doi = {10.1145/2692915.2628143},
-month = aug,
-pages = {175–188},
-numpages = {14},
-keywords = {lem, specification languages, real-world semantics, proof assistants}
+    title={Lem: reusable engineering of real-world semantics},
+    author={Dominic P. Mulligan and Scott Owens and Kathryn E. Gray and Tom Ridge and Peter Sewell},
+    journal={ACM SIGPLAN Notices},
+    volume={49},
+    number={9},
+    pages={175--188},
+    year={2014},
+    publisher={ACM New York, NY, USA}
 }
 
 @misc{ocaml2019ppx, 
@@ -1877,32 +1804,12 @@ url = "http://www.sciencedirect.com/science/article/pii/0168007286900539",
 author = "John Cartmell"
 }
 
-@InProceedings{•,
-author = {•},
-title = {•},
-booktitle = {•},
-OPTcrossref = {•},
-OPTkey = {•},
-OPTpages = {•},
-OPTyear = {•},
-OPTeditor = {•},
-OPTvolume = {•},
-OPTnumber = {•},
-OPTseries = {•},
-OPTaddress = {•},
-OPTmonth = {•},
-OPTorganization = {•},
-OPTpublisher = {•},
-OPTnote = {•},
-OPTannote = {•}
-}
-
-
 @inproceedings{cicm2019docotral,
   author = {Yasmine Sharoda}, 
   title = {Leveraging Information Contained in Theory Presentations}, 
   year = {2019},
   publisher = {CEUR Workshop Proceedings}, 
   volume = {2634}, 
+  booktitle={Workshop Papers at 12th Conference on Intelligent Computer Mathematics CICM 2019},
   note = {\url{http://ceur-ws.org/Vol-2634/DP7.pdf}}
 }
