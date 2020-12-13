@@ -4,15 +4,14 @@
   key = {Tog, a dependently-typed checker},
   title = {Tog, A prototypical implementation of dependent types},
   author = {Francesco Mazzoli and Nils Anders Danielsson and Ulf Norell  and Andrea Vezzosi and Andreas Abel},
-  journal = {GitHub Repository},
   year = {2017}, 
-  howpublished = {\url{https://github.com/bitonic/tog}}
+  howpublished = {GitHub Repository \url{https://github.com/bitonic/tog}}
 }
 
-@article{mazzoli2016type,
-    title={Type checking through unification},
+@misc{mazzoli2016type,
+    title={{Type Checking through Unification}},
     author={Mazzoli, Francesco and Abel, Andreas},
-    journal={arXiv preprint arXiv:1609.09709},
+    howPublished={arXiv:1609.09709},
     year={2016}
 }
 
@@ -22,7 +21,7 @@
 
 % Coq 
 @article{Geuvers2002,
-  title = { A Constructive Algebraic Hierarchy in {Coq} },
+  title = {{A Constructive Algebraic Hierarchy in Coq}},
   journal = {Journal of Symbolic Computation} ,
   volume = {34},
   number = {4},
@@ -52,7 +51,7 @@
   and Gonthier, Georges
   and Mahboubi, Assia
   and Rideau, Laurence",
-  title="Packaging Mathematical Structures",
+  title={{Packaging Mathematical Structures}},
   booktitle="Theorem Proving in Higher Order Logics",
   year="2009",
   publisher="Springer Berlin Heidelberg",
@@ -64,7 +63,7 @@
 @InProceedings{Spitters2010,
   author="Spitters, Bas
   and van der Weegen, Eelis",
-  title="Developing the Algebraic Hierarchy with Type Classes in {Coq}",
+  title={{Developing the Algebraic Hierarchy with Type Classes in Coq}},
   booktitle="Interactive Theorem Proving",
   year="2010",
   publisher="Springer Berlin Heidelberg",
@@ -80,11 +79,10 @@
 }
 
 @misc{coq-contribs-algebra,
-   key = { {Coq} User Contributions - Algebra Library},
-   title = { {Coq} User Contributions - Algebra Library},
-   journal = {GitHub Repository},
+   key = {{Coq User Contributions - Algebra Library}},
+   title = {{Coq User Contributions - Algebra Library}},
    author = {Loïc Pottier}, 
-   howpublished = {\url{https://github.com/coq-contribs/algebra}}
+   howpublished = {GitHub Repository \url{https://github.com/coq-contribs/algebra}}
 }
 
 @InProceedings{spivak2014coqcats,
@@ -135,26 +133,29 @@
 
 % Agda 
 @misc{agda_stdlib,
-  key = {{A}gda Library Authors},
-  title = {{A}gda {S}tandard {L}ibrary},
-  journal = {GitHub repository},
-  howpublished = {\url{https://github.com/agda/agda-stdlib}}
+  key={{A}gda Library},
+  title={{A}gda {S}tandard {L}ibrary},
+  journal={GitHub repository},
+  version={1.4},
+  year={2020},
+  note={Version 1.4},
+  howpublished={\url{https://github.com/agda/agda-stdlib}}
 }
 
 % Lean: Mathlib 
 @article{lean2019,
-  title={The Lean mathematical library},
+  title={{The Lean Mathematical Library}},
   author="The Mathlib Team",
-  journal = {arXiv preprint arXiv: 1910.09336},
+  journal = {arXiv: 1910.09336},
   year={2019},
   note={\url{https://arxiv.org/abs/1910.09336}}
 }
 
 %CASL reference manual 
 @book{CoFI:2004:CASL-RM,
-    title={{CASL} reference manual: The complete documentation of the common algebraic specification language},
+    title={{CASL Reference Manual: The Complete Documentation of the Common Algebraic Specification Language}},
     author={Mosses, Peter D},
-    series={Lecture Noted in Computer Science},     
+    series={Lecture Notes in Computer Science},     
     volume={2960},
     year={2004},
     publisher={Springer, Berlin, Heidelberg}
@@ -169,15 +170,12 @@
 }
 
 @article{mathscheme2011experiments,
-  author = {Carette, Jacques and Farmer, William and Jeremic, 
-  Filip and 
-  Maccio, Vincent and O'Connor, Russell and Tran, Quang},
+  author = {Jacques Carette and William M. Farmer and Filip Jeremic and 
+  Vincent Maccio and Russell O'Connor and Quang Tran},
   year = {2011},
-  month = {06},
-  pages = {},
-  title = {The {MathScheme} Library: Some Preliminary 
-  Experiments}, 
-  journal={arXiv preprint arXiv:1106.1862},
+  month = {June},
+  title = {{The MathScheme Library: Some Preliminary Experiments}}, 
+  journal={arXiv:1106.1862}
 }
 
 @Inbook{Grabowski2020,
@@ -228,13 +226,26 @@
   isbn="978-3-319-08970-6"
 }
 
-@misc{cohen2020hierarchy,
-  title={Hierarchy Builder: algebraic hierarchies made easy in {Coq} with {Elpi}},
-  author={Cohen, Cyril and Sakaguchi, Kazuhiko and Tassi, Enrico},
-  howpublished = {\url{https://hal.inria.fr/hal-02478907}},
-  note = {working paper or preprint},
-  year={2020}
+@InProceedings{cohen2020hierarchy,
+  author =	{Cyril Cohen and Kazuhiko Sakaguchi and Enrico Tassi},
+  title =	{{Hierarchy Builder: Algebraic hierarchies Made Easy in Coq with Elpi (System Description)}},
+  booktitle =	{5th International Conference on Formal Structures for Computation and Deduction (FSCD 2020)},
+  pages =	{34:1--34:21},
+  series =	{Leibniz International Proceedings in Informatics (LIPIcs)},
+  ISBN =	{978-3-95977-155-9},
+  ISSN =	{1868-8969},
+  year =	{2020},
+  volume =	{167},
+  editor =	{Zena M. Ariola},
+  publisher =	{Schloss Dagstuhl--Leibniz-Zentrum f{\"u}r Informatik},
+  address =	{Dagstuhl, Germany},
+  URL =		{https://drops.dagstuhl.de/opus/volltexte/2020/12356},
+  URN =		{urn:nbn:de:0030-drops-123562},
+  doi =		{10.4230/LIPIcs.FSCD.2020.34},
+  annote =	{Keywords: Algebraic Hierarchy, Packed Classes, Coq, Elpi, Metaprogramming, λProlog}
 }
+
+
 
 @misc{mahboubi2017mathematical,
   title={Mathematical components},
@@ -249,7 +260,7 @@
   volume={7362},
   series={Lecture Notes in Computer Science},
   doi={10.1007/978-3-642-31374-5_14},
-  title={Theory Presentation Combinators},
+  title={{Theory Presentation Combinators}},
   url={http://dx.doi.org/10.1007/978-3-642-31374-5_14},
   publisher={Springer Berlin Heidelberg},
   author={Carette, Jacques and O{'}Connor, Russell},
@@ -257,17 +268,16 @@
 }
 
 @misc{carette2018building,
-  title={Building on the Diamonds between Theories: Theory Presentation Combinators}, 
+  title={{Building on the Diamonds between Theories: Theory Presentation Combinators}}, 
   author={Jacques Carette and Russell O'Connor and Yasmine Sharoda},
   year={2019},
-  eprint={1812.08079},
-  archivePrefix={arXiv},
-  primaryClass={cs.LO}
+  howPublished={arXiv:1812.08079},
+  note={Submitted to Journal of Automated Reasoning}
 }
 
 @inproceedings{alhassy2019,
   author = {Al-hassy, Musa and Carette, Jacques and Kahl, Wolfram},
-  title = {A Language Feature to Unbundle Data at Will (Short Paper)},
+  title = {{A Language Feature to Unbundle Data at Will (Short Paper)}},
   booktitle = {Proceedings of the 18th ACM SIGPLAN International Conference on Generative Programming: 
   Concepts and Experiences},
   series = {GPCE 2019},
@@ -286,7 +296,7 @@
 
 % Universal Algebra 
 @book{whitehead1898treatise,
-  title={A treatise on universal algebra: with applications},
+  title={{A Treatise on Universal Algebra: with Applications}},
   author={Whitehead, A.N.},
   lsbn={12040192},
   series={Cornell University Library historical math monographs},
@@ -303,14 +313,6 @@
   year={1981}
 }
 
-@book{meinke1991universal,
-  title={Universal algebra},
-  author={Meinke, Karl and Tucker, John V},
-  year={1991},
-  publisher={University of Wales (Swansea). Mathematics and Computer Science Division}
-}
-
-
 @book{denecke2002universal,
   title={Universal Algebra and Applications in Theoretical Computer Science},
   author={Denecke, K. and Wismath, S.L.},
@@ -321,11 +323,11 @@
   publisher={Taylor \& Francis}
 }
 
-@Inbook{sannella2012foundations,
-    title = {Universal Algebra},   
+@incollection{sannella2012foundations,
+    title = {Category Theory},   
   bookTitle={Foundations of Algebraic Specification and Formal Software Development},
   author={Sannella, D. and Tarlecki, A.},
-   pages = {15 -- 39},      
+   pages = {97 -- 153},      
   isbn={9783642173363},
   lccn={2011941495},
   series={Monographs in Theoretical Computer Science. An EATCS Series},
@@ -346,7 +348,7 @@
 
 @incollection{handbook1993Maibaum,
     author={Karl Meinke and John V Tucker},
-    title={Universal Algebra} ,
+    title={{Universal Algebra}},
     year={1993},
     editor={Samson Abramsky and Dov M. Gabbay and Thomas S. E. Maibaum},
     bookTitle={Handbook of Logic in Computer Science (Vol. 1): Background: Mathematical Structures},
@@ -359,7 +361,7 @@
 
 @incollection{handbook1993CategoricalLogic,
     author={Andrew M. Pitts},
-    title = {Categorical Logic}, 
+    title = {{Categorical Logic}}, 
     year = {2001},
     editor={Samson Abramsky and Dov M. Gabbay and Thomas S. E. Maibaum},
     bookTitle = {Handbook of Logic in Computer Science (Vol. 5): Logic and algebraic methods},
@@ -370,26 +372,25 @@
     numpages = {85}
 }
 
-@Inbook{Gries1993EquationalLogic,
+@incollection{Gries1993EquationalLogic,
 author="Gries, David
 and Schneider, Fred B.",
-title="Propositional Calculus",
-bookTitle="A Logical Approach to Discrete Math",
+title={{Propositional Calculus}},
+booktitle={{A Logical Approach to Discrete Math}},
 year="1993",
 publisher="Springer New York",
 address="New York, NY",
 pages="41--61",
-abstract="We study the general notion of a formal logical system and its interpretations. Thus, we discuss both syntax (proof theory) and semantics (model theory) for logics. We also study constructive logic in a propositional setting.",
 isbn="978-1-4757-3837-7",
 doi="10.1007/978-1-4757-3837-7_8",
 url="https://doi.org/10.1007/978-1-4757-3837-7_8"
 }
 
-@Inbook{Gries1993FormalLogic,
+@incollection{Gries1993FormalLogic,
 author="Gries, David
 and Schneider, Fred B.",
-title="Formal Logic",
-bookTitle="A Logical Approach to Discrete Math",
+title={{Formal Logic}},
+bookTitle={{A Logical Approach to Discrete Math}},
 year="1993",
 publisher="Springer New York",
 address="New York, NY",
@@ -401,7 +402,7 @@ url="https://doi.org/10.1007/978-1-4757-3837-7_8"
 }
 
 @article{meinke1992higherTypes,
-  title = "Universal algebra in higher types",
+  title = {{Universal Algebra in Higher Types}},
   journal = "Theoretical Computer Science",
   volume = "100",
   number = "2",
@@ -429,7 +430,7 @@ url="https://doi.org/10.1007/978-1-4757-3837-7_8"
   author="Burstall, R. M.
   and Goguen, J. A.",
   editor="Bj{\o}orner, Dines",
-  title="The semantics of clear, a specification language",
+  title={{The Semantics of Clear, a Specification Language}},
   booktitle="Abstract Software Specifications",
   year="1980",
   publisher="Springer Berlin Heidelberg",
@@ -440,7 +441,7 @@ url="https://doi.org/10.1007/978-1-4757-3837-7_8"
 }
 
 @article{farmer1993imps,
-    title={IMPS: An interactive mathematical proof system},
+    title={{IMPS: An Interactive Mathematical Proof System}},
     author={Farmer, William M and Guttman, Joshua D and Thayer, F Javier},
     journal={Journal of Automated Reasoning},
     volume={11},
@@ -456,7 +457,7 @@ url="https://doi.org/10.1007/978-1-4757-3837-7_8"
     and Meinke, Karl
     and M{\"o}ller, Bernhard
     and Nipkow, Tobias",
-    title="Theory interpretation in simple type theory",
+    title={{Theory Interpretation in Simple Type Theory}},
     booktitle="Higher-Order Algebra, Logic, and Term Rewriting",
     year="1994",
     publisher="Springer Berlin Heidelberg",
@@ -469,15 +470,10 @@ url="https://doi.org/10.1007/978-1-4757-3837-7_8"
 
 % CASL development graph 
 @InProceedings{developmentGraph2000,
-    author="Autexier, Serge
-    and Hutter, Dieter
-    and Mantel, Heiko
-    and Schairer, Axel",
-    editor="Bert, Didier
-    and Choppy, Christine
-    and Mosses, Peter D.",
-    title="Towards an Evolutionary Formal Software-Development Using CASL",
-    booktitle="Recent Trends in Algebraic Development Techniques",
+    author="Serge Autexier and Dieter Hutter and Heiko Mantel and Axel Schairer",
+    editor="Didier Bert and Christine Choppy and Peter D. Mosses",
+    title={{Towards an Evolutionary Formal Software-Development Using CASL}},
+    booktitle={Recent Trends in Algebraic Development Techniques},
     year="2000",
     publisher="Springer Berlin Heidelberg",
     address="Berlin, Heidelberg",
@@ -500,9 +496,9 @@ url="https://doi.org/10.1007/978-1-4757-3837-7_8"
 }
 
 @article{pollack2002dependently,
-  title={Dependently typed records in type theory},
+  title={{Dependently Typed Records in Type Theory}},
   author={Pollack, Robert},
-  journal={Formal aspects of computing},
+  journal={Formal Aspects of Computing},
   volume={13},
   number={3-5},
   pages={386--402},
@@ -514,7 +510,7 @@ url="https://doi.org/10.1007/978-1-4757-3837-7_8"
 %------------- Universal Algebra Formalizations ----------- 
 @InProceedings{capretta99,
   author="Capretta, Venanzio",
-  title="Universal Algebra in Type Theory",
+  title={{Universal Algebra in Type Theory}},
   booktitle="Theorem Proving in Higher Order Logics",
   year="1999",
   publisher="Springer Berlin Heidelberg",
@@ -525,7 +521,7 @@ url="https://doi.org/10.1007/978-1-4757-3837-7_8"
 }
 
 @article{Gunther2018Agda,
-  title = "Formalization of Universal Algebra in {Agda}",
+  title = {{Formalization of Universal Algebra in Agda}},
   journal = "Electronic Notes in Theoretical Computer Science",
   volume = "338",
   pages = "147 - 166",
@@ -541,7 +537,7 @@ url="https://doi.org/10.1007/978-1-4757-3837-7_8"
 =======
 % ------------- MKM -------------- 
 @article{farmer2004mkm,
-  title={MKM: a new interdisciplinary field of research},
+  title={{MKM: A New Interdisciplinary Field of Research}},
   author={Farmer, William M},
   journal={ACM SIGSAM Bulletin},
   volume={38},
@@ -551,15 +547,8 @@ url="https://doi.org/10.1007/978-1-4757-3837-7_8"
   publisher={ACM New York, NY, USA}
 }
 
-@article{carette2019big,
-  title={Big Math and the One-Brain Barrier A Position Paper and Architecture Proposal},
-  author={Carette, Jacques and Farmer, William M and Kohlhase, Michael and Rabe, Florian},
-  journal={arXiv preprint arXiv:1904.10405},
-  year={2019}
-}
-
 @inproceedings{kohlhase2010towards,
-    title={Towards MKM in the large: Modular representation and scalable software architecture},
+    title={{Towards MKM in the Large: Modular Representationand Scalable Software Architecture}},
     author={Kohlhase, Michael and Rabe, Florian and Zholudev, Vyacheslav},
     booktitle={International Conference on Intelligent Computer Mathematics},
     pages={370--384},
@@ -572,7 +561,7 @@ url="https://doi.org/10.1007/978-1-4757-3837-7_8"
 % the date here is the last updated of the page 
 @misc{jipsen,
   author = "Peter Jipsen",
-  title = "List of Mathematical Structures",
+  title = {{List of Mathematical Structures}},
   howpublished = {\url{http://math.chapman.edu/~jipsen/structures/doku.php}},
   year = {2019},
   note = {Accessed: March 20, 2020}
@@ -583,7 +572,7 @@ url="https://doi.org/10.1007/978-1-4757-3837-7_8"
   author = {Magalh\~{a}es, Jos\'{e} Pedro and Dijkstra, Atze and 
   Jeuring, 
   Johan and L\"{o}h, Andres},
-  title = {A Generic Deriving Mechanism for {H}askell},
+  title = {{A Generic Deriving Mechanism for Haskell}},
   year = {2010},
   issue_date = {November 2010},
   publisher = {Association for Computing Machinery},
@@ -604,9 +593,8 @@ url="https://doi.org/10.1007/978-1-4757-3837-7_8"
 @inproceedings{loeh2018derivingVia,
   author = {Bl\"{o}ndal, Baldur and L\"{o}h, Andres and Scott, 
   Ryan},
-  title = {Deriving via: Or, How to Turn Hand-Written Instances 
-  into an 
-  Anti-Pattern},
+  title = {{Deriving Via: Or, How to Turn Hand-Written Instances 
+  into an Anti-Pattern}},
   year = {2018},
   isbn = {9781450358354},
   publisher = {Association for Computing Machinery},
@@ -634,7 +622,7 @@ url="https://doi.org/10.1007/978-1-4757-3837-7_8"
 
 @inproceedings{sheard2002TH, 
     author = {Sheard, Tim and Jones, Simon Peyton}, 
-    title = {Template Meta-Programming for {H}askell}, 
+    title = {{Template Meta-Programming for Haskell}}, 
     year = {2002}, 
     isbn = {1581136056}, 
     publisher = {Association for Computing Machinery}, 
@@ -663,22 +651,23 @@ url="https://doi.org/10.1007/978-1-4757-3837-7_8"
 
 @Misc{lensesLib,
     key = "Lens Library",
-    title = {{H}askell Lens Library},
+    title = {{Haskell Lens Library}},
     howpublished = {\url{https://hackage.haskell.org/package/lens}},
-    year = {2012},
+    year = {2020},
     note = {version 4.19.1; Accessed: 2020-03-22}
 }
 
 @Misc{syb,
-    key = "Scrap Your Boilerplate",
+    key={{S}crap {Y}our {B}oilerplate},
     title = {Haskell Scrap-your-boilerplate Package},
     howpublished = {\url{https://hackage.haskell.org/package/syb}},
+    year={2019},
     note = {version 0.7.1; Accessed: 2020-11-18}
 }
 
 @inproceedings{LittleTheories,
     author = {W. M. Farmer and J. D. Guttman and F. J. Thayer},
-    title = {Little Theories},
+    title = {{Little Theories}},
     booktitle = {CADE-11: Proceedings of the 11th International 
     Conference on Automated Deduction},
     year = {1992},
@@ -689,8 +678,8 @@ url="https://doi.org/10.1007/978-1-4757-3837-7_8"
 }
 
 @article{carette2009finally,
-    title={Finally tagless, partially evaluated: Tagless staged 
-    interpreters for simpler typed languages},
+    title={{Finally Tagless, Partially Evaluated: Tagless Staged 
+    Interpreters for Simpler Typed Languages}},
     author={Carette, Jacques and Kiselyov, Oleg and Shan, Chung-chieh},
     journal={Journal of Functional Programming},
     volume={19},
@@ -701,9 +690,9 @@ url="https://doi.org/10.1007/978-1-4757-3837-7_8"
 }
 
 @inproceedings{carette2011generative,
-  title={A generative geometric kernel},
+  title={{A Generative Geometric Kernel}},
   author={Carette, Jacques and Elsheikh, Mustafa and Smith, Spencer},
-  booktitle={Proceedings of the 20th ACM SIGPLAN workshop on Partial evaluation and program manipulation},
+  booktitle={Proceedings of the 20th ACM SIGPLAN Workshop on Partial Evaluation and Program Manipulation},
   pages={53 -- 62},
   year={2011},
   organization={ACM}
@@ -713,7 +702,7 @@ author="Carette, Jacques
 and Kiselyov, Oleg",
 editor="Gl{\"u}ck, Robert
 and Lowry, Michael",
-title="Multi-stage Programming with Functors and Monads: Eliminating Abstraction Overhead from Generic Code",
+title={{Multi-stage Programming with Functors and Monads: Eliminating Abstraction Overhead from Generic Code}},
 booktitle="Generative Programming and Component Engineering",
 year="2005",
 publisher="Springer Berlin Heidelberg",
@@ -738,14 +727,14 @@ isbn="978-3-540-31977-1"
 
 -------------- Logic --------- 
 @book{enderton1972mathematical,
-    title={A mathematical introduction to logic},
+    title={{A Mathematical Introduction to Logic}},
     author={Enderton, Herbert B},
     year={1972},
     publisher={Academic Press}
 }
 
 @book{tarski1953undecidable,
-    title={Undecidable theories},
+    title={Undecidable Theories},
     author={Tarski, Alfred and Mostowski, Andrzej and Robinson, Raphael Mitchel},
     volume={13},
     year={1953},
@@ -755,7 +744,7 @@ isbn="978-3-540-31977-1"
 % The diamond problem 
 
 @inproceedings{sakkinen1989disciplined,
-    title={Disciplined Inheritance.},
+    title={{Disciplined Inheritance}},
     author={Sakkinen, Markku},
     booktitle={ECOOP},
     volume={89},
@@ -767,12 +756,13 @@ isbn="978-3-540-31977-1"
     author = {Bracha, Gilad},
     title = {The Programming Language Jigsaw: Mixins, Modularity and Multiple Inheritance}, 
     school = {The University of Utah},
-    year = {March 1992}
+    month={March},
+    year = {1992}
 }
 
 @article{traits2006,
     author = {Ducasse, St{\'e}phane and Nierstrasz, Oscar and Sch\"{a}rli, Nathanael and Wuyts, Roel and Black, Andrew P.},
-    title = {Traits: A Mechanism for Fine-grained Reuse},
+    title = {{Traits: A Mechanism for Fine-grained Reuse}},
     journal = {ACM Trans. Program. Lang. Syst.},
     issue_date = {March 2006},
     volume = {28},
@@ -804,7 +794,7 @@ isbn="978-3-540-31977-1"
     and Wagelaar, Dennis",
     editor="Cabot, Jordi
     and Visser, Eelco",
-    title="A Comparison of Rule Inheritance in Model-to-Model Transformation Languages",
+    title={{A Comparison of Rule Inheritance in Model-to-Model Transformation Languages}},
     booktitle="Theory and Practice of Model Transformations",
     year="2011",
     publisher="Springer Berlin Heidelberg",
@@ -816,7 +806,7 @@ isbn="978-3-540-31977-1"
 
 % QED ---- 
 @article{boyer1994qed,
-    title={The QED manifesto},
+    title={{The QED manifesto}},
     author={Boyer, Robert and others},
     journal={Automated Deduction--CADE},
     volume={12},
@@ -826,7 +816,7 @@ isbn="978-3-540-31977-1"
 
 @article{qedrealoaded2016,
     author = {Michael Kohlhase and Florian Rabe},
-    title = {QED Reloaded: Towards a Pluralistic Formal Library of Mathematical Knowledge},
+    title = {{QED Reloaded: Towards a Pluralistic Formal Library of Mathematical Knowledge}},
     journal = {Journal of Formalized Reasoning},
     volume = {9},
     number = {1},
@@ -839,15 +829,15 @@ isbn="978-3-540-31977-1"
 
 % The Haskell Hierarchy 
 @misc{wiki:haskell_hierarch,
-    author = "Haskell Wiki",
-    title = "Functor-Applicative-Monad Proposal",
+    key = {{Haskell Wiki}},
+    title = {{Functor-Applicative-Monad Proposal}},
     year = "2015",
     url = "https://wiki.haskell.org/Functor-Applicative-Monad_Proposal",
     note = "[Online; accessed 14-November-2019]"
 }
 
 @article{spitters2011type,
-    title={Type classes for mathematics in type theory},
+    title={{Type Classes for Mathematics in Type Theory}},
     author={Spitters, Bas and Van der Weegen, Eelis},
     journal={arXiv preprint arXiv:1102.1323},
     year={2011}
@@ -862,7 +852,7 @@ isbn="978-3-540-31977-1"
     and Farmer, William M.
     and Passmore, Grant O.
     and Youssef, Abdou",
-    title="Biform Theories: Project Description",
+    title={{Biform Theories: Project Description}},
     booktitle="Intelligent Computer Mathematics",
     year="2018",
     publisher="Springer International Publishing",
@@ -874,7 +864,7 @@ isbn="978-3-540-31977-1"
 
 % One Brain Barrier 
 @article{carette2020bigMath,
-    title={Big Math and the One-Brain Barrier--The Tetrapod Model of Mathematical Knowledge},
+    title={{Big Math and the One-Brain Barrier -- The Tetrapod Model of Mathematical Knowledge}},
     author={Jacques Carette and William M. Farmer and Michael Kohlhase and Florian Rabe},
     journal={Mathematical Intelligencer},
     year={2020}
@@ -888,7 +878,7 @@ isbn="978-3-540-31977-1"
     and Brady, Edwin
     and Kohlhase, Andrea
     and Sacerdoti Coen, Claudio",
-    title="Diagram Combinators in MMT",
+    title={{Diagram Combinators in MMT}},
     booktitle="Intelligent Computer Mathematics",
     year="2019",
     publisher="Springer International Publishing",
@@ -899,7 +889,7 @@ isbn="978-3-540-31977-1"
 }
 
 @techreport{piroi2007organisational,
-    title={Organisational Tools for MKM in Theorema},
+    title={{Organisational Tools for MKM in Theorema}},
     author={Piroi, Florina and Buchberger, Bruno and Rosenkranz, Camelia and Jebelean, Tudor},
     year={2007},
     institution={Technical report}
@@ -949,7 +939,7 @@ isbn="978-3-540-31977-1"
     and Sharoda, Yasmine",
     editor="Benzm{\"u}ller, Christoph
     and Miller, Bruce",
-    title="Leveraging the Information Contained in Theory Presentations",
+    title={{Leveraging the Information Contained in Theory Presentations}},
     booktitle="Intelligent Computer Mathematics",
     year="2020",
     publisher="Springer International Publishing",
@@ -960,17 +950,15 @@ isbn="978-3-540-31977-1"
 }
 
 @misc{bercic2020space,
-    title={The Space of Mathematical Software Systems -- A Survey of Paradigmatic Systems},
+    title={{The Space of Mathematical Software Systems -- A Survey of Paradigmatic Systems}},
     author={Katja Bercic and Jacques Carette and William M. Farmer and Michael Kohlhase and Dennis Müller and Florian Rabe and Yasmine Sharoda},
     year={2020},
-    eprint={2002.04955},
-    archivePrefix={arXiv},
-    primaryClass={cs.MS}
+    howPublished ={arXiv:2002.04955}
 }
 
 % algebra textbooks 
 @book{mckenzie1987algebras,
-    title={Algebras, lattices, varieties},
+    title={{Algebras, Lattices, Varieties}},
     author={McKenzie, Ralph N and McNulty, George F and Taylor, Walter F},
     volume={1},
     year={1987},
@@ -978,7 +966,7 @@ isbn="978-3-540-31977-1"
 }
 
 @book{jacobson1985basic,
-    title={Basic algebra I},
+    title={{Basic Algebra I}},
     author={Jacobson, Nathan},
     year={1985},
     publisher={W. H. Freeman and Company}
@@ -1004,7 +992,7 @@ isbn="978-3-540-31977-1"
 
 % ----- Printer ------ 
 @article{wadler2003prettier,
-    title={A prettier printer},
+    title={{A Prettier Printer}},
     author={Wadler, Philip},
     journal={The Fun of Programming, Cornerstones of Computing},
     pages={223--243},
@@ -1031,7 +1019,7 @@ isbn="978-3-540-31977-1"
     editor="Blazy, Sandrine
     and Paulin-Mohring, Christine
     and Pichardie, David",
-    title="Canonical Structures for the Working Coq User",
+    title={{Canonical Structures for the Working Coq User}},
     booktitle="Interactive Theorem Proving",
     year="2013",
     publisher="Springer Berlin Heidelberg",
@@ -1041,10 +1029,10 @@ isbn="978-3-540-31977-1"
     isbn="978-3-642-39634-2"
 }
 
-@article{sakaguchi2020validating,
-    title={Validating mathematical structures},
+@misc{sakaguchi2020validating,
+    title={{Validating Mathematical Structures}},
     author={Sakaguchi, Kazuhiko},
-    journal={preprint, arXiv:2002.00620},
+    howPublished={arXiv:2002.00620},
     year={2020}
 }
 
@@ -1066,7 +1054,7 @@ isbn="978-3-540-31977-1"
     and Fehnker, Ansgar
     and McIver, Annabelle
     and Voronkov, Andrei",
-    title="ELPI: Fast, Embeddable, $\lambda$Prolog Interpreter",
+    title={{ELPI: Fast, Embeddable, $\lambda$Prolog Interpreter}},
     booktitle="Logic for Programming, Artificial Intelligence, and Reasoning",
     year="2015",
     publisher="Springer Berlin Heidelberg",
@@ -1075,11 +1063,11 @@ isbn="978-3-540-31977-1"
     isbn="978-3-662-48899-7"
 }
 
-@unpublished{elpiForCoq,
+@inproceedings{elpiForCoq,
     TITLE = {{Elpi: an extension language for Coq (Metaprogramming Coq in the Elpi $\lambda$Prolog dialect)}},
     AUTHOR = {Tassi, Enrico},
+    booktitle={Fourth International Workshop on Coq for Programming Languages},
     URL = {https://hal.inria.fr/hal-01637063},
-    NOTE = {working paper or preprint},
     YEAR = {2018},
     MONTH = Jan,
     KEYWORDS = {Coq ; $\lambda$Prolog ; metaprogramming ; extension language},
@@ -1107,8 +1095,8 @@ isbn="978-3-540-31977-1"
 }
 
 @inproceedings{ballarin2003locales,
-    title={Locales and locale expressions in Isabelle/Isar},
-    author={Ballarin, Clemens},
+    title={{Locales and Locale Expressions in Isabelle/Isar}},
+    author={Clemens Ballarin},
     booktitle={International Workshop on Types for Proofs and Programs},
     pages={34--50},
     year={2003},
@@ -1116,8 +1104,8 @@ isbn="978-3-540-31977-1"
 }
 
 @inproceedings{ballarin2010tutorial,
-    title={Tutorial to locales and locale interpretation},
-    author={Ballarin, Clemens},
+    title={{Tutorial to Locales and Locale Interpretation}},
+    author={Clemens Ballarin},
     booktitle={Contribuciones cient{\'\i}ficas en honor de Mirian Andr{\'e}s G{\'o}mez},
     pages={123--140},
     year={2010},
@@ -1126,7 +1114,7 @@ isbn="978-3-540-31977-1"
 
 @incollection{Smith99,
     author = "Douglas R. Smith",
-    title = "Mechanizing the Development of Software",
+    title = {{Mechanizing the Development of Software}},
     year = 1999,
     editor = "M. Broy and R. Steinbrueggen",
     booktitle = "Calculational System Design, Proceedings of the NATO 
@@ -1136,7 +1124,7 @@ isbn="978-3-540-31977-1"
 }
 
 @article{duran2007maude,
-    title={Maude's module algebra},
+    title={{Maude's Module Algebra}},
     author={Dur{\'a}n, Francisco and Meseguer, Jos{\'e}},
     journal={Science of Computer Programming},
     volume={66},
@@ -1147,7 +1135,7 @@ isbn="978-3-540-31977-1"
 }
 
 @article{rabe2013scalable,
-    title={A scalable module system},
+    title={{A Scalable Module System}},
     author={Rabe, Florian and Kohlhase, Michael},
     journal={Information and Computation},
     volume={230},
@@ -1172,12 +1160,10 @@ isbn="978-3-540-31977-1"
 }
 
 @misc{coqDeriveSubterm2020,
-    title={Generating induction principles and subterm relations for inductive types using MetaCoq}, 
+    title={{Generating induction principles and subterm relations for inductive types using MetaCoq}}, 
     author={Bohdan Liesnikov and Marcel Ullrich and Yannick Forster},
     year={2020},
-    eprint={2006.15135},
-    archivePrefix={arXiv},
-    primaryClass={cs.LO}
+    howPublished={arXiv:2006.15135},
 }
 
 % --- Code Generation ----- 
@@ -1187,7 +1173,7 @@ isbn="978-3-540-31977-1"
     editor="Blume, Matthias
     and Kobayashi, Naoki
     and Vidal, Germ{\'a}n",
-    title="Code Generation via Higher-Order Rewrite Systems",
+    title={{Code Generation via Higher-Order Rewrite Systems}},
     booktitle="Functional and Logic Programming",
     year="2010",
     publisher="Springer Berlin Heidelberg",
@@ -1201,7 +1187,7 @@ isbn="978-3-540-31977-1"
     author="Letouzey, Pierre",
     editor="Geuvers, Herman
     and Wiedijk, Freek",
-    title="A New Extraction for Coq",
+    title={{A New Extraction for Coq}},
     booktitle="Types for Proofs and Programs",
     year="2003",
     publisher="Springer Berlin Heidelberg",
@@ -1212,7 +1198,7 @@ isbn="978-3-540-31977-1"
 }
 
 @inproceedings{cruz2003program,
-    title={Program extraction from large proof developments},
+    title={{Program Extraction from Large Proof Developments}},
     author={Cruz-Filipe, Lu{\'\i}s and Spitters, Bas},
     booktitle={International Conference on Theorem Proving in Higher Order Logics},
     pages={205--220},
@@ -1221,7 +1207,7 @@ isbn="978-3-540-31977-1"
 }
 
 @article{Muller2017alignment,
-    title={Alignment-based Translations Across Formal Systems Using Interface Theories},
+    title={{Alignment-based Translations Across Formal Systems Using Interface Theories}},
     volume={262},
     ISSN={2075-2180},
     url={http://dx.doi.org/10.4204/EPTCS.262.7},
@@ -1242,7 +1228,7 @@ isbn="978-3-540-31977-1"
     and Farmer, William M.
     and Passmore, Grant O.
     and Youssef, Abdou",
-    title="Isabelle Import Infrastructure for the Mizar Mathematical Library",
+    title={{Isabelle Import Infrastructure for the Mizar Mathematical Library}},
     booktitle="Intelligent Computer Mathematics",
     year="2018",
     publisher="Springer International Publishing",
@@ -1272,14 +1258,10 @@ isbn="978-3-540-31977-1"
 }
 
 @InProceedings{impsToOmdoc2018,
-    author="Betzendahl, Jonas
-    and Kohlhase, Michael",
-    editor="Rabe, Florian
-    and Farmer, William M.
-    and Passmore, Grant O.
-    and Youssef, Abdou",
-    title="Translating the IMPS Theory Library to MMT/OMDoc",
-    booktitle="Intelligent Computer Mathematics",
+    author={Jonas Betzendahl and Michael Kohlhase},
+    editor={Florian Rabe and William M. Farmer and Grant O. Passmore and Abdou Youssef},
+    title={{Translating the IMPS Theory Library to MMT/OMDoc}},
+    booktitle={Intelligent Computer Mathematics},
     year="2018",
     publisher="Springer International Publishing",
     address="Cham",
@@ -1289,7 +1271,7 @@ isbn="978-3-540-31977-1"
 }
 
 @article{iancu2013mizar,
-    title={The Mizar mathematical library in OMDoc: translation and applications},
+    title={{The Mizar Mathematical Library in OMDoc: Translation and Applications}},
     author={Iancu, Mihnea and Kohlhase, Michael and Rabe, Florian and Urban, Josef},
     journal={Journal of Automated Reasoning},
     volume={50},
@@ -1300,7 +1282,7 @@ isbn="978-3-540-31977-1"
 }
 
 @article{Lewis_2017,
-    title={An Extensible Ad Hoc Interface between Lean and Mathematica},
+    title={{An Extensible Ad Hoc Interface between Lean and Mathematica}},
     volume={262},
     ISSN={2075-2180},
     url={http://dx.doi.org/10.4204/EPTCS.262.4},
@@ -1315,7 +1297,7 @@ isbn="978-3-540-31977-1"
 
 @techreport{localeIntepretations2006,
     author = {Clemens Ballarin}, 
-    title = {Interpretation of Locales in Isabelle: Managing Dependencies between Locales},
+    title = {{Interpretation of Locales in Isabelle: Managing Dependencies between Locales}},
     year = {2006},
     institution = {Technische Universität München (TUM)},
     keywords = {Interactive proof;theory interpretation;Isabelle},
@@ -1333,7 +1315,7 @@ isbn="978-3-540-31977-1"
 
 @article{stagedConfig,
     author = {Czarnecki, Krzysztof and Helsen, Simon and Eisenecker, Ulrich},
-    title = {Staged configuration through specialization and multilevel configuration of feature models},
+    title = {{Staged Configuration through Specialization and Multilevel Configuration of Feature Models}},
     journal = {Software Process: Improvement and Practice},
     volume = {10},
     number = {2},
@@ -1366,7 +1348,7 @@ isbn="978-3-540-31977-1"
 }
 
 @article{oneThingSame2008,
-  title={When is One Thing Equalto Some Other Thing?},
+  title={{When is One Thing Equal to Some Other Thing?}},
   author={Mazur, Barry},
   journal={Proof and other dilemmas: Mathematics and philosophy},
   volume={59},
@@ -1378,13 +1360,13 @@ isbn="978-3-540-31977-1"
 @INPROCEEDINGS{equalityInTPs2015,  
   author={A. {Grabowski} and A. {Korniłowicz} and C. {Schwarzweller}},  
   booktitle={2015 Federated Conference on Computer Science and Information Systems (FedCSIS)},   
-  title={Equality in computer proof-assistants},   
+  title={{Equality in Computer Proof-Assistants}},   
   year={2015},   
   pages={45-54},  
   doi={10.15439/2015F229}}
   
 @phdthesis{taha1999multi,
-  title={Multi-stage programming: Its theory and applications},
+  title={{Multi-Stage Programming: Its Theory and Applications}},
   author={Taha, Walid},
   year={1999},
   school={Oregon Graduate Institute of Science and Technology}
@@ -1392,7 +1374,7 @@ isbn="978-3-540-31977-1"
 
 @inproceedings{yallop2016StagingGeneric,
 author = {Yallop, Jeremy},
-title = {Staging Generic Programming},
+title = {{Staging Generic Programming}},
 year = {2016},
 isbn = {9781450340977},
 publisher = {Association for Computing Machinery},
@@ -1410,7 +1392,7 @@ series = {PEPM '16}
 
 @article{sheard2000stagingDSL,
 author = {Sheard, Tim and Benaissa, Zine-el-abidine and Pasalic, Emir},
-title = {DSL Implementation Using Staging and Monads},
+title = {{DSL Implementation Using Staging and Monads}},
 year = {2000},
 issue_date = {Jan. 2000},
 publisher = {Association for Computing Machinery},
@@ -1421,7 +1403,7 @@ issn = {0362-1340},
 url = {https://doi.org/10.1145/331963.331975},
 doi = {10.1145/331963.331975},
 abstract = {The impact of Domain Specific Languages (DSLs) on software design is considerable. They allow programs to be more concise than equivalent programs written in a high-level programming languages. They relieve programmers from making decisions about data-structure and algorithm design, and thus allows solutions to be constructed quickly. Because DSL's are at a higher level of abstraction they are easier to maintain and reason about than equivalent programs written in a high-level language, and perhaps most importantly they can be written by domain experts rather than programmers.The problem is that DSL implementation is costly and prone to errors, and that high level approaches to DSL implementation often produce inefficient systems. By using two new programming language mechanisms, program staging and monadic abstraction, we can lower the cost of DSL implementations by allowing reuse at many levels. These mechanisms provide the expressive power that allows the construction of many compiler components as reusable libraries, provide a direct link between the semantics and the low-level implementation, and provide the structure necessary to reason about the implementation.},
-journal = {SIGPLAN Not.},
+journal = {ACM SIGPLAN Notices},
 month = dec,
 pages = {81–94},
 numpages = {14}
@@ -1434,7 +1416,7 @@ and Aspinall, David
 and Lange, Christoph
 and Sojka, Petr
 and Windsteiger, Wolfgang",
-title="The Formalization of Syntax-Based Mathematical Algorithms Using Quotation and Evaluation",
+title={{The Formalization of Syntax-Based Mathematical Algorithms Using Quotation and Evaluation}},
 booktitle="Intelligent Computer Mathematics",
 year="2013",
 publisher="Springer Berlin Heidelberg",
@@ -1444,8 +1426,8 @@ abstract="Algorithms like those for differentiating functional expressions manip
 isbn="978-3-642-39320-4"
 }
 
-@misc{pierce1990taste,
-  title={A taste of category theory for computer scientists},
+@book{pierce1990taste,
+  title={{A Taste of Category Theory for Computer Scientists}},
   author={Pierce, Benjamin C},
   year={1990},
   publisher={Carnegie Mellon University}
@@ -1471,30 +1453,29 @@ isbn="978-3-642-39320-4"
 
 % Implementation of combinators 
 @misc{TPCProto,
-  title = {Prototype of {M}athScheme {C}ombinators},
+  title = {{Prototype of MathScheme Combinators}},
   author = {Jacques Carette and Russell O'Connor},
-  journal = {GitHub repository},
-  howpublished = {\url{https://github.com/JacquesCarette/MathScheme/tree/master/prototype}}
+  howpublished = {GitHub repository \url{https://github.com/JacquesCarette/MathScheme/tree/7f24a911790d67f5ab28db425bda1200bc0d5a45/prototype}}
 }
 
 @misc{msLibDecls,
-  title = {{M}athScheme Library Declarations},
+  title = {{MathScheme Library Declarations}},
   author = {Jacques Carette and Russell O'Connor},
-  journal = {GitHub repository},
-  howpublished = {\url{https://github.com/JacquesCarette/MathScheme/blob/master/prototype/src/Algebra/Base.msl}}
+  howpublished = {GitHub repository \url{https://github.com/JacquesCarette/MathScheme/blob/7f24a911790d67f5ab28db425bda1200bc0d5a45/prototype/src/Algebra/Base.msl}}
 }
 
 @misc{meta-prim-blog,
-  author = {Al-hassy, Musa},
+  author = {Musa Al-hassy},
   title = {Making {M}odules with {M}eta-{P}rogrammed {M}eta-{P}rimitives},
   howpublished = 
   {\url{https://alhassy.github.io/next-700-module-systems/prototype/package-former.html#hundreds-of-theories}},
+  year={2019},
   note = {Accessed: 2019-11-20}
 }
 
 @article{syb2003Jones,
 author = {L\"{a}mmel, Ralf and Jones, Simon Peyton},
-title = {Scrap Your Boilerplate: A Practical Design Pattern for Generic Programming},
+title ={{Scrap Your Boilerplate: A Practical Design Pattern for Generic Programming}},
 year = {2003},
 issue_date = {March 2003},
 publisher = {Association for Computing Machinery},
@@ -1505,7 +1486,7 @@ issn = {0362-1340},
 url = {https://doi.org/10.1145/640136.604179},
 doi = {10.1145/640136.604179},
 abstract = {We describe a design pattern for writing programs that traverse data structures built from rich mutually-recursive data types. Such programs often have a great deal of "boilerplate" code that simply walks the structure, hiding a small amount of "real" code that constitutes the reason for the traversal.Our technique allows most of this boilerplate to be written once and for all, or even generated mechanically, leaving the programmer free to concentrate on the important part of the algorithm. These generic programs are much more adaptive when faced with data structure evolution because they contain many fewer lines of type-specific code.Our approach is simple to understand, reasonably efficient, and it handles all the data types found in conventional functional programming languages. It makes essential use of rank-2 polymorphism, an extension found in some implementations of Haskell. Further it relies on a simple type-safe cast operator.},
-journal = {SIGPLAN Not.},
+journal = {ACM SIGPLAN Notices},
 month = jan,
 pages = {26–37},
 numpages = {12},
@@ -1514,7 +1495,7 @@ keywords = {generic programming, traversal, type cast, rank-2 types}
 
 @inproceedings{brady2016reflection,
   author = {Christiansen, David and Brady, Edwin},
-  title = {Elaborator Reflection: Extending Idris in Idris},
+  title = {{Elaborator Reflection: Extending Idris in Idris}},
   year = {2016},
   isbn = {9781450342193},
   publisher = {Association for Computing Machinery},
@@ -1533,9 +1514,9 @@ keywords = {generic programming, traversal, type cast, rank-2 types}
 @misc{whyDttCoq,
     author={Jason Gross and Ken Kubota and Serge D. Mechveliani and others},  
     title={Why dependent type theory?}, 
-    date={March 3},  
+    month={March},  
     year={2020}, 
-    note={posted at:  \url{https://coq.discourse.group/t/why-dependent-type-theory/657}} 
+    howPublished={\url{https://coq.discourse.group/t/why-dependent-type-theory/657}} 
 }
 
 @misc{whyDttBauer,
@@ -1548,24 +1529,25 @@ keywords = {generic programming, traversal, type cast, rank-2 types}
 
 @misc{nCatShulman,
     author = {Mike Shulman}, 
-    title = {In Praise of Dependent Types}, 
+    title = {{In Praise of Dependent Types}}, 
     howpublished = {The n-Category Café blog},
     date = {March 3}, 
     year = {2010}, 
     note = {\url{https://golem.ph.utexas.edu/category/2010/03/in_praise_of_dependent_types.html}} 
 }
 
-@inbook{pierce2005advanced,
-  title={Advanced topics in types and programming languages},
-  chapter={Dependent types},
+@incollection{pierce2005advanced,
+  booktitle={Advanced Topics in Types and Programming Languages},
+  title={Dependent types},
   pages={45-86},
-  author={Pierce, Benjamin C},
+  author={David Aspinall and Martin Hofmann},
+  editor={Pierce, Benjamin C},
   year={2005},
   publisher={MIT press}
 }
 
 @article{lean2017metaprogramming,
-  title={A metaprogramming framework for formal verification},
+  title={{A Metaprogramming Framework for Formal Verification}},
   author={Ebner, Gabriel and Ullrich, Sebastian and Roesch, Jared and Avigad, Jeremy and de Moura, Leonardo},
   journal={Proceedings of the ACM on Programming Languages},
   volume={1},
@@ -1576,7 +1558,7 @@ keywords = {generic programming, traversal, type cast, rank-2 types}
 }
 
 @mastersthesis{van2012reflection,
-  title={Reflection in agda},
+  title={{Reflection in Agda}},
   author={van der Walt, PD},
   school={Utrecht University}, 
   year={2012}
@@ -1587,7 +1569,7 @@ keywords = {generic programming, traversal, type cast, rank-2 types}
   author={Dylan Ede},
   month={April},
   year={2019}, 
-  howPublished = {Github issue 3699: https://github.com/agda/agda/issues/3699}, 
+  howPublished = {Github issue 3699: \url{https://github.com/agda/agda/issues/3699}}, 
   note={Accessed: December 2,2020}
 }
 
@@ -1629,11 +1611,9 @@ keywords = {Metaprogramming, Tactic Languages, Dependent Types, Theorem Proving,
 }
 
 @InProceedings{inversPrincp1996Coq,
-author="Cornes, Cristina
-and Terrasse, Delphine",
-editor="Berardi, Stefano
-and Coppo, Mario",
-title="Automating inversion of inductive predicates in Coq",
+author={Cornes, Cristina and Terrasse, Delphine},
+editor={Berardi, Stefano and Coppo, Mario},
+title={{Automating Inversion of Inductive Predicates in Coq}},
 booktitle="Types for Proofs and Programs",
 year="1996",
 publisher="Springer Berlin Heidelberg",
@@ -1644,7 +1624,7 @@ isbn="978-3-540-70722-6"
 }
 
 @article{blanchette2016hammering,
-  title={Hammering towards QED},
+  title={{Hammering towards QED}},
   author={Blanchette, Jasmin Christian and Kaliszyk, Cezary and Paulson, Lawrence C and Urban, Josef},
   journal={Journal of Formalized Reasoning},
   volume={9},
@@ -1654,9 +1634,9 @@ isbn="978-3-540-70722-6"
 }
 
 @article{czajka2018hammer,
-  title={Hammer for Coq: Automation for dependent type theory},
+  title={{Hammer for Coq: Automation for dependent type theory}},
   author={Czajka, {\L}ukasz and Kaliszyk, Cezary},
-  journal={Journal of automated reasoning},
+  journal={Journal of Automated Reasoning},
   volume={61},
   number={1-4},
   pages={423--453},
@@ -1738,7 +1718,7 @@ isbn="978-3-540-70722-6"
 }
 
 @misc{Dowek2019LogipediaAM,
-  title={Logipedia: a multi-system encyclopedia of formal proofs},
+  title={{Logipedia: a multi-system encyclopedia of formal proofs}},
   author={G. Dowek and François Thir{\'e}},
   year={2019},
   note={\url{http://www.lsv.fr/~dowek/Publi/logipedia.pdf}}
@@ -1746,7 +1726,7 @@ isbn="978-3-540-70722-6"
 
 
 @article{lem2014,
-    title={Lem: reusable engineering of real-world semantics},
+    title={{Lem: Reusable Engineering of Real-world Semantics}},
     author={Dominic P. Mulligan and Scott Owens and Kathryn E. Gray and Tom Ridge and Peter Sewell},
     journal={ACM SIGPLAN Notices},
     volume={49},
@@ -1758,7 +1738,7 @@ isbn="978-3-540-70722-6"
 
 @misc{ocaml2019ppx, 
   author = {Rebours, Nathan},
-  title = {An introduction to OCaml PPX ecosystem}, 
+  title = {{An Introduction to OCaml PPX Ecosystem}}, 
   month = {May},
   year = {2019},
   howpublished = {Tutorial: \url{https://tarides.com/blog/2019-05-09-an-introduction-to-ocaml-ppx-ecosystem}}, 
@@ -1775,7 +1755,7 @@ isbn="978-3-540-70722-6"
 
 @article{macros2001msp,
 author = {Ganz, Steven E. and Sabry, Amr and Taha, Walid},
-title = {Macros as Multi-Stage Computations: Type-Safe, Generative, Binding Macros in MacroML},
+title = {{Macros as Multi-Stage Computations: Type-Safe, Generative, Binding Macros in MacroML}},
 year = {2001},
 issue_date = {October 2001},
 publisher = {Association for Computing Machinery},
@@ -1786,14 +1766,14 @@ issn = {0362-1340},
 url = {https://doi.org/10.1145/507669.507646},
 doi = {10.1145/507669.507646},
 abstract = {With few exceptions, macros have traditionally been viewed as operations on syntax trees or even on plain strings. This view makes macros seem ad hoc, and is at odds with two desirable features of contemporary typed functional languages: static typing and static scoping. At a deeper level, there is a need for a simple, usable semantics for macros. This paper argues that these problems can be addressed by formally viewing macros as multi-stage computations. This view eliminates the need for freshness conditions and tests on variable names, and provides a compositional interpretation that can serve as a basis for designing a sound type system for languages supporting macros, or even for compilation. To illustrate our approach, we develop and present MacroML, an extension of ML that supports inlining, recursive macros, and the definition of new binding constructs. The latter is subtle, and is the most novel addition in a statically typed setting. The semantics of a core subset of MacroML is given by an interpretation into MetaML, a statically-typed multi-stage programming language. It is then easy to show that MacroML is stage- and type-safe: macro expansion does not depend on runtime evaluation, and both stages do not "go wrong.},
-journal = {SIGPLAN Not.},
+journal = {ACM SIGPLAN Notices},
 month = oct,
 pages = {74–85},
 numpages = {12}
 }
 
 @article{cartmell1986gats,
-title = "Generalised algebraic theories and contextual categories",
+title = {{Generalised Algebraic Theories and Contextual Categories}},
 journal = "Annals of Pure and Applied Logic",
 volume = "32",
 pages = "209 - 243",
@@ -1806,7 +1786,7 @@ author = "John Cartmell"
 
 @inproceedings{cicm2019docotral,
   author = {Yasmine Sharoda}, 
-  title = {Leveraging Information Contained in Theory Presentations}, 
+  title = {{Leveraging Information Contained in Theory Presentations}}, 
   year = {2019},
   publisher = {CEUR Workshop Proceedings}, 
   volume = {2634}, 
