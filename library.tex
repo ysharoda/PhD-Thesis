@@ -28,7 +28,7 @@ In Section~\ref{sec:background:tinytheories} we discuss tiny theories as an adeq
 \label{fig:unitalDiamond}
 \end{figure}
 The diamond structure appearing in the definition of \lstmath{Unital} is not a special case. Instead, diamonds are pervasive in the algebraic hierarchy, as shown in the theory graph for defining \lstmath{Monoid} in Figure~\ref{fig:cube_monoid}. 
-%examining the work in \cite{halleck} and \cite{jipsen} show us that the algebraic %hierarchy is more packed with diamonds, as we show in Figure~
+%examining the work in \cite{halleck} and \citeauthors{jipsen} show us that the algebraic %hierarchy is more packed with diamonds, as we show in Figure~
 \input{figures/many_diam.tex}.
 %As we discussed in Section~\ref{sec:thry_graph_in_action}, dealing with diamonds is a challenging problem~\cite{sakkinen1989disciplined, jigsaw1992, traits2006, diamonds2011}. There is a gap in how specification systems handle them, whether by not following its correct semantics, or by not supporting it at all. 
 
@@ -219,7 +219,7 @@ The embeddings used here are \lstmath{Magma $\;\mapsto\;$ AdditiveMagma} and \ls
 
 \section{The Flattener}
 \label{sec:lib_implementation}
-The combinators from~\cite{carette2018building} has been implemented in~\cite{cicm2019diagrams, TPCProto, meta-prim-blog}. 
+The combinators from~\cite{carette2018building} has been implemented in~\citepalias{cicm2019diagrams, TPCProto, meta-prim-blog}. 
 Experiments have been performed on applying them for creating a large library of algebraic constructions~\cite{mathscheme2011experiments}. With the exception of~\cite{cicm2019diagrams}, the other implementations and the associated library did not emphasize the morphisms in the way presented in~\cite{carette2018building} and summarized in the previous section. Instead, they based their computation of pushout on theories using same-name-same-thing approach, which makes errors like the one in Figure~\ref{fig:casl_expr} go undetected.  
 This approach also computes results for expressions that should not be meaningful in the language of combinators presented in~\cite{carette2018building}. Consider the following expression
 \begin{togcode}
@@ -451,7 +451,7 @@ diag  = GView commonSrc newThry ~$\$$~ validateRen commonSrc (allMaps left)
 
 \section{Library Building}
 \label{sec:guidelines}
-Once implementation of combinators is in place, we start using them to build the library organized as a theory graph. Our guide in building this library are the definitions in~\cite{msLibDecls}, which were part of an experiment~\cite{mathscheme2011experiments} on the way to develping the combinators we discuss in this chapter. Therefore, there are some definitions in that library that referred to non-existing arrows, like the definition of \lstmath{SemiRng} presented in Section~\ref{sec:lib_implementation}. As the implementation of combinators depend on finding the right arrows in the underlying theory graph, we had to work out the correct morphisms. We build a library of $227$ theories describing the algebraic hierarchy using tiny theories approach. Those theories range from \lstmath{Empty} up to \lstmath{Ring} and  \lstmath{BoundedDistributedLattice}.
+Once implementation of combinators is in place, we start using them to build the library organized as a theory graph. Our guide in building this library are the definitions in~\citepalias{msLibDecls}, which were part of an experiment~\cite{mathscheme2011experiments} on the way to develping the combinators we discuss in this chapter. Therefore, there are some definitions in that library that referred to non-existing arrows, like the definition of \lstmath{SemiRng} presented in Section~\ref{sec:lib_implementation}. As the implementation of combinators depend on finding the right arrows in the underlying theory graph, we had to work out the correct morphisms. We build a library of $227$ theories describing the algebraic hierarchy using tiny theories approach. Those theories range from \lstmath{Empty} up to \lstmath{Ring} and  \lstmath{BoundedDistributedLattice}.
  
 The examples we give in Section~\ref{sec:msCombinators} gives an intuition of how the combinators work together to build the library. In this section we discuss some the challenges we faced to build the graph defining \lstmath{AdditiveMonoid} as in Figure~\ref{fig:cube_monoid}.  
 %leading to a completely morphism-based development of the library. 
