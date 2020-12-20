@@ -1,12 +1,12 @@
-\chapter{Exporting to Agda}
+\chapter{The Exporter}
 \label{ch:export}
 
 %So far we have been working in a simplistic dependent language. The next step is to export our work in Tog into systems that are widely used for theory development and proofs. We start with Agda, as it is the one that resembles Tog the most. 
 
-Generating the definitions of constructions from a theory presentation saves a lot of library development time, but having these definitions in a feature-rich language makes it even more useful. In this chapter we implement an automatic translator of the library theories and their related constructions to agda. This part is related to the third research question from Section~\ref{sec:questions}. 
+Generating the definitions of constructions from a theory presentation saves a lot of library development time, but having these definitions in a feature-rich language makes it even more useful. In this chapter we implement an automatic translator of the library theories and their related constructions to agda and lean. This part is related to the third research question from Section~\ref{sec:questions}. 
 %and lean\ednote{lean is still being implemented} 
 
-In Section~\ref{sec:exporting_agda} we describe the tog-to-agda exporter implemented in haskell. Many parts of this exporter were straight forward translation between the two syntax trees. Nevertheless, there were some challenges that we discuss in Section~\ref{sec:exporting:challenges}. We compare our generated agda code to the one in the agda standard library~\cite{agda_stdlib} and discuss how close we can get to the standard library presentation in Section~\ref{sec:compasion_agda_stdlib}. 
+In Section~\ref{sec:exporting_agda} we describe the exporter implemented in haskell. Many parts of this exporter are straight forward translations between the two syntax trees. Nevertheless, there were some challenges that we discuss in Section~\ref{sec:exporting:challenges}. We compare our generated agda code to the one in the agda standard library~\cite{agda_stdlib} and discuss how close we can get to the standard library presentation in Section~\ref{sec:compasion_agda_stdlib}. 
 %To assess how our approach scale up, we discuss how we extended the exporter to support lean, as a target language, in Section~\ref{sec:exporting_lean}. 
 We wrap the by a discussion in Section~\ref{sec:exporting:discussion}. 
 
@@ -17,14 +17,14 @@ One of the problems we highlight here is how design decisions lead to different 
 \end{itemize}
 \end{comment}
 
-\section{The Exporter}
+\section{Exporting to Agda and Lean}
 \label{sec:exporting_agda}
-The tog definitions have all the information needed to mathematically present the concepts they are describing. The process of exporting these definitions from tog to agda can be seen as \emph{presenting} them in a way that agda understands (type checks). The type class, \lstmath{PrintAgda}, takes care of that. It prints the tog definitions in a form accepted by agda, then the agda type checker is called on them. 
+The tog definitions have all the information needed to mathematically present the concepts they are describing. The process of exporting these definitions from tog to agda or lean can be seen as \emph{presenting} them in a way that the target language understands (type checks). The type class, \lstmath{Export}, takes care of that. It prints the tog definitions in a form accepted by the target language, whose type checker is then called on them. 
 \begin{hscode}
-class PrintAgda a where
-  printAgda ::  a -> Doc   
+class Export a where
+  export :: Config -> a -> Doc  
 \end{hscode}
-For every type in the tog AST, presented in Figure~\ref{fig:togRepr}, we create an instance for the \lstmath{PrintAgda} class. 
+For every type in the tog AST, presented in Figure~\ref{fig:togRepr}, we create an instance for the \lstmath{Export} class. The \lstmath{Config} type is used to describe the configuration of each language. It contains details about language specific properties or pieces of syntax. 
 We use the Haskell pretty printer provided by \lstmath{Text.PrettyPrint.Leijen}, which is an implementation of the pretty printer described in~\cite{wadler2003prettier}. 
 
 \subsection{Background}
@@ -48,16 +48,29 @@ On top of these primitives, we have used the following functions provided by the
 %\end{comment}
 
 \subsection{The Exporter}
-We present here some of the interesting instances of the \lstmath{PrintAgda} type class~\footnote{The full code is available at: \url{https://github.com/ysharoda/tog/blob/master/src/Tog/Exporting/agda.hs}}. 
-Our generator defines every theory along with its generated constructions in a  \lstmath{Module}, which is exported to agda using the following instance 
+We present here some of the interesting instances of the \lstmath{Export} type class~\footnote{The full code is available at: \url{https://github.com/ysharoda/Deriving-Definitions/blob/7e19c3c7d6240d7ff228a91c6c32d1914c483195/src/Tog/Exporting/export.hs}}. 
+Our generator defines every theory along with its generated constructions in a  \lstmath{Module}. Exporting a \lstmath{Module} is described by the following instance 
 \begin{hscode} 
-instance PrintAgda Module where
-  printAgda (Module nm params decls) =
-    text module_ <+> printAgda nm <+>
-    printAgda params <+> text module_beforeDecls PP.<$>
-    (indent 2 $ printAgda decls)
+instance Export Module where
+  export conf (Module nm params decls) =
+    export conf imprts <$$>
+    text (m1 conf) <+> export conf nm <+> text (m2 conf) <+> 
+    export conf params <+> text (m3 conf (isEmpty decls)) <$$>
+    (indent 2 $ export conf defs) <$$>
+    moduleEnd conf nm 
+    where (imprts,defs) = split conf decls
+          isEmpty (Decl_ []) = True
+          isEmpty _ = False 
 \end{hscode} 
-The exporter is parameterized over the keywords that a language use. The variables \lstmath{module_} and \lstmath{module_beforeDecls} stands for the kerywords \lstmath{module} and \lstmath{where} used when defining a new module in agda. The function \lstmath{printAgda} is used to call the exporter over the constructor parameters. 
+The exporter is parameterized over the keywords that a language use. In order to use the same exporter for $2$ different language, we had to observe their differences and parameterize over them. The general structure of a module in agda and lean is 
+\begin{lstlisting}[mathescape]
+            m1 nm m2 params m3
+            ...
+            m4
+\end{lstlisting}
+In agda, \lstmath{m1} is \lstmath{module} and \lstmath{m3} is \lstmath{where}, while in lean they have the values \lstmath{section} and empty. The \stmath{export} function reads these values of the configuration. Agda and lean also differ in the position of imports. In lean imports are declared before opening the module (section), while in agda they can be declared inside or outside the module\footnote{In agda, the position of the imports determined their scope.}. The decision of where to place the imports is part of the configuration. The \lstmath{split} function reads this parameter and either return the list of imports to be declared outside the module or empty. 
+
+The variables \lstmath{module_} and \lstmath{module_beforeDecls} stands for the keywords \lstmath{module} and \lstmath{where} used when defining a new module in agda. The function \lstmath{printAgda} is used to call the exporter over the constructor parameters. 
 
 The parameters of a module are represented as \lstmath{[Binding]}, which can be hidden or explicit. Exporting the binding is done as follows 
 \begin{hscode}
