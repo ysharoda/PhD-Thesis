@@ -1,29 +1,31 @@
 \chapter{Background}
 \label{ch:background}
-In this chapter, we discuss some background concepts needed for presenting our work. 
 Our ideas and implementation are based on dependent type theory (DTT). It is the meta theory for this work. We introduce it in Section~\ref{subsec:background:dtt} and define the notion of a theory and a context in Section~\ref{sec:background:theory}.
 % Equational logic is based in set theory and forms the bases for universal algbera.  Dependent type theory (DTT) is a rich type theory in which types can depend on values. We want to represent theories of equational logic as contexts in DTT. We first introduce equational logic and DTT in Section~\ref{sec:background:logic}. 
 %Contexts are defined in Section~\ref{sec:background:context} and theories in Section~\ref{sec:background:theory}. We then briefly introduce universal algebra and how it is used in our work in Section~\ref{sec:background:ualgebra}. 
 
 Part of our work is building a library of axiomatic theories. The library is organized as a theory graph, in which theories are connected via morphisms. We introduce morphisms in Section~\ref{sec:background:morphisms} and discuss theory graphs and different strategies to building them in Section~\ref{sec:background:theorygraph}. 
-To build the library we use combinators motivated by category theory, so we give a brief introduction for it in Section~\ref{sec:categoryTh}. 
-One of the constructions we generate, that is not typically defined within universal algebra texts is multi-staged programming, so we define it in Section~\ref{sec:background:msp}. 
+To build the library we use combinators motivated by category theory, so we give a brief introduction for that in Section~\ref{sec:categoryTh}. 
+One of the constructions we generate, that is not typically defined within universal algebra texts is multi-staged programming. We give details in Section~\ref{sec:background:msp}. 
 
 \section{Dependent Type Theory}
 \label{subsec:background:dtt}
-Dependent type theory (DTT) is a version of type theory that enables writing types like \lstmath{$\lambda\ $ x : A $\ \cdot\ $ M} where the type \lstmath{M} depends on the \emph{value} of \lstmath{x}. 
+Dependent type theory (DTT) is a version of type theory that enables writing types like 
+\lstmath{$\Pi\; x : A \cdot\; M\; x$} % \text{x : A} \cdot \text{M x}$} % x : A $\ \cdot\ $ M x} 
+where the type $M$ depends on the \emph{value} of $x$, i.e. \lstmath{$M : A \;\to\; \text{Type}$}. 
 % source: Type theory and formal proof, P. 103 - Ch.5 
-Having types that depends on values adds to the expressiveness of the logic. A common example for introducing dependent types is the type of a vector of \lstmath{n} elements of type \lstmath{A}. 
-In most programming languages, the type of this vector is defined in terms of the type of its elements as \lstmath{Vec A}. Using dependent types, the type of a vector can depend on both the type of its elements and also its length, \lstmath{$\lambda\;$ n : Nat $\;\cdot\;$ Vec A n}, also written as \lstmath{$\Pi\;$ n : Nat $\;\cdot\;$ Vec A n}.
+Having types that depends on values adds to the expressiveness of the logic. A common example for introducing dependent types is the type of a vector of $n$ elements of a type $A$. 
+In most programming languages, the type of this vector is defined in terms of the type of its elements as $Vec\;A$. Using dependent types, the type of a vector can depend on both the type of its elements and also its length, written as \lstmath{$\Pi\; n : \mathbb{N}\;\cdot\; Vec\;A\;n$}.
  
-Having this extra piece of information in the type allow detection of some errors, like accessing out of bounds elements, on the type checker level. Type checking, then, guarantees that this kind of error does not exist in the given implementation. 
+Having this extra information in the type allows detection of some errors, like accessing out of bounds elements, during type checking. 
 
-DTT is seen by many as a convenient foundation for representing mathematics~\cite{whyDttCoq, whyDTTbauer, nCatShulman}\ednote{Q: am I citing them the write way?}. The powerful type system allows for expressing ideas frequentally used in mathematics. Statements like "the non-zero element", operations like projecting the first unit vector in a specific dimension, or representation of a family of sets. 
+DTT is seen by many as a convenient foundation for representing mathematics~\cite{whyDttCoq, whyDTTbauer, nCatShulman}. It lets one express ideas frequently used in mathematics. Statements like "the non-zero element", operations such as projecting the first unit vector in a specific dimension, or representation of a family of sets. 
 The constructive nature of DTT adds the advantage that proofs can be run as programs. 
 %,  the specification is the type of the function 
 %The descriptive power of DTT makes it more suitable for capturing mathematical knowledge. Therefore, many of the modern mechanized mathematics systems use variants of DTT as their foundations.\ednote{check this}  
 
-Figures~\ref{fig:dttGrammar} and~\ref{fig:dtt-w-sigma} shows the grammar and typing rules of a small version of dependent type theory with $\Sigma$-types like the one we use in this work. The terms permissible in this type theory are variables, $\lambda$-abstraction, function application, dependently types pair, and its projections. In additions to types and type applications, the DTT we present here allows $\Pi$- and $\Sigma$-types. The concepts of $\Sigma$-types and contexts will be discussed shortly in this section.
+Figures~\ref{fig:dttGrammar} and~\ref{fig:dtt-w-sigma} shows the grammar and typing rules of a small version of dependent type theory with $\Pi$- and $\Sigma$-types like the one we use. The terms permissible in this type theory are variables, $\lambda$-abstractions, function applications, dependent type pairs, and their projections. 
+%In additions to types and type applications, the DTT we present here allows $\Pi$- and $\Sigma$-types. The concepts of $\Sigma$-types and contexts will be discussed shortly in this section.
 
 \begin{figure}
 \centering{
@@ -35,7 +37,7 @@ Figures~\ref{fig:dttGrammar} and~\ref{fig:dtt-w-sigma} shows the grammar and typ
 \input{figures/dtt-w-sigma.tex}
 
 \paragraph{$\Sigma$-types.}
-A dependent pair, in which later elements depends on values of earlier ones, are referred to as $\Sigma$-types. The type \lstmath{$\Sigma\;$ (n : Nat, Vec A n)} refer to a pair that contains the value of \lstmath{n} in the first position and a vector of length \lstmath{n} in the second one. 
+A dependent pair, in which later elements depends on values of earlier ones, are referred to as $\Sigma$-types. The type \lstmath{$\Sigma\;[n : \mathbb{N},\;Vec\;A\;n]$} refer to a pair that contains the value of \lstmath{n} in the first position and a vector of length \lstmath{n} in the second one. 
 
 \paragraph{Telescopes.}
 The concept of $\Sigma$ types is generalized into that of \emph{telescopes}, or equivalently,  \lstmath{dependent-type records}~\cite{pollack2002dependently}. A telescope $\mathbb{T}$ is defined as 
@@ -43,8 +45,9 @@ The concept of $\Sigma$ types is generalized into that of \emph{telescopes}, or 
 \mathbb{T} \equiv [x_1 : A_1][x_2 : A_2(x_1)][x_k : A_k(x_1,\cdots,x_{k-1})]
 \label{eq:telescope}
 \end{equation} 
-The type \lstmath{Vec A n} as a telescope would be written as 
-\lstmath{[A : Set][n : Nat][Vec A n]}. 
+i.e. a sequence of typed name declarations where the type of later names can depend on earlier ones. 
+The type \lstmath{$Vec\;A\;n$} as a telescope would be written as 
+\lstmath{$[A : \text{Type}][n : \mathbb{N}][Vec\;A\;n]$}. 
 %Another related concept is the packaging of definitions in a structure in which a definition depends on earlier ones. This is called a dependent record type, and is referred to as $\Sigma$-types. The types \lstmath{A} and \lstmath{P:A $\;\to\;$ Type} can be grouped is a dependent pair $\Sigma A P$. 
 
 %\section{Curry Howard Correspondence}
@@ -54,7 +57,7 @@ The type \lstmath{Vec A n} as a telescope would be written as
 %\label{sec:background:context}
 In logic, A proposition is true if it is an axiom or is derivable from other true propositions using inference rules. This is usually written as $\varphi_1 ... \varphi_n \vdash \psi$.  In categorical logic, instead of talking about propositions, one talk about contexts. \cite{handbook1993CategoricalLogic} defines a context as 
 \begin{quote}
-A context, $\Gamma$, is a finite list $[x_1 : \sigma_1, ... , x_n : \sigma_n]$ of (variable,sort) pairs, subject to the condition that $x_1, ... , x_n$ is distinct.  
+A context, $\Gamma$, is a finite list $[x_1 : \sigma_1, ... , x_n : \sigma_n]$ of (variable,sort) pairs, subject to the condition that $x_1, ... , x_n$ are distinct.  
 \end{quote}
 When using dependent types, the context becomes a telescope, where every type in the list can contain reference to variables before it as described by Equation~\ref{eq:telescope}. The statement $\Gamma \vdash \psi$ means that the type judgement $\psi$ follows from the context $\Gamma$. The concatenation of two contexts $\Gamma_1$ and $\Gamma_2$ is noted by $\Gamma_1 ; \Gamma_2$.  
 %\paragraph{The category of contexts}
@@ -66,7 +69,7 @@ When using dependent types, the context becomes a telescope, where every type in
 \section{Theories}
 \label{sec:background:theory}
 %The set of formulas is called the language of the logic. The language is defined syntactically; there is no notion of meaning or semantics in a  logic per se. 
-A theory  in some logic is defined as the tuple \lstmath{($\sort$,$\fsyms$,$\axioms$)} such that 
+A theory $\Gamma$ in some logic is defined as the tuple \lstmath{($\sort$,$\fsyms$,$\axioms$)} such that 
 \begin{itemize}
 \item $\sort$ is a set of sorts 
 \item $\fsyms$ is a set of function symbols. 
@@ -76,18 +79,18 @@ The sort in $\sort$ and the function symbols in $\fsyms$ constitute the language
 The set $\axioms$ is closed under logical consequence and usually infinite. 
 A \emph{theory presentation} of some theory $\Gamma$ includes a finite set of sorts, a finite set of function symbols, and a finite set of generating axioms, i.e. axioms from which additional formulas can be derived by inference. 
 Note that the same theory can have different theory presentations. 
-In this work, as is traditionally the case, we use the term theory to refer to theory presentations. 
+In this work, as is traditionally the case, we use the term theory to refer to \emph{theory presentations}. 
 %Most algebra text books would refer to the language of the theory presentation as the signature and would separate its two components, writing it as \lstmath{(S,F)}. They often do not use the term \lstmath{theory}, but refer to sigantures with specific properties that are satisfied by the algebras. The use of axiomatic theories as we define them here is, to the best of our knowledge, tied to using them in computerized systems as in Clear~\cite{Goguen1980}. 
 
 \paragraph{Theories as Contexts}
 With dependent types and the Curry-Howard correspondance in place, the distinction between the three components of an axiomatic theory, sorts, function symbols, and axioms, is not needed anymore. Instead a theory is seen as a $\Sigma$ type, dependently-typed context, or a telescope as described by Equation~\ref{eq:telescope}. 
 For example, the axiomatic formalization of \lstmath{Monoid} as a $\Sigma$ type is 
 \begin{lstlisting}[mathescape]
-$\Sigma$ (A : Set, $\Sigma$ (op : A $\;\to\;$ A $\;\to\;$ A, $\Sigma$ (e : A, 
-  $\Sigma$ (lunit : {x : A} $\;\to\;$ op e x = x,
-    $\Sigma$ (runit : {x : A} $\;\to\;$ op x e = x,
-      $\Sigma$ (assoc : {x y z : A} $\;\to\;$ op x (op y z) = 
-                                op (op x y) z))))))
+$\Sigma$ [A : Type, $\Sigma$ [op : A $\;\to\;$ A $\;\to\;$ A, $\Sigma$ [e : A, 
+  $\Sigma$ [lunit : {x : A} $\;\to\;$ op e x = x,
+    $\Sigma$ [runit : {x : A} $\;\to\;$ op x e = x,
+      $\Sigma$ [assoc : {x y z : A} $\;\to\;$ op x (op y z) = 
+                                op (op x y) z]]]]]]
 \end{lstlisting} 
 which can be describe as a telescope as  
 \begin{togcode} 
@@ -117,7 +120,7 @@ $$
         \qquad \context{\Gamma} \vdash \sigma : \kappa : \Box \justifies
         (\context{\Gamma}\ ;\ x : \sigma)\ \wfctx \]
     \end{proofrules}
-    \caption{Formation rules for contexts as introduced in~\cite{carette2018building}}
+    \caption{Formation rules for contexts as given in~\cite{carette2018building}}
     \label{fig:ctx}
 \end{figure}
 
@@ -126,11 +129,11 @@ $$
 Morphisms are used to capture the structure of mathematics, by describing how theories are related to each other. In mathematical texts, a theorem proved for an arbitrary \lstmath{Monoid} can be used when considering an arbitrary \lstmath{Group} without extra work. Formally, this can be done if a meaning preserving morphism between \lstmath{Monoid} and \lstmath{Group} exists. The morphism specifies how results in \lstmath{Monoid} can be interpreted in \lstmath{Group}. 
 
 A morphism $\arrow{[v]}{\Gamma}{\Delta}$ consist of a list of assignments $[v]$, a source theory \lstmath{$\Gamma$}, and a target theory \lstmath{$\Delta$}. $[v]$ assigns to every symbol in $\Gamma$ an expression of $\Delta$. A term \lstmath{t} in the language of $\Gamma$ can be translated into a term \lstmath{t$^\prime$} in the language of $\Delta$ using substitution, such that  \lstmath{t$^\prime$ = t$[v]$}. Using the morphism 
-\lstmath{[op to + ; e to 0] : Monoid $\;\to\;$ AdditiveMonoid}
+\lstmath{[op $\ \mapsto\ $ + ; e $\ \mapsto\ $ 0] : Monoid $\;\to\;$ AdditiveMonoid}
 we are able to interpret the expression \lstmath{(op e x)} in \lstmath{Monoid} as \lstmath{(+ 0 x)} in \lstmath{AdditiveMonoid} using substitution. 
 %For example, a morphism from \lstmath{Monoid} to \lstmath{AdditiveMonoid} contains the assignments \lstmath{op to +} and \lstmath{e to 0} 
 
-The formation rules for views, as given in~\cite{carette2018building} is given in Figure~\ref{fig:views}. 
+The formation rules for views are given in Figure~\ref{fig:views}. 
 \begin{figure}[ht]
     \begin{proofrules}
         \[ \context{\Delta}\ \wfctx \justifies \view{}{\varnothing}{\Delta} \]
@@ -139,7 +142,7 @@ The formation rules for views, as given in~\cite{carette2018building} is given i
         \context{\Delta} \vdash r : \substitution{\sigma}{v}{} \justifies
         \view{v,x \mapsto r}{(\context{\Gamma}\ ;\ x : \sigma)}{\context{\Delta}} \]
     \end{proofrules}
-    \caption{Formation rules for morphisms.}
+    \caption{Formation rules for morphisms as given in~\cite{carette2018building}}
     \label{fig:views}
 \end{figure}
 
@@ -155,11 +158,11 @@ If $\arrow{[v]}{\Gamma}{\Delta}$ is an identity morphism, then $[v]$ maps every 
 %This implies that $[v]$ is a bijection and that . 
 While it is common to name source and target of identities with the same name, we do not do that here as $\Gamma$ and $\Delta$ are two different theory presentations. The identity between them means that symbols in $\Gamma$ are interpreted the same way in $\Delta$. 
 
-Identity morphisms exist between two theories if the source is included verbatim in the destination, like in the case when \lstmath{Group} is defined as an extension of \lstmath{Monoid}. It is the simplest form of morphisms and allow transport of results without the need to perform substitution 
+Identity morphisms exist between two theories if the source is included verbatim in the destination, like in the case when describing a morphism from \lstmath{Monoid} to \lstmath{Group}. It is the simplest form of morphisms and allow transport of results without the need to perform substitution 
 
 \subsection{Embedding}
 \label{sec:embedding}
-If $\arrow{[v]}{\Gamma}{\Delta}$ is an embedding, then $[v]$ maps every symbol $x \in \syms{\Gamma}$ to a symbol $r \in \syms{\Delta}$, which is not necessarily itself. 
+If $\arrow{[v]}{\Gamma}{\Delta}$ is an embedding, then $[v]$ maps every symbol $x \in \syms{\Gamma}$ to a symbol $r \in \syms{\Delta}$, which is not necessarily itself. $[v]$ is an injective mapping, and therefore is a bijection onto its range. 
 
 Consider for example, the following morphism from \verb|Magma| to \verb|AdditiveMagma|
 \begin{equation*}\label{eq:additiveview}
@@ -217,6 +220,7 @@ One way to organize theories is using theory graphs. A theory graph is a directe
 In systems that are based on categorical semantics, a theory graph is seen as a diagram in the category of theories and theory morphisms. Specware~\cite{Smith99} uses the keyword \emph{diagram} to build them. The work in~\cite{developmentGraph2000}, based on CASL, refer to them as \emph{development graphs}. 
 
 Organizing a library as a theory graph leverages the structure of mathematics by relying on morphisms to connect the different concepts presented within the theories. Compare a library defining the graph leading to  \lstmath{Monoid} as in Figure~\ref{fig:cube_monoid} to one that defines it only in terms of its components, as in Section~\ref{sec:background:theory}. The theory graph one has more information which makes it more useful to library users. 
+\input{figures/many_diam.tex}
 Theory graphs also makes it possible to modularize a formalization by adding definitions or proving theorems within smaller modules (theories). Definitions and theorems are then made available to different other theories by transporting them via morphisms. 
 
 Here we discuss two strategies for decomposing theories; little and tiny theories.  
@@ -228,17 +232,17 @@ Here we discuss two strategies for decomposing theories; little and tiny theorie
 %Therefore, it becomes possible to decompose definitions and proofs to pieces of knowledge into smaller contexts and perform reasoning within these contexts. In cases when this knowledge is needed in a different context, then transport them to different ones when needed. we are able to decompose the development of theories. Having morphisms also facilitates the transportation of results between theories. 
 
 \subsection{Little Theories}
-The little theories approach is introduced in~\cite{LittleTheories}. The idea is to ensure that if a statement \lstmath{s} is proven in context \lstmath{$\Gamma$}, then every statement in \lstmath{$\Gamma$} is required to prove \lstmath{s}. In this case, we say \lstmath{$\Gamma$} is the \emph{minimal axiomatization} needed to prove \lstmath{s}. This implies that theorems are proved in different contexts based on the amount of structure needed to prove them. In contrast, the big theory approach would a small set of big theories for proving all results\footnote{Or a medium-sized set of medium-sized theories}. 
+The little theories approach is introduced in~\cite{LittleTheories}. The idea is to ensure that if a statement \lstmath{s} is proven in context \lstmath{$\Gamma$}, then every statement in \lstmath{$\Gamma$} is required to prove \lstmath{s}. In this case, we say \lstmath{$\Gamma$} is the \emph{minimal axiomatization} needed to prove \lstmath{s}. This implies that theorems are proved in different contexts based on the amount of structure needed to prove them. In contrast, the big theory approach would use a small set of big theories for proving all results\footnote{Or a medium-sized set of medium-sized theories}. 
 
-Using little theories increases the reuse of results. For example, if the theorem \lstmath{op e e = e} is proven in the theory \lstmath{Unital}, it can be transported to all theories that are connected to \lstmath{Unital} via morphisms, like \lstmath{Monoid}. On the other hand, if it is proven in the theory \lstmath{Group}, it cannot be transported to \lstmath{Monoid}, because all declarations in \lstmath{Group} becomes part of the context for proving the theorem.  
+Using little theories increases the reuse ability of results. For example, if the theorem \lstmath{op e e = e} is proven in the theory \lstmath{Unital}, it can be transported to all theories that are connected to \lstmath{Unital} via morphisms, like \lstmath{Monoid}. On the other hand, if it is proven in the theory \lstmath{Group}, it cannot be transported to \lstmath{Monoid}, because all declarations in \lstmath{Group} becomes part of the context for proving the theorem.  
 %to a less number of theories under the assumption that \lstmath{Group} is defined from \lstmath{Unital} using a series of extensions. 
 %Results proven in the theory \lstmath{$\Gamma$} can be transported to all theories \lstmath{$\Delta$} whenever a morphism $m : \Gamma \to \Delta$ exists. 
 % increasing usability and reducing redundancy when dealing with formal systems.  
 
 \subsection{Tiny Theories}
 \label{sec:background:tinytheories}
-Tiny theories is a refinement of little theories, in which only one new piece of information is added at a time~\cite{mathscheme2011experiments}. To make this more clear, let's consider a library that has the theories \lstmath{PointedMagma} and \lstmath{Unital} defined as follows. \\
-\begin{tabular}{p{7cm} p{7cm}}
+Tiny theories is a refinement of little theories. When building up a theory hierarchy in tiny theories style, only one new piece of information is added at a time~\cite{mathscheme2011experiments}. To make this clear, let us consider a library that has the theories \lstmath{PointedMagma} and \lstmath{Unital} defined as follows. \\
+\begin{tabular}{p{6cm} p{7cm}}
 \begin{lstlisting}[mathescape, basicstyle=\footnotesize]
 theory PointedMagma = { 
   A : Type 
@@ -255,6 +259,7 @@ theory Unital = {
   runit : {x : A} $\to$ op x e = x   }   
 \end{lstlisting}
 \end{tabular}
+
 Defining \lstmath{Unital} this way overlooks that in some cases one might want to define a theory to describe structures with a carrier and a binary operation on it that has only a right unit, like a theory with Integers as carrier and subtraction as the only binary operation. 
 One will then need to add a new theory that is similar to \lstmath{Unital} without the \lstmath{lunit} declaration. Any theorems proved in the context of \lstmath{Unital} cannot be used, even if it only depends on \lstmath{runit}. 
 
@@ -269,12 +274,14 @@ While set theory has elements of sets as the main concept, category theory is bu
 A category $\mathcal{C}$ consists of 
 \begin{itemize}
 \item A collection of objects, $\syms{\mathcal{C}}$
-\item A collection of morphisms between the objects. A morphism is represented as $u : \Gamma \to \Delta$.  
-\item Operations assigning to every morphism to its domain and codomain 
+\item A collection of morphisms between two objects. A morphism between objects $\Gamma$ and $\Delta$ is represented as $u : \Gamma \to \Delta$.  
+\item Operations assigning every morphism to its domain and codomain 
 \item A composition function $\cdot$ assigning to each pair of morphisms  $u : \Gamma \to \Delta$ and $v : \Delta \to \Phi$, a morphism $u \cdot v : \Gamma \to \Phi$, such that 
 \[ u \cdot (v \cdot w) = (u \cdot v) \cdot w \]
+i.e. ($\cdot$) is associative. 
 \item For every object $\Gamma$ in $\mathcal{C}$, an identity morphism $id_\Gamma : \Gamma \to \Gamma$, such that for $u : \Gamma \to \Delta$ 
 \[ id_\Gamma \cdot u = u \cdot id_\Delta = u \]
+i.e. $id_\Gamma$ is a left unit for ($\cdot$) and $id_\Delta$ is a right unit. 
 \end{itemize}
 
 Finite categories can be represented diagrammatically as in Figure~\ref{fig:diagram}. 
@@ -308,7 +315,7 @@ The pushout of a pair of arrows $u_\Delta : \Gamma \to \Delta$ and $u_\Phi : \Ga
 \item for morphisms $w_\Delta : \Delta \to \Omega$ and $w_\Phi : \Phi \to \Omega$, there is a unique $w : \Xi \to \Omega$, such that 
 $v_\Delta \cdot w = w_\Delta$ and $v_\Phi \cdot w = w_\Phi$
 \end{itemize}
-The definition of the pushout is illustrated in Figure\ref{fig:pushoutDef}. 
+The definition of the pushout is illustrated in Figure~\ref{fig:pushoutDef}. 
 \begin{figure}
 \centering{
 \begin{tikzcd} 
@@ -323,7 +330,7 @@ The definition of the pushout is illustrated in Figure\ref{fig:pushoutDef}.
 \paragraph{Colimits.}
 Colimits are defined in terms of cocones. The definitions we present here are adapted from~\cite{sannella2012foundations}. 
 
-A cocone over a diagram consists of an object $\Gamma$ and a family of morphisms $u_0 : \Delta_0 \to \Gamma, ..., u_n : \Delta_n \to \Gamma$, where $n$ is the number of nodes in the diagram other than $\Gamma$, such that for every morphism $v : \Delta_i \to \Delta_j$ in the diagram $v \cdot u_j = u_i$, i.e. the following diagram commutes 
+A cocone over a diagram consists of an object $\Gamma$ and a family of morphisms $u_0 : \Delta_0 \to \Gamma, ..., u_{n-1} : \Delta_{n-1} \to \Gamma$, where $n$ is the number of nodes in the diagram other than $\Gamma$, such that for every morphism $v : \Delta_i \to \Delta_j$ in the diagram $v \cdot u_j = u_i$, i.e. the following diagram commutes 
 \begin{tikzcd} 
 & \Gamma & \\ 
 \Delta_i \arrow[ur,"u_i"] \arrow[rr,"v"] & & \Delta_j \arrow[ul,"u_j"] 
@@ -339,9 +346,9 @@ $\langle u_i^{\prime} : \Gamma^{\prime} \to \Delta_i \rangle_{i\leq n}$ there is
 & \Delta_i \arrow[ul,"u_i"] \arrow [ur," u_i^{\prime}"] & 
 \end{tikzcd} 
 
-\section{Multi-Staged Programming}
+\section{Multi-Stage Programming}
 \label{sec:background:msp}
-Meta-programming is the practice of writing \emph{meta} programs that manipulate \emph{object} programs. Meta and object programs can be in the same or different languages. Generative programming is one form of meta-programming in which the meta-program compiles into a program of the object language. Therefore, the process of running the meta-program involves two stages, compile and run-time. 
+Meta-programming is the practice of writing \emph{meta} programs that manipulate \emph{object} programs~\cite{sheard2001Challenges, sheard2002TH,metaProg2019Survey}. Meta and object programs can be in the same or different languages. Generative programming is one form of meta-programming in which the meta-program compiles into a program of the object language. Therefore, the process of running the meta-program involves at least two stages, compile and run-time. 
 
 The meta program might need to refer to code in the object language, like in the case of making a call to a predefined function in the object language. In this case, the meta program is deferring the evaluation of this code to a \lstmath{later} stage. 
 Also, a meta program might need to evaluate a meta or object language expression that results in an object code. In this case, the expression is evaluated in the \lstmath{current} stage. 
@@ -353,7 +360,7 @@ data Stage : Set where
   s1 : Stage
 \end{togcode} 
 
-Staging an expression means adding annotation to its components indicating which stage it should be evaluated in. 
+Staging an expression means adding annotation to its components indicating which stage it should be evaluated in, 
 \lstmath{Now} or \lstmath{Later}. 
 \begin{togcode} 
 data Staged (A : Set) : Set where
