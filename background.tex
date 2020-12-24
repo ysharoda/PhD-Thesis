@@ -11,11 +11,11 @@ One of the constructions we generate, that is not typically defined within unive
 \section{Dependent Type Theory}
 \label{subsec:background:dtt}
 Dependent type theory (DTT) is a version of type theory that enables writing types like 
-\lstmath{$\Pi\; x : A \cdot\; M\; x$} % \text{x : A} \cdot \text{M x}$} % x : A $\ \cdot\ $ M x} 
-where the type $M$ depends on the \emph{value} of $x$, i.e. \lstmath{$M : A \;\to\; \text{Type}$}. 
+\lstmath{$\Pi\ $ x : A $\ \cdot\ $ M x} % \text{x : A} \cdot \text{M x}$} % x : A $\ \cdot\ $ M x} 
+where the type \lstmath{M} depends on the \emph{value} of \lstmath{x}, i.e. \lstmath{M : A $\ \to\ $ Type}. 
 % source: Type theory and formal proof, P. 103 - Ch.5 
-Having types that depends on values adds to the expressiveness of the logic. A common example for introducing dependent types is the type of a vector of $n$ elements of a type $A$. 
-In most programming languages, the type of this vector is defined in terms of the type of its elements as $Vec\;A$. Using dependent types, the type of a vector can depend on both the type of its elements and also its length, written as \lstmath{$\Pi\; n : \mathbb{N}\;\cdot\; Vec\;A\;n$}.
+Having types that depends on values adds to the expressiveness of the logic. A common example for introducing dependent types is the type of a vector of \lstmath{n} elements of a type \lstmath{A}. 
+In most programming languages, the type of this vector is defined in terms of the type of its elements as \lstmath{Vec A}. Using dependent types, the type of a vector can depend on both the type of its elements and also its length, written as \lstmath{$\Pi\ $ n : $\ \mathbb{N}\ \cdot\ $ Vec A n}.
  
 Having this extra information in the type allows detection of some errors, like accessing out of bounds elements, during type checking. 
 
@@ -30,24 +30,29 @@ Figures~\ref{fig:dttGrammar} and~\ref{fig:dtt-w-sigma} shows the grammar and typ
 \begin{figure}
 \centering{
 \includegraphics[scale=0.9]{ott/dttFig.pdf}
-\caption{Grammar for first order dependent type language with dependent sum types. Adapted from~\cite{pierce2005advanced}.}
+\caption{Grammar for a dependently typed language with dependent sum types. Adapted from~\cite{pierce2005advanced}.}
 \label{fig:dttGrammar}
 }
 \end{figure}
 \input{figures/dtt-w-sigma.tex}
 
 \paragraph{$\Sigma$-types.}
-A dependent pair, in which later elements depends on values of earlier ones, are referred to as $\Sigma$-types. The type \lstmath{$\Sigma\;[n : \mathbb{N},\;Vec\;A\;n]$} refer to a pair that contains the value of \lstmath{n} in the first position and a vector of length \lstmath{n} in the second one. 
+A dependent pair, in which later elements depends on values of earlier ones, are referred to as $\Sigma$-types. The type 
+%\sigmatype{n}{$\ \mathbb{N}\ $}{Vec A n}} 
+\lstmath{$\Sigma\ $ n : $\ \mathbb{N}\ \cdot\ $ Vec A n} 
+refer to a pair that contains the value of \lstmath{n : $\;\mathbb{N}$} in the first position and a vector of length \lstmath{n} in the second one. 
 
 \paragraph{Telescopes.}
 The concept of $\Sigma$ types is generalized into that of \emph{telescopes}, or equivalently,  \lstmath{dependent-type records}~\cite{pollack2002dependently}. A telescope $\mathbb{T}$ is defined as 
 \begin{equation}
-\mathbb{T} \equiv [x_1 : A_1][x_2 : A_2(x_1)][x_k : A_k(x_1,\cdots,x_{k-1})]
+\mathbb{T} \equiv [\text{x}_1 : \text{A}_1]
+[\text{x}_2 : \text{A}_2(\text{x}_1)] \ ... \ 
+[\text{x}_k : \text{A}_k(\text{x}_1,...,\text{x}_{\text{k}-1})]
 \label{eq:telescope}
 \end{equation} 
 i.e. a sequence of typed name declarations where the type of later names can depend on earlier ones. 
-The type \lstmath{$Vec\;A\;n$} as a telescope would be written as 
-\lstmath{$[A : \text{Type}][n : \mathbb{N}][Vec\;A\;n]$}. 
+The type \lstmath{Vec A n} represented as a telescope would be written as 
+\lstmath{[A : Type][n :$\ \mathbb{N}$][Vec A n]}. 
 %Another related concept is the packaging of definitions in a structure in which a definition depends on earlier ones. This is called a dependent record type, and is referred to as $\Sigma$-types. The types \lstmath{A} and \lstmath{P:A $\;\to\;$ Type} can be grouped is a dependent pair $\Sigma A P$. 
 
 %\section{Curry Howard Correspondence}
@@ -83,14 +88,23 @@ In this work, as is traditionally the case, we use the term theory to refer to \
 %Most algebra text books would refer to the language of the theory presentation as the signature and would separate its two components, writing it as \lstmath{(S,F)}. They often do not use the term \lstmath{theory}, but refer to sigantures with specific properties that are satisfied by the algebras. The use of axiomatic theories as we define them here is, to the best of our knowledge, tied to using them in computerized systems as in Clear~\cite{Goguen1980}. 
 
 \paragraph{Theories as Contexts}
-With dependent types and the Curry-Howard correspondance in place, the distinction between the three components of an axiomatic theory, sorts, function symbols, and axioms, is not needed anymore. Instead a theory is seen as a $\Sigma$ type, dependently-typed context, or a telescope as described by Equation~\ref{eq:telescope}. 
+With dependent types and the Curry-Howard correspondence in place, the distinction between the three components of an axiomatic theory, sorts, function symbols, and axioms, is not needed anymore. Instead a theory is seen as a $\Sigma$ type, dependently-typed context, or a telescope as described by Equation~\ref{eq:telescope}. 
 For example, the axiomatic formalization of \lstmath{Monoid} as a $\Sigma$ type is 
+%\begin{figure}
+%\sigmatype{A}{Type}{\sigmatype{op}{(A $\to$ A $\to$ A)}{\sigmatype{e}{A}{Type}} }
+%\end{figure}
+%$\Sigma$ Type ($\lambda$ A $\to$ 
+%$\Sigma$ A ($\lambda$ e $\to$ 
+%$\Sigma$(A $\ \to\ $ A $\ \to\ $ A) ( $\lambda$ op $\to$ 
+%$\Sigma$ ())))
 \begin{lstlisting}[mathescape]
-$\Sigma$ [A : Type, $\Sigma$ [op : A $\;\to\;$ A $\;\to\;$ A, $\Sigma$ [e : A, 
-  $\Sigma$ [lunit : {x : A} $\;\to\;$ op e x = x,
-    $\Sigma$ [runit : {x : A} $\;\to\;$ op x e = x,
-      $\Sigma$ [assoc : {x y z : A} $\;\to\;$ op x (op y z) = 
-                                op (op x y) z]]]]]]
+$\Sigma$ A : Type $\cdot$ 
+ $\Sigma$ op : A $\;\to\;$ A $\;\to\;$ A $\cdot$ 
+   $\Sigma$ e : A $\cdot$  
+     $\Sigma$ lunit : {x : A} $\;\to\;$ op e x = x $\cdot$
+       $\Sigma$ runit : {x : A} $\;\to\;$ op x e = x $\cdot$
+         $\Sigma$ assoc : {x y z : A} $\;\to\;$ op x (op y z) = 
+                                  op (op x y) z
 \end{lstlisting} 
 which can be describe as a telescope as  
 \begin{togcode} 
@@ -387,7 +401,7 @@ data Choice : Set where
   Const : Choice
 \end{togcode} 
 
-There are $3$ main applications to staging; generating well-typed code as in MetaOcaml~\cite{taha1999multi}, removing abstraction overhead introduced by generic programming~\cite{yallop2016StagingGeneric, carette2011mspFunctorsMonads, carette2011generative}, and developing domain specific languages~\cite{sheard2000stagingDSL}. MetaOcaml and Haskell templates provide staging constructs under the names \emph{quote} and \emph{eval} instead of \emph{Now} and \emph{Later}. In logical reasoning the same ideas are used for reflection, as in~\cite{farmer2013quoteEval}.  
+There are $3$ main applications to staging; generating well-typed code as in \mbox{MetaOcaml}~\cite{taha1999multi}, removing abstraction overhead introduced by generic programming~\cite{yallop2016StagingGeneric, carette2011mspFunctorsMonads, carette2011generative}, and developing domain specific languages~\cite{sheard2000stagingDSL}. MetaOcaml and Haskell templates provide staging constructs under the names \emph{quote} and \emph{eval} instead of \emph{Now} and \emph{Later}. In logical reasoning the same ideas are used for reflection, as in~\cite{farmer2013quoteEval}.  
 
 
 %MSP gives the developers of the meta program the control over it by annotating which pieces can be evaluated at runtime\ednote{better writing}.  
