@@ -14,9 +14,9 @@ Informally, this means that the theory of \lstmath{Monoid} can be constructed by
 
 The theories resulting from the flattener are used to compute some universal algebra constructions that are also part of algebra libraries. Chapter~\ref{ch:redundancy} shows examples of homomorphisms, product algebra and term languages provided by library developers. These ones and more can be generated based on their definitions from universal algebra. The \emph{generator} does that by manipulating components of the theories. We discuss the generator in Chapter~\ref{ch:generation}. 
 
-The flattener and generator deal with mathematical definitions while keeping system-specific details to a minimal. In order to make the constructions more useful, the \emph{exporter} makes them available in feature rich systems, like agda. We discuss the exporter in Chapter~\ref{ch:export}. 
+The flattener and generator deal with mathematical definitions while keeping system-specific details to a minimal. In order to make the constructions more useful, the \emph{exporter} makes them available in feature rich systems, like agda and lean. We discuss the exporter in Chapter~\ref{ch:export}. 
 
-Figure~\ref{fig:staged-interpreter} describes the $3$-stage processing that a theory expression goes through. This process make the generation of all the constructions described in Appendix~\ref{appendix:generatedTog} automatically generated from the theory expression of \lstmath{Monoid} above, in both tog and agda. The ideas we present here are not specific to tog and agda and can be applied in a more general scale. 
+Figure~\ref{fig:staged-interpreter} describes the $3$-stage processing that a theory expression goes through. This process leads to the generation of all the constructions described in Appendix~\ref{appendix:generatedTog} in tog, agda, and lean\footnote{The generated constructions can be found at:~\url{https://github.com/ysharoda/Deriving-Definitions/tree/master/Library/generated}}. 
 \begin{figure}
 \includegraphics[scale=0.5,width=\linewidth]{figures/interpreter_detailed}
 \caption{A $3$-staged interpreter for generating libraries}
