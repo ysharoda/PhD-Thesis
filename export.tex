@@ -6,7 +6,7 @@
 Generating the definitions of constructions from a theory presentation saves a lot of library development time, but having these definitions in a feature-rich language makes it even more useful. In this chapter we implement an automatic translator of the library theories and their related constructions to agda and lean. This part is related to the third research question from Section~\ref{sec:questions}. 
 %and lean\ednote{lean is still being implemented} 
 
-In Section~\ref{sec:exporting_agda} we describe the exporter implemented in haskell. Many parts of this exporter are straight forward translations between the two syntax trees. Nevertheless, there were some challenges that we discuss in Section~\ref{sec:exporting:challenges}. We compare our generated agda code to the one in the agda standard library~\cite{agda_stdlib} and discuss how close we can get to the standard library presentation in Section~\ref{sec:compasion_agda_stdlib}. 
+In Section~\ref{sec:exporting_agda} we describe the exporter implemented in haskell, the meta-language for tog. Many parts of this exporter are straight forward translation from the syntax tree of tog to the \lstmath{Doc} type that is printed to the target systems. Nevertheless, there were some challenges that we discuss in Section~\ref{sec:exporting:challenges}. We compare our generated agda code to the one in the agda standard library~\cite{agda_stdlib} and discuss how close we can get to the standard library presentation in Section~\ref{sec:compasion_agda_stdlib}. 
 %To assess how our approach scale up, we discuss how we extended the exporter to support lean, as a target language, in Section~\ref{sec:exporting_lean}. 
 We wrap the by a discussion in Section~\ref{sec:exporting:discussion}. 
 
@@ -24,7 +24,9 @@ The tog definitions have all the information needed to mathematically present th
 class Export a where
   export :: Config -> a -> Doc  
 \end{hscode}
-For every type in the tog AST, presented in Figure~\ref{fig:togRepr}, we create an instance for the \lstmath{Export} class. The \lstmath{Config} type is used to describe the configuration of each language. It contains details about language specific properties or pieces of syntax. 
+The \lstmath{Config} type is used to describe the configuration of each language. It contains details about language specific properties or pieces of syntax. 
+%Based on the users' choice of the export language, the exporter loads the corresponding \lstmath{Config} instance and preprocessing functions.  
+For every type in the tog AST, presented in Figure~\ref{fig:togRepr}, we create an instance for the \lstmath{Export} class.
 We use the Haskell pretty printer provided by \lstmath{Text.PrettyPrint.Leijen}, which is an implementation of the pretty printer described in~\cite{wadler2003prettier}. 
 
 \subsection{Background}
@@ -43,7 +45,7 @@ On top of these primitives, we have used the following functions provided by the
 \lstmath{Text.PrettyPrint.Leijen}. 
 \begin{itemize}
 \item \lstmath{(<+>)} : concatenates two \lstmath{Doc} instances with a space between them. 
-\item \lstmath{(<$\$$>)} : concatenates two \lstmath{Doc} instances with a \lstmath{line} in between them. 
+\item \lstmath{(<$\$\$$>)} : concatenates two \lstmath{Doc} instances with a \lstmath{line} in between them. 
 \end{itemize}
 %\end{comment}
 
@@ -53,88 +55,134 @@ Our generator defines every theory along with its generated constructions in a  
 \begin{hscode} 
 instance Export Module where
   export conf (Module nm params decls) =
-    export conf imprts <$$>
+    export conf imprts <~$\$\$$~>
     text (m1 conf) <+> export conf nm <+> text (m2 conf) <+> 
-    export conf params <+> text (m3 conf (isEmpty decls)) <$$>
-    (indent 2 $ export conf defs) <$$>
+    export conf params <+> text (m3 conf (isEmpty decls)) <~$\$\$$~>
+    (indent 2 ~$\$$~ export conf defs) <~$\$\$$~>
     moduleEnd conf nm 
     where (imprts,defs) = split conf decls
           isEmpty (Decl_ []) = True
           isEmpty _ = False 
 \end{hscode} 
-The exporter is parameterized over the keywords that a language use. In order to use the same exporter for $2$ different language, we had to observe their differences and parameterize over them. The general structure of a module in agda and lean is 
-\begin{lstlisting}[mathescape]
-            m1 nm m2 params m3
+In order to write one exporter with two target languages, we need to investigate the commonalities and differences between them. The first obvious difference is the keywords used. The exporter reads the keywords of the target language from its configuration. 
+On the level of modules, we use the configuration fields \lstmath{m1, ..., m4} as follows 
+\begin{lstlisting}
+            m1 nm m2 params m3 
             ...
             m4
 \end{lstlisting}
-In agda, \lstmath{m1} is \lstmath{module} and \lstmath{m3} is \lstmath{where}, while in lean they have the values \lstmath{section} and empty. The \stmath{export} function reads these values of the configuration. Agda and lean also differ in the position of imports. In lean imports are declared before opening the module (section), while in agda they can be declared inside or outside the module\footnote{In agda, the position of the imports determined their scope.}. The decision of where to place the imports is part of the configuration. The \lstmath{split} function reads this parameter and either return the list of imports to be declared outside the module or empty. 
+all configuration fields are printed using the \lstmath{text} function. 
 
-The variables \lstmath{module_} and \lstmath{module_beforeDecls} stands for the keywords \lstmath{module} and \lstmath{where} used when defining a new module in agda. The function \lstmath{printAgda} is used to call the exporter over the constructor parameters. 
+Another difference between our two target languages is the structure of their module system. The general structure of modules in agda and lean is 
 
-The parameters of a module are represented as \lstmath{[Binding]}, which can be hidden or explicit. Exporting the binding is done as follows 
+\begin{tabular}{p{18em} p{10em}}
+\begin{agdacode} 
+module nm params where 
+  import ...
+  ... 
+~$\newline$~        
+\end{agdacode}  
+&
+\begin{leancode}
+import ...
+section nm 
+  ... 
+end nm 
+\end{leancode}
+\end{tabular}
+
+%Agda modules (on the left) uses the keywords \lstmath{module} and \lstmath{where} to define the module, while lean (on the right) uses \lstmath{section} and \lstmath{end} to mark the beginning and end of a module. The keywords specific to the target language of the exporter are read from its instance of the \lstmath{Config} type. 
+
+The configuration of each language specifies the position of the import declarations. The function \lstmath{split} checks the configuration for this information and accordingly splits the module declarations into those to be printed before its header (if any), and those who are part of the module. 
+
+The  \lstmath{moduleEnd} function checks if the module needs to be closed with any keywords, and whether the name of the module needs to be included as in lean. The \lstmath{export} function is called on the components of the module, which are the name (\lstmath{nm}), the parameters (\lstmath{params}) and the declarations within the module (\lstmath{decls}). 
+
+The parameters of a module are represented as \lstmath{[Binding]}, which can be hidden or explicit. Exporting the binding is done by calling \lstmath{export} on its arguments and type expression.  
 \begin{hscode}
-instance PrintAgda Binding where
-  printAgda binds =
-    let arguments as = foldr (<+>) empty $ map (printAgda) as
-        binding x =  arguments (getBindingArgs x) 
-                     <+> text ofType 
-                     <+> printAgda (getBindingExpr x) 
+instance Export Binding where
+  export conf binds =
+    let arguments as = hsep ~$\$$~ map (export conf) as
+        binding x =  
+          arguments (getBindingArgs x) <+> text (bind_of_type conf) 
+          <+> export conf (getBindingExpr x)
     in case binds of
-      Bind  _ _ -> parens $ binding binds
-      HBind _ _ -> braces $ binding binds
+      Bind  _ _ -> parens ~$\$$~ binding binds
+      HBind _ _ -> braces ~$\$$~ binding binds
+
 \end{hscode}
-The body of the module consists of declarations \lstmath{[Decl]}, which are exported as follows 
+Every \lstmath{Binding} consists of a set of arguments of type \lstmath{Arg} that defines the variables of the binding. the function \lstmath{getBindingExpr} returns the type of those binding arguments. 
+
+The body of the module consists of declarations \lstmath{[Decl]}. Exporting each of these declarations is straight forward by calling the \lstmath{export} function on its components. Function definitions in agda are declared by writing the function names for every pattern, while in lean guards are used to declare the different patterns. 
+\newline
+\begin{tabular}{p{18em} p{10em}}
+\begin{agdacode} 
+f : ~$binds-list \to type-expr$~   
+f x0 .. xn = ... 
+...    
+\end{agdacode}  
+&
+\begin{leancode}
+def f ~$binds-list : type-expr$~ 
+| x0 ... xn = ... 
+... 
+\end{leancode}
+\end{tabular}
+\newline
+If the function name is part of the definition, the configuration is set to be \lstmath{"fname"}. The function \lstmath{funcHeader} takes care of this case. 
+
+The instance of \lstmath{Export} for \lstmath{Decl} is 
 \begin{hscode}
-instance PrintAgda Decl where
-  printAgda (TypeSig typ) = printAgda typ
-  printAgda (FunDef nm patterns body) =
-    printAgda nm 
-    <+> (foldr (<+>) empty $ map (printAgda) patterns) 
-    <+> text fundef 
-    <+> printAgda body
-  printAgda (Data nm params body) =
-    (text type_keyword) <+> printAgda nm 
-    <+> printAgda params <+> printAgda body <+> linebreak 
-  printAgda (Record nm params body) =
-    (text record_keyword) <+> printAgda nm <+> printAgda params 
-    <+> printAgda body <+> linebreak  
-  printAgda (Open imp) = text open <+> printAgda imp
-  printAgda (Import imp) = text import_ <+> printAgda imp
-  printAgda (OpenImport imp) = text open_import <+> printAgda imp
-  printAgda (Module_ m) = 
-    linebreak <+> printAgda (addOpenDecl m)  <+> linebreak 
-  printAgda _ = empty
+instance Export Decl where
+  export conf (TypeSig sig) = export conf sig 
+  export conf (FunDef nm ps body) =
+    funcHeader (f5 conf) nm <+> (hsep ~$\$$~ map (export conf) ps) 
+    <+> text (f6 conf) <+> export conf body <+> text (f7 conf)
+    where funcHeader flag fname = 
+            if flag =="fname" then export conf fname else text flag    
+  export conf (Data nm ps body) =
+    text (d1 conf) <+> export conf nm <+> text (d2 conf) 
+    <+> export conf ps <+> text (d3 conf) <+> export conf body 
+    <+> openDatatype conf nm
+  export conf (Record nm ps body) =
+    text (s1 conf) <+> export conf nm <+> text (s2 conf) 
+    <+> export conf ps <+> text (s3 conf) <+> export conf body 
+  export conf (Open imp) = text (open_ conf) <+> export conf imp
+  export conf (Import imp) = text (import_ conf) <+> export conf imp
+  export conf (OpenImport imp) = 
+    text (openimport conf) <+> export conf imp
+  export conf (Module_ m) =
+    linebreak <+> export conf m  <+> linebreak 
+  export _ _ = empty
 \end{hscode}
-With instances of \lstmath{PrintAgda} for every type in the tog abstract syntax, a single call to \lstmath{printAgda} on the top level module of the tog library generates the equivalent agda definitions\footnote{the generated files available at:\url{https://github.com/ysharoda/tog/tree/master/Library/generated}}.
+
+With instances of \lstmath{export} for every type in the tog abstract syntax, a single call to \lstmath{export} on the top level module of the tog library generates the equivalent agda definitions\footnote{the generated files available at:\url{https://github.com/ysharoda/tog/tree/master/Library/generated}}.
 
 \section{Challenges}
 \label{sec:exporting:challenges}
-The \lstmath{PrintAgda} type class gives us the direct translation between tog and agda. Tog is an experimental minimal implementation of Martin-l\"{o}f type theory. There are some features present in agda that tog does not support, and therefore some adjustments of the syntax is needed. We discuss these adjustments in this section. 
+The \lstmath{Export} type class and its instances describe the direct translation between tog on one side and agda or lean on the other. Tog is an experimental minimal implementation of Martin-l\"{o}f type theory. There are some features present in agda and lean that tog does not support, and therefore some adjustments of the syntax is needed, which are discussed in this section. 
 
 \subsection{Universes}
-Tog provides only one kind \lstmath{Set}. It does not support universes, and so \lstmath{Set : Set}. On the other hand, agda has an infinite number of universes, and so 
-\lstmath{Set$_{n}$ : Set$_{n+1}$} for any natural number $n$. 
+Tog provides only one kind \lstmath{Set}. It does not support universe hierarchy, and so in tog \lstmath{Set : Set}. On the other hand, agda and lean has infinite number of universes. This is expressed in agda as 
+\lstmath{Set$_{\text{n}}$ : Set$_{\text{n+1}}$} for any natural number $\text{n}$.\footnote{In lean, the hierarchy is expressed as \lstmath{Type n : Type (n+1)} for any natural number \lstmath{n}.}
 All the constructions we generate belong to the same level, except for relational interpretations, which describe a structure-preserving relation between two instances of the theoy, see Section~\ref{sec:generation:relInterp}. In tog, relational interpretations are records and the relation is a field of the record represented as 
 \begin{togcode}
 interp : A1 -> A2 -> Set
 \end{togcode}
 for types \lstmath{A1} and \lstmath{A2}, which are carriers of the two instances. 
-A record with this field in tog has a type \lstmath{Set}. When exported to agda, it needs to have the type \lstmath{Set$_{1}$}. 
+A record with this field in tog has a type \lstmath{Set} and therefore belong to universe level zero. When exported to agda, its definition needs to have the type universe level 1.  
 
-To solve the universes problem, we provide the function \lstmath{universeLevel} which checks the fields of a record for a \lstmath{Set} type. If it finds one, it sets the type of the record to \lstmath{Set$_{1}$}. 
+To solve the universes problem, we provide the function \lstmath{universeLevel} which checks the fields of a record for a \lstmath{Set} type. If it finds one, it sets the type of the record to universe level 1, where the representation of the level is read from the config file. 
 \begin{hscode}
-universeLevel :: Fields -> Doc
-universeLevel flds =
+universeLevel :: Config -> Fields -> Doc
+universeLevel conf flds =
   text ~$\$$~
-    if elem "Set" ~$\$$~ everything (++) (mkQ [] (\ (Name (_,x)) -> [x])) flds
-    then "Set$_1$" else "Set" 
+    if elem "Set" ~$\$$~ everything (++) (mkQ [] (\ (Name (_,x)) → [x])) flds
+    then (level1 conf) else (level0 conf)    
 \end{hscode}
-\ednote{something wrong with the subscript in the then part} 
 The function \lstmath{universeLevel} is called every time a record header is printed. 
 
 \subsection{The Prelude}
-The constructions we generate from theory presentations depend on tog definition of \lstmath{Nat}, \lstmath{Fin}, lstmath{Vec}, and \lstmath{lookup}. Tog does not support indexed types and defines \lstmath{Fin} as  
+The constructions we generate from theory presentations depend on tog definition of \lstmath{Nat}, \lstmath{Fin}, \lstmath{Vec}, and \lstmath{lookup}. Tog does not support indexed types and defines \lstmath{Fin} as  
 \begin{togcode}
 data Fin (n : Nat) : Set where
   fzero : (m : Nat) (p : n == suc m) -> Fin n
@@ -142,23 +190,36 @@ data Fin (n : Nat) : Set where
 \end{togcode}
 This leads to a rather complicated definition of the \lstmath{lookup} function. 
 
-On the other hand, agda supports indexed types, has a simpler definition of \lstmath{Fin} and \lstmath{lookup}, and has these definitions in its standard library. Accordingly, we deal with exporting the prelude definitions in a way different than the generated code. 
+On the other hand, agda supports indexed types, has a simpler definition of \lstmath{Fin} and \lstmath{lookup}, and has these definitions in its standard library. Similarly, lean has types and functions for the same purposes, but different names. Accordingly, we deal with exporting the prelude definitions in a way different than the generated code. 
 
-We provide boolean variables \lstmath{includeX} where \lstmath{X} is replaced by the name of the definition in tog prelude; For the \lstmath{Fin} type this will be \lstmath{includeFin}. The boolean variable decides whether the tog definition of \lstmath{X} is to be exported or not. Definitions that are not exported need to exist in the list of \lstmath{importNames} that has the names of the modules to be imported by the exporter. 
+The prelude of the exporter can either be provided by a \lstmath{FilePath} to a file including the definitions of the prelude or provide a list of imports and definitions to be exported using the implemented exporter. This is given as part of the configuration, via the field
+\lstmath{prelude_includes :: Either FilePath ([ImportDecl],[String])}. In the case that some definitions are exported, the imports of the prelude are also given. 
+For example, the \lstmath{prelude_includes} of the agda configuration is 
+\begin{hscode} 
+ Right (["open import Agda.Builtin.Equality",
+         "open import Agda.Builtin.Nat",
+         "open import Data.Fin",
+         "open import Data.Vec"]
+      ,["Prod","Wrap","Stage","CodeRep","uncode","code","run",
+        "Choice","Comp","Staged","expr","const",
+        "stage0","stage1","stage2","codeLift1","codeLift2"])   
+\end{hscode} 
+
+The imports of the modules other than prelude, is defined using the \lstmath{imports} config declaration. 
+
+The function \lstmath{mkImport} creates import declarations for all modules based on the information retrieved from the configuration. \lstmath{import_}, \lstmath{open_}, and \lstmath{openimport} are the keywords to import, open, or open-import a module in the target language. The function reads the names of these modules and created instances pd \lstmath{Decl} using the corresponding constructors. 
 \begin{hscode}
-importNames :: [String]
-importNames =
-  ["Agda.Builtin.Equality",
-   "Agda.Builtin.Nat",
-   "Data.Fin", 
-   "Data.Vec"]
-\end{hscode}
-The exporter adds these imports to the module in their expected position.  
-\begin{hscode}
-agdaModuleWithImports (Module_ (Module nm prms (Decl_ defs))) imprts =
-  let importDecls = 
-      map (\str -> OpenImport (ImportNoArgs (mkQName str))) imprts 
-  in Module_ (Module nm prms (Decl_ (importDecls ++ defs)))
+mkImports :: Config -> [String] -> [Decl]
+mkImports conf imprts =
+  let getNames prefix =
+        if prefix == "" then [] 
+        else removePrefix conf ~$\$$~ filter (isPrefixOf prefix) imprts
+       createImport x = ImportNoArgs ~$\$$~ mkQName x
+  in (map (Import . createImport) ~$\$$~ 
+         (getNames ~$\$$~ import_ conf) \\ (getNames ~$\$$~ openimport conf))
+  ++ (map (OpenImport . createImport) ~$\$$~ getNames (openimport conf))
+  ++ (map (Open . mkQName) ~$\$$~
+         (getNames ~$\$$~ open_ conf) \\ (getNames ~$\$$~ openimport conf))
 \end{hscode} 
 
 \begin{comment}
@@ -169,26 +230,26 @@ zero : {n : ~$\mathbb{N}$~} ~$\rightarrow$~ Fin (suc n)
 suc  : {n : ~$\mathbb{N}$~} (i : Fin n) ~$\rightarrow$~ Fin (suc n)
 \end{agdacode}
 \end{comment} 
-When importing functions, the order of their inputs may be different than that used when calling the same function in tog. This is the case with the definition of \lstmath{lookup} in agda versus tog where the two arguments are flipped. To solve this problem we provide the \lstmath{callFunc} function to adjust the inputs. 
+When importing functions, the order of their inputs may be different than that used when calling the same function in tog. This is the case with the definition of \lstmath{lookup} in agda versus tog where the two arguments are flipped. In lean the function name is \lstmath{nth} and the arguments are also flipped with respect to the tog definition. To solve this problem, every target exporter has a function \lstmath{callFunc} that adjusts the call to the function. The one for agda is 
 \begin{hscode}
 callFunc :: Expr -> Expr
 callFunc a@(App [nm,_,a2,a3]) =
   if (getArgName nm == "lookup") then App [nm,a3,a2] else a
 callFunc e = e
 \end{hscode}
-\lstmath{callFunc} is called before every function is exported. Therefore, it can be easily extended to adjust calls to any function. 
+\lstmath{callFunc} is called before every function application is exported. Therefore, it can be easily extended to adjust calls to any function. 
 
-\subsection{Simplifier}
-One of the things we generate is a simplifier that uses axioms like \lstmath{e * x $\ \equiv\ $ x} to simplify expressins, see Section~\ref{sec:generation:simplifier}. 
+\subsection{Simplifier}\ednote{check this again}
+One of the things we generate is a simplifier that uses axioms like \lstmath{e * x $\ \equiv\ $ x} to simplify expressions, see Section~\ref{sec:generation:simplifier}. 
 In a theory that has a binary operation with an inverse and a unit, like \lstmath{Group}, a possible axiom is  
 \begin{agdacode}
 op x (inv x) ~$\equiv$~ e 
 \end{agdacode}
-which would naturally give rise to a simplification rule. In order for this simplification rule to be accpeted, one needs to compare the two occurences of \lstmath{x} for equality. While tog accepts using the same variable name in pattern matching, and considers the two occurences to be equal, agda would not accept that code. Therefore, we need to have decidable equality to compare the two occurences of variables on the left hand side axiom. This equality can be an extra argument to the function, but as we are seeking uniformity in the generated constructions, we choose to not export these simplification rules. 
+which would naturally give rise to a simplification rule. In order for this simplification rule to be accpeted, one needs to compare the two occurences of \lstmath{x} for equality. While tog accepts using the same variable name in pattern matching, and considers the two occurences to be equal, agda and lean would not accept that code. Therefore, we need to have decidable equality to compare the two occurrences of variables on the left hand side axiom. This equality can be an extra argument to the function, but as we are seeking uniformity in the generated constructions, we choose to not export these simplification rules. 
 
 \subsection{Field Names}
-Another disalignment between tog and agda is related to how they deal with numeric literals. Agda does not accept numbers as names of record fields. 
-We provide a function \lstmath{replace} that is called before any \lstmath{Name} is printed. 
+Another misalignment between tog, agda, and lean is what names can be used for fields. Agda does not allow them to be numbers. Lean does not accept numbers or symbols like \lstmath{+, *, |>, <|}. 
+We provide a function \lstmath{replace} that is called before any \lstmath{Name} is printed. The \lstmath{replace} function for agda is 
 \begin{hscode}
 replace :: String -> String
 replace nm =
@@ -199,10 +260,24 @@ replace nm =
 \end{hscode}
 A name which is just \lstmath{0} or \lstmath{1} is concatenated with a suffix \lstmath{$_i$}. The suffix is also added if the \lstmath{0} or \lstmath{1} is part of a name, but is separated by \lstmath{_}. This accounts for the naming convention of the MathScheme library for axioms. 
 
+\subsection{Functions as Constructors}
+In Section~\ref{sec:generation:staged} we discussed generating automatically annotating term languages to produces staged expressions. We discussed a problem related to how tog represents constructors of a datatype. Tog does not allow passing constructors to higher order functions. Instead, we had to define a function corresponding to these constructors and pass it to the functions that lifts them to their staged versions. When exporting to agda or lean, we do not need to keep this trick. The function \lstmath{constructorsAsFunctions} remove these generated functions for every datatype by calling the following function. 
+\begin{hscode} 
+constructorsAsFunctionsHelper :: Config -> [Constr] -> [Decl] -> [Decl] 
+constructorsAsFunctionsHelper conf cs decls =
+  let cnames = map getConstrName cs
+      toFindNames = map opDeclToFuncName cnames 
+      mapping = zip toFindNames cnames
+  in if(constructors_as_functions conf) then decls 
+      else foldrenConstrs mapping ~$\$$~ 
+               filter (\d -> not  ~$\$$~  elem (declName d) toFindNames) decls     
+\end{hscode} 
+\lstmath{cnames} is a list of the names of the constructors and \lstmath{toFindNames} is a list of their corresponding functions. \lstmath{filter} is used to remove these definitions from the list of declarations of the module. \lstmath{foldrenConstrs} is then used to substitute their names with the names of the corresponding constructors. 
+
 \section{Comparison With Agda Standard Library}
 \label{sec:compasion_agda_stdlib}
 %Some of the constructions generated in this work is part of the agda standard library and some are not. 
-We compare the theories in our framework to the ones in the agda standard library, highlighting how close we can get to them. 
+We compare the the definitions that we generate in agda to those in its standard library, highlighting how close we can get to them. 
 %look at our generated theories and constructions and compare them with the ones that agda provides in its standard library, highlighting how close we can get to them. 
 
 Algebraic structures in agda is a fully bundled telescopes. For example, \lstmath{Monoid} is defined as
