@@ -7,7 +7,7 @@ This huge saving of human effort proves how useful and promising a generative ap
 
 In Section~\ref{conc:summary} we summarize the contributions of this work referring to how they solve the research questions introduced in Section~\ref{sec:questions}. In Section~\ref{future_work} we discuss several extensions of this work. 
 
-\paragraph{A note on runtime.} The user of our framework would encounter a big wait time when running the interpreter described in Chapter~\ref{ch:design} on a large library like the one we develop here. It is worth mentioning that the main source of overhead is the type checker, and not any of the operations we process the theory presentations. In a simple runtime experiment, we found that the flattener spent $7.66 us$, the generator spent $5.08 us$, and the exporter spent $4.56 us$ of the CPU time. On the other hand, the type checker spent $1663.98s $ which is approximately 27 mins.
+\paragraph{A note on runtime.} The user of our framework would encounter a big wait time when running the interpreter described in Chapter~\ref{ch:design} on a large library like the one we develop here. It is worth mentioning that the main source of overhead is the type checker, and not any of the operations we process the theory presentations. In a simple runtime experiment, we found that the flattener spent an average of $5.17 s$ on $10$ runs with standard deviation $0.18$. The generator spent an average of $2.7 s$ with standard deviation $0.06$. The exporter spent an average of $9.1 us$ with standard deviation $1.2 us$. On the other hand, the type checker spent an average of $1686.81s$ (approximately $28$ minutes) over $3$ runs with standard deviation $20.96s$.
 
 %Universal algebra is a well-established abstraction over details of algebraic theories in equational first order logic. 
 
@@ -23,7 +23,7 @@ Generating information needs to start with a theory presentation to be manipulat
 Our approach saves huge human effort needed to build libraries by generating the standard information that can be derived from given data. Writing these definitions by hand is boring and error-prone. By using a generative approach to library development, we can save the effort of writing thousands of definitions and make maintaining these definitions easier, as changes would then amount to writing meta programs that process the data in a different way. We answer research question 4 in more details in future work. 
 
 
-\section*{Future Work}
+\section{Future Work}
 \label{future_work}
 Our work can be extended in different ways. The most immediate is adding more definitions to be generated, as shown in the list in Section~\ref{sec:toBeGenerated}. Here we suggest more ways of extending this work 
 
