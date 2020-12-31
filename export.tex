@@ -248,7 +248,7 @@ op x (inv x) ~$\equiv$~ e
 which would naturally give rise to a simplification rule. In order for this simplification rule to be accpeted, one needs to compare the two occurences of \lstmath{x} for equality. While tog accepts using the same variable name in pattern matching, and considers the two occurences to be equal, agda and lean would not accept that code. Therefore, we need to have decidable equality to compare the two occurrences of variables on the left hand side axiom. This equality can be an extra argument to the function, but as we are seeking uniformity in the generated constructions, we choose to not export these simplification rules. 
 
 \subsection{Field Names}
-Another misalignment between tog, agda, and lean is what names can be used for fields. Agda does not allow them to be numbers. Lean does not accept numbers or symbols like \lstmath{+, *, |>, <|}. 
+Another misalignment between tog, agda, and lean is what names can be used for fields. Agda does not allow them to be numbers. Lean does not accept numbers or symbols like \lstmath{+, *, \|>, <\|}. 
 We provide a function \lstmath{replace} that is called before any \lstmath{Name} is printed. The \lstmath{replace} function for agda is 
 \begin{hscode}
 replace :: String -> String

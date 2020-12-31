@@ -118,7 +118,7 @@ Function declarations are defined for variables, constants and function symbols.
 \begin{hscode}
 [FunDef (mkName ~$\$$~ evalFuncName term) -- call for vars
         (concatMap (cpattern instName term) vs)
-        (lookup' "n" envName) | not (null vs)] 
+        (lookup' envName) | not (null vs)] 
 \end{hscode}
 where \lstmath{vs} is the list of variable declarations. The function \lstmath{cpattern} creates the pattern for a constructor. \lstmath{lookup'} creates a call to the \lstmath{lookup} function. Creating the function declaration for constants look very similar, except it returns the constant itself. 
 \begin{hscode}
@@ -253,7 +253,7 @@ record StagedRepr (A : Set) (Repr : Set ~$\to$~ Set) : Set where
 \end{togcode}
 By instantiating \lstmath{Repr} type with \lstmath{Staged}, we can get the staged type for the terms of \lstmath{Monoid} as 
 \begin{togcode}
-taglsMon : Tagless MonoidTerm Staged 
+taglsMon : StagedRepr MonoidTerm Staged 
 taglsMon = record {eT = Now e ; opT = stage2 op (codeLift2 op)}
 \end{togcode}
 
