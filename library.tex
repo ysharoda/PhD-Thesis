@@ -12,11 +12,12 @@ It is common to see the algebraic hierarchy as a series of inclusions as in Figu
 \begin{tikzcd}
 \cn{Magma} \arrow[r, hook] & \cn{Semigroup}\arrow[r, hook] & \cn{Monoid} \arrow[r, hook] & \cn{Group} \arrow[r, hook] & \cdots
 \end{tikzcd}}
-\caption{Algebraic structures as extensions}
+\caption{Algebraic structures as extensions.}
 \label{fig:flatExtensions}
 \end{figure}  
-But the algebraic hierarchy is more rich than that, considering for example the list in~\cite{jipsen}. 
-In Section~\ref{sec:background:tinytheories} we discuss tiny theories as an adequate approach to capturing this structure. We present the example of building the theory of \lstmath{Unital} by extending the theory of \lstmath{PointedMagma} to create \lstmath{LeftUnital} and \lstmath{RightUnital}, then combining them. This example is described by a diamond structure as in Figure~\ref{fig:unitalDiamond}. 
+But the algebraic hierarchy is richer than that, considering for example the list in~\cite{jipsen}. 
+In Section~\ref{sec:background:tinytheories} we discuss tiny theories as an adequate approach to building a theory graph that captures this structure. The nodes of the graph are theory presentations and they are connected via morphisms (see Section~\ref{sec:background:theorygraph}). Morphisms describe how the different theory presentations relate to each other. 
+We present the example of building the theory of \lstmath{Unital} by extending the theory of \lstmath{PointedMagma} to create \lstmath{LeftUnital} and \lstmath{RightUnital}, then combining them. This example is described by a diamond structure as in Figure~\ref{fig:unitalDiamond}. 
 \begin{figure}
 \centering{
 \begin{tikzcd} 
@@ -24,65 +25,65 @@ In Section~\ref{sec:background:tinytheories} we discuss tiny theories as an adeq
 \verb|PointedMagma| \arrow[ur,hook] \arrow [dr,hook] & & \verb|Unital| \\
 & \verb|RightUnital| \arrow[ur,hook] &
 \end{tikzcd}}
-\caption{The diamond in the definition of \lstmath{Unital}}
+\caption{The diamond in the definition of \lstmath{Unital}.}
 \label{fig:unitalDiamond}
 \end{figure}
 The diamond structure appearing in the definition of \lstmath{Unital} is not a special case. Instead, diamonds are pervasive in the algebraic hierarchy, as shown in the theory graph for defining \lstmath{Monoid} in Figure~\ref{fig:cube_monoid}. 
 %examining the work in \cite{halleck} and \citeauthors{jipsen} show us that the algebraic %hierarchy is more packed with diamonds, as we show in Figure~
 %As we discussed in Section~\ref{sec:thry_graph_in_action}, dealing with diamonds is a challenging problem~\cite{sakkinen1989disciplined, jigsaw1992, traits2006, diamonds2011}. There is a gap in how specification systems handle them, whether by not following its correct semantics, or by not supporting it at all. 
 
-But the diamond structure does not come without problems. We need to have careful infrastructure to deal with them in order to avoid the diamond problem~\cite{jigsaw1992,traits2006,diamonds2011}, a.k.a multiple inheritance or the fork-join problem~\cite{sakkinen1989disciplined}. 
+But the diamond structure does not come without problems. We need to have careful infrastructure to deal with them in order to avoid the diamond problem~\cite{jigsaw1992,traits2006,diamonds2011}, a.k.a multiple inheritance or the fork-join problem~\cite{sakkinen1989disciplined}, which we discuss in Section~\ref{subsec:combine}.
 
-In Section~\ref{sec:thry_graph_in_action} we provide an overview of the support for morphisms in different formal systems. Section~\ref{sec:msCombinators} introduces the MathScheme combinators which creates a morphism-based approach to building theory graphs, leading to a solution for the diamond problem. We discuss our implementation of the combinators in Section~\ref{sec:lib_implementation}. Using them to build the library is discussed in Section~\ref{sec:guidelines}. We end up with a discussion of best practice for using the combinators in Section~\ref{sec:library:discussion}. 
+In Section~\ref{sec:thry_graph_in_action} we provide an overview of the support for morphisms in different formal systems. Section~\ref{sec:msCombinators} introduces the MathScheme combinators for a morphism-based approach to building theory graphs, leading to a solution to the diamond problem. We discuss our implementation of the combinators in Section~\ref{sec:lib_implementation}. Using them to build the library is discussed in Section~\ref{sec:guidelines}. We end up with a discussion of best practice for using the combinators in Section~\ref{sec:library:discussion}. 
 
 \begin{comment}
-To test our generation algorithms, we needed a large library of equational theories. As we have discussed in Section~\ref{sec:broader_context}, we work in the favor of a library organized as a theory graph, believing that it leverages the structure of mathematical knowledge. Arrows of the graph are the means to relating the different theories. In this section, we present our approach to building a library that emphasizes these connections. 
+To test our generation algorithms, we needed a large library of equational theories. As we have discussed in Section~\ref{sec:broader_context}, we work in the favor of a library organized as a theory graph, believing that it leverages the structure of mathematical knowledge. Morphisms of the graph are the means to relating the different theories. In this section, we present our approach to building a library that emphasizes these connections. 
 
-In Section~\ref{sec:thry_based_libs} we discuss the motivation behind building such a library. In Section~\ref{sec:ms_combinators} we present the combinators used in building it and discuss how they are arrow based. Section~\ref{sec:lib_implementation}, discusses the challenges of the implementation of the combinators to build a theory graph. We finally show some interesting cases of library definitions in Section~\ref{sec:interesting_cases}. 
+In Section~\ref{sec:thry_based_libs} we discuss the motivation behind building such a library. In Section~\ref{sec:ms_combinators} we present the combinators used in building it and discuss how they are morphism based. Section~\ref{sec:lib_implementation}, discusses the challenges of the implementation of the combinators to build a theory graph. We finally show some interesting cases of library definitions in Section~\ref{sec:interesting_cases}. 
 \end{comment}
 
 
 \section{Theory Graph Development}
 \label{sec:thry_graph_in_action}
 
-Although many formal systems support theory graph structure, more support to using and defining arrows is needed. 
-Specware and MMT force users to provide all details of theories and morphisms between them. IMPS, in some cases, generate morphisms given source and target theories. 
+Although many formal systems support theory graph structures, more support for using and defining morphisms is needed. 
+Specware~\cite{Smith99} and MMT~\cite{MMT} force users to provide all details of theories and morphisms between them. IMPS~\cite{farmer1993imps}, in some cases, generate morphisms given source and target theories. 
 
 %On the other hand, it leads to a multiple diamonds (a.k.a. multiple inheritance) in the development of the hierarchy. 
 %Many formal systems support a theory graph approach, and realizes the need of having morphisms between theories. Examples of these are Clear, OBJ, CASL, Maude, Specware, IMPS, and MMT. 
 
 %Clear is - to our knowledge - the first system that provides a modular way to write formal specifications. It provide theory combinators to build larger theories from smaller ones. 
 %\ednote{A good resource for Clear is the PhD thesis of Sanella with the title: semantics, implementation and pragmatics of CLEAR} 
-Another way to support building a library rich in morphisms is to provide combinators to handle some of the work. Clear is - to our knowledge - the first system to use combinators for creating new theories\footnote{Clear is a specification language, and theories are used under the name specifications.}. OBJ and CASL are successors of Clear that also support combinators. We focus our discussion on CASL as a representative to these systems, as it is the only living one now and so we were only able to look at its library and run experiments on it. 
-We realize two problems related to combinators in CASL. First, It is not always possible to flatten theories built through the use of combinators, mainly when using hiding and freeness combinators~\cite{CoFI:2004:CASL-RM}. The second problem is related to how the \emph{union} operation is implemented. The \lstmath{union} operator is the one that handles multiple inheritance. Although the semantics of union is a pushout in the category of specifications and morphisms, it is computed on a 'same name, same thing' basis~\cite{bidoit2003casl}. Figure~\ref{fig:casl_expr} shows the problems that occur from using this principle. 
+Another way to support building a library rich in morphisms is to provide combinators to handle some of the work. Clear~\cite{Goguen1980} is --- to our knowledge --- the first system to use combinators for creating new theories\footnote{Clear is a specification language, and theories are used under the name specifications.}. OBJ~\cite{Obj2000Goguen} and CASL~\cite{CoFI:2004:CASL-RM} are successors of Clear that also support combinators. We focus our discussion on CASL as a representative to these systems, as it is the only living one now and so we were only able to look at its library and run experiments on it. 
+We realized two problems related to combinators in CASL. First, It is not always possible to flatten theories built through the use of combinators, mainly when using hiding and freeness combinators~\cite{CoFI:2004:CASL-RM}. The second problem is related to how the \emph{union} operation is implemented. The \lstmath{union} operator is the one that handles multiple inheritance. Although the semantics of union is a pushout in the category of specifications and morphisms, it is computed on a 'same name, same thing' basis~\cite{bidoit2003casl}, i.e. two declarations are considered the same if they have the same name. Figure~\ref{fig:casl_expr} shows the problems that occur from using this principle. 
 \begin{figure}
 \input{figures/casl-exp.tex}
 \end{figure}
-Both specifications \verb|Ext1| and \verb|Ext2|, on the left side, extend the \verb|BaseSpec| with a binary operation and its unit element. The semantics of the \lstmath{combine} (or \lstmath{and}) combinator is presented as a pushout in the category of specifications. A pushout between the two arrows \lstmath{BaseSpec $\;\to\;$ Ext1} and \lstmath{BaseSpec $\;\to\;$ Ext2} would result in a theory with one sort \lstmath{A},and  two binary operations with two different unit elements. When trying this specification in CASL\footnote{using the online tool at: \url{http://rest.hets.eu}}, it computes the declarations on the right side of the figure which has only one unit element for the two binary operations. This is different from what a pushout would compute. 
+Both specifications \verb|Ext1| and \verb|Ext2|, on the left side, extend the \verb|BaseSpec| with a binary operation and its unit element. The semantics of the \lstmath{combine} (or \lstmath{and}) combinator is presented as a pushout in the category of specifications. A pushout between the two morphisms \lstmath{BaseSpec $\;\to\;$ Ext1} and \lstmath{BaseSpec $\;\to\;$ Ext2} would result in a theory with one sort \lstmath{A}, and  two binary operations with two different unit elements. When trying this specification in CASL\footnote{using the online tool at: \url{http://rest.hets.eu}}, it computes the declarations on the right side of the figure which has only one unit element for the two binary operations. This is different from what a pushout would compute. 
 
 We performed the same experiment with Isabelle locale expressions~\cite{ballarin2003locales} and got similar results. In the following section, we introduce a collection of combinators that provide solid infrastructure for dealing with theories and morphisms to build a large library organized as a theory graph. 
 
 \section{MathScheme Combinators}
 \label{sec:msCombinators}
 
-Combinators provide algebra for manipulating theories in different ways. They enhance modularity, reusability and maintainability of the library by saving the user the need to repeat definitions. \cite{carette2018building} introduces $4$ combinators based on the definitions of theories as contexts, and theory morphisms in dependent type theory as we discuss them in Sections~\ref{sec:background:theory} and \ref{sec:background:morphisms}. %The combinators form a language to create a librarnew theories by reusing older ones. We use this language to build a library of $250$ theories as we discuss in Section~\ref{sec:lib_implementation}. 
+Combinators manipulate theories in different ways. They enhance modularity, reusability and maintainability of the library by saving the user the need to repeat definitions. \cite{carette2018building} introduces $4$ combinators based on the definitions of theories as contexts and theory morphisms in dependent type theory as we discussed them in Sections~\ref{sec:background:theory} and \ref{sec:background:morphisms}. %The combinators form a language to create a librarnew theories by reusing older ones. We use this language to build a library of $250$ theories as we discuss in Section~\ref{sec:lib_implementation}. 
 %many theorem provers that are in use today, do not have the notion of morphism and suffer from redundancy. Agda and Coq are big examples of that. Apart from extensions, they do not support combining modules.
 
 %In~\cite{carette2018building}, we present $4$ combinators along with their operational and categorical semantics. The semantics we provide is based on the category of contexts and the categorical semantics of dependent type theory. In the following section we present the combinators and their semantics. 
 
 %Despite the large literature on using combinators to save work and reduce redundancy, Most of the systems we listed here suffer from redundancies in their own libraries. \ednote{Add an appendix about the different redundancies}To avoid this redundancy, we suggest in~\cite{carette2018building} a set of combinators that form a compact language to describe algebraic theories by reusing older ones. We use these combinators to build our library as well as some important design decisions 
-A library built using these combinators respect the following design decisions 
+A library built using these combinators embody the following design decisions:
 \begin{itemize}
     \item Theories can always be flattened. Not all users of a formal system are interested in the hierarchy used to build the theories they need. A mathematician who wants to prove results in \verb|Group| theory is only interested in groups with their standard definitions and results. This user should not be forced to work with groups as extensions of some theory, like \verb|Monoid|. Abstracting over the hierarchy in users' code also has the advantage that the code need not change in case the hierarchy change, like in the case of changing the type class hierarchy in Haskell~\cite{wiki:haskell_hierarch}. 
     \item Names are taken seriously. Similar concepts have different names in different contexts of mathematics. The unit of \verb|_+_| has a different name than the one of \verb|_*_| and confusing their names would be a huge usability problem. The combinators introduced in~\cite{carette2018building} does not generate any names nor attempt to use any heuristics to solve name clashes. Instead name clashes are detected and the library developer is asked to resolve them.  
     \item Tiny theories are systematically used. Since we do not provide a drop combinator, we use tiny theories to make sure all intermediate results are available for future theories to use. 
-    \item Arrows are the main building unit of the library. The semantics and the implementation of the combinators is based on arrows, not theories. This makes it possible compute category theory operations based on their real semantics, not an approximation like same-name-same-thing. 
+    \item Morphisms are the main building unit of the library. The semantics and the implementation of the combinators are based on morphisms, not theories. This makes it possible compute category theory operations based on their real semantics, not an approximation like same-name-same-thing. 
 \end{itemize}
 
 
-The combinators assume the underlying logic in which theories are defined to be a dependent type theory (DTT). Therefore, a theory is viewed as a context, or a telescope as defined in equation~\ref{eq:telescope}. But a specific variant of DTT is not assumed, instead many of the details are abstracted from. The minimum requirements of the underlying DTT are listed in ~\cite{carette2018building}. We include them here for coherence. These requirements are 
+The combinators assume the underlying logic in which theories are defined to be a dependent type theory (DTT). Therefore, a theory is viewed as a context, or a telescope as defined in equation~\ref{eq:telescope}. But a specific variant of DTT is not assumed, instead many of the details are abstracted from. The minimum requirements of the underlying DTT are listed in ~\cite{carette2018building}. We include them here for convenience and completeness. These requirements are:  
 \begin{itemize}
-    \item An infinite set of variable names \vars.
+    \item An infinite set \vars of variable names.
     
     \item A typing judgement for terms $s$ of type $\sigma$ in a context
     $\Gamma$ which we write $\Gamma \vdash s : \sigma$.
@@ -110,28 +111,29 @@ We now introduce the combinators we use from~\cite{carette2018building}
 \label{subsec:extension}
 Extensions are the most basic combinator. On its own, it makes it possible to define a flat hierarchy as in Figure~\ref{fig:flatExtensions}. 
 
-The input to an extension combinator are a theory presentation $\Gamma$ and a list of declarations $\extDecls = \left\{a_{i}:\sigma_{i}:\kappa_{i}\right\}_{i<n}$. 
-The combinator computes a new theory (\lstmath{pres}) $\Gamma\rtimes\Delta^+$ and an identity morphism (\lstmath{$\tilde{\text{id}}$}) from $\Gamma$ to $\Gamma\rtimes\Delta^+$, where $\rtimes$ is asymmetric operation that adds definitions to a telescope. On one side $\Gamma$ is a well-formed theory, but $\Delta^+$ may not be well-formed on its own. 
-The construction is defined as
+The inputs to an extension combinator are a theory presentation $\Gamma$ and a list of declarations $\extDecls = \left\{a_{i}:\sigma_{i}:\kappa_{i}\right\}_{i<n}$. 
+The combinator computes a new theory $\Gamma\rtimes\Delta^+$ and an identity morphism (\lstmath{$\tilde{\text{id}}$}) from $\Gamma$ to $\Gamma\rtimes\Delta^+$, where $\rtimes$ is an asymmetric operation that adds definitions to a telescope. On one side $\Gamma$ is a well-formed theory, but $\Delta^+$ may not be well-formed on its own. 
+The construction is defined as: 
 \[\extensionDef{\extSource}{\extDecls}\]
-An extension is well-formed if 
+An extension is well-formed if the new symbol does not occur in $\Gamma$ and its type is well-formed in $\Gamma$. 
 \begin{eqnarray}
 \forall i \cdot a_i \notin \syms{\Gamma_{i-1}} \\
 \forall i \cdot \Gamma_{i-1} \vdash \sigma_i : \kappa_{i}
 \end{eqnarray}
-where $\Gamma_{i-1} = \Gamma \rtimes \{a_0 : \sigma_0 : \kappa_0\  \cdots \ a_{i-1} : \sigma_{i-1} : \kappa_{i-1}\}$ 
+where $\Gamma_{i-1} = \Gamma \rtimes \{a_0 : \sigma_0 : \kappa_0\  \cdots \ a_{i-1} : \sigma_{i-1} : \kappa_{i-1}\}$.  
 
 %\paragraph{Categorical Semantics}
 %In the category of contexts $\ctxcat$, an extension corresponds to a forgetful functor. 
 
 \paragraph{Example}
-Extensions are used when new concepts are added. According to little theories, the concept need to be added in its smallest context, i.e. if $\Gamma \vdash c : t$ then for every $\Sigma \subset \Gamma$, $\Sigma \nvdash c : t$. Tiny theories encourages adding one new declaration at a time. A good example is adding properties of a binary operation, like \lstmath{commutativity} or \lstmath{associativity} as follows\footnote{The syntax we use here is the one used in our implementation. We give brief explanations for them here, and introduce them in details in the next section.} 
+Extensions are used when new concepts are added. According to little theories, the concept need to be added in its smallest context, i.e. if $\Gamma \vdash c : t$ then for every $\Sigma \subset \Gamma$, $\Sigma \nvdash c : t$. Tiny theories encourages adding one new concept at a time. A good example is adding properties of a binary operation, like \lstmath{commutativity} or \lstmath{associativity} as follows\footnote{The syntax we use here is the one used in our implementation. We give brief explanations for them here, and introduce them in details in the next section.} 
 \begin{togcode}
-Semigroup = extend Magma {assoc : { x y z : A } ~$\to$~ op x (op y z) ==
-                                                   op (op x y) z } 
-CommMagma = extend Magma {comm  : { x y : A } ~$\to$~ op x y == op y x }
+Semigroup = 
+  extend Magma {assoc : {x y z : A} ~$\to$~ op x (op y z) == op (op x y) z} 
+CommMagma = 
+  extend Magma {comm  : {x y : A} ~$\to$~ op x y == op y x}
 \end{togcode} 
-where \lstmath{Magma} is the theory $\Gamma$ being extended, \lstmath{assoc} and {comm} are definitions in $\Delta^+$. 
+\noindent where \lstmath{Magma} is the theory $\Gamma$ being extended, \lstmath{assoc} and {comm} are definitions in $\Delta^+$. 
 
 \subsection{Rename}
 \label{subsec:rename}
@@ -139,10 +141,10 @@ Renames do not add new concepts, but allows using flexible notations while still
 Given a theory presentation $\Gamma$ and a rename function $\pi$, the output of the rename operation is a new theory (\lstmath{pres}) $\pi \cdot \Gamma$ which is computed by performing a substitution of $\pi$ into the declarations of $\Gamma$, and an embedding morphism $\tilde{\pi} : \Gamma \to \pi\cdot\Gamma$ that maps symbols of $\Gamma$ to those of $\pi\cdot\Gamma$ based on the renaming function $\pi$. 
 \[ \renameDef{\renSource}{\renFun} \]
 
-A rename operation is well-formed whenever the rename function $\pi : |\Gamma| \to \vars$ is an injection, and the codomain is a $k-$permuation on $\vars$, where $k$ is the number of declarations in $\Gamma$. 
+A rename operation is well-formed whenever the rename function $\pi : |\Gamma| \to \vars$ is an injection, and the codomain is a $k-$permutation of $\vars$, where $k$ is the number of declarations in $\Gamma$. 
 
 \paragraph{Example}
-After defining \lstmath{Semigroup} in the example of the previous section over a binary operation \lstmath{op}, one would want to define the additive and multiplicative versions using the symbols \lstmath{+} and \lstmath{*}, resp. It also make sense to have a morphism from \lstmath{Semigroup} to those variants that only differ in the names of the symbols. The rename combinator does just that 
+After defining \lstmath{Semigroup} in the example of the previous section over a binary operation \lstmath{op}, one would want to define the additive and multiplicative versions using the symbols \lstmath{+} and \lstmath{*}, resp. It also make sense to have a morphism from \lstmath{Semigroup} to those variants that only differ in the names of the symbols. The rename combinator does just that: 
 \begin{togcode}
 AddSemigroup  = rename Semigroup {op to +} 
 MultSemigroup = rename Semigroup {op to *} 
@@ -159,18 +161,19 @@ Magma   = extend Carrier {op : A -> A -> A}
 \end{togcode} 
 The flattened version of the theories of these libraries are 
 \begin{itemize}
+\item[] \lstmath{Empty = []}
 \item[] \lstmath{Carrier = [A : Set]}
 \item[] \lstmath{Magma = [A : Set, op : A $\;\to\;$ A $\;\to\;$ A]} 
 \item[] \lstmath{Pointed = [A : Set, e : A]} 
 \end{itemize}
-Now we want to define the theory \lstmath{PointedMagma} which has a binary operation and a point. It makes sense to assume this theory to be an extension of both \lstmath{Magma} and \lstmath{Pointed}. Using the extension combinator will not help us here. In this situation, we are facing the diamond problem in which our new theory is inheriting from two theories and it is not clear whether a declaration, lilke \lstmath{A : Set} should be repeated or not. 
+Now we want to define the theory \lstmath{PointedMagma} which has a binary operation and a point. It makes sense to assume this theory to be an extension of both \lstmath{Magma} and \lstmath{Pointed}. Using the extension combinator will not help us here. In this situation, we want a diamond in which our new theory is inheriting from two theories, but it is not clear whether a declaration, for example (\lstmath{A : Set}) should be repeated or not. 
 The situation is more complicated if we consider the definition of \lstmath{AdditiveSemigroup} by relating it to \lstmath{AdditiveMagma} defined as 
 \begin{togcode} 
 AdditiveMagma = rename Magma {op to +} 
 \end{togcode} 
-and \lstmath{Semigroup} defined as in Section~\ref{subsec:extension}. Here we have the same binary operation with different names. Which name should be used? Or should they be repeated, having two  binary operations in the outcome? 
+\noindent and \lstmath{Semigroup} defined as in Section~\ref{subsec:extension}. Here we have the same binary operation with different names. Which name should be used? Or should they be repeated, having two  binary operations in the outcome? 
 
-The case when a theory needs to be related to more than one is prevalent when building large libraries. As we see in these examples, it occurs very early on when formalizing the algebraic hierarchy. The combine operation supports the multiple inheritance situation by relying on the information in the morphisms. Combine performs a pushout of the morphisms in the category of theory presentations, i.e. a pullback in the category of contexts.  A pushout is a $5-$ary operation that takes $2$ arrows and $3$ objects of a category. The arrows need to originate from the same source. The $3$ theories can be deduced from the arrows as the two target theories of the arrows and their common source. For cases where there are name clashes, like the name clash between \lstmath{op} and \lstmath{+} in the \lstmath{AdditiveSemigroup} example, the user is required to provide renames to resolve it. This is consistent with our design decision to not use heuristics or name generation to resolve any name conflicts. 
+The case when a theory needs to be related to more than one ancestor is prevalent when building large libraries. As we see in these examples, it occurs very early on when formalizing the algebraic hierarchy. The combine operation supports the multiple inheritance situation by relying on the information in the morphisms. Combine performs a pushout of the morphisms in the category of theory presentations, i.e. a pullback in the category of contexts.  A pushout is a $5-$ary operation that takes $2$ morphisms and $3$ objects of a category. The morphisms need to originate from the same source. The $3$ theories can be deduced from the morphisms as the two target theories of the morphisms and their common source. For cases where there are name clashes, like the name clash between \lstmath{op} and \lstmath{+} in the \lstmath{AdditiveSemigroup} example, the user is required to provide renames to resolve it. This is consistent with our design decision to not use heuristics or name generation to resolve any name conflicts. 
 
 The two morphisms of the combine operation are $u_{\Delta}$ and $u_{\Phi}$ both having $\Gamma$ as their source, and having $\Delta$ and $\Phi$, resp, as their targets. 
 \[
@@ -189,15 +192,13 @@ The two morphisms of the combine operation are $u_{\Delta}$ and $u_{\Phi}$ both 
 %It is well agreed upon that the semantics of such an operation should be a pushout in the category of theory presentations\ednote{cite the other systems or refer to a previous section}.
 $\pi_{\Delta}$ and $\pi_{\Phi}$ are two rename functions given to resolve name conflicts. 
 
-There is the following precondition for performing a combine 
+\noindent A well-formed combine needs to ensure that any two symbols \lstmath{x $\;\in\;\mid\Delta\mid$} and \lstmath{y $\;\in\;\mid\Phi\mid$} --- after applying the renaming function --- map to the same symbol if they have originated from the source theory $\Gamma$ and that there are no name clashes when mapping a symbol $z$ across the two morphisms and rename functions.  The precondition for combine operation is described by the following equivalence: 
 \begin{equation}
 \pi_{\Delta} \left( x \right) = \pi_{\Phi} \left( y \right)
 \Leftrightarrow \exists z \in \left| \Gamma \right|.\ x =
 \substitution{z}{u_{\Delta}}{} \wedge y = \substitution{z}{u_{\Phi}}{} 
 \label{eq:combinePrecond}
 \end{equation}
-for every \lstmath{x $\;\in$ $\mid\Delta\mid$} and \lstmath{y $\;\in$ $\mid\Phi\mid$}. 
-This precondition ensures that after applying the rename function on symbols \lstmath{x} and \lstmath{y}, if they map to the same symbol then they have originated from the same symbol in the source theory $\Gamma$. It also ensures that there are no name clashes when mapping a symbol $z$ across the two morphisms and rename functions.  
 
 \paragraph{Example}
 We have given two examples in the beginning of this section illustrating situations in which combine operations is needed. A \lstmath{PointedMagma} is defined as 
@@ -219,33 +220,33 @@ The embeddings used here are \lstmath{Magma $\;\mapsto\;$ AdditiveMagma} and \ls
 \section{The Flattener}
 \label{sec:lib_implementation}
 The combinators from~\cite{carette2018building} has been implemented in~\citepalias{cicm2019diagrams, TPCProto, meta-prim-blog}. 
-Experiments have been performed on applying them for creating a large library of algebraic constructions~\cite{mathscheme2011experiments}. With the exception of~\cite{cicm2019diagrams}, the other implementations and the associated library did not emphasize the morphisms in the way presented in~\cite{carette2018building} and summarized in the previous section. Instead, they based their computation of pushout on theories using same-name-same-thing approach, which makes errors like the one in Figure~\ref{fig:casl_expr} go undetected.  
+Experiments have been performed on applying them for creating a large library of algebraic constructions~\cite{mathscheme2011experiments}. With the exception of~\cite{cicm2019diagrams}, the other implementations and the associated libraries did not emphasize the morphisms in the way presented in~\cite{carette2018building} and summarized in the previous section. Instead, they based their computation of pushout on theories using same-name-same-thing approach, which makes errors like the one in Figure~\ref{fig:casl_expr} go undetected.  
 This approach also computes results for expressions that should not be meaningful in the language of combinators presented in~\cite{carette2018building}. Consider the following expression
 \begin{togcode}
 SemiRng = combine AdditiveCommutativeMonoid Semigroup Ringoid
           over RingoidSig
 \end{togcode}
-Note that the definition of \lstmath{SemiRng} above is different from the syntax we presented before. First, there is no mention of the rename function, as they all are the identity. Second, there are $3$ theories to be combined, which means $3$ arrows. Normally, we talk about combining $2$ arrows with the semantics being the pushout. In this case, we have $3$ arrows each has the source \lstmath{RingoidSig} and the three targets are the arguments to combine. In this case, a colimit is needed, not a pushout. Finally, there is the \lstmath{over} part of the expression which was part of the original work in~\cite{CaretteOConnorTPC} and then removed in the more recent version~\cite{carette2018building}. The over part specifies what the source of the morphisms is. In Section~\ref{subsec:overPart} we discuss why we need an \lstmath{over} part in the combine declaration. 
+Note that the definition of \lstmath{SemiRng} above is different from the syntax we presented before. First, there is no mention of the rename functions, as they all are the identity. Second, there are $3$ theories to be combined, which means $3$ morphisms. Normally, we talk about combining $2$ morphisms with the semantics being the pushout. In this case, we have $3$ morphisms each has the source \lstmath{RingoidSig} and the three targets are the arguments to combine. In this case, a colimit is needed, not a pushout. Finally, there is the \lstmath{over} part of the expression which was part of the original work in~\cite{CaretteOConnorTPC} and then removed in the more recent version~\cite{carette2018building}. The over part specifies what the source of the morphisms is. In Section~\ref{subsec:overPart} we discuss why we need an \lstmath{over} part in the combine declaration. 
 
 An implementation that reflects the principles of the combinators will not be able to find a morphism between \lstmath{RingoidSig} (the common source) and \lstmath{Semigroup} (the second target) to compute the expression above. 
 The theory \lstmath{RingoidSig} has declarations for two binary operations, while \lstmath{Semigroup} has only one. A morphism from \lstmath{RingoidSig} to \lstmath{Semigroup} needs to drop one binary operation. This is not possible given the choice of combinators that avoids a drop operation. 
 
-It is worth noting that by implementing the combinators we mean computing a flattened version of the theory presentation described by the given expressions. This is performed by the flattener that given a theory presentation produces a tog dependent record of declarations within the described theory presentation. 
+It is worth noting that by implementing the combinators we mean computing a flattened version of the theory presentation described by the given expressions. This is performed by the flattener that given a theory presentation produces a Tog dependent record of declarations within the described theory presentation. 
 
 In Section~\ref{subsec:overPart} we discuss a modification in the syntax of combine and why we have it. We introduce the syntax of the language we implement in Section~\ref{sec:impl:expressions} and start discussing the implementation in Section~\ref{subsec:theoriesMorphisms} by presenting how we represent theories and morphisms in our framework. In Section~\ref{subsec:graph} we present the type of the theory graph. The implementation of the combinators that build the graph is presented in Section~\ref{subsec:combinatorsImpl}. 
 
-\subsection{Referring to arrows}
+\subsection{Referring to Morphisms}
 \label{subsec:overPart}
 %\label{subsec:coreDecisions}
 %We slightly modify the restrict the original combinators to solve some implementation issues. We conclude by summarizing the syntax of the tog expressions that we use based on the syntax of the combinators. 
 %\subsubsection{Referring to arrows}
-The extension and rename combinators needs to identify a theory in the graph to operate on and compute the output theory and arrow. The input theory is part of the expression of the combinator. 
-In the case of \lstmath{combine}, the inputs to the combinator are two morphisms and two rename functions. But the syntax for combine is not defined in terms of arrows. Instead, it is defined in terms of theories and the arrows are left to the implementation to infer them. 
+The extension and rename combinators need to identify a theory in the graph to operate on and compute the output theory and morphism. The input theory is part of the expression of the combinator. 
+In the case of \lstmath{combine}, the inputs to the combinator are two morphisms and two rename functions. But the syntax for combine is not defined in terms of morphisms. Instead, it is defined in terms of theories and the morphisms are left to the implementation to infer them. 
 For example, the expression 
 \begin{togcode}
 combine CommutativeMagma {} AssociativeMagma {}
 \end{togcode}
-does give information that the targets of the two embeddings involved are \lstmath{CommutativeMagma} and \lstmath{AssociativeMagma}, but it does not specify the source of the embeddings. The algorithm has three choices of the source theory, which is common to both morphisms. 
+\noindent does give information that the targets of the two embeddings involved are \lstmath{CommutativeMagma} and \lstmath{AssociativeMagma}, but it does not specify the source of the embeddings. The algorithm has three choices of the source theory, which is common to both morphisms. 
 \begin{itemize}
     \item If the source theory is \lstmath{Magma}, the theory resulting from the combine operation will have one binary operation that is both associative and commutative 
     \item If the source theory is \lstmath{Carrier}, then the definition is describing a theory (along with the related morphisms) that has two binary operations, one associative and the other commutative. But this theory will not be computed because of the name clash; The user has to choose another name for one of the two operations. A possible fix is 
@@ -255,16 +256,16 @@ combine CommutativeMagma {op to +} AssociativeMagma {op to *}
 \end{itemize}
 As the hierarchy gets deeper this problem becomes more complicated. For example, \lstmath{CommutativeGroup} and \lstmath{AssociativeGroup} have many more possibilities for their common source. 
 
-The reason of this problem is that the syntax of the language presented in~\cite{carette2018building} is based on naming target theories, while the syntax is based on having the embedding available. This leaves the gap of using the target theories to infer the embeddings. Using theories, instead of morphisms, in the syntax is a usability decision. Arrows do not have canonical names, mainly because they do not appear in informal mathematics. For example, it is hard to think of a name for the arrow (the result of composition of arrows) from the \lstmath{PointedMagma} to \lstmath{Monoid} theory. It is easier to refer to it in terms of the source and the target than to give it any name. 
+The reason of this problem is that the syntax of the language presented in~\cite{carette2018building} is based on naming target theories, while the syntax is based on having the embedding available. This leaves the gap of using the target theories to infer the embeddings. Using theories, instead of morphisms, in the syntax is a usability decision. Morphisms do not have canonical names, mainly because they do not appear in informal mathematics. For example, it is hard to think of a name for the morphism (that result of composition of morphisms) from the \lstmath{PointedMagma} to \lstmath{Monoid} theory. It is easier to refer to it in terms of the source and the target than to give it any name. 
 
 We use an approach that still uses theories for usability reasons but gives more information for inferring the embeddings. We modify the syntax of \lstmath{combine} in the paper to have an \lstmath{over} part similar to the initial work on the combinators~\cite{CaretteOConnorTPC}. 
 
 \begin{comment}
 \subsubsection{All Paths Commute Approach} 
 \ednote{@JC: Do we need to remove mixin, so all paths commute?} 
-When referring to an arrow using its source and target, we implicitly assume that all paths commute, i.e.: Given the source and target, they either is no path, one path, or multiple paths that commute between them. 
+When referring to a morphism using its source and target, we implicitly assume that all paths commute, i.e.: Given the source and target, they either is no path, one path, or multiple paths that commute between them. 
 
-In Section~\ref{sec:background:morphisms}, we discussed the three types of arrows, identity, embeddings and general morphisms. We also noted in Section~\ref{subsec:mixin} that the only combinator that accepts and generates a general morphism is \lstmath{mixin}. If we restrict our language to \lstmath{extension}, \lstmath{rename}, and \lstmath{combine}, we end up with an all-embeddings graph, in which all paths commute. 
+In Section~\ref{sec:background:morphisms}, we discussed the three types of morphisms, identity, embeddings and general morphisms. We also noted in Section~\ref{subsec:mixin} that the only combinator that accepts and generates a general morphism is \lstmath{mixin}. If we restrict our language to \lstmath{extension}, \lstmath{rename}, and \lstmath{combine}, we end up with an all-embeddings graph, in which all paths commute. 
 \end{comment}
 
 \subsection{Theory Expressions}
@@ -273,14 +274,14 @@ The language that we implement has the following syntax
 \begin{togcode}
  Map m = {a~$_0$~ to b~$_0$~ ; ~$\cdots$~ ; a~$_n$~ to b~$_n$~}
  Theory T = {a~$_0$~ : t~$_0$~ ~$\cdots$~ a~$_n$~ : t~$_n$~}
- extend T {a~$_0$~ : t~$_0$~ ~$\cdots$~ a~$_n$~ : t~$_n$~}
- rename T m 
- combine T~$_1$~ m~$_1$~ T~$_2$~ m~$_2$~ over T
- id from T~$_1$~ to T~$_2$~
+ T~$^\prime$~ = extend T {a~$_0$~ : t~$_0$~ ~$\cdots$~ a~$_n$~ : t~$_n$~}
+ T~$^\prime$~ = rename T m 
+ T~$^\prime$~ = combine T~$_1$~ m~$_1$~ T~$_2$~ m~$_2$~ over T
+ i = id from T~$_1$~ to T~$_2$~
 \end{togcode} 
 %{a~$_0$~ to b~$_0$~ ; ~$\cdots$~ ; a~$_n$~ to b~$_n$~}
 %{a'~$_0$~ to b'~$_0$~ ; ~$\cdots$~ ; a'~$_n$~ to b'~$_n$~}
-where \lstmath{T}, \lstmath{T$_1$}, and \lstmath{T$_2$} are theories, \lstmath{m}, \lstmath{m$_1$}, and \lstmath{m$_2$} are mappings that are either previously defined using the \lstmath{Map} keyword or expanded as a list of mappings 
+\noindent where \lstmath{T}, \lstmath{T$^\prime$}, \lstmath{T$_1$}, and \lstmath{T$_2$} are theories, \lstmath{m}, \lstmath{m$_1$}, and \lstmath{m$_2$} are mappings that are either previously defined using the \lstmath{Map} keyword or expanded as a list of mappings 
 \lstmath{$\{$a$_0$ to b$_0$ ; ... ; a$_n$ to b$_n$ $\}$}. 
 
 Although one can declare a theory with a list of declarations using the \lstmath{Theory} keyword, we only use it to create the empty theory. 
@@ -303,11 +304,11 @@ data GView  = GView {
   target  :: GTheory,
   rename :: Rename }  
 \end{hscode}
-where \lstmath{type Rename = Map.Map Name_ Name_} is the mapping function. 
+\noindent where \lstmath{type Rename = Map.Map Name_ Name_} is the mapping function. 
 
 \subsection{Theory Graph Structure}
 \label{subsec:graph}
-We define a theory graph as a name-to-theory map and a name-to-view map 
+We define a theory graph as a set of named theories for nodes and a set of named views for edges. 
 \begin{hscode}
 data TGraph = TGraph { 
   _nodes :: Map.Map Name_ GTheory,
@@ -319,7 +320,7 @@ We noticed that in many cases, the same renames are being reused. So, we also ad
 \begin{hscode}
 Map plus-zero = {op to + ; e to 0}
 \end{hscode}
-and reuse it. Accordingly, a library consists of a theory graph and some mappings. 
+\noindent and reuse it. Accordingly, a library consists of a theory graph and some mappings. 
 \begin{hscode}
 data Library = Library {
   _graph   :: TGraph,
@@ -335,7 +336,7 @@ data Language =
   | TheoryC Name [Constr]
   | ModExprC Name ModExpr
 \end{togcode}
-where \lstmath{MappingC} creates a mapping function, \lstmath{TheoryC} creates a theory from a list of declarations, and \lstmath{ModExprC} is the constructor for creating theory expressions. We discuss them in the following sections. 
+\noindent where \lstmath{MappingC} creates a mapping function, \lstmath{TheoryC} creates a theory from a list of declarations, and \lstmath{ModExprC} is the constructor for creating theory expressions. We discuss them in the following sections. 
 
 %We introduced the expressions we use to build the theory graph in Section~\ref{sec:impl:expressions}. In this section, we discuss our implementation for these expressions. The language that we introduce to Tog is described here 
 
@@ -346,7 +347,7 @@ addMapping :: Name -> [RenPair] -> Library -> Library
 addMapping nm rens = 
    over mappings (Map.insert (nm^.name) (renPairsToMapping rens))
 \end{hscode}
-\lstmath{over} is the setter function we get by using Haskell lenses. It sets the \lstmath{mappings} field of the library to a new instance of \lstmath{Map} that adds the new mapping to the ones in the input library. 
+\noindent \lstmath{over} is the setter function we get by using Haskell lenses. It sets the \lstmath{mappings} field of the library to a new instance of \lstmath{Map} that adds the new mapping to the ones in the input library. 
 
 \subsubsection{Flat Theories}
 Given a theory presentation as a list of declarations, we construct the new theory and add it to the list of theories in the graph without any morphisms connecting them to other theories. 
@@ -373,8 +374,8 @@ updateGraph nm (Right ut) =
                          ("To"++nm++"2",uRight ut),
                          ("To"++nm++"D",diagonal ut)])
 \end{hscode}
-The first argument to \lstmath{updateGraph} is the name of the new theory. Then, the function expects the arrows resulting from the combinator to be added to the graph. We know that all the combinators compute only one new theory. 
-But, the number of computed arrows is different based on the combinators. \lstmath{extends} and \lstmath{rename} generates one morphism, while \lstmath{combine} generates three. We capture this with the type \lstmath{Either GView PushOut}, where \lstmath{Pushout} is defined as 
+The first argument to \lstmath{updateGraph} is the name of the new theory. Then, the function expects the morphisms resulting from the combinator to be added to the graph. We know that all the combinators compute only one new theory. 
+But, the number of computed morphisms is different based on the combinators. \lstmath{extends} and \lstmath{rename} generates one morphism, while \lstmath{combine} generates three. We capture this with the type \lstmath{Either GView PushOut}, where \lstmath{Pushout} is defined as 
 \begin{hscode}
 data PushOut = PushOut { -- of a span
   uLeft    :: GView,
@@ -382,9 +383,9 @@ data PushOut = PushOut { -- of a span
   diagonal :: GView,
   apex     :: GTheory } -- common point
 \end{hscode}
-The names of the new arrows are generated based on the names of the new theories. Since a new theory with a user given name is defined every time, we know that the new arrow names have not been generated before. 
+The names of the new morphisms are generated based on the names of the new theories. Since a new theory with a user given name is defined every time, we know that the new morphism names have not been generated before. 
 
-The functions \lstmath{computeExtend}, \lstmath{computeRename}, and \lstmath{computeCombine} calculate the new arrows and theories. 
+The functions \lstmath{computeExtend}, \lstmath{computeRename}, and \lstmath{computeCombine} calculate the new morphisms and theories. 
 
 \paragraph{1. Computing Extension}
 The inputs to the extension operation is the theory being extended and the new declarations. The new theory is obtained by concatenating the new declarations to the ones already in the theory, given that there is no name clashes between new constructs, and that they are well-typed in the context presented by the theory declarations. 
@@ -399,7 +400,7 @@ extThry :: [Constr] -> GTheory -> GTheory
 extThry newConstrs thry@(GTheory constrs wst) =
   if List.intersect newConstrNames (symbols thry) == []
   then GTheory (constrs ++ newConstrs) wst
-  else error ~$\$$~ "Cannot create theory "
+  else error ~$\$$~ "Name clash detected!"
     where newConstrNames = map getConstrName newConstrs
 \end{hscode}
 
@@ -423,14 +424,14 @@ renameThy (GTheory constrs wst) m =
 \paragraph{3. Computing Combine}
 The algorithm to compute the result of combining two embeddings work as follows 
 \begin{itemize}
-    \item Given the name of the source theory and the two theories to be combined, the first step is to lookup the paths from the source to the target theory. A path is defined as a non-empty list of views. The function \lstmath{getPath} searches the graph for a path between given source and target theories. It starts at the target node and goes backwards, exploring the possible paths until it finds the source. Because none of the combinators result in backward arrows, we know the theory graph has no cycles, it actually looks more like a tree. Therefore, this simple search for a path algorithm works. The two paths are used to construct two instances of \lstmath{QPath}. 
+    \item Given the name of the source theory and the two theories to be combined, the first step is to lookup the paths from the source to the target theory. A path is defined as a non-empty list of views. The function \lstmath{getPath} searches the graph for a path between given source and target theories. It starts at the target node and goes backwards, exploring the possible paths until it finds the source. Because none of the combinators result in backward morphisms, we know the theory graph has no cycles. Therefore, this simple search for a path algorithm works. The two paths are used to construct two instances of \lstmath{QPath}. 
 \begin{hscode}
 data QPath = QPath { 
   path :: Path,
   ren  :: Rename }
 \end{hscode}
 
-    \item At this point we have the two embedding and the two rename functions. The next step is to check the preconditions of \lstmath{combine} as in equation~\ref{eq:combinePrecond}. The function \lstmath{checkGuards} checks that all symbols in the source theory are mapped to the same symbol after applying the rename function. The scope checker of tog ensures the background direction of the equivalence in equation~\ref{eq:combinePrecond}. If the two instances of \lstmath{QPath} passes the precondition, the pushout can be computed.
+    \item At this point we have the two embedding and the two rename functions. The next step is to check the preconditions of \lstmath{combine} as in equation~\ref{eq:combinePrecond}. The function \lstmath{checkGuards} checks that all symbols in the source theory are mapped to the same symbol after applying the rename function. The scope checker of tog ensures the backwards direction of the equivalence in equation~\ref{eq:combinePrecond}. If the two instances of \lstmath{QPath} passes the precondition, the pushout can be computed.
     
     \item The result theory is computed by taking the disjoint union of the declarations in the source theory, the one on the left of the diamond (the first argument), then the one on the right. Note that this operation is not commutative. If we take the disjoint union of the source, right, then left theories, we get an equivalent but not equal theory. The order of declarations will be different, but the two theories will have the same declarations. 
 \begin{hscode}
@@ -450,7 +451,7 @@ diag  = GView commonSrc newThry ~$\$$~ validateRen commonSrc (allMaps left)
 
 \section{Library Building}
 \label{sec:guidelines}
-Once implementation of combinators is in place, we start using them to build the library organized as a theory graph. Our guide in building this library are the definitions in~\citepalias{msLibDecls}, which were part of an experiment~\cite{mathscheme2011experiments} on the way to develping the combinators we discuss in this chapter. Therefore, there are some definitions in that library that referred to non-existing arrows, like the definition of \lstmath{SemiRng} presented in Section~\ref{sec:lib_implementation}. As the implementation of combinators depend on finding the right arrows in the underlying theory graph, we had to work out the correct morphisms. We build a library of $227$ theories describing the algebraic hierarchy using tiny theories approach. Those theories range from \lstmath{Empty} up to \lstmath{Ring} and  \lstmath{BoundedDistributedLattice}.
+Once implementation of combinators is in place, we start using them to build the library organized as a theory graph. Our guide in building this library are the definitions in~\citepalias{msLibDecls}, which were part of an experiment~\cite{mathscheme2011experiments} on the way to develping the combinators we discuss in this chapter. Therefore, there are some definitions in that library that referred to non-existing morphisms, like the definition of \lstmath{SemiRng} presented in Section~\ref{sec:lib_implementation}. As the implementation of combinators depend on finding the right morphisms in the underlying theory graph, we had to work out the correct morphisms. We build a library of $227$ theories describing the algebraic hierarchy using tiny theories approach. Those theories range from \lstmath{Empty} up to \lstmath{Ring} and  \lstmath{BoundedDistributedLattice}.
  
 The examples we give in Section~\ref{sec:msCombinators} gives an intuition of how the combinators work together to build the library. In this section we discuss some the challenges we faced to build the graph defining \lstmath{AdditiveMonoid} as in Figure~\ref{fig:cube_monoid}.  
 %leading to a completely morphism-based development of the library. 
@@ -465,7 +466,7 @@ Magma = extend Carrier {op : A -> A -> A}
 AdditiveMagma = rename Magma {op to +} 
 PointedMagma = combine Pointed {} Magma {} over Carrier
 \end{togcode} 
-These definitions would result in the black theories and arrows in Figure~\ref{fig:addPointedMagma}. Now we want to defined \lstmath{AdditivePointedMagma} consisting of three declarations \lstmath{(A,+,0)} such that all the blue arrows of 
+These definitions would result in the black theories and morphisms in Figure~\ref{fig:addPointedMagma}. Now we want to defined \lstmath{AdditivePointedMagma} consisting of three declarations \lstmath{(A,+,0)} such that all the blue morphisms of 
 Figure~\ref{fig:addPointedMagma} are generated. 
 \begin{figure}[h]
     \begin{tikzcd}
@@ -483,25 +484,25 @@ Using one \lstmath{combine} to define it, we end up with the one of the followin
 \begin{togcode}
 combine AdditiveMagma {} Pointed0 {} over Carrier
 \end{togcode}
-would generate the theory \lstmath{AdditivePointedMagma}, and the three arrows 
+would generate the theory \lstmath{AdditivePointedMagma}, and the three morphisms 
 \begin{itemize}
     \item \lstmath{Carrier $\;\to\;$ AdditivePointedMagma}, 
     \item \lstmath{AdditiveMagma $\;\to\;$ AdditivePointedMagma}, 
     \item \lstmath{Pointed0 $\;\to\;$ AdditivePointedMagma}. 
 \end{itemize}
-The arrow \lstmath{PointedMagma $\;\to\;$ AdditivePointedMagma} won't be generated. 
+The morphism \lstmath{PointedMagma $\;\to\;$ AdditivePointedMagma} won't be generated. 
 
 \item  
 \begin{togcode}
 combine AdditiveMagma {} PointedMagma {op to +} over Magma 
 \end{togcode}
-will not generate the arrow \lstmath{Pointed0 $\;\to\;$ AdditivePointedMagma}. 
+will not generate the morphism \lstmath{Pointed0 $\;\to\;$ AdditivePointedMagma}. 
 
 \item 
 \begin{togcode}
 combine Pointed0 {} PointedMagma {e to 0} over Pointed 
 \end{togcode}
-will not generate the arrow \lstmath{AdditiveMagma $\;\to\;$ AdditivePointedMagma}. 
+will not generate the morphism \lstmath{AdditiveMagma $\;\to\;$ AdditivePointedMagma}. 
 \end{itemize}
 Instead, to get all these connections, we define \lstmath{AdditivePointedMagma} as follows 
 \begin{togcode}
@@ -516,9 +517,9 @@ AdditivePointedMagma =
 which result in the graph in Figure~\ref{fig:addPointedMagmaReal}.  
 \begin{figure}[h]
     \begin{tikzcd}
-        Carrier \arrow[r,hook] \arrow[d,hook] \arrow[rd,hook] & Magma \arrow[r,mapsto] \arrow[d,hook] \arrow[rd,mapsto,dashed,blue] & AdditiveMagma \arrow[d,hook,dashed,blue] \\
-        Pointed \arrow[d,mapsto] \arrow[r,hook] \arrow[rd,mapsto,dashed,blue]& PointedMagma \arrow[rd,mapsto,dashed,blue] \arrow[d,mapsto,dashed,blue] \arrow[r,mapsto,dashed,blue] &  PointedPlusMagma \arrow[d,hook,dashed,blue] \\
-        Pointed0  \arrow[r,hook,dashed,blue] & Pointed0Magma \arrow[r,hook,dashed,blue] & \textcolor{blue}{AdditivePointedMagma} \\       
+        \verb|Carrier| \arrow[r,hook] \arrow[d,hook] \arrow[rd,hook] & \verb|Magma| \arrow[r,mapsto] \arrow[d,hook] \arrow[rd,mapsto,dashed,blue] & \verb|AdditiveMagma| \arrow[d,hook,dashed,blue] \\
+        \verb|Pointed| \arrow[d,mapsto] \arrow[r,hook] \arrow[rd,mapsto,dashed,blue]& \verb|PointedMagma| \arrow[rd,mapsto,dashed,blue] \arrow[d,mapsto,dashed,blue] \arrow[r,mapsto,dashed,blue] &  \verb|PointedPlusMagma| \arrow[d,hook,dashed,blue] \\
+        \verb|Pointed0|  \arrow[r,hook,dashed,blue] & \verb|Pointed0Magma| \arrow[r,hook,dashed,blue] &  \textcolor{blue}{\texttt{AdditivePointedMagma}} \\       
     \end{tikzcd}
     \caption{The construction of AdditivePointedMagma}
     \label{fig:addPointedMagmaReal}
@@ -537,7 +538,7 @@ Zero0 =
 One would want to have \lstmath{AdditiveMonoid} with all the morphisms we introduced in Figure~\ref{fig:cube_monoid}. %But how close we can get to this diagram. 
 We have discussed the construction of \lstmath{AdditivePointedMagma}, and showed how the construction is not precisely as in Figure~\ref{fig:cube_monoid}, although all the morphisms are defined, some are composed of other morphisms. Now, we focus more on the part of defining \lstmath{AdditiveUnital}. 
 
-The definition of \lstmath{AdditiveLeftUnital} and \lstmath{AdditiveRightUnital} goes as follows 
+\noindent The definition of \lstmath{AdditiveLeftUnital} and \lstmath{AdditiveRightUnital} goes as follows 
 \begin{togcode}
 AdditiveLeftUnital = 
   combine AdditivePointedMagma {} LeftUnital plus-zero 
@@ -546,7 +547,7 @@ AdditiveRightUnital =
   combine AdditivePointedMagma {} RightUnital plus-zero 
   over PointedMagma
 \end{togcode} 
-It make sense to expect \lstmath{AdditiveUnital} to have morphisms with \lstmath{Unital}, \lstmath{AdditiveLeftUnital}, and \lstmath{AdditiveRightUnital}. Similar to the case we had in the previous section, a pushout will only compute two of these three morphisms. The possible pushouts are 
+\noindent It make sense to expect \lstmath{AdditiveUnital} to have morphisms with all of \lstmath{Unital}, \lstmath{AdditiveLeftUnital}, and \lstmath{AdditiveRightUnital}. Similar to the case we had in the previous section, a pushout will only compute two of these three morphisms. The possible pushouts are 
 \begin{togcode}
 combine AdditiveLeftUnital {} AdditiveRightUnital {} 
 over AdditivePointedMagma
@@ -571,50 +572,50 @@ The same problem occurs when defining \lstmath{AdditiveMonoid} and attempting to
     \item \lstmath{Monoid $\;\longrightarrow\;$ AdditiveMonoid}
 \end{itemize}
 
-We considered the possibility of using colimits or diagram combinators as in~\cite{cicm2019diagrams}. In either case, we want to arrive at the right pushouts and build diagrams or colimits on top of it. The solution we adopted here is to enable the user to add identity embedding between theories. This allowed us to substitute for arrows that are not generated in situations like the one we describe here. 
+We considered the possibility of using colimits or diagram combinators as in~\cite{cicm2019diagrams}. In either case, we want to arrive at the right pushouts and build diagrams or colimits on top of it. The solution we adopted here is to enable the user to add identity embedding between theories. This allowed us to substitute for morphisms that are not generated in situations like the one we describe here. 
 %Our approach is to define these techniques in terms of pushouts, i.e. provide them as a syntactic sugar to performing multiple pushouts. Since pushouts in the category of contexts are associative, we believed we are able to do that, but the examples above shows that this is not always possible. Therefore, we provided a construction that allows the user to add identity arrows between two theories.\ednote{need to add guarantees that this does not mess with the all-commute-path principle.} 
 
 The declarations that we use to define \lstmath{AdditiveMonoid} are 
-\begin{minted}[style=trac, fontsize=\footnotesize]{haskell} 
-Theory Empty = {} 
-Carrier = extend Empty {A : Set}
-Pointed = extend Carrier {e : A}
-Pointed0 = rename Pointed {e to 0} 
-Magma = extend Carrier {op : A -> A -> A}
-AdditiveMagma = rename Magma {op to +} 
-
-Pointed0Magma = 
-  combine Pointed0 {} PointedMagma {e to 0} over Pointed
-PointedPlusMagma = 
-  combine AdditiveMagma {} PointedMagma {op to +} over Magma
-AdditivePointedMagma = 
-  combine Pointed0Magma {op to +} PointedPlusMagma {e to 0} 
-  over PointedMagma
-
-Semigroup = extend Magma {associative_op : {x y z : A} -> 
-                          op (op x y) z == op x (op y z) }
-AdditiveSemigroup = combine AdditiveMagma {} Semigroup plus over Magma
-
-LeftUnital = extend PointedMagma { lunit_e : {x : A} -> op e x == x }
-RightUnital = extend PointedMagma { runit_e : {x : A} -> op x e == x }
-
-AdditiveLeftUnital = combine AdditivePointedMagma {} 
+\begin{minted}[style=trac]{haskell} 
+ Theory Empty = {} 
+ Carrier = extend Empty {A : Set}
+ Pointed = extend Carrier {e : A}
+ Pointed0 = rename Pointed {e to 0} 
+ Magma = extend Carrier {op : A -> A -> A}
+ AdditiveMagma = rename Magma {op to +} 
+ Pointed0Magma = 
+   combine Pointed0 {} PointedMagma {e to 0} over Pointed
+ PointedPlusMagma = 
+   combine AdditiveMagma {} PointedMagma {op to +} over Magma
+ AdditivePointedMagma = 
+   combine Pointed0Magma {op to +} PointedPlusMagma {e to 0} 
+   over PointedMagma
+ Semigroup = 
+   extend Magma {assoc_op : {x y z : A} -> 
+                            op (op x y) z == op x (op y z)}
+ AdditiveSemigroup = 
+   combine AdditiveMagma {} Semigroup plus over Magma
+ LeftUnital = extend PointedMagma {lunit_e : {x : A} -> op e x == x}
+ RightUnital = extend PointedMagma {runit_e : {x : A} -> op x e == x}
+ AdditiveLeftUnital = combine AdditivePointedMagma {} 
                              LeftUnital plus-zero over PointedMagma 
-AdditiveRightUnital = combine AdditivePointedMagma {} 
+ AdditiveRightUnital = combine AdditivePointedMagma {} 
                               RightUnital plus-zero over PointedMagma 
-
-Unital = combine LeftUnital {} RightUnital {} over PointedMagma
-AdditiveUnital = combine AdditivePointedMagma {} Unital plus-zero over PointedMagma
-idUnital = id from AdditiveRightUnital to AdditiveUnital 
-
-Monoid = combine Unital {} Semigroup {} over Magma
-AdditiveMonoid = combine AdditiveUnital {} Monoid plus-zero over Unital 
-idMonoid = id from AdditiveSemigroup to AdditiveMonoid   
+ Unital = combine LeftUnital {} RightUnital {} over PointedMagma
+ AdditiveUnital = 
+   combine AdditivePointedMagma {} Unital plus-zero 
+   over PointedMagma
+ idUnital = id from AdditiveRightUnital to AdditiveUnital 
+ Monoid = combine Unital {} Semigroup {} over Magma
+ AdditiveMonoid = 
+   combine AdditiveUnital {} Monoid plus-zero over Unital 
+ idMonoid = id from AdditiveSemigroup to AdditiveMonoid   
 \end{minted} 
+\noindent Note that although we give name to identity morphisms, we never needed to refer to them in our development. 
 
 \section{Discussion}
 \label{sec:library:discussion}
-In many cases, there are many ways to define a theory. We restrict using \lstmath{extension} to adding new concepts within their minimal context, like adding associativity to \lstmath{Magma}. Whenver associativity is needed in a different context, it should be transported through \lstmath{rename} and \lstmath{combine}. In other words, a concept should only be defined once and transported to different theories via morphisms. It is also reasonable to assume that \lstmath{AdditiveMagma} should be an ancestor for any theory that contain the binary operation \lstmath{+}. This means that many renames take place using \lstmath{combine} operation, rather than the \lstmath{rename} one. For example, compare the following teo definitions of \lstmath{AdditiveSemigroup} 
+In many cases, there are many ways to define a theory. We restrict using \lstmath{extension} for adding new concepts within their minimal context, like adding associativity to \lstmath{Magma}. Whenever associativity is needed in a different context, it should be transported through \lstmath{rename} and \lstmath{combine}. In other words, a concept should only be defined once and transported to different theories via morphisms. It is also reasonable to assume that \lstmath{AdditiveMagma} should be an ancestor for any theory that contain the binary {operation \lstmath{+}}. This means that many renames take place using \lstmath{combine} operation, rather than the \lstmath{rename} one. For example, compare the following two definitions of \lstmath{AdditiveSemigroup} 
 \begin{togcode}
 1. AdditiveSemigroup = rename Semigroup {op to +}
 \end{togcode}
@@ -624,7 +625,7 @@ In many cases, there are many ways to define a theory. We restrict using \lstmat
 \end{togcode}
 Definition $1$ connects \lstmath{AdditiveSemigroup} only to \lstmath{Semigroup}, but definition $2$ creates more embeddings and connects it to \lstmath{AdditiveMagma}, \lstmath{Semigroup} and \lstmath{Magma}, which enriches the graph with useful morphisms. 
 
-We also find that using theories that are deeper in the hierarchy when possible makes adds more structure for the graph. For example, here are two possible definitions of \lstmath{CommutativeGroup}   
+We also find that using theories that are deeper in the hierarchy when possible adds more structure for the graph. For example, here are two possible definitions of \lstmath{CommutativeGroup}   
 \begin{togcode} 
 1. CommutativeGroup = 
        combine CommutativeMagma {} Group {} over Magma
@@ -653,7 +654,6 @@ In some cases, a whole hierarchy has been developed and one may want to perform 
 \end{figure}
 
 Another line of future work is to support general morphisms as described in Section~\ref{sec:generalmorph} and their usage in the \lstmath{mixin} combinator as described in~\cite{carette2018building}. 
-\ednote{@JC: Can you please check this section more thoroughly. I am not sure I fully understand mixins}
 The \lstmath{mixin} combinator computes pushout of an embedding along a general morphism. Given a general morphism \lstmath{$[\text{u}_\Delta]: \Gamma \to \Delta$} and an embedding \lstmath{$[\text{u}_\Phi] : \Gamma \to \Phi$} and two injective renaming functions 
 \lstmath{$\pi_\Delta : \mid\Delta\mid \to \mathbb{V}$}
 and \lstmath{$\pi_\Phi : \mid\Phi\mid \to \mathbb{V}$}, the mixin is defined as follows 
