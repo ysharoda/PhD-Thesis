@@ -1,7 +1,7 @@
 \chapter{Methodology}
 \label{ch:design}
 
-We highlighted some of the problems that make library building labor intensive and suggest that by automating them we can lift some burden from the library developer.s In this chapter, we give more details on how we use automation for this purpose. 
+We highlighted some of the problems that make library building labor intensive and suggest that by automating them we can lift some burden off the library developers. In this chapter, we give more details on how we use automation for this purpose. 
 %focusing our attention to the algebraic hierarchy and the constructions relate to its theories. 
 %The algebraic hierarchy is a core component of libraries of formal systems and their structure is well-studies in universal algebra. Therefore, they are good candidates for providing automation. 
 
@@ -10,13 +10,13 @@ Combinators are also a useful tool to leverage the structure of the theories by 
 \begin{togcode} 
 Monoid = combine Unital and Semigroup over Magma
 \end{togcode} 
-Informally, this means that the theory of \lstmath{Monoid} can be constructed by the taking the union of the declarations in \lstmath{Unital}  and \lstmath{Semigroup} without repreating the declarations in \lstmath{Magma}\footnote{The \lstmath{combine} operation is explained in detail in Section~\ref{subsec:combine}}. 
+Informally, this means that the theory of \lstmath{Monoid} can be constructed by the taking the union of the declarations in \lstmath{Unital}  and \lstmath{Semigroup} without repeating the declarations in \lstmath{Magma}\footnote{The \lstmath{combine} operation is explained in detail in Section~\ref{subsec:combine}.}. 
 
-The theories resulting from the flattener are used to compute some universal algebra constructions that are also part of algebra libraries. Chapter~\ref{ch:redundancy} shows examples of homomorphisms, product algebra and term languages provided by library developers. These ones and more can be generated based on their definitions from universal algebra. The \emph{generator} does that by manipulating components of the theories. We discuss the generator in Chapter~\ref{ch:generation}. 
+The theories resulting from the flattener are used to compute some universal algebra constructions that are also part of algebra libraries. Chapter~\ref{ch:redundancy} shows examples of homomorphisms, product algebra and term languages provided by library developers. These and more can be generated based on their definitions from universal algebra. The \emph{generator} does that by manipulating the  components of the theories. We discuss the generator in Chapter~\ref{ch:generation}. 
 
-The flattener and generator deal with mathematical definitions while keeping system-specific details to a minimal. In order to make the constructions more useful, the \emph{exporter} makes them available in feature rich systems, like agda and lean. We discuss the exporter in Chapter~\ref{ch:export}. 
+The flattener and generator deal with mathematical definitions while keeping system-specific details to a minimal. In order to make the constructions more useful, the \emph{exporter} makes them available in feature-rich systems, like Agda and Lean. We discuss the exporter in Chapter~\ref{ch:export}. 
 
-Figure~\ref{fig:staged-interpreter} describes the $3$-stage processing that a theory expression goes through. This process leads to the generation of all the constructions described in Appendix~\ref{appendix:generatedTog} in tog, agda, and lean\footnote{The generated constructions can be found at:~\url{https://github.com/ysharoda/Deriving-Definitions/tree/master/Library/generated}}. 
+Figure~\ref{fig:staged-interpreter} describes the $3$-stage processing that a theory expression goes through. This process leads to the generation of all the constructions described in Appendix~\ref{appendix:generatedTog} in Tog, Agda, and Lean\footnote{The generated constructions can be found at:~\url{https://github.com/ysharoda/Deriving-Definitions/tree/master/Library/generated}.}. 
 \begin{figure}
 \includegraphics[scale=0.5,width=\linewidth]{figures/interpreter_detailed}
 \caption{A $3$-staged interpreter for generating libraries}
