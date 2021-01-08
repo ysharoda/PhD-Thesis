@@ -327,27 +327,28 @@ The formal definitions of the two constructions are given as follows:
 \paragraph{Colimits.}
 Colimits are defined in terms of cocones. The definitions we present here are adapted from~\cite{sannella2012foundations}. 
 
-A cocone over a diagram consists of an object $\Gamma$ and a family of morphisms $u_0 : \Delta_0 \to \Gamma, ..., u_{n-1} : \Delta_{n-1} \to \Gamma$, where $n$ is the number of nodes in the diagram other than $\Gamma$, such that for every morphism $v : \Delta_i \to \Delta_j$ in the diagram $v \cdot u_j = u_i$, i.e. the following diagram commutes 
+A cocone over a diagram $D$ is an object $\Phi$ and a family of morphisms $u_0 : \Delta_0 \to \Phi, ..., u_{n} : \Delta_{n} \to \Phi$, 
+where $\Delta_0\ ...\ \Delta_{n}$ are the objects in $D$, such that for every morphism $v : \Delta_i \to \Delta_j$ in $D$: $v \cdot u_j = u_i$, i.e. the following diagram commutes 
 \begin{tikzcd} 
-& \Gamma & \\ 
+& \Phi & \\ 
 \Delta_i \arrow[ur,"u_i"] \arrow[rr,"v"] & & \Delta_j \arrow[ul,"u_j"] 
-\end{tikzcd}
+\end{tikzcd}.
 The notation used to describe cocones is 
-$\langle u_i : \Gamma \to \Delta_i \rangle_{i\leq n}$.
+$\langle u_i : \Phi \to \Delta_i \rangle_{i\leq n}$.
 
 The colimit of a diagram is a cocone  
-$\langle u_i : \Gamma \to \Delta_i \rangle_{i\leq n}$ such that for any cocone 
-$\langle u_i^{\prime} : \Gamma^{\prime} \to \Delta_i \rangle_{i\leq n}$ there is a unique morphism $v : \Gamma \to \Gamma^\prime$ such that for every $u_i$, the following diagram commutes 
+$\langle u_i : \Phi \to \Delta_i \rangle_{i\leq n}$ such that for any cocone 
+$\langle u_i^{\prime} : \Phi^{\prime} \to \Phi \rangle_{i\leq n}$ there is a unique morphism $v : \Phi \to \Phi^\prime$ such that for every $u_i$, the following diagram commutes 
 \begin{tikzcd} 
-\Gamma \arrow[ rr,dashed, "v"] && \Gamma^\prime \\ 
+\Phi \arrow[ rr,dashed, "v"] && \Phi^\prime \\ 
 & \Delta_i \arrow[ul,"u_i"] \arrow [ur," u_i^{\prime}"] & 
 \end{tikzcd} 
 
 \paragraph{Pushouts.}
-The pushout is a colimit in which $n = 2$. For a pair of morphisms $u_1 : \Gamma \to \Delta_1$ and $u_2 : \Gamma \to \Delta_2$, the pushout is an object $\Xi$ and a pair of morphisms $v_1 : \Delta_1 \to \Xi$ and $v_2 : \Delta_2 \to \Xi$ such that 
+The pushout is the colimit of a diagram $D$ that has exactly $3$ objects and $2$ morphisms. The morphisms need to have the same source. For a pair of morphisms $u_1 : \Gamma \to \Delta_1$ and $u_2 : \Gamma \to \Delta_2$, the pushout is an object $\Phi$ and a pair of morphisms $v_1 : \Delta_1 \to \Phi$ and $v_2 : \Delta_2 \to \Phi$ such that 
 \begin{itemize}
 \item $u_1 \cdot v_1 = u_2 \cdot v_2 $
-\item for morphisms $w_1 : \Delta_1 \to \Omega$ and $w_2 : \Delta_2 \to \Omega$, there is a unique $w : \Xi \to \Omega$, such that 
+\item for morphisms $w_1 : \Delta_1 \to \Omega$ and $w_2 : \Delta_2 \to \Omega$, there is a unique $w : \Phi \to \Omega$, such that 
 $v_1 \cdot w = w_1$ and $v_2 \cdot w = w_2$
 \end{itemize}
 The definition of the pushout is illustrated in Figure~\ref{fig:pushoutDef}. 
@@ -355,7 +356,7 @@ The definition of the pushout is illustrated in Figure~\ref{fig:pushoutDef}.
 \centering{
 \begin{tikzcd} 
 \Gamma \arrow["u_1",d] \arrow["u_2",rr]& & \Delta_2 \arrow["v_2",d] \arrow["w_2",rdd, bend left] \\
-\Delta_1 \arrow["v_1",rr] \arrow["w_1",rrrd, bend right]& & \Xi \arrow[dashed, rd] \\ 
+\Delta_1 \arrow["v_1",rr] \arrow["w_1",rrrd, bend right]& & \Phi \arrow[dashed, rd] \\ 
 & & & \Omega
 \end{tikzcd}} 
 \caption{Diagram illustrating the definition of a pushout}
