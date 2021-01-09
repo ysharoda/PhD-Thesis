@@ -164,7 +164,7 @@ class is_monoid_hom [monoid ~$\alpha$~] [monoid ~$\beta$~] (f : ~$\alpha \to \be
    extends is_mul_hom f : Prop :=
     (map_one : f 1 = 1)
 \end{leancode} 
-\noindent where \lstmath{is_mul_hom} is the definition of homomorphism of multiplicative magma, which lean refers to as \lstmath{mul}. A very similar definition is provided for \lstmath{add_monoid}
+\noindent where \lstmath{is_mul_hom} is the definition of homomorphism of multiplicative magma, which lean refers to as \lstmath{mul}. A very similar definition is provided for \lstmath{add_monoid}. 
 The other is the \emph{bundled} definition in which the homomorphism function is part of the declarations of the structure, not a parameter to it. 
 \begin{leancode}     
 structure monoid_hom (M : Type*) (N : Type*) [monoid M] [monoid N] :=
@@ -180,7 +180,7 @@ The library provide the unbundled (class) definitions for many theories, includi
 
 The lean library also have definitions for the 
 \href{https://github.com/leanprover-community/mathlib/blob/4bb8d4475f897c8997100d31fe84b33050444374/src/algebra/pi_instances.lean}{product} 
-of some theories. In a hierarchy ranging from \lstmath{has_add} and \lstmath{has_mul} to \lstmath{nonzero_comm_ring}, $21$ definitions of products are defined. 
+of some theories. In a hierarchy ranging from \lstmath{has_add} and \lstmath{has_mul} to \lstmath{nonzero_comm_ring}, $22$ definitions of products are defined. 
 %has_add, has_mul, has_zero, has_one, has_neg, has_inv, add_semigroup, semigroup, add_monoid, monoid, add_group, group, add_comm_semigroup, comm_semigroup, add_comm_monoid, comm_monoid, add_comm_group, comm_group, semiring, ring, comm_ring, nonzero_comm_ring, 
 It contains definitions of 
 \href{https://github.com/leanprover-community/mathlib/blob/4bb8d4475f897c8997100d31fe84b33050444374/src/group_theory/submonoid.lean}{\lstmath{is_submonoid}},

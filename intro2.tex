@@ -7,7 +7,7 @@ The influential QED manifesto~\citep{boyer1994qed}, released in 1994, envisioned
 Diversity in mathematical formalizations was a big obstacle towards realizing the library described by QED. There was not an agreement even on which foundation to use for formalizing all of mathematics~\cite{qedrealoaded2016}.  Since then, mathematical knowledge management (MKM) has become an active area of research framing a new vision for a large math library. The universal digital math library (UDML), described in~\cite{farmer2004mkm}, is a collection of heterogeneous, intercommunicating systems and building this library is described as a grand challenge facing MKM. 
 
 Despite the many efforts dedicated to building math libraries, a large universal library has not become a reality.\footnote{However, in 2020, the mathlib team is making serious inroads in that direction~\cite{lean2019} .} One reason is that developing and maintaining libraries of mathematics requires a lot of person-power. One would want to believe that this human effort is put into the creative work of formalizing new pieces of knowledge. By examining current libraries of theorem provers, we know this is not always the case. 
-Libraries formalizing the algebraic hierarchy have been formalized various times, sometimes even within the same system~\citepalias{Geuvers2002, Gonthier2009, Spitters2010, coq-contribs-algebra}. 
+Libraries formalizing the algebraic hierarchy have been formalized various times, sometimes even within the same system~\cite{Geuvers2002, Gonthier2009, Spitters2010, coq-contribs-algebra}. 
 In every formalization, the library developers had to provide all the definitions of the structures in the hierarchy and related constructions such as homomorphisms. We want to add more automation to the process of building libraries. We identify sources of redundancy that can be eliminated and use the theory of \lstmath{Monoid} as our running example. \lstmath{Monoid} is an algebraic structure, a member of the algebraic hierarchy, that describes algebras with a carrier set and an associative binary operation over that set that has an identity element.
 %The libraries for theorem provers contain definitions provided by library developers that . 
 %We give examples of redundancies associated with defining the algebraic hierarchy in libraries of formal systems in Chapter~\ref{ch:redundancy}. 
@@ -127,7 +127,7 @@ For example, the Haskell and MMT definitions exposes the fact that \monoid in th
 The two Coq definitions takes two extreme views to the bundling problem~\cite{lean2019,alhassy2019,spitters2011type} by either having the carrier and all the function symbols as arguments (the first definition) or having all elements of the theory as declarations of a record type (the second definition). 
 The formalization of the Algebraic hierarchy in the Agda standard library is based on setoids (sets equipped with an equivalence relation). Therefore, we find an extra field of the definition of \monoid corresponding to the equivalence relation $\_\approx\_$. 
 
-Having design decisions embedded into the library definitions is a big usability problem. Users won't be able to use them in their projects unless they employ the same decisions. Otherwise, they are forced to redefine them. That leads to many libraries formalizing the same knowledge, even in the same language. Coq has at least $4$ different algebra libraries~\citepalias{Gonthier2009,Geuvers2002,Spitters2010,coq-contribs-algebra}. In~\cite{Gonthier2009}, the authors acknowledge this situation saying:  
+Having design decisions embedded into the library definitions is a big usability problem. Users won't be able to use them in their projects unless they employ the same decisions. Otherwise, they are forced to redefine them. That leads to many libraries formalizing the same knowledge, even in the same language. Coq has at least $4$ different algebra libraries~\cite{Gonthier2009,Geuvers2002,Spitters2010,coq-contribs-algebra}. In~\cite{Gonthier2009}, the authors acknowledge this situation saying:  
 \begin{quote}
     ``In spite of this body of prior work, however, we have found it
     difficult to make practical use of the algebraic hierarchy in our project to
@@ -305,71 +305,4 @@ We discuss how we extend Tog to support combinators for building the algebraic h
 In Chapter~\ref{ch:generation}, we discuss our generative framework that computes the constructions related to a specific theory.  
 The theories and the generated constructions are exported to Agda. We discuss the exporter in Chapter~\ref{ch:export}. 
 We present related work in Chapter~\ref{ch:relatedwork}. Conclusions and future work are discussed in Chapter~\ref{ch:conclusion}. 
-\todo{always check that this desciption of chapters still hold}
-
-\begin{comment}  
-These algebraic concepts are very important in mathematics and computer science that they are a main component in libraries of almost every mechanized system\ednote{add citations on research of algebra library development}. We consider the \lstmath{Monoid} structure for our running example. a \lstmath{Monoid} consists of a carrier over which there is an associative binary operation that has a unit. If we look at algebra textbooks, we find that~\cite{mckenzie1987algebras} defines it as 
-\begin{quote}%[mathescape]
-A monoid is an algebra $A = \langle \cdot^A, e^A \rangle$ such that 
-$\langle A, \cdot^A \rangle$ is a semigroup and \\
-$a \cdot^A e^A = e^A \cdot^A a = a$ for all $a \in A$.
-\end{quote}
-In~\cite{jacobson1985basic}, it is defined as 
-
-
-Algebra text books would follow the definition of an algebraic structure with the definitions of some of its related constructions, like subalgebras, homomorphisms, term languages, quotients, etc. The scope of the book might determine which ones are included. \cite{jacobson1985basic} provides the following definition of monoid homomorphism 
-
-and proceeds to talk about \lstmath{Group} homomorphism depending on the human ability to infer it from its given definition of \lstmath{Monoid}. 
-
-Moving to formal systems, We find that they also do not agree on one definition of the theory \lstmath{Monoid}. Figure~\ref{fig:mon-diff-lang} shows its definition in $5$ different languages. 
-\begin{figure}
-\input{figures/mon-diff-reps-2-col.tex}
-\caption{Representation of \lstinline|Monoid| theory in different languages.}
-\label{fig:mon-diff-lang}
-\end{figure}
-For now, we imagine a definition of \lstmath{Monoid} in a simple language as follows 
-\begin{lstlisting}[mathescape]
-theory Monoid { 
-A : type 
-e : A
-op : A $\to$ A $\to$ A
-lunit : $\cdots$
-runit : $\cdots$
-assoc : $\cdots$ 
-}
-\end{lstlisting}        
-The homomorphism of \lstmath{Monoid} in the same language is 
-\begin{lstlisting}[mathescape]
-theory MonoidHom { 
-M1, M2 : Monoid  
-hom : M1.A $\to$ M2.A 
-pres-e : $\cdots$
-pres-op : $\cdots$
-}
-\end{lstlisting}
-The components of the homomorphism are $2$ instances of \lstmath{Monoid} theory, a mapping from the carrier of one instance to the other, and preservation axiom for every function symbols that follow the pattern 
-\begin{lstlisting}[mathescape]
-hom (op$_1$ x$_1$ .. x$_n$) = op$_2$ (hom x$_1$) .. (hom x$_n$)
-\end{lstlisting}
-Notice how all these components can be derived from the definition of \lstmath{Monoid}. 
-
-Another commonly used algebraic structure is \lstmath{Group}. In order to use it in a formal system, one needs to define it along with all its related definitions that they need, like \lstmath{Group} homomorphism which follows the same pattern described above. This observation lead us to the question 
-\end{comment}
-
-
-
-\begin{comment}
-Notice how all the 
-~\cite{mckenzie1987algebras} is 
-\begin{quote}%[mathescape]
-A monoid is an algebra $A = \langle \cdot^A, e^A \rangle$ such that 
-$\langle A, \cdot^A \rangle$ is a semigroup and \\
-$a \cdot^A e^A = e^A \cdot^A a = a$ for all $a \in A$.
-\end{quote}
-Note how \lstmath{Monoid} is defined in terms of a smaller theory \lstmath{Semigroup}. While inthe definition given is  
-
-In this case, \lstmath{Monoid} is defined in terms of its components. Both ways of defining \lstmath{Monoid} are useful and humans can switch between these definition without overhead. Depending on the task intended by the user, they might have a preference of one over the other. 
-\end{comment}
-
-
-%We focus our attention to algebra libraries which formalizes core concepts in mathematics and computer science. Algebra libraries contain axiomatic formalization of algebraic structures. Those structures describe classes of algebras. For example the algebras $(\mathbb{N},+,0)$ and $(Strings,++,\varepsilon)$ have similar behavior that is captured with the algebraic structure \lstmath{Monoid}. Defining and proofing properties of a structure is enough to define/prove it to all its models (all the algebras it describes). In the process of working with algebraic structures, one need some constructions related to them, like homomorphism, subalgebras, term algebras, etc. 
+\ednote{always check that this description of chapters still hold} 
