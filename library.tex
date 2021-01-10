@@ -2,8 +2,8 @@
 \label{ch:library}
 %One can define a new theory either by stating its components or by using combinators to build it from existing ones. 
 
-In this Chapter, we build a library of axiomatic theories representing the algebraic hierarchy, before we use it to generate related constructions that we discuss in Chapter~\ref{ch:generation}. 
-
+In this Chapter, we build a library of axiomatic theories representing the algebraic hierarchy. 
+%before we use it to generate related constructions that we discuss in Chapter~\ref{ch:generation}. 
 Our library consists of equational first-order theories organized as a theory graph using the tiny theories approach. Instead of having to provide all declaration of the theories and morphisms within the graph, we use the MathScheme combinators introduced in~\cite{CaretteOConnorTPC, carette2018building}. 
 
 It is common to see the algebraic hierarchy as a series of inclusions as in Figure~\ref{fig:flatExtensions}. 
@@ -34,7 +34,7 @@ The diamond structure appearing in the definition of \lstmath{Unital} is not a s
 
 But the diamond structure does not come without problems. We need to have careful infrastructure to deal with them in order to avoid the diamond problem~\cite{jigsaw1992,traits2006,diamonds2011}, a.k.a multiple inheritance or the fork-join problem~\cite{sakkinen1989disciplined}, which we discuss in Section~\ref{subsec:combine}.
 
-In Section~\ref{sec:thry_graph_in_action} we provide an overview of the support for morphisms in different formal systems. Section~\ref{sec:msCombinators} introduces the MathScheme combinators for a morphism-based approach to building theory graphs, leading to a solution to the diamond problem. We discuss our implementation of the combinators in Section~\ref{sec:lib_implementation}. Using them to build the library is discussed in Section~\ref{sec:guidelines}. We end up with a discussion of best practice for using the combinators in Section~\ref{sec:library:discussion}. 
+In Section~\ref{sec:thry_graph_in_action} we provide an overview of the support for morphisms in different formal systems. Section~\ref{sec:msCombinators} introduces the MathScheme combinators for a morphism-based approach to building theory graphs, leading to a solution to the diamond problem. We discuss using the combinators to build the library in Section~\ref{sec:guidelines}. We end up with a discussion of best practice for using the combinators in Section~\ref{sec:library:discussion}. 
 
 \begin{comment}
 To test our generation algorithms, we needed a large library of equational theories. As we have discussed in Section~\ref{sec:broader_context}, we work in the favor of a library organized as a theory graph, believing that it leverages the structure of mathematical knowledge. Morphisms of the graph are the means to relating the different theories. In this section, we present our approach to building a library that emphasizes these connections. 
@@ -217,241 +217,13 @@ The embeddings used here are \lstmath{Magma $\;\mapsto\;$ AdditiveMagma} and \ls
 %    \item The category of contexts $\ctxcat$ is the opposite of the category of theory presentations $\tpcatOp$, i.e. if a theory \lstmath{T'} is the extension of a theory \lstmath{T} in the category $\tpcat$, then there is a morphism in $\ctxcat$ from \lstmath{T'} to \lstmath{T} that drops some of the declarations in \lstmath{T}. Because theories are viewed as telescopes, to drop a declaration, all its subsequent ones need to be dropped. 
  %   \item A fibered category is \ednote{short description here}. The category of context $\ctxcat$ forms the basis of a fibration, with the fibered category being the category of extensions $\extcat$. The fibration maps every extension object from $\extcat$ to its source in $\ctxcat$. 
 
-\section{The Flattener}
-\label{sec:lib_implementation}
-The combinators from~\cite{carette2018building} has been implemented in~\cite{cicm2019diagrams, TPCProto, meta-prim-blog}. 
-Experiments have been performed on applying them for creating a large library of algebraic constructions~\cite{mathscheme2011experiments}. With the exception of~\cite{cicm2019diagrams}, the other implementations and the associated libraries did not emphasize the morphisms in the way presented in~\cite{carette2018building} and summarized in the previous section. Instead, they based their computation of pushout on theories using same-name-same-thing approach, which makes errors like the one in Figure~\ref{fig:casl_expr} go undetected.  
-This approach also computes results for expressions that should not be meaningful in the language of combinators presented in~\cite{carette2018building}. Consider the following expression
-\begin{togcode}
-SemiRng = combine AdditiveCommutativeMonoid Semigroup Ringoid
-          over RingoidSig
-\end{togcode}
-Note that the definition of \lstmath{SemiRng} above is different from the syntax we presented before. First, there is no mention of the rename functions, as they all are the identity. Second, there are $3$ theories to be combined, which means $3$ morphisms. Normally, we talk about combining $2$ morphisms with the semantics being the pushout. In this case, we have $3$ morphisms each has the source \lstmath{RingoidSig} and the three targets are the arguments to combine. In this case, a colimit is needed, not a pushout. Finally, there is the \lstmath{over} part of the expression which was part of the original work in~\cite{CaretteOConnorTPC} and then removed in the more recent version~\cite{carette2018building}. The over part specifies what the source of the morphisms is. In Section~\ref{subsec:overPart} we discuss why we need an \lstmath{over} part in the combine declaration. 
-
-An implementation that reflects the principles of the combinators will not be able to find a morphism between \lstmath{RingoidSig} (the common source) and \lstmath{Semigroup} (the second target) to compute the expression above. 
-The theory \lstmath{RingoidSig} has declarations for two binary operations, while \lstmath{Semigroup} has only one. A morphism from \lstmath{RingoidSig} to \lstmath{Semigroup} needs to drop one binary operation. This is not possible given the choice of combinators that avoids a drop operation. 
-
-It is worth noting that by implementing the combinators we mean computing a flattened version of the theory presentation described by the given expressions. This is performed by the flattener that given a theory presentation produces a Tog dependent record of declarations within the described theory presentation. 
-
-In Section~\ref{subsec:overPart} we discuss a modification in the syntax of combine and why we have it. We introduce the syntax of the language we implement in Section~\ref{sec:impl:expressions} and start discussing the implementation in Section~\ref{subsec:theoriesMorphisms} by presenting how we represent theories and morphisms in our framework. In Section~\ref{subsec:graph} we present the type of the theory graph. The implementation of the combinators that build the graph is presented in Section~\ref{subsec:combinatorsImpl}. 
-
-\subsection{Referring to Morphisms}
-\label{subsec:overPart}
-%\label{subsec:coreDecisions}
-%We slightly modify the restrict the original combinators to solve some implementation issues. We conclude by summarizing the syntax of the tog expressions that we use based on the syntax of the combinators. 
-%\subsubsection{Referring to arrows}
-The extension and rename combinators need to identify a theory in the graph to operate on and compute the output theory and morphism. The input theory is part of the expression of the combinator. 
-In the case of \lstmath{combine}, the inputs to the combinator are two morphisms and two rename functions. But the syntax for combine is not defined in terms of morphisms. Instead, it is defined in terms of theories and the morphisms are left to the implementation to infer them. 
-For example, the expression 
-\begin{togcode}
-combine CommutativeMagma {} AssociativeMagma {}
-\end{togcode}
-\noindent does give information that the targets of the two embeddings involved are \lstmath{CommutativeMagma} and \lstmath{AssociativeMagma}, but it does not specify the source of the embeddings. The algorithm has three choices of the source theory, which is common to both morphisms. 
-\begin{itemize}
-    \item If the source theory is \lstmath{Magma}, the theory resulting from the combine operation will have one binary operation that is both associative and commutative 
-    \item If the source theory is \lstmath{Carrier}, then the definition is describing a theory (along with the related morphisms) that has two binary operations, one associative and the other commutative. But this theory will not be computed because of the name clash; The user has to choose another name for one of the two operations. A possible fix is 
-    \begin{togcode}
-combine CommutativeMagma {op to +} AssociativeMagma {op to *}
-    \end{togcode}
-\end{itemize}
-As the hierarchy gets deeper this problem becomes more complicated. For example, \lstmath{CommutativeGroup} and \lstmath{AssociativeGroup} have many more possibilities for their common source. 
-
-The reason of this problem is that the syntax of the language presented in~\cite{carette2018building} is based on naming target theories, while the syntax is based on having the embedding available. This leaves the gap of using the target theories to infer the embeddings. Using theories, instead of morphisms, in the syntax is a usability decision. Morphisms do not have canonical names, mainly because they do not appear in informal mathematics. For example, it is hard to think of a name for the morphism (that result of composition of morphisms) from the \lstmath{PointedMagma} to \lstmath{Monoid} theory. It is easier to refer to it in terms of the source and the target than to give it any name. 
-
-We use an approach that still uses theories for usability reasons but gives more information for inferring the embeddings. We modify the syntax of \lstmath{combine} in the paper to have an \lstmath{over} part similar to the initial work on the combinators~\cite{CaretteOConnorTPC}. 
-
-\begin{comment}
-\subsubsection{All Paths Commute Approach} 
-\ednote{@JC: Do we need to remove mixin, so all paths commute?} 
-When referring to a morphism using its source and target, we implicitly assume that all paths commute, i.e.: Given the source and target, they either is no path, one path, or multiple paths that commute between them. 
-
-In Section~\ref{sec:background:morphisms}, we discussed the three types of morphisms, identity, embeddings and general morphisms. We also noted in Section~\ref{subsec:mixin} that the only combinator that accepts and generates a general morphism is \lstmath{mixin}. If we restrict our language to \lstmath{extension}, \lstmath{rename}, and \lstmath{combine}, we end up with an all-embeddings graph, in which all paths commute. 
-\end{comment}
-
-\subsection{Theory Expressions}
-\label{sec:impl:expressions}
-The language that we implement has the following syntax
-\begin{togcode}
- Map m = {a~$_0$~ to b~$_0$~ ; ~$\cdots$~ ; a~$_n$~ to b~$_n$~}
- Theory T = {a~$_0$~ : t~$_0$~ ~$\cdots$~ a~$_n$~ : t~$_n$~}
- T~$^\prime$~ = extend T {a~$_0$~ : t~$_0$~ ~$\cdots$~ a~$_n$~ : t~$_n$~}
- T~$^\prime$~ = rename T m 
- T~$^\prime$~ = combine T~$_1$~ m~$_1$~ T~$_2$~ m~$_2$~ over T
- i = id from T~$_1$~ to T~$_2$~
-\end{togcode} 
-%{a~$_0$~ to b~$_0$~ ; ~$\cdots$~ ; a~$_n$~ to b~$_n$~}
-%{a'~$_0$~ to b'~$_0$~ ; ~$\cdots$~ ; a'~$_n$~ to b'~$_n$~}
-\noindent where \lstmath{T}, \lstmath{T$^\prime$}, \lstmath{T$_1$}, and \lstmath{T$_2$} are theories, \lstmath{m}, \lstmath{m$_1$}, and \lstmath{m$_2$} are mappings that are either previously defined using the \lstmath{Map} keyword or expanded as a list of mappings 
-\lstmath{$\{$a$_0$ to b$_0$ ; ... ; a$_n$ to b$_n$ $\}$}. 
-
-Although one can declare a theory with a list of declarations using the \lstmath{Theory} keyword, we only use it to create the empty theory. 
-
-
-\subsection{Theories and Morphisms}
-\label{subsec:theoriesMorphisms}
-We defined a theory in DTT in Section~\ref{sec:background:theory} as a telescope.  It is captured by the type \lstmath{GTheory}. 
-\begin{hscode}
-data GTheory = GTheory {
-  declarations :: [Constr],
-  waist        :: Int     }
-\end{hscode}
-The waist is needed to determine how many of the declarations are parameters, as in~\cite{alhassy2019}. 
-
-The type \lstmath{GView} describe the morphism as defined in~\ref{sec:background:morphisms}. 
-\begin{hscode}
-data GView  = GView {
-  source  :: GTheory,
-  target  :: GTheory,
-  rename :: Rename }  
-\end{hscode}
-\noindent where \lstmath{type Rename = Map.Map Name_ Name_} is the mapping function. 
-
-\subsection{Theory Graph Structure}
-\label{subsec:graph}
-We define a theory graph as a set of named theories for nodes and a set of named views for edges. 
-\begin{hscode}
-data TGraph = TGraph { 
-  _nodes :: Map.Map Name_ GTheory,
-  _edges :: Map.Map Name_ GView } 
-\end{hscode}
-An alternative way to represent graphs would have been to include only the \lstmath{_edges}, as they contain information about theories. We preferred to keep both mappings to make it easier to lookup theories in the graph. 
-
-We noticed that in many cases, the same renames are being reused. So, we also added a \lstmath{Mapping} type that allows the user to define something like 
-\begin{hscode}
-Map plus-zero = {op to + ; e to 0}
-\end{hscode}
-\noindent and reuse it. Accordingly, a library consists of a theory graph and some mappings. 
-\begin{hscode}
-data Library = Library {
-  _graph   :: TGraph,
-  _renames :: Map.Map Name_ Rename }
-\end{hscode}
-
-\subsection{Combinators}
-\label{subsec:combinatorsImpl}
-The language extension that we introduce to tog is described in the type \lstmath{Language} 
-\begin{togcode}
-data Language = 
-    MappingC Name [RenPair]
-  | TheoryC Name [Constr]
-  | ModExprC Name ModExpr
-\end{togcode}
-\noindent where \lstmath{MappingC} creates a mapping function, \lstmath{TheoryC} creates a theory from a list of declarations, and \lstmath{ModExprC} is the constructor for creating theory expressions. We discuss them in the following sections. 
-
-%We introduced the expressions we use to build the theory graph in Section~\ref{sec:impl:expressions}. In this section, we discuss our implementation for these expressions. The language that we introduce to Tog is described here 
-
-\subsubsection{Mappings}
-A definition of a mapping is elaborated into an entry in the \lstmath{renames} list of the library. 
-\begin{hscode}
-addMapping :: Name -> [RenPair] -> Library -> Library
-addMapping nm rens = 
-   over mappings (Map.insert (nm^.name) (renPairsToMapping rens))
-\end{hscode}
-\noindent \lstmath{over} is the setter function we get by using Haskell lenses. It sets the \lstmath{mappings} field of the library to a new instance of \lstmath{Map} that adds the new mapping to the ones in the input library. 
-
-\subsubsection{Flat Theories}
-Given a theory presentation as a list of declarations, we construct the new theory and add it to the list of theories in the graph without any morphisms connecting them to other theories. 
-\begin{hscode}
-theory :: Name -> [Abs.Constr] -> Library -> Library
-theory nm cList =
-  let newThry  = GTheory cList waistNm
-  in  over graph (over nodes (Map.insert (nm^.name) newThry))
-\end{hscode}
-
-
-\subsubsection{Theory Expressions}
-The syntax for the theory expression is introduced in Section~\ref{subsec:overPart}. We now discuss their implementation. 
-We start with the function \lstmath{updateGraph} which adds theories and morphisms to the graph, assuming they already have been computed by the combinator
-\begin{hscode}
-updateGraph ::   Name_ -> Either GView PushOut -> TGraph -> TGraph
-updateGraph nm (Left view) =
-  over nodes (Map.insert nm (target view)) .
-  over edges (Map.insert ("To"++nm) view)
-updateGraph nm (Right ut) =
-  over nodes (Map.insert nm (target ~$\$$~ uLeft ut)) .
-  over edges (\e -> foldr (uncurry Map.insert) e 
-                        [("To"++nm++"1",uLeft ut),
-                         ("To"++nm++"2",uRight ut),
-                         ("To"++nm++"D",diagonal ut)])
-\end{hscode}
-The first argument to \lstmath{updateGraph} is the name of the new theory. Then, the function expects the morphisms resulting from the combinator to be added to the graph. We know that all the combinators compute only one new theory. 
-But, the number of computed morphisms is different based on the combinators. \lstmath{extends} and \lstmath{rename} generates one morphism, while \lstmath{combine} generates three. We capture this with the type \lstmath{Either GView PushOut}, where \lstmath{Pushout} is defined as 
-\begin{hscode}
-data PushOut = PushOut { -- of a span
-  uLeft    :: GView,
-  uRight   :: GView,
-  diagonal :: GView,
-  apex     :: GTheory } -- common point
-\end{hscode}
-The names of the new morphisms are generated based on the names of the new theories. Since a new theory with a user given name is defined every time, we know that the new morphism names have not been generated before. 
-
-The functions \lstmath{computeExtend}, \lstmath{computeRename}, and \lstmath{computeCombine} calculate the new morphisms and theories. 
-
-\paragraph{1. Computing Extension}
-The inputs to the extension operation is the theory being extended and the new declarations. The new theory is obtained by concatenating the new declarations to the ones already in the theory, given that there is no name clashes between new constructs, and that they are well-typed in the context presented by the theory declarations. 
-
-The resulting view has the input theory as source, the computed theory as target. The identity mapping is computed using the \lstmath{validateRen} function, which assigns a mapping to every symbol in the input theory. In the case of extension the mapping is the identity. 
-\begin{hscode}
-computeExtend :: [Constr] -> GTheory -> GView
-computeExtend newDecls srcThry =
-  GView srcThry (extThry newDecls srcThry) (validateRen srcThry Map.empty)
-
-extThry :: [Constr] -> GTheory -> GTheory 
-extThry newConstrs thry@(GTheory constrs wst) =
-  if List.intersect newConstrNames (symbols thry) == []
-  then GTheory (constrs ++ newConstrs) wst
-  else error ~$\$$~ "Name clash detected!"
-    where newConstrNames = map getConstrName newConstrs
-\end{hscode}
-
-\paragraph{2. Computing Rename}
-Computing renames requires computing substitutions. This requires traversing the internal representation of the theory and performing substitution as needed. We use Haskell's scrap-your-boilerplate package~\cite{syb}, based on~\cite{syb2003Jones}, to perform the traversal. The substitution is then performed using the \lstmath{gmap} function. 
-\begin{hscode} 
-gmap :: (Generics.Typeable a, Generics.Data b) => (a -> a) -> b -> b
-gmap r x = Generics.everywhere (Generics.mkT r) x  
-\end{hscode} 
-\lstmath{gmap} traverses an instance of type \lstmath{b} changing every instance of \lstmath{a} according to the input function \lstmath{r}. \lstmath{computeRename} uses \lstmath{gmap} to perform substitution to declarations of the input theory, as follows
-\begin{hscode}
-computeRename :: Rename -> GTheory -> GView  
-computeRename namesMap thry =
-  GView thry (renameThy thry namesMap) (validateRen thry namesMap)
-
-renameThy :: GTheory -> Rename -> GTheory
-renameThy (GTheory constrs wst) m =
-  GTheory (gmap (mapAsFunc m) constrs) wst
-\end{hscode}
-
-\paragraph{3. Computing Combine}
-The algorithm to compute the result of combining two embeddings work as follows 
-\begin{itemize}
-    \item Given the name of the source theory and the two theories to be combined, the first step is to lookup the paths from the source to the target theory. A path is defined as a non-empty list of views. The function \lstmath{getPath} searches the graph for a path between given source and target theories. It starts at the target node and goes backwards, exploring the possible paths until it finds the source. Because none of the combinators result in backward morphisms, we know the theory graph has no cycles. Therefore, this simple search for a path algorithm works. The two paths are used to construct two instances of \lstmath{QPath}. 
-\begin{hscode}
-data QPath = QPath { 
-  path :: Path,
-  ren  :: Rename }
-\end{hscode}
-
-    \item At this point we have the two embedding and the two rename functions. The next step is to check the preconditions of \lstmath{combine} as in equation~\ref{eq:combinePrecond}. The function \lstmath{checkGuards} checks that all symbols in the source theory are mapped to the same symbol after applying the rename function. The scope checker of tog ensures the backwards direction of the equivalence in equation~\ref{eq:combinePrecond}. If the two instances of \lstmath{QPath} passes the precondition, the pushout can be computed.
-    
-    \item The result theory is computed by taking the disjoint union of the declarations in the source theory, the one on the left of the diamond (the first argument), then the one on the right. Note that this operation is not commutative. If we take the disjoint union of the source, right, then left theories, we get an equivalent but not equal theory. The order of declarations will be different, but the two theories will have the same declarations. 
-\begin{hscode}
- newThry = 
-   GTheory (disjointUnion3 (declarations srcMapped)
-                           (declarations lThry) 
-                           (declarations rThry)) 
-           (waist srcMapped)
-\end{hscode}    
-    \item The source and target of the resulting morphisms are easy to figure out. The function \lstmath{allMaps} calculate the mappings by composing the mappings in the views on the path between the two theories, and then the one described by the rename function. 
-\begin{hscode}
-lView = GView lt newThry ~$\$$~ validateRen lt (allMaps left)
-rView = GView rt newThry ~$\$$~ validateRen rt (allMaps right)
-diag  = GView commonSrc newThry ~$\$$~ validateRen commonSrc (allMaps left)
-\end{hscode}
-\end{itemize}
-
 \section{Library Building}
 \label{sec:guidelines}
-Once implementation of combinators is in place, we start using them to build the library organized as a theory graph. Our guide in building this library are the definitions in~\cite{msLibDecls}, which were part of an experiment~\cite{mathscheme2011experiments} on the way to develping the combinators we discuss in this chapter. Therefore, there are some definitions in that library that referred to non-existing morphisms, like the definition of \lstmath{SemiRng} presented in Section~\ref{sec:lib_implementation}. As the implementation of combinators depend on finding the right morphisms in the underlying theory graph, we had to work out the correct morphisms. We build a library of $227$ theories describing the algebraic hierarchy using tiny theories approach. Those theories range from \lstmath{Empty} up to \lstmath{Ring} and  \lstmath{BoundedDistributedLattice}.
+%In Chapter~\ref{sec:lib_implementation} we discuss the implementation of the combinators. 
+%Once implementation of combinators is in place, 
+Using \lstmath{extends}, \lstmath{rename}, and \lstmath{combine}, we build a library of $227$ theories describing the algebraic hierarchy organized as a theory graph using tiny theories approach. Those theories range from \lstmath{Empty} up to \lstmath{Ring} and  \lstmath{BoundedDistributedLattice}.
+%we start using them to build the library organized as a theory graph. 
+Our guide in building this library are the definitions in~\cite{msLibDecls}, which were part of an experiment~\cite{mathscheme2011experiments} on the way to developing the combinators we discuss in this chapter. Therefore, there are some definitions in that library that referred to non-existing morphisms, like the definition of \lstmath{SemiRng} presented in Section~\ref{sec:lib_implementation}. As the implementation of combinators depend on finding the right morphisms in the underlying theory graph, we had to work out the correct morphisms. 
  
 The examples we give in Section~\ref{sec:msCombinators} gives an intuition of how the combinators work together to build the library. In this section we discuss some the challenges we faced to build the graph defining \lstmath{AdditiveMonoid} as in Figure~\ref{fig:cube_monoid}.  
 %leading to a completely morphism-based development of the library. 
@@ -634,11 +406,11 @@ We also find that using theories that are deeper in the hierarchy when possible 
 2. CommutativeGroup = 
        combine CommutativeMonoid {} Group {} over Monoid
 \end{togcode}
-The first definition does not connect \lstmath{CommutativeMonoid} and \lstmath{CommutativeGroup}, despite the fact that they are related. The second definition connects them, while also keeping the connection to \lstmath{CommutativeMagma} through the path from it to \lstmath{CommutativeMonoid}. 
+The first definition does not connect \lstmath{CommutativeMonoid} and \lstmath{CommutativeGroup}, despite the fact that they are related. The second definition connects them, while also keeping the connection to \lstmath{CommutativeMagma} through the path that exists from it to \lstmath{CommutativeMonoid}. 
 
-These observations stems from the fact that we are not only interested in computing the output theory of the expression, but we are also interested in building a rich theory graph that captures as much of the structure of mathematics as possible. 
+These observations stem from the fact that we are not only interested in computing the output theory of the expression, but we are also interested in building a rich theory graph that captures as much of the structure of mathematics as possible. 
 
-In some cases, a whole hierarchy has been developed and one may want to perform a pushout of the whole graph along a morphism, in a similar way to~\cite{cicm2019diagrams}. We encountered this situation while creating \lstmath{Semiring}, as that's when the additive and multiplicative variants of the theories are combined together. We have not implemented diagram combinators in the tog framework and leave this as future work. 
+In some cases, a whole hierarchy has been developed and one may want to perform a pushout of the whole graph along a morphism, in a similar way to~\cite{cicm2019diagrams} and as shown in Figure~\ref{fig:shiftPMtoRingoid}. We encountered this situation while creating \lstmath{Semiring}, as that's when the additive and multiplicative variants of the theories are combined together. We have not implemented diagram combinators in the tog framework and leave this as future work. 
 %\begin{comment}
 \begin{figure}[h]
 \adjustbox{scale=0.7}{   
@@ -655,8 +427,8 @@ In some cases, a whole hierarchy has been developed and one may want to perform 
 
 Another line of future work is to support general morphisms as described in Section~\ref{sec:generalmorph} and their usage in the \lstmath{mixin} combinator as described in~\cite{carette2018building}. 
 The \lstmath{mixin} combinator computes pushout of an embedding along a general morphism. Given a general morphism \lstmath{$[\text{u}_\Delta]: \Gamma \to \Delta$} and an embedding \lstmath{$[\text{u}_\Phi] : \Gamma \to \Phi$} and two injective renaming functions 
-\lstmath{$\pi_\Delta : \mid\Delta\mid \to \mathbb{V}$}
-and \lstmath{$\pi_\Phi : \mid\Phi\mid \to \mathbb{V}$}, the mixin is defined as follows 
+\lstmath{$\pi_\Delta :\ \mid\Delta\mid\ \to \mathbb{V}$}
+and \lstmath{$\pi_\Phi :\ \mid\Phi\mid\ \to \mathbb{V}$}, the mixin is defined as follows 
 \[
 \mixfun\left( u_{\Delta}, u_{\Phi}, \pi_{\Delta}, \pi_{\Phi}\right) \define
 \left\{\begin{aligned}
