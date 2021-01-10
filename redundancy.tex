@@ -132,7 +132,7 @@ record IsMonoidHomomorphism (~$\llbracket$~_~$\rrbracket$~: A ~$\to$~ B) : Set(a
 
 Monomorphism and isomorphism are also provided in the library, defined in terms of homomorphisms. 
 \end{enumerate}
-These constructions constitute $7$ definitions spanning over $35$ lines for only the theory \lstmath{Monoid}. They are also repeated for other theories. The term language and evaluator for \lstmath{Monoid} are repeated verbatim for 
+These constructions constitute $7$ definitions spanning over $35$ lines for only the theory \lstmath{Monoid}. They are also repeated for other theories. The term language and evaluator for \lstmath{Monoid} are repeated verbatim for both theories 
 \href{https://github.com/agda/agda-stdlib/blob/c61b159363ce2390049ce8e1e5422f61f17ec3b7/src/Algebra/Solver/CommutativeMonoid.agda}
 {\lstinline|CommutativeMonoid|}
 and 
@@ -153,6 +153,24 @@ These give us a total of $47$ definitions that are provided by the library devel
 %Note that for each of these theories, there are the additive and multiplicative versions which agda overlooks in its library depending on its module rename function. 
 
 It is worth noting that the defintions in the Agda standard library employ modularity when defining structures, like the definition of \lstmath{IsMonoidHomomorphism} which depends on \lstmath{IsMagmaHomomorphism}. Raw definitions from universal algebra do not support this modularity and, therefore, the generated expressions would be more \emph{flat}, i.e. include the actual declarations instead of importing them from a different structure. Having flat definitions is, in some cases, a good way to abstract over library design. Nevertheless, we do not want to lose the connections between different theories. To solve this problem, we support a library organized as theory graph on which a flattener can be built. We leave working fully with unflattened theories as future work.  
+
+\subsubsection*{Summary}
+\begin{center}
+\begin{tabular}{| c || c |}
+%\multicolumn{2}{c}{\textbf{Agda Standard Library}} \\ \hline 
+\hline 
+\textbf{Construction} & \textbf{Number of Occurrences} \\ \hline 
+Signatures & 7 \\ \hline
+Homomorphisms & 7  \\ \hline
+Monoomorphisms & 7 \\ \hline
+Isomorphisms & 7 \\ \hline
+Products & 10 \\ \hline
+Products of Signatues & 3 \\ \hline
+Term Language & 3 \\ \hline
+Evaluation Function & 3 \\ \hline
+%\multicolumn{2}{c}{\textbf{Lean's Mathlib}} \hline
+\end{tabular}
+\end{center}
 
 \section{Lean MathLib}
 The \href{https://github.com/leanprover-community/mathlib/blob/4bb8d4475f897c8997100d31fe84b33050444374/src/algebra/group/hom.lean}
@@ -192,6 +210,9 @@ their additive variants, and
 
 % is_add_submonoid, is_submonoid
 % is_add_subgroup, is_subgroup
+
+
+
 
 \begin{comment} 
 The product for \lstmath{monoid} theory is defined as 
