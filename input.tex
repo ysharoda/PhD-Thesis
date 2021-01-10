@@ -1,0 +1,476 @@
+\chapter{Library Definitions}
+\label{appendix:input}
+%\inputminted{agda}{mathscheme.tog}
+
+\begin{togcode}
+Theory Empty = {} 
+Carrier = extend Empty {A : Set}
+Pointed = extend Carrier {e : A}
+PointedZero = rename Pointed zero
+PointedOne  = rename Pointed one 
+TwoPointed = combine Pointed {e to e1} Pointed {e to e2} over Carrier 
+TwoPointed01 = rename TwoPointed {e to zero ; e to one} 
+UnaryOperation = extend Carrier {prim : A -> A}
+PointedUnarySystem = combine UnaryOperation {} Pointed {} over Carrier
+FixedPoint = extend PointedUnarySystem {fixes_prim_e : prim e == e} 
+Magma = extend Carrier {op : A -> A -> A}
+AdditiveMagma = rename Magma plus
+MultMagma = rename Magma times 
+PointedMagma = combine Pointed {} Magma {} over Carrier
+InvolutiveMagmaSig = 
+  combine UnaryOperation {} Magma {} over Carrier
+\end{togcode}
+
+\begin{togcode} 
+InvolutiveAddMagmaSig = 
+  combine InvolutiveMagmaSig plus AdditiveMagma {} over Magma
+InvolutiveMultMagmaSig = 
+  combine InvolutiveMagmaSig times MultMagma {} over Magma 
+InvolutivePointedMagmaSig = 
+  combine UnaryOperation {} PointedMagma {} over Carrier 
+Involution = 
+  extend UnaryOperation {involutive_prim : {x : A} -> prim (prim x) == x} 
+UnaryDistributes =
+  extend InvolutiveMagmaSig 
+     {distribute_prim_op : {x y : A} -> 
+         prim (op x y) == op (prim x) (prim y) }
+UnaryAntiDistribution =
+  extend InvolutiveMagmaSig 
+     {antidis_prim_op : {x y : A} -> 
+         prim (op x y) == op (prim y) (prim x) }
+AdditiveUnaryAntiDistribution =
+  combine InvolutiveAddMagmaSig {} UnaryAntiDistribution plus 
+  over InvolutiveMagmaSig
+MultUnaryAntiDistribution =
+  combine InvolutiveMultMagmaSig {} UnaryAntiDistribution times 
+  over InvolutiveMagmaSig   
+IdempotentUnary =
+  extend UnaryOperation 
+     {idempotent_prim : {x : A} -> prim (prim x) == prim x}
+InvolutiveMagma = 
+  combine Involution {} UnaryAntiDistribution {} over UnaryOperation  
+\end{togcode} 
+
+\begin{togcode} 
+LeftInverseMagma = rename Magma linv
+RightInverseMagma = rename Magma rinv 
+IdempotentMagma = extend Magma {idempotent_op : {x : A} -> op x x == x} 
+IdempotentAdditiveMagma =
+  combine AdditiveMagma {} IdempotentMagma plus over Magma 
+IdempotentMultMagma =
+  combine MultMagma {} IdempotentMagma times over Magma 
+Pointed0Magma = combine PointedZero {} PointedMagma zero over Pointed
+PointedPlusMagma = combine AdditiveMagma {} PointedMagma plus over Magma
+AdditivePointedMagma = 
+  combine Pointed0Magma plus PointedPlusMagma zero over PointedMagma
+Pointed1Magma = combine PointedOne {} PointedMagma one over Pointed
+PointedTimesMagma = combine MultMagma {} PointedMagma times over Magma
+MultPointedMagma = 
+  combine Pointed1Magma times PointedTimesMagma one over PointedMagma
+CommutativeMagma = 
+  extend Magma {commutative_op : {x y : A} -> op x y == op y x}
+CommutativeAdditiveMagma = 
+  combine AdditiveMagma {} CommutativeMagma plus over Magma
+CommutativePointedMagma = 
+  combine PointedMagma {} CommutativeMagma {} over Magma
+AntiAbsorbent = 
+  extend Magma {antiAbsorbent : {x y : A} -> op x (op x y) == y}
+SteinerMagma = combine CommutativeMagma {} AntiAbsorbent {} over Magma 
+Squag = combine SteinerMagma {} IdempotentMagma {} over Magma
+PointedSteinerMagma = combine PointedMagma {} SteinerMagma {} over Magma
+UnipotentPointedMagma = 
+  extend PointedMagma {unipotence : {x : A} -> op x x == e}
+\end{togcode}  
+
+\begin{togcode} 
+Sloop = 
+  combine PointedSteinerMagma {} UnipotentPointedMagma {} 
+  over PointedMagma 
+LeftDistributiveMagma  = 
+  extend Magma 
+     {leftDistributive : {x y z : A} -> 
+          op x (op y z) == op (op x y) (op x z)}
+RightDistributiveMagma = 
+  extend Magma 
+     {rightDistributive : {x y z : A} -> 
+           op (op y z) x == op (op y x) (op z x)}
+LeftCancellativeMagma  = 
+  extend Magma 
+     {leftCancellative : {x y z : A} -> op z x == op z y -> x == y }
+RightCancellativeMagma = 
+  extend Magma 
+     {rightCancellative : {x y z : A} -> op x z == op y z -> x == y }
+CancellativeMagma = 
+  combine LeftCancellativeMagma {} RightCancellativeMagma {} 
+  over Magma 
+LeftUnital  = extend PointedMagma {lunit_e : {x : A} -> op e x == x}
+RightUnital = extend PointedMagma {runit_e : {x : A} -> op x e == x}
+Unital = combine LeftUnital {} RightUnital {} over PointedMagma
+LeftBiMagma = combine Magma {} LeftInverseMagma {} over Carrier 
+RightBiMagma = rename LeftBiMagma {linv to rinv}  
+LeftCancellative = 
+  extend LeftBiMagma {leftCancel : {x y : A} -> op x (linv x y) == y}  
+\end{togcode}  
+
+\begin{togcode} 
+
+
+LeftCancellativeOp = 
+  extend LeftBiMagma {lefCancelOp : {x y : A} -> linv x (op x y) == y}
+LeftQuasiGroup = 
+  combine LeftCancellative {} LeftCancellativeOp {} over LeftBiMagma
+RightCancellative = 
+  extend RightBiMagma {rightCancel : {x y : A} -> op (rinv y x) x == y}
+RightCancellativeOp = 
+  extend RightBiMagma {rightCancelOp : {x y : A} -> rinv (op y x) x  == y}
+RightQuasiGroup = 
+  combine RightCancellative {} RightCancellativeOp {} over RightBiMagma
+QuasiGroup = combine LeftQuasiGroup {} RightQuasiGroup {} over Magma
+MedialMagma = 
+  extend Magma {mediates : {w x y z : A} -> 
+       op (op x y) (op z w) == op (op x z) (op y w)}
+MedialQuasiGroup = combine QuasiGroup {} MedialMagma {} over Magma
+MoufangLaw = extend Magma 
+     {moufangLaw : {e x y z : A} -> (op y e) == y -> 
+          op (op (op x y) z) x == op x (op y (op (op e z) x))}
+MoufangQuasiGroup = combine QuasiGroup {} MoufangLaw {} over Magma
+LeftLoop = combine RightUnital {} LeftQuasiGroup {} over Magma
+Loop = combine Unital {} QuasiGroup {} over Magma
+MoufangIdentity = extend Magma {moufangId : {x y z : A} -> 
+            op (op z x) (op y z) == op (op z (op x y)) z}
+MoufangLoop = combine Loop {} MoufangIdentity {} over Magma
+LeftShelfSig = rename Magma lshelf 
+LeftShelf = 
+  combine LeftShelfSig {} LeftDistributiveMagma lshelf over Magma 
+\end{togcode} 
+
+\begin{togcode} 
+
+
+RightShelfSig = rename Magma rshelf
+RightShelf = 
+  combine RightShelfSig {} RightDistributiveMagma rshelf over Magma
+ShelfSig = combine LeftShelfSig {} RightShelfSig {} over Carrier
+LeftRack = combine ShelfSig {} LeftShelf {} over LeftShelfSig
+RightRack = combine ShelfSig {} RightShelf {} over RightShelfSig 
+Shelf = combine LeftRack {} RightRack {} over ShelfSig
+LeftBinaryInverse = 
+  extend ShelfSig {leftInverse : {x y : A} -> <| (|> x y) x == y}
+RightBinaryInverse = 
+  extend ShelfSig {rightInverse : {x y : A} -> |> x (<| y x) == y}
+BinaryInverse = 
+  combine LeftBinaryInverse {} RightBinaryInverse {} over ShelfSig
+Rack = combine Shelf {} BinaryInverse {} over ShelfSig
+LeftIdempotence = 
+  combine IdempotentMagma lshelf LeftShelfSig {} over Magma
+RightIdempotence = 
+  combine IdempotentMagma rshelf RightShelfSig {} over Magma
+  LeftSpindle = 
+  combine LeftShelf {} LeftIdempotence {} over LeftShelfSig
+RightSpindle = 
+  combine RightShelf {} RightIdempotence {} over RightShelfSig
+LeftSpindle_ShelfSig  = 
+  combine LeftSpindle {} ShelfSig {} over LeftShelfSig
+RightSpindle_ShelfSig = 
+  combine RightSpindle {} ShelfSig {} over RightShelfSig 
+\end{togcode} 
+
+\begin{togcode} 
+LeftSpindle_Shelf = 
+  combine LeftSpindle {} Shelf {} over LeftShelf 
+RightSpindle_Shelf = 
+  combine RightSpindle {} Shelf {} over RightShelf
+Spindle = 
+  combine LeftSpindle_Shelf {} RightSpindle_Shelf {} over Shelf 
+Quandle = 
+  combine Rack {} Spindle {} over Shelf 
+RightSelfInverse = extend LeftShelfSig 
+     {rightSelfInverse_|> : {x y : A} -> (|> (|> x y) y) == x}
+Kei = combine LeftSpindle {} RightSelfInverse {} over LeftShelfSig
+Semigroup = extend Magma 
+     {associative_op : {x y z : A} -> op (op x y) z == op x (op y z)}
+AdditiveSemigroup = combine AdditiveMagma {} Semigroup plus over Magma
+MultSemigroup = combine MultMagma {} Semigroup times over Magma 
+CommutativeSemigroup = 
+  combine CommutativeMagma {} Semigroup {} over Magma 
+AdditiveCommutativeSemigroup = 
+  combine AdditiveMagma {} CommutativeSemigroup plus over Magma
+MultCommutativeSemigroup = 
+  combine MultMagma {} CommutativeSemigroup times over Magma  
+  LeftCancellativeSemigroup = 
+  combine Semigroup {} LeftCancellativeMagma {} over Magma
+RightCancellativeSemigroup = 
+  combine Semigroup {} RightCancellativeMagma {} over Magma  
+CancellativeSemigroup = 
+  combine Semigroup {} CancellativeMagma {} over Magma 
+\end{togcode} 
+
+\begin{togcode} 
+CancellativeCommutativeSemigroup = 
+  combine CommutativeSemigroup {} CancellativeSemigroup {} 
+  over Semigroup
+InvolutiveSemigroup = 
+  combine Semigroup {} InvolutiveMagma {} over Magma
+InvolutivePointedSemigroup = 
+  combine PointedMagma{} InvolutiveSemigroup {} over Magma
+Band = combine Semigroup {} IdempotentMagma {} over Magma
+MiddleAbsorption = 
+  extend Magma {middleAbsorb_* : {x y z : A} -> op (op x y) z == op x z}
+MiddleCommute = 
+  extend Magma {middleCommute_* : {x y z : A} -> 
+       op (op (op x y) z) x == op (op (op x z) y) x}
+RectangularBand = combine Band {} MiddleCommute {} over Magma
+NormalBand = combine Band {} MiddleCommute {} over Magma
+RightMonoid = combine RightUnital {} Semigroup {} over Magma
+LeftMonoid  = combine LeftUnital {} Semigroup {} over Magma
+PointedSemigroup = combine Semigroup {} PointedMagma {} over Magma 
+AdditivePointedSemigroup = 
+  combine PointedSemigroup plus-zero AdditivePointedMagma {} 
+  over PointedMagma 
+AdditiveUnital = 
+  combine AdditivePointedMagma {} Unital plus-zero over PointedMagma 
+MultPointedSemigroup = 
+  combine PointedSemigroup times-one MultPointedMagma {} 
+  over PointedMagma
+MultUnital = 
+  combine MultPointedMagma {} Unital times-one over PointedMagma    
+\end{togcode} 
+
+\begin{togcode} 
+Monoid = combine Unital {} Semigroup {} over Magma
+AdditiveMonoid = combine AdditiveUnital {} Monoid plus-zero over Unital
+MultMonoid = combine MultUnital {} Monoid times-one over Unital
+id3 = id from MultSemigroup to MultMonoid
+DoubleMonoid = combine AdditiveMonoid {} MultMonoid {} over Carrier 
+Monoid1 = combine PointedOne {} Monoid one over Pointed
+CommutativeMonoid = 
+  combine Monoid {} CommutativeSemigroup {} over Semigroup
+CancellativeMonoid = combine Monoid {} CancellativeMagma {} over Magma 
+CancellativeCommutativeMonoid = 
+  combine CancellativeMonoid {} CommutativeMonoid {} over Monoid
+LeftZero  = extend PointedMagma {leftZero_op_e  : {x : A} -> op e x == e}
+RightZero = extend PointedMagma {rightZero_op_e : {x : A} -> op x e == e}
+Zero = combine LeftZero {} RightZero {} over PointedMagma
+Left0 = combine LeftZero zero PointedZero {} over Pointed
+Right0 = combine RightZero zero PointedZero {} over Pointed
+ComplementSig = rename UnaryOperation {prim to compl}
+CommutativeMonoid1 = combine CommutativeMonoid one Monoid1 {} over Monoid
+AdditiveCommutativeMonoid = 
+  combine AdditiveMonoid {} CommutativeMonoid plus-zero over Monoid
+MultCommutativeMonoid = 
+  combine MultMonoid {} CommutativeMonoid times-one over Monoid
+BooleanGroup = combine Monoid {} UnipotentPointedMagma {} over PointedMagma
+InverseUnaryOperation = rename UnaryOperation inv  
+InverseSig = 
+  combine InverseUnaryOperation {} InvolutivePointedMagmaSig inv 
+  over UnaryOperation
+\end{togcode} 
+
+\begin{togcode} 
+LeftInverse  = 
+  extend InverseSig 
+        {leftInverse_inv_op_e  : {x : A} -> op x (inv x) == e}
+RightInverse = 
+  extend InverseSig 
+        {rightInverse_inv_op_e : {x : A} -> op (inv x) x == e}
+Inverse = combine LeftInverse {} RightInverse {} over InverseSig
+PseudoInverseSig = 
+  combine InvolutiveMagmaSig inv InverseUnaryOperation inv 
+  over UnaryOperation
+PseudoInverse = 
+  extend PseudoInverseSig {quasiInverse_inv_op_e : {x : A} -> 
+       op (op x (inv x)) x == x}
+PseudoInvolution = extend PseudoInverseSig
+   {quasiRightInverse_inv_op_e : {x : A} -> 
+        op (op (inv x) x) (inv x) == inv x}
+RegularSemigroup = combine Semigroup {} PseudoInverse {} over Magma
+QuasiInverse = 
+  combine PseudoInverse {} PseudoInvolution {} 
+  over PseudoInverseSig
+Group  = combine Monoid {} Inverse {} over PointedMagma    
+Group1 = combine Group one Monoid1 {} over Monoid
+AdditiveGroup = 
+  combine AdditiveMonoid {} Group plus-zero-neg over Monoid 
+CommutativeGroup = combine Group {} CommutativeMonoid {} over Monoid
+MultGroup = combine MultMonoid {} Group times-one over Monoid
+\end{togcode} 
+
+\begin{togcode} 
+AbelianGroup = 
+  combine CommutativeGroup times-one MultGroup {} over Group
+AbelianAdditiveGroup = 
+  combine CommutativeGroup plus-zero-neg AdditiveCommutativeMonoid {} 
+  over CommutativeMonoid 
+RingoidSig = combine MultMagma {} AdditiveMagma {} over Carrier 
+NonassociativeNondistributiveRing = 
+  combine AbelianGroup {} RingoidSig {} over MultMagma 
+LeftRingoid  = 
+  extend RingoidSig {leftDistributive_*_+  : {x y z : A} -> 
+       * x (+ y z) == + (* x y) (* x z)}
+RightRingoid = 
+  extend RingoidSig {rightDistributive_*_+ : {x y z : A} -> 
+       * (+ y z) x == + (* y x) (* z x)}
+Ringoid = combine LeftRingoid {} RightRingoid {} over RingoidSig
+NonassociativeRing = 
+  combine NonassociativeNondistributiveRing {} Ringoid {} over RingoidSig
+PrimRingoidSig = combine RingoidSig {} UnaryOperation {} over Carrier
+AndDeMorgan = 
+  extend PrimRingoidSig {andDeMorgan_*_+_prim : {x y z : A} -> 
+       prim (* x y) == + (prim x) (prim y) }
+OrDeMorgran = 
+  extend PrimRingoidSig {orDeMorgan_+_*_prim  : {x y z : A} -> 
+       prim (+ x y) == * (prim x) (prim y) }
+DualDeMorgan = combine AndDeMorgan {} OrDeMorgran {} over PrimRingoidSig
+NonDistributiveAddPreSemiring  = 
+  combine AdditiveCommutativeSemigroup {} RingoidSig {} over AdditiveMagma  
+\end{togcode} 
+
+\begin{togcode} 
+AssociativeLeftRingoid = 
+  combine MultSemigroup {} LeftRingoid {} over MultMagma 
+LeftPreSemiring = 
+  combine AssociativeLeftRingoid {} NonDistributiveAddPreSemiring {} 
+  over RingoidSig 
+AssociativeRightRingoid = 
+  combine MultSemigroup {} RightRingoid {} over MultMagma 
+RightPreSemiring = 
+  combine AssociativeRightRingoid {} NonDistributiveAddPreSemiring {} 
+  over RingoidSig 
+PreSemiring = combine LeftPreSemiring {} RightRingoid {} over RingoidSig
+AssocPlusRingoid  = 
+  combine RingoidSig {} AdditiveSemigroup {} over AdditiveMagma
+AssocTimesRingoid = combine RingoidSig {} MultSemigroup {} over Magma
+AssociativeNonDistributiveRingoid = 
+  combine AssocPlusRingoid {} AssocTimesRingoid {} over RingoidSig 
+NearSemiring  = 
+  combine AssociativeNonDistributiveRingoid {} RightRingoid {} 
+  over RingoidSig
+AddGroup_RingoidSig = 
+  combine AdditiveGroup {} RingoidSig {} over AdditiveMagma 
+NearRing = 
+  combine AddGroup_RingoidSig {} AssociativeRightRingoid plus-zero 
+  over RingoidSig
+PointedTimesZeroMagma = 
+  combine PointedTimesMagma zero Pointed0Magma times over PointedMagma 
+Zero0 = combine Zero times-zero PointedTimesZeroMagma {} over PointedMagma 
+\end{togcode} 
+
+\begin{togcode} 
+Ringoid0Sig = 
+  combine AdditivePointedMagma {} PointedTimesZeroMagma {} 
+  over PointedZero
+id' = id from RingoidSig to Ringoid0Sig 
+Ringoid1Sig = combine MultPointedMagma {} RingoidSig {} over MultMagma
+Ringoid01Sig = combine Ringoid0Sig {} Ringoid1Sig {} over RingoidSig
+AddCommMonWithMultMagma = 
+  combine AdditiveCommutativeMonoid {} Ringoid0Sig {} 
+  over AdditivePointedMagma
+AddCommMonWithMultSemigroup = 
+  combine AddCommMonWithMultMagma {} MultSemigroup {} over MultMagma
+SemiRng = 
+  combine AddCommMonWithMultSemigroup {} Ringoid {} over RingoidSig
+Rng = 
+  combine AbelianAdditiveGroup {} SemiRng {} over AdditiveCommutativeMonoid 
+SemiRngWithUnit = combine MultMonoid {} SemiRng {} over MultSemigroup 
+Zero_Ringoid0Sig = 
+  combine Zero0 {} Ringoid0Sig {} over PointedTimesZeroMagma
+Semiring = combine SemiRngWithUnit {} Zero_Ringoid0Sig {} over Ringoid0Sig 
+Ring = combine Rng {} Semiring {} over SemiRng 
+CommutativeRing = combine MultCommutativeMonoid {} Ring {} over MultMonoid
+PrimAdditiveGroup = 
+  rename AbelianGroup {U to S ; * to *_ ; inv to inv_ ; 1 to 0_}
+BooleanRing = 
+  combine CommutativeRing {} IdempotentMultMagma {} over MultMagma 
+IdempotentSemiRng = 
+  combine SemiRng {} IdempotentAdditiveMagma {} over AdditiveMagma
+IdempotentSemiring = 
+  combine Semiring {} IdempotentAdditiveMagma {} over AdditiveMagma
+\end{togcode} 
+
+\begin{togcode} 
+InvolutiveFixes = combine FixedPoint one PointedOne {} over Pointed
+InvolutiveRingoidSig = 
+  combine InvolutiveMultMagmaSig {} InvolutiveAddMagmaSig {} 
+  over UnaryOperation
+id2 = id from RingoidSig to InvolutiveRingoidSig 
+RingoidWithInvolution = 
+  combine Ringoid {} InvolutiveRingoidSig {} over RingoidSig 
+InvolutiveFixedPoint = 
+  combine InvolutiveFixes {} Involution {} over UnaryOperation 
+RingoidWithMultAntiDistrib = 
+  combine MultUnaryAntiDistribution {} RingoidWithInvolution {} 
+  over InvolutiveMultMagmaSig 
+RingoidWithAddAntiDistrib = 
+  combine AdditiveUnaryAntiDistribution {} RingoidWithInvolution {} 
+  over InvolutiveAddMagmaSig  
+InvolutiveRingoidWithAntiDistrib = 
+  combine RingoidWithAddAntiDistrib {} RingoidWithMultAntiDistrib {} 
+  over RingoidWithInvolution
+InvolutiveRingoid = 
+  combine InvolutiveFixedPoint {} InvolutiveRingoidWithAntiDistrib {} 
+  over UnaryOperation 
+Ringoid1 = combine Ringoid1Sig {} Ringoid {} over RingoidSig
+Ringoid1ToSemiring = id from Ringoid1 to Semiring
+Ringoid1ToInvolutiveRingoid = id from Ringoid1 to InvolutiveRingoid
+InvolutiveRing = combine InvolutiveRingoid {} Ring {} over Ringoid1 
+JacobianIdentity = extend Ringoid0Sig 
+     {jacobian_*_+ : {x y z : A} -> 
+          (+ (+ (* x (* y z)) (* y (* z x))) (* z (* x y))) == 0}
+\end{togcode} 
+
+\begin{togcode} 
+AntiCommutativeRing = 
+  extend Ring {antiCommutative : {x y : A} -> (* x y) == neg (* y x)} 
+LieRing = 
+  combine JacobianIdentity {} AntiCommutativeRing {} over Ringoid0Sig 
+MeetSemilattice = combine Band {} CommutativeSemigroup {} over Semigroup
+MultMeetSemilattice = 
+  combine MeetSemilattice times MultCommutativeSemigroup {} 
+  over CommutativeSemigroup
+BoundedMeetSemilattice = 
+  combine MultCommutativeMonoid {} MultMeetSemilattice {} 
+  over CommutativeSemigroup
+JoinSemilattice = 
+  combine MeetSemilattice plus AdditiveCommutativeSemigroup {} 
+  over CommutativeSemigroup
+BoundedJoinSemilattice = 
+  combine AdditiveCommutativeMonoid {} JoinSemilattice {} 
+  over CommutativeSemigroup
+MultSemilattice_RingoidSig = 
+  combine MultMeetSemilattice {} RingoidSig {} over MultMagma
+JoinSemilattice_RingoidSig = 
+  combine JoinSemilattice {} RingoidSig {} over AdditiveMagma
+DualSemilattices = 
+  combine MultSemilattice_RingoidSig {} JoinSemilattice_RingoidSig {} 
+  over RingoidSig
+LeftAbsorption = 
+  extend RingoidSig {leftAbsorp_*_+ : {x y : A} -> * x (+ x y) == x}
+LeftAbsorptionOp = 
+  extend RingoidSig {leftAbsorp_+_* : {x y : A} -> + x (* x y) == x}  
+\end{togcode} 
+
+\begin{togcode} 
+Absorption = 
+  combine LeftAbsorption {} LeftAbsorptionOp {} over RingoidSig
+Lattice = combine DualSemilattices {} Absorption {} over RingoidSig
+Modularity = 
+  extend RingoidSig { leftModular_*_+ : {x y z : A} -> 
+       (+ (* x y) (* x z)) == (* x (+ y (* x z))) }
+ModularLattice = combine Lattice {} Modularity {} over RingoidSig
+DistributiveLattice = 
+  combine ModularLattice {} LeftRingoid {} over RingoidSig
+BoundedJoinLattice = 
+  combine BoundedJoinSemilattice {} Lattice {} over JoinSemilattice
+BoundedMeetLattice = 
+  combine BoundedMeetSemilattice {} Lattice {} over MeetSemilattice
+BoundedLattice = 
+  combine BoundedJoinLattice {} BoundedMeetLattice {} over Lattice
+BoundedModularLattice = 
+  combine BoundedLattice {} ModularLattice {} over Lattice
+BoundedDistributiveLattice = 
+  combine BoundedModularLattice {} DistributiveLattice {} 
+  over ModularLattice
+PointedInvolutiveMagma0Sig = 
+  combine InvolutiveMultMagmaSig {} PointedZero {} over Carrier
+\end{togcode} 
+
