@@ -141,7 +141,7 @@ Renames do not add new concepts, but allows using flexible notations while still
 Given a theory presentation $\Gamma$ and a rename function $\pi$, the output of the rename operation is a new theory (\lstmath{pres}) $\pi \cdot \Gamma$ which is computed by performing a substitution of $\pi$ into the declarations of $\Gamma$, and an embedding morphism $\tilde{\pi} : \Gamma \to \pi\cdot\Gamma$ that maps symbols of $\Gamma$ to those of $\pi\cdot\Gamma$ based on the renaming function $\pi$. 
 \[ \renameDef{\renSource}{\renFun} \]
 
-A rename operation is well-formed whenever the rename function $\pi : |\Gamma| \to \vars$ is an injection, and the codomain is a $k-$permutation of $\vars$, where $k$ is the number of declarations in $\Gamma$. 
+A rename operation is well-formed whenever the rename function $\pi : |\Gamma| \to \vars$ is an injection, and the codomain is a permutation of a subset of $\vars$ with exactly $k$ elements, where $k$ is the number of declarations in $\Gamma$. 
 
 \paragraph{Example}
 After defining \lstmath{Semigroup} in the example of the previous section over a binary operation \lstmath{op}, one would want to define the additive and multiplicative versions using the symbols \lstmath{+} and \lstmath{*}, resp. It also make sense to have a morphism from \lstmath{Semigroup} to those variants that only differ in the names of the symbols. The rename combinator does just that: 
@@ -221,7 +221,7 @@ The embeddings used here are \lstmath{Magma $\;\mapsto\;$ AdditiveMagma} and \ls
 \label{sec:guidelines}
 %In Chapter~\ref{sec:lib_implementation} we discuss the implementation of the combinators. 
 %Once implementation of combinators is in place, 
-Using \lstmath{extends}, \lstmath{rename}, and \lstmath{combine}, we build a library of $227$ theories describing the algebraic hierarchy organized as a theory graph using tiny theories approach. Those theories range from \lstmath{Empty} up to \lstmath{Ring} and  \lstmath{BoundedDistributedLattice}.
+Using \lstmath{extends}, \lstmath{rename}, and \lstmath{combine}, we build a library of $227$ theories describing the algebraic hierarchy organized as a theory graph using tiny theories approach. Those theories range from \lstmath{Empty} up to \lstmath{Ring} and  \lstmath{BoundedDistributedLattice}. The library definitions are given in Appendix~\ref{appendix:input}. 
 %we start using them to build the library organized as a theory graph. 
 Our guide in building this library are the definitions in~\cite{msLibDecls}, which were part of an experiment~\cite{mathscheme2011experiments} on the way to developing the combinators we discuss in this chapter. Therefore, there are some definitions in that library that referred to non-existing morphisms, like the definition of \lstmath{SemiRng} presented in Section~\ref{sec:lib_implementation}. As the implementation of combinators depend on finding the right morphisms in the underlying theory graph, we had to work out the correct morphisms. 
  
@@ -319,7 +319,7 @@ AdditiveRightUnital =
   combine AdditivePointedMagma {} RightUnital plus-zero 
   over PointedMagma
 \end{togcode} 
-\noindent It make sense to expect \lstmath{AdditiveUnital} to have morphisms with all of \lstmath{Unital}, \lstmath{AdditiveLeftUnital}, and \lstmath{AdditiveRightUnital}. Similar to the case we had in the previous section, a pushout will only compute two of these three morphisms. The possible pushouts are 
+\noindent It make sense to expect \lstmath{AdditiveUnital} to have morphisms with all of \lstmath{Unital}, \lstmath{AdditiveLeftUnital}, and \lstmath{AdditiveRightUnital}. Similar to the case we had in the previous section, one pushout will only compute two of these three morphisms. The possible pushouts are 
 \begin{togcode}
 combine AdditiveLeftUnital {} AdditiveRightUnital {} 
 over AdditivePointedMagma
@@ -335,7 +335,16 @@ combine AdditiveRightUnital {} Unital plus-zero
 over RightUnital 
 \end{togcode}
 
-Unlike the one before, there is no way to compose different pushouts to get the three morphisms. The reason is that all possible pushouts compute the same theory, without the system realizing they are the same. 
+In order to compute the three, we need to to do $3$ pushouts as follows:
+\begin{togcode} 
+AUnital1 = combine AdditiveLeftUnital {} Unital plus-zero 
+           over LeftUnital
+AUnital2 = combine AdditiveRightUnital {} Unital plus-zero 
+           over RightUnital 
+AdditiveUnital = combine AUnital1 {} AUnital2 {} over Unital 
+\end{togcode} 
+The theories \lstmath{AUnital1}, \lstmath{AUnital2}, and \lstmath{AdditiveUnital} are all equivalent. Therefore, the graph would have $3$ presentations of the theory of additive unital without the graph realizing they are equivalent. 
+%Unlike the one before, there is no way to compose different pushouts to get the three morphisms. The reason is that all possible pushouts compute the same theory, without the system realizing they are the same. 
 
 The same problem occurs when defining \lstmath{AdditiveMonoid} and attempting to generate the three morphisms 
 \begin{itemize}
@@ -343,8 +352,12 @@ The same problem occurs when defining \lstmath{AdditiveMonoid} and attempting to
     \item \lstmath{AdditiveSemigroup $\;\longrightarrow\;$ AdditiveMonoid}
     \item \lstmath{Monoid $\;\longrightarrow\;$ AdditiveMonoid}
 \end{itemize}
+%AMonoid1 = combine Monoid plus-zero AdditivePointedSemigroup {} over PointedSemigroup
+%AMonoid2 = combine Monoid plus-zero AdditiveUnital {} over Unital
+%AdditiveMonoid = combine AMonoid1 {} AMonoid2 {} over Monoid  
 
-We considered the possibility of using colimits or diagram combinators as in~\cite{cicm2019diagrams}. In either case, we want to arrive at the right pushouts and build diagrams or colimits on top of it. The solution we adopted here is to enable the user to add identity embedding between theories. This allowed us to substitute for morphisms that are not generated in situations like the one we describe here. 
+We considered the possibility of using colimits or diagram combinators as in~\cite{cicm2019diagrams}. In either case, we want to arrive at the right pushouts and build diagrams or colimits on top of it. 
+The solution we adopted here is to enable the user to add identity embedding between theories. This allowed us to substitute for morphisms that are not generated in situations like the one we describe here. 
 %Our approach is to define these techniques in terms of pushouts, i.e. provide them as a syntactic sugar to performing multiple pushouts. Since pushouts in the category of contexts are associative, we believed we are able to do that, but the examples above shows that this is not always possible. Therefore, we provided a construction that allows the user to add identity arrows between two theories.\ednote{need to add guarantees that this does not mess with the all-commute-path principle.} 
 
 The declarations that we use to define \lstmath{AdditiveMonoid} are 
