@@ -18,7 +18,7 @@ Equational logic has $3$ inference rules described in~\cite{Gries1993EquationalL
 \noindent where $t$, $t_1$, $t_2$, and $t_3$ are expressions, $x$ is a symbol in the language, $ts$ is a list of expressions, and $xs$ is a list of symbols. 
 The leftmost rule refers to leibniz equality that states that two expressions are equal if one can be substituted by the other without changing the truth of a statement. 
 The rule in the middle reflects the transitivity of equality. 
-The rightmost rule states that if $t$ is true under all assignments, then it is true under any valid substitution.  
+The rightmost rule states that if $t$ is true, then it remains true under all substitutions.  
 
 %\section{A Theory in Equational Logic} 
 %\label{sec:eqtheory}
@@ -31,7 +31,10 @@ such that
 \end{itemize}
 %containing one sort .\footnote{In case of multi-sorted logics, the set $\sort$ is an indexed set of sorts. We restrict ourselves to unisorted logics as it captures the algebraic structures we're interested in, like monoids, groups, and rings.}
 %An equation has the form \lstmath{t$_1$ = t$_2$}. We refer to this set as $\equations$, and therefore refer to a theory in equational logic as \lstmath{($\sort$,$\fsyms$,$\equations$)}. 
-An algebra describes a model  of the theory. It assigns a carrier set to the sort \lstmath{s} and functions to every symbol in $\fsyms$ such that the equations is $\equations$ hold. 
+%An algebra describes a model  of the theory. It assigns a carrier set to the sort \lstmath{s} and functions to every symbol in $\fsyms$ such that the equations is $\equations$ hold. 
+
+An algebra is a mathematical structure consisting of a domain and a set of functions on the domain. It provides an interpretation for the carrier $\sort$ and the function symbols in $\fsyms$ of a theory such that the equations in $\equations$ hold.  
+%The models of a first-order algebraic theory presentation define algebras (1) whose domain and distinguished elements and functions are the interpretations of the carrier and symbols of the theory and (2) that satisfy the axioms of theory.  A model isn’t exactly an algebra.  It is a mapping to an algebra.
 
 \section{Constructions}
 \label{sec:toBeGenerated}
@@ -49,7 +52,7 @@ The definitions are adapted from~\cite{ehrig1985fundamentals} and~\cite{handbook
     \item \lstmath{c$_\Delta$} \lstmath{=} \lstmath{c$_{\Gamma}$} for every constant symbol in the set of function symbols $\fsyms$. 
     \item \lstmath{op$_\Delta\ $ x$_1$ $\;...\;$ x$_n$} \lstmath{=} \lstmath{op$_\Gamma\ $x$_1$ $\;...\;$ x$_n$}, for all \lstmath{op$\ \in\;\mid\fsyms\mid$}, {x$_1$ $\cdots$ x$_n$ $\in \sort_\Delta$}, and \lstmath{n $\ \in \mathbb{N}$, n $\;\geq\;$ 1}. 
     \end{enumerate}
-    \item The \emph{trivial sub-theory} is the sub-theory with the empty carrier. Because the carrier is empty, the $3$ conditions above trivially hold.     
+    \item The \emph{trivial sub-theory} is the sub-theory with the empty carrier. Because the carrier is empty, the $3$ conditions above trivially hold. Note that the trivial sub-theory is not defined for theories with constants.    
     \item The \emph{product} of two algebras \lstmath{A} and \lstmath{B} of the same theory $\Gamma$ is the algebra with sort $(\sort_\texttt{A} \times \sort_\texttt{B})$. In a uni-sorted setup, the sort of the product algebra is $(\sort \times \sort)$. 
     \begin{itemize}
     \item \lstmath{c$_\times$ : $(\sort \times \sort) = c_\texttt{A} \times c_\texttt{B}$}, for every constant symbol 
