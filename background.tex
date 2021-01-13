@@ -12,7 +12,7 @@ One of the constructions we generate, that is not typically defined within unive
 \label{subsec:background:dtt}
 Dependent type theory (DTT) is a version of type theory that enables writing types like 
 \lstmath{$\Pi\ $ x : A $\ \cdot\ $ M x} % \text{x : A} \cdot \text{M x}$} % x : A $\ \cdot\ $ M x} 
-where the type \lstmath{M} depends on the \emph{value} of \lstmath{x}, i.e. \lstmath{M : A $\ \to\ $ Type}. 
+where the type \lstmath{M x} depends on the \emph{value} of \lstmath{x}, i.e. \lstmath{M : A $\ \to\ $ Type}. 
 % source: Type theory and formal proof, P. 103 - Ch.5 
 Having types that depend on values adds to the expressiveness of the logic. A common example for introducing dependent types is the type of a vector of \lstmath{n} elements of a type \lstmath{A}. 
 In most programming languages, the type of this vector is defined in terms of the type of its elements as \lstmath{Vec A}. Using dependent types, the type of a vector can depend on both the type of its elements and also its length, written as \lstmath{$\Pi\ $ n : $\ \mathbb{N}\ \cdot\ $ Vec A n}.
@@ -379,6 +379,20 @@ Consider the category $\mathbb{P}$ of theory presentations as objects connected 
 
 The colimit of this diagram is a theory with a carrier \lstmath{A} and one binary operation \lstmath{op} that has the properties described by the axioms in the theories connected to \lstmath{Magma}. Along with this theory are identity morphisms from all the theories in the above diagram to the colimit theory 
 \end{comment} 
+
+\section{Relational Interpretation}\ednote{add this section to the description} 
+A program consisting of a type and operations on that type can be seen as a theory. 
+When proving properties about programs, one often want to talk about structure-preserving relations between them, like equivalence. These are called relational interpretations and are seen as a generalization of homomorphisms~\cite{reynolds1983types}. Relational interpretations are used extensively when working on the semantics of programming languages. They form the bases of a proof technique called \emph{logical relations}~\cite{crary2005logical}. Supporting proofs by logical relations has been considered a benchmark for theorem provers in the revised POPLmark challenge~\cite{poplmark2019}.  
+
+We give the definition of relational interpretations in Section~\ref{sec:toBeGenerated}. 
+
+%Relational interpretation is a concept used when reasoning about the semantics of prograamming languages. The algebraic interpretation of types views types and their related operations as 
+%t is a generlization of the concept of homomorphisms between provides a syntactic translation 
+
+%are used for reasoning about properties of programs, like type safety and equivelance of programs. 
+
+%A logical relation is used to prove properties of programming languages. 
+%Relational interpretation is a concept used when reasoning about the semantics of programming languages. It is used to 
 
 \section{Multi-Stage Programming}
 \label{sec:background:msp}
