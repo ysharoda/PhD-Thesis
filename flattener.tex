@@ -37,7 +37,7 @@ combine CommutativeMagma {} AssociativeMagma {}
 combine CommutativeMagma {op to +} AssociativeMagma {op to *}
     \end{togcode}
 \end{itemize}
-As the hierarchy gets deeper this problem becomes more complicated. For example, \lstmath{CommutativeGroup} and \lstmath{AssociativeGroup} have many more possibilities for their common source. 
+As the hierarchy gets deeper this problem becomes more complicated. For example, \lstmath{CommutativeGroup} and \lstmath{IdempotentGroup} have many more possibilities for their common source. 
 
 The reason of this problem is that the syntax of the language presented in~\cite{carette2018building} is based on naming target theories, while the syntax is based on having the embedding available. This leaves the gap of using the target theories to infer the embeddings. Using theories, instead of morphisms, in the syntax is a usability decision. Morphisms do not have canonical names, mainly because they do not appear in informal mathematics. For example, it is hard to think of a name for the morphism (that result of composition of morphisms) from the \lstmath{PointedMagma} to \lstmath{Monoid} theory. It is easier to refer to it in terms of the source and the target than to give it any name. 
 
@@ -70,9 +70,15 @@ The language that we implement has the following syntax
 Although one can declare a theory with a list of declarations using the \lstmath{Theory} keyword, we only use it to create the empty theory. 
 
 
-\section{Theories and Morphisms}
+\section{Implementation}
 \label{subsec:theoriesMorphisms}
-We defined a theory in DTT in Section~\ref{sec:background:theory} as a telescope.  It is captured by the type \lstmath{GTheory}. 
+In Chapter~\ref{ch:library}, we described the library we are building. This library is the output of the flattener. In Section~\ref{sec:impl:expressions}, we introduce the theory expressions we need to generate this library. These expressions are the inputs to the flattener. In the sequel of this chapter, we describe the implementation of the flattener that reads those theory expressions and generate the graph. 
+
+The graph consists of theories and morphisms. In Section~\ref{sec:impl:Theories} we describe theories and morphisms, which are the basic components of the graph. We use them to define the theory graph data structure in Section~\ref{subsec:graph}, as well as the definition of a library. Our Implementation of the combinators that adds theories and morphisms in the graph are described in Section~\ref{subsec:combinatorsImpl}. 
+
+\subsection{Theories and Morphisms}
+\label{sec:impl:Theories}
+Theories are the building blocks of the library. We defined a theory in DTT in Section~\ref{sec:background:theory} as a telescope.  It is captured by the type \lstmath{GTheory}. 
 \begin{hscode}
 data GTheory = GTheory {
   declarations :: [Constr],
@@ -80,18 +86,18 @@ data GTheory = GTheory {
 \end{hscode}
 The waist is needed to determine how many of the declarations are parameters, as in~\cite{alhassy2019}. 
 
-The type \lstmath{GView} describe the morphism as defined in~\ref{sec:background:morphisms}. 
+In our implementation we refer to morphisms as views. The type \lstmath{GView} describe morphisms as defined in~\ref{sec:background:morphisms}. It consists of a tsource and target theory, as well as the mapping between them. We discussed the combinators we use to build the library in Section~\ref{sec:msCombinators}. Since all the morphisms resulting from these combinators are embeddings, the mapping between theories can be described as a name-to-name map. 
 \begin{hscode}
 data GView  = GView {
   source  :: GTheory,
   target  :: GTheory,
-  rename :: Rename }  
+  rename  :: Rename }  
 \end{hscode}
 \noindent where \lstmath{type Rename = Map.Map Name_ Name_} is the mapping function. 
 
-\section{Theory Graph Structure}
+\subsection{Theory Graph Structure}
 \label{subsec:graph}
-We define a theory graph as a set of named theories for nodes and a set of named views for edges. 
+A theory graph consisting of nodes and morphisms is described in Section~\ref{sec:background:theorygraph}. The datatype \lstmath{TGraph} defines a theory graph as a set of named theories for nodes and a set of named views for edges. 
 \begin{hscode}
 data TGraph = TGraph { 
   _nodes :: Map.Map Name_ GTheory,
@@ -110,8 +116,9 @@ data Library = Library {
   _renames :: Map.Map Name_ Rename }
 \end{hscode}
 
-\section{Combinators}
+\subsection{Combinators}
 \label{subsec:combinatorsImpl}
+Now we describe the implementation of the expressions introduced in Section~\ref{sec:impl:expressions} and how they build instance of the type \lstmath{Library}.  
 The language extension that we introduce to tog is described in the type \lstmath{Language} 
 \begin{togcode}
 data Language = 
@@ -123,7 +130,7 @@ data Language =
 
 %We introduced the expressions we use to build the theory graph in Section~\ref{sec:impl:expressions}. In this section, we discuss our implementation for these expressions. The language that we introduce to Tog is described here 
 
-\subsection{Mappings}
+\subsubsection{Mappings}
 A definition of a mapping is elaborated into an entry in the \lstmath{renames} list of the library. 
 \begin{hscode}
 addMapping :: Name -> [RenPair] -> Library -> Library
@@ -132,7 +139,7 @@ addMapping nm rens =
 \end{hscode}
 \noindent \lstmath{over} is the setter function we get by using Haskell lenses. It sets the \lstmath{mappings} field of the library to a new instance of \lstmath{Map} that adds the new mapping to the ones in the input library. 
 
-\subsection{Flat Theories}
+\subsubsection{Flat Theories}
 Given a theory presentation as a list of declarations, we construct the new theory and add it to the list of theories in the graph without any morphisms connecting them to other theories. 
 \begin{hscode}
 theory :: Name -> [Abs.Constr] -> Library -> Library
@@ -142,7 +149,7 @@ theory nm cList =
 \end{hscode}
 
 
-\subsection{Theory Expressions}
+\subsubsection{Theory Expressions}
 The syntax for the theory expression is introduced in Section~\ref{subsec:overPart}. We now discuss their implementation. 
 We start with the function \lstmath{updateGraph} which adds theories and morphisms to the graph, assuming they already have been computed by the combinator
 \begin{hscode}
