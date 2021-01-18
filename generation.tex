@@ -1,47 +1,140 @@
 \chapter{The Generator}
 \label{ch:generation}
 
-The flattener interprets theory expressions into a graph of flat theories and morphisms between them. The resulting flat theories are then used by the generator to produce some useful tools (constructions) related to them. In this chapter, we introduce the generator and answer the first and second research questions asked in Section~\ref{sec:questions}.
+The flattener compiles theory expressions into a graph of flat theories and morphisms between them. The generator uses the flat theories and manipulate them in order to generate some constructions that are useful when working with algebraic structures. The algorithms used to generate these constructions correspond to how universal algebra defines them.
 
-The graph contains theories represented as telescopes as described in Section~\ref{sec:background:theory}. This representation is different than the one for equational theories used in universal algebra and defined in Section~\ref{sec:eqtheory}. The first step we need here is to represent the dependently-typed telescopes as equational theories highlighting their three components: sorts, function symbols, and axioms. Then, we can manipulate the theories to generate the definitions of their related constructions, like homomorphisms, term algebras and other summarized in Section~\ref{sec:toBeGenerated}. 
+In Section~\ref{sec:genFrameReqs}, we discuss the requirements of a generation framework that is capable of generating these constructions. In Section~\ref{sec:togFamework}, we present how we have handled those requirements using Tog as the object language. We discuss the generation of the constructions in Section~\ref{sec:generatedConstructions}. We further discuss our approach in Section~\ref{sec:generation:discussion}. 
 
-Generating these constructions is done by writing programs in the meta language (Haskell) that generates constructions in the object language (Tog). They mainly manipulate the types in Figure~\ref{fig:togRepr}. Some of them manipulate those types in similar ways. Therefore we create an infrastructure that provide utility functions handling common operations and making the generation of constructions easier. This leads to a $3$-layered architecture of the generator as shown in Figure~\ref{fig:generator_hierarch}. 
- 
+\section{Generation Framework}
+\label{sec:genFrameReqs}
+
+Generating information based on the content of a theory requires dealing with theories as data, and therefore working in the meta-level. Meta programming frameworks differ in their capabilities. We lay out here some basic operations that are required to manipulate theories based on universal algebra definitions.  Section~\ref{sec:gen:reqs:eqtheories} discusses how theories are preprocessed so information can be generated from them. The requirements needed to generate this information are presented in details in Section~\ref{sec:gen:reqs:constructions} and summarized in Section~\ref{sec:gen:reqs:summary}. 
+
+%In Section~\ref{sec:gen:eqtheories}, we discuss how the output theories of the flattener are presented as The constructions we generate are either record types (signature, products, homomorphisms, relational interpretations), inductive datatypes (term languages), or functions (simplifiers and evaluators of term languages). We discuss the requirements for generating each of these constructions. 
+
+\subsection{Equational Theories}
+\label{sec:gen:reqs:eqtheories}
+The graph theories are instances of \lstmath{GTheory} type, see Section~\ref{subsec:theoriesMorphisms}, which is a representation of telescopes as in Equation~\ref{eq:telescope}. In this representation, declarations of a theory are represented as a \lstmath{[Constr]}, where each \lstmath{Constr} has a name and an expression denoting its type. 
+Universal algbera has a different representation of theories, which is discussed in Section~\ref{sec:eqtheory}. It separates declarations that describe sorts, functions symbols, and axioms. The first requirement to be able to process theories based on universal algebra definitions is to be able to classify theories declarations into these three groups. 
+
+\subsection{Constructions}
+\label{sec:gen:reqs:constructions}
+After presenting a theory as described by universal algebra, it can be used to generate the constructions we present in Section~\ref{sec:toBeGenerated} and possibly more. We implemented the generation of signature, product theories, homomorphisms, relational interpretations, term languages and some functions to operate on them. We discuss the requirements of generating each of them in the sequel of this section, where constructions with similar requirements are discussed together.  
+%We group similar constructions and discuss them together  
+
+\subsubsection{Signatures and Product Theories}
+Figure~\ref{fig:monoid-sig-prod} shows how the theory presentation of \lstmath{Monoid} can be manipulated to generate signature and product theories. When computing the signature of a theory, one only needs to drop the axioms. Product theories are obtained by replacing every occurrence of the sort \lstmath{A} with the sort \lstmath{Prod A A}. To generate them we need to be able to alter the definitions in a theory, by dropping and by substitution. 
+
+\begin{figure}
+\input{figures/monoid-sig-prod.tex}
+\caption{Manipulating \lstinline|Monoid| theory presentation to generate its signature and product theories.}
+\label{fig:monoid-sig-prod}
+\end{figure}
+
+\subsubsection{Homomorphisms and Relational Interpretations}
+\begin{figure}
+\input{figures/monoid-hom-rel.tex}
+\caption{Manipulating \lstinline|Monoid| theory presentation to generate its homomorphism.}
+\label{fig:monoid-hom-rel}
+\end{figure}
+
+Homomorphisms are structure preserving mappings between the carrier of two algebras. Relational interpretations are structure preserving relations between them. Figure~\ref{fig:monoid-hom-rel} shows how components of the definitions of \lstmath{Monoid} are used to generate its homomorphism. To generate them we need the following: 
+\begin{itemize}
+\item A representation of $2$ instances of a theory with the necessary bindings to define these instances.  
+\item A function/relation between elements of the carriers of the two instances. 
+\item Preservation axioms for every function symbol. To generate these axioms, we need the following 
+    \begin{itemize}
+    \item Project fields of the instances. The names of these projections are qualified if they are fields within a record. Otherwise, they are unqualified.   
+    \item Given a function symbol of the theory, with information about its name and type, generate a representation of function application of that symbol.  
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Term Languages}
+Some of the constructions we generate for a theory are term languages. 
+We differentiate between $4$ different forms of term languages that differ in their expressive power, as shown in Figure~\ref{fig:term-lang-4-forms}. 
+\begin{figure}
+    \input{figures/term-lang-4-forms.tex}
+    \caption{The term language of \lstmath{Monoid} expressed in $4$ different ways.}
+    \label{fig:term-lang-4-forms}
+\end{figure}
+
+The \lstmath{Basic} term language defines expressions created using the function symbols of the theory. At this level of abstraction, referring to elements of the carrier is not possible.
+Considering, for example, the binary operation of the basic \lstmath{Monoid} term language in Figure~\ref{fig:term-lang-4-forms}, \lstmath{op}. Its arguments are either the constant \lstmath{e} or another call for \lstmath{op}. 
+\lstmath{Closed} term languages solve this problem by providing the \lstmath{sing} constructor, abbreviation for \emph{singleton}, that lifts element of type \lstmath{A} into instances of the closed term language. Assuming that the carrier is the type of natural numbers \lstmath{Nat}, a possible term in the language would be \lstmath{op (sing (suc zero)) e}. 
+
+\lstmath{Open} term languages provides extra constructor to represent variables, represented using the \lstmath{Fin} type. The two open term languages are shown on the right hand side of Figure~\ref{fig:term-lang-4-forms}.  
+
+For all 4 versions, we need to generate a constructor for every function symbol of the theory. The term languages that support referring to elements of the carrier, would have an extra constructor for singleton elements with arguments of type \lstmath{A}; and those that support language with variables would have an extra constructor whose arguments has the type \lstmath{Fin n}. 
+
+The requirements for generating these term languages is: 
+\begin{itemize}
+\item A representation for inductive types and constructors 
+\item A representation of types for natural numbers \lstmath{Nat}, finite sets \lstmath{Fin}, and vectors\lstmath{Vec}. 
+\end{itemize}
+
+\subsubsection{Functions on Term Languages}
+\label{sec:gen:reqs:funcs}
+After generating the term languages, we generate functions that manipulates them. This functions are: simplifier, evaluator, induction principle, staged term languages, and staging using representation type that abstracts over the stage. Generating these functions requires the following: 
+\begin{itemize}
+\item Pattern matching on the constructors of the term language 
+\item Constructing recursive calls on the arguments of the pattern. 
+\end{itemize} 
+
+\subsection{Requirements}
+\label{sec:gen:reqs:summary}
+We summarize the different points presented in this section as requirements for the generation framework: 
+\begin{enumerate}
+\item A representation of equational theories.  
+\item A mechanism to manipulate the declarations in a theory, by dropping and by substitution. 
+\item A representation of instances of a theory. 
+\item A mechanism to project fields of the instances. 
+\item A function/relation between elements of the carriers of the two instances. 
+\item A representation of function application of this field.  
+\item Computing patterns and recursive calls of a function declaration. 
+\item Creating inductive type and their constructors. 
+\item A representation of natural numbers, finite sets and vector types.    
+\end{enumerate}
+
+  
+
+%The resulting flat theories are then used by the generator to produce some useful tools (constructions) related to them. In this chapter, we introduce the generator and answer the first and second research questions asked in Section~\ref{sec:questions}.
+
+%The graph contains theories represented as telescopes as described in Section~\ref{sec:background:theory}. This representation is different than the one for equational theories used in universal algebra and defined in Section~\ref{sec:eqtheory}. The first step we need here is to represent the dependently-typed telescopes as equational theories highlighting their three components: sorts, function symbols, and axioms. Then, we can manipulate the theories to generate the definitions of their related constructions, like homomorphisms, term algebras and other summarized in Section~\ref{sec:toBeGenerated}. 
 
 %flat theory presentations in DTT. We know that those theories describe algebraic structures and therefore they can be represented in unisorted equational logic as described by universal algebra. In Chapter~\ref{ch:ualgebra} we introduced theories and their related constructions in universal algebra. Here we discuss our framework that uses this knowledge to generate information from theory presentations. We use the Haskell type \lstmath{EqTheory} to describe the structure of equational theories. Because this type is built using the tog abstract syntax, manipulating it is more or less manipulating tog syntax. The output of the generator is guaranteed to be well-formed. The tog type checker is run on this input to check for well-typedness. 
 
 %There are some commonalities in how the generation of constructions manipulate the tog syntax. We provide functions that perform these common tasks. The functions that compute the constructions uses them. This leads to a three-layer hierarchy as in Figure~\ref{fig:generator_hierarch}.  
+
+\begin{comment}
 \begin{figure}
 \centering{
 \includegraphics[scale=0.35]{figures/genetaor_hierarch.png}}
 \caption{Three layered hierarchy of the generator.}
 \label{fig:generator_hierarch}
 \end{figure}
-
+\end{comment}
 %In Section~\ref{sec:toBeGenerated} we introduce a list of operations that can be generated from flattened theory presentations. 
-The infrastructure layer in introduced in Section~\ref{sec:togFamework}.
+%The infrastructure layer in introduced in Section~\ref{sec:togFamework}.
 % we introduce the functions that provides the basic manipulation. 
-Any meta-programming environment that provides these facilities should be able to generate the constructions that we generate here. We discuss the generation algorithms in Section~\ref{sec:generatedConstructions}. 
+%Any meta-programming environment that provides these facilities should be able to generate the constructions that we generate here. We discuss the generation algorithms in Section~\ref{sec:generatedConstructions}. 
 
-\section{Generation Infrastructure}
+\section{Tog Infrastructure}
 \label{sec:togFamework}
-With so many constructions to be generated, we provide functions that implements common operations needed to generate them. The meta-theory that governs our generation algorithms is universal algebra. 
+
+The generative framework we present here uses Haskell as a meta language to generate construction in Tog, the object language.  
+%Generating these constructions is done by writing programs in the meta language (Haskell) that generates constructions in the object language (Tog). 
+We mainly manipulate the types in Figure~\ref{fig:togRepr}. In this Section we discuss how we implement the requirements that we laid out in the previous section. 
+ 
+%With so many constructions to be generated, we provide functions that implements common operations needed to generate them. The meta-theory that governs our generation algorithms is universal algebra. 
 %In order to be able to manipulate While we use Tog for generating the constructions, a framework with reflections mechanism that has --- at least --- the following abilities would still be able to generate this knowledge: 
-\begin{comment} 
-\begin{itemize}
-These common operations are: 
-\item Accessing elements of the theory (record) type and classifying them into sorts, function symbols, and axioms 
-\item Defining an instance of a theory. Unlike the definitions of theories, there is no agreement of how the instances should be represented. We discuss the representation of instances in Section~\ref{sec:instances_theories}. 
-\item Projecting fields of a theory. 
-\end{itemize}
-\end{comment} 
 
-We create a type \lstmath{EqTheory} to describe first order equational theories as in Chapter~\ref{ch:ualgebra}. In Secion~\ref{subsec:generation:eqTheories} we describe this type, our definition of an instance of a theory, and how we project fields of an instance. These operations on the type are needed to generate constructions like homomorphism whose domain and codomain are instances and fields are projected to describe the preservation axioms. 
+We create a type \lstmath{EqTheory} to describe first order equational theories as in Chapter~\ref{ch:ualgebra}. In Secion~\ref{subsec:generation:eqTheories} we describe this type, our definition of an instance of a theory, and how we project fields of an instance. This Section covers requirements 1, 3, and 4. Note that requirement 2 for substitutions is done using the \lstmath{gmap} function built for the \lstmath{rename} combinator as explained in Section~\ref{subsec:combinatorsImpl}. 
 
-Functions and datatypes are some of the building blocks of the constructions we generate. We provide utility functions for manipulating them in Sections~\ref{subsec:generation:functions} and~\ref{subsec:generation:datatypes}, resepectively.   
+In Section~\ref{subsec:generation:functions} we describe how we implement requirements 5, 6 and 7, which are related to function definitions and applications. Requirements 8 and 9 are discussed in Sections~\ref{subsec:generation:datatypes} and~\ref{subsec:generation:prelude}.   
+%Functions and datatypes are some of the building blocks of the constructions we generate. We provide utility functions for manipulating them in Sections~\ref{subsec:generation:functions} and~\ref{subsec:generation:datatypes}, resepectively.   
  
 %Another important operation that we use in the generator is renaming, which we discuss in Section~\ref{subsec:generation:renaming}. 
-Some of the definitions we generate may depend on definitions of standard operations, like looking up a value in a vector. We discuss how to add definitions to a prelude in Section~\ref{subsec:generation:prelude}. 
+%Some of the definitions we generate may depend on definitions of standard operations, like looking up a value in a vector. We discuss how to add definitions to a prelude in Section~\ref{subsec:generation:prelude}. 
 
 %As we discussed in Chapter~\ref{ch:tog}, Tog provides us with the internal representations of dependent records, which we use to represent theories. We extend the Tog implementation to generate algebraic constructions by providing metaprograms that operate on Tog internal representation of dependent records. In this section we discuss some of the basic utiities that we use in the generation algorithms. 
 
@@ -73,9 +166,9 @@ recordToEqTheory record@(TRecord nm params _) =
 In Tog, records definitions are declared using the \lstmath{Record} constructor of the type \lstmath{Decl}, which contains many other constructors used to define functions, types, and others. We prefer to use a type dedicated to records, and therefore use the \lstmath{TRecord} type instead. \lstmath{TRecord} has the exact same parameters as the \lstmath{Record} constructor. 
 \end{comment}
 
-\subsubsection*{Instances of Theroies}
+\subsubsection*{Instances of Theories}
 \label{sec:instances_theories}
-Instances of equational theories are needed for the definition of homomorphisms and relational interpretations. We define a representation of an instance in terms of its name, the bindings that constitute its parameters and the expression representing the type of this instance. 
+We define a representation of an instance in terms of its name, the bindings that constitute its parameters and the expression representing the type of this instance. 
 \begin{hscode}
 type EqInstance = (Name_,[Binding],Expr) 
 \end{hscode}
@@ -116,7 +209,7 @@ A variant of \lstmath{projConstr} is the function \lstmath{applyProjConstr} proj
 
 \subsection{Functions}
 \label{subsec:generation:functions}
-Most of the constructions we generate manipulates function symbols of an \lstmath{EqTheory}.  
+%Most of the constructions we generate manipulates function symbols of an \lstmath{EqTheory}.  
 A function symbol has the type \lstmath{Constr} which consists of its name and an expression describing its type. We use the type \lstmath{FApp} to describe the application of this function symbol to some variables.
 \begin{hscode}
 type FType = Constr
@@ -149,11 +242,11 @@ The pattern depends on the arity of the function symbol, and is generally the ap
  else ConP (mkQName nm) ~$\$$~ map (IdP . mkQName) vars 
 \end{hscode} 
 
-The functions \lstmath{functor} and \lstmath{functor'} supports applying a functor to an expression, be it the name of a function symbol, or a more complex expressions.
+The functions \lstmath{functor} and \lstmath{functor'} support applying a functor to an expression, be it the name of a function symbol or a more complex expressions.
 
 \subsection{Datatypes}
 \label{subsec:generation:datatypes}
-Some of the constructions that can be generated from theory presentations are represented as datatypes, like term languages. A datatype in tog has the type \lstmath{Decl}. The type \lstmath{DTInst} captures the instances of a datatype in the same way as \lstmath{EqInstance}.
+Some of the constructions that can be generated from theory presentations are represented as datatypes, like term languages. A datatype in Tog has the type \lstmath{Decl}. The type \lstmath{DTInst} captures the instances of a datatype in the same way as \lstmath{EqInstance}.
 Similar to functions, we deal with datatypes in two different forms, definitions and instances. 
 \begin{hscode}
 type DTDef = Decl
@@ -183,7 +276,7 @@ nat =
      "zero : Nat ;" ++ 
      "suc  : Nat -> Nat }") : []
 \end{hscode}
-These strings are parsed by the function \lstmath{parseDecl}, which turns it to a Tog definition of type \lstmath{Decl}. 
+\noindent These strings are parsed by the function \lstmath{parseDecl}, which turns it to a Tog definition of type \lstmath{Decl}. 
 
 %In order to develop a meta program that generates the constructions above, and possible more, we need a way to manipulate theory presentations, i.e. a program that given a theory presentation would generate theories, types, and functions representing the constructions above. Therefore, the program 
 %equality, substitution, .. 
@@ -198,7 +291,7 @@ Signatures represent the language of the theory, without any properties governin
 signature_ :: Eq.EqTheory -> Eq.EqTheory
 signature_ = set Eq.thyName ("Sig") . set Eq.axioms [] .  gmap ren
 \end{hscode}
-\noindent The function \lstmath{ren :: Name -> Name} renames the fields of a theory by adding a suffix \lstmath{"S"}. This is needed because the Tog scope checker would not accept overloaded names of fields within the same module. In case the code is exported into a system that support this kind of overloading, the suffix can be removed. Note that this rename will be needed when generating any new construction. \lstmath{gmap} function traverses the \lstmath{EqTheory} applying \lstmath{ren} whenever a \lstmath{Name} type is encountered.  
+\noindent The function \lstmath{ren :: Name -> Name} renames the fields of a theory by adding a suffix \lstmath{"S"}. This is needed because the Tog scope checker would not accept overloaded names of fields within the same module. In case the code is exported into a system that supports this kind of overloading, the suffix can be removed. Note that this rename will be needed when generating any new construction. \lstmath{gmap} function traverses the \lstmath{EqTheory} applying \lstmath{ren} whenever a \lstmath{Name} type is encountered.  
 The \lstmath{Eq.axioms} list is set to be empty, dropping the axioms of the theory. 
 
 \subsection{Product Algebra} 
@@ -224,58 +317,61 @@ prodType _ x = x
 \end{hscode} 
 
 \subsection{Homomorphism}
-Theories are presented as record declarations in Tog, and so are their homomorphisms. To generate homomorphism one needs to first define instances of the theory. We use the \lstmath{eqInstance} function to get those instances with the three components as described in Section~\ref{sec:togFamework}; the name of the instance, a list of bindings that represent arguments of the theory, and an expression representing the type of instances of the theory. 
-\begin{hscode}
- i1@(n1,b1,e1) = Eq.eqInstance thry (Just 1) 
-\end{hscode} 
-with the second instance replacing every $1$ with $2$. 
-The parameters of the homomorphism declaration is then created by appending the bindings of the first and second instances, and creating the instance declarations as  
+Theories are presented as record declarations in Tog, and so are their homomorphisms. The following function generates the homomorphism declaration: 
 \begin{hscode} 
- map (~$\backslash$~(n,e) -> Bind [mkArg n] e) [(n1,e1),(n2,e2)])
+homomorphism :: Eq.EqTheory -> Decl
+homomorphism thry =
+  let nm = "Hom" 
+      i1@(n1,b1,e1) = Eq.eqInstance thry (Just 1) 
+      i2@(n2,b2,e2) = Eq.eqInstance thry (Just 2)
+      fnc = homFunc thry i1 i2 (thry ^. Eq.sort)
+      axioms = map (presAxiom thry i1 i2 fnc) (thry ^. Eq.funcTypes)  
+  in Record (mkName nm)
+   (mkParams ~$\$$~ b1 ++ b2 ++ 
+               map (~$\backslash$~(n,e) -> Bind [mkArg n] e) [(n1,e1),(n2,e2)])
+   (RecordDeclDef setType (mkName ~$\$$~ nm ++ "C") 
+                  (mkField ~$\$$~ fnc : axioms))
 \end{hscode} 
-The declarations of the homomorphism record are the homomorphism function and the preservation axioms. The function is generated by \lstmath{genHomFunc}. The function \lstmath{projConstr} is used to project the carriers of the instances and generate the type of the homomorphism function as follows 
-\begin{hscode} 
-Fun (Eq.projectConstr thry i1 carrier) (Eq.projectConstr thry i2 carrier)
-\end{hscode}  
-where \lstmath{i1} and \lstmath{i2} are the instances, \lstmath{thry} is the variable representing the equational theory and \lstmath{carrier} is the field in the theory representing the sort. 
+\noindent \lstmath{i1} and {i2} are the two instances of \lstmath{thry} created using \lstmath{eqInstance} as described in the Section~\ref{subsec:generation:eqTheories}. 
+Those instances are used to create the parameters of the homomorphisms using the \lstmath{mkParams} function. 
 
-Equations of the preservation axioms are generated by the \lstmath{equation} function. It uses \lstmath{applyProjConstr}, explained in~\ednote{put the ref}, which given an instance and a field, would generate the expression representing the application of the projected field from the instance, as well as the bindings needed for this application. 
+The declarations of the homomorphism record are the homomorphism function and the preservation axioms. The function is generated by \lstmath{homFunc} which uses the function \lstmath{projectConstr}, described in Section~\ref{subsec:generation:eqTheories}, to project the carriers of the two instances. 
+\begin{hscode} 
+homFunc :: Eq.EqTheory -> Eq.EqInstance -> Eq.EqInstance -> Constr 
+homFunc thry i1 i2 =
+  let carrier = thry ^. Eq.sort
+  in Constr (mkName homFuncName) ~$\$$~
+       Fun (Eq.projectConstr thry i1 carrier) 
+           (Eq.projectConstr thry i2 carrier) 
+\end{hscode}
+
+Equations of the preservation axioms are generated by the \lstmath{equation} function. It uses \lstmath{applyProjConstr}, explained in~\ref{subsec:generation:eqTheories}, which give the expression of function application as well as list of the variables its applied to. 
 \begin{hscode} 
 (bind1,expr1) = Eq.applyProjConstr thry i1 constr Nothing
-     (_,expr2) = Eq.applyProjConstr thry i2 constr Nothing 
+    (_,expr2) = Eq.applyProjConstr thry i2 constr Nothing 
 \end{hscode} 
-These pieces are used to construct the \lstmath{Pi}-type as follows 
+\noindent These pieces are used to construct the \lstmath{Pi}-type as follows 
 \begin{hscode}
 Pi (Tel bind1) ~$\$$~ Eq (lhs homFunc expr1) (rhs homFunc expr2)
 \end{hscode} 
 
 \subsection{Relational Interpretation}
 \label{sec:generation:relInterp}
-A relational interpretation is a structure preserving relation. Its implementation looks very similar to that of homomorphism -- a structure preserving function. Some of the similarities are that they are both records, and have the same parameters. However the fields are different. Instead of having a function between the two carriers, we have a relation. To generate the type of the relation field, we use the same function \lstmath{projectConstr} as follows 
+A relational interpretation is a structure preserving relation. We discuss it in Section~\ref{sec:background:relInterp}.  
+Its implementation looks very similar to that of homomorphism --- a structure preserving function. Some of the similarities are that they are both records and have the same parameters. However the fields are different. Instead of having a function between the two carriers, we have a relation. The function \lstmath{mkInterpType} generates the type of the relation field. It looks very similar to the function \lstmath{homFunc}, except the type is a relation from carriers to the type \lstmath{Set} as follows: 
 \begin{hscode} 
 Fun (Eq.projectConstr thry i1 carrier) ~$\$$~ 
      Fun (Eq.projectConstr thry i2 carrier) setTypeAsId
 \end{hscode} 
-Then we generate the axioms that guarantees preserving structure. For a binary operation, this axiom would look as follows 
+Then, we generate the axioms that guarantees preserving structure. For a binary operation, this axiom would look as follows 
 \begin{lstlisting} [mathescape]
  interp-op : {x1 x2 : A1} {y1 y2 : A2} $\to$ 
            interp x1 y1 $\to$  interp x2 y2 $\to$ 
            interp (op x1 x2) (op y1 y2)
 \end{lstlisting}
-By using \lstmath{applyProjConstr} as is done in the generation of homomorphism, we get the two expressions \lstmath{op x1 x2} and \lstmath{op y1 y2} along with their bindings. 
-\begin{hscode}  
- (bind1,expr1) = Eq.applyProjConstr thry i1 constr (Just 'x')
- (bind2,expr2) = Eq.applyProjConstr thry i2 constr (Just 'y')
-\end{hscode} 
-we make sure they use different names for the bindings by sending the variables names \lstmath{x} and \lstmath{y}. 
-We create lists for the argumetns and the expressions as follows 
+\noindent To generate these axioms, we call \lstmath{applyProjConstr} to get the bindings and the function application expression, the same as done in homomorphism generation. Then, we align them into lists of the form \lstmath{[x1,x2,op x1 x2]} and \lstmath{[y1,y2,op y1 y2]}. The elements of the lists are used to create the axioms by applying the relation on the corresponding elements from the two lists 
 \begin{hscode} 
- args1 = concatMap getBindingArgs bind1 ++ [Arg expr1] 
- args2 = concatMap getBindingArgs bind2 ++ [Arg expr2]
-\end{hscode} 
-which generates lists \lstmath{[x1,x2,op x1 x2]} and \lstmath{[y1,y2,op y1 y2]}, which we align to generate the interpretation axiom as follows 
-\begin{hscode} 
- zipWith (\x y -> App [mkArg (interpName ^. name),x,y]) args1 args2 
+ zipWith (\x y -> App [mkArg (interpName^.name),x,y]) args1 args2 
 \end{hscode}
 
 \input{term-algebra.tex}
@@ -283,13 +379,13 @@ which generates lists \lstmath{[x1,x2,op x1 x2]} and \lstmath{[y1,y2,op y1 y2]},
 \section{Discussion}
 \label{sec:generation:discussion}
 %We have introduced many constructions that can be derived from a theory presentation and implemented a framework in which we generate some of them. 
-
-Knowledge representation is a key part of a generation framework. Our representation of \lstmath{EqTheory} follows from the axiomatic representation of algebraic structures as presented in universal algebra. The definitions of \lstmath{FType} and \lstmath{DType} corresponds to the representation of functions and datatype, respectively, in tog. Less obvious was the representations of instances \lstmath{EqInstance} and \lstmath{DTInstance} and function application. 
+Knowledge representation is a key part of a generation framework. Our representation of \lstmath{EqTheory} follows from the axiomatic representation of algebraic structures as presented in universal algebra. The definitions of \lstmath{FType} and \lstmath{DType} corresponds to the representation of functions and datatype, respectively, in Tog. Less obvious was the representations of instances \lstmath{EqInstance} and \lstmath{DTInstance} and function application. 
 Once the knowledge capture and utility functions presented in Section~\ref{sec:togFamework} are in place, generating new constructions becomes a straight forward task. 
 %Given a tog dependent record, we have generated multiple constructions; some of which are records, like signatures, products, and homomorphisms, some are datatypes, like the different forms of term langauges, and others are functions, like all the utility functions for term languages. 
 %Another interesting problem here is related to dealing with bindings of two different inputs, how to determine if they are the same, different, hidden or explicit. 
 
-Another useful lesson we learn here is about the importance of having a strong and small core language for manipulating structures. Many things were easy to do in tog because it is a small system. But we also faced difficulties due to the immaturity of some features in tog, like handling hidden arguments and passing constructors to functions. 
+Another useful lesson we learn here is about the importance of having a strong and small core language for manipulating structures. Many things were easy to do in Tog because it is a small system. But we also faced difficulties due to the immaturity of some features in Tog.  
+For example, The generated definition of induction is not accepted by Tog's type checker if the hidden argument \lstmath{\{p\}} is not passed over. Most feature-rich systems, like Agda and Lean, will not need to have this argument defined. Another needed feature is treating constructors as functions, where they can be passed to higher order functions. Tog does not support that, although most systems do.  
 
-Using this framework we are able to generate a library of $106468$ lines of code from the representation of $227$ theories. Appendix~\ref{appendix:generatedTog} shows the generated definition for \lstmath{Monoid} theory. All the generated files are present on github under~\url{https://github.com/ysharoda/tog/blob/master/Library/mathscheme-generated.tog}. 
+Using this framework we are able to generate a library of $106468$ lines of code from the representation of $227$ theories. Appendix~\ref{appendix:generatedTog} shows the generated definition for \lstmath{Monoid} theory. All the generated files are present on github under~\url{https://github.com/ysharoda/Deriving-Definitions/tree/master/Library/generated}. 
  
