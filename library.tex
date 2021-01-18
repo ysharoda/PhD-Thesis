@@ -34,7 +34,7 @@ The diamond structure appearing in the definition of \lstmath{Unital} is not a s
 
 But the diamond structure does not come without problems. We need to have careful infrastructure to deal with them in order to avoid the diamond problem~\cite{jigsaw1992,traits2006,diamonds2011}, a.k.a multiple inheritance or the fork-join problem~\cite{sakkinen1989disciplined}, which we discuss in Section~\ref{subsec:combine}.
 
-In Section~\ref{sec:thry_graph_in_action} we provide an overview of the support for morphisms in different formal systems. Section~\ref{sec:msCombinators} introduces the MathScheme combinators for a morphism-based approach to building theory graphs, leading to a solution to the diamond problem. We discuss using the combinators to build the library in Section~\ref{sec:guidelines}. We end up with a discussion of best practice for using the combinators in Section~\ref{sec:library:discussion}. 
+In Section~\ref{sec:thry_graph_in_action} we provide an overview of the support for morphisms in different formal systems. Section~\ref{sec:msCombinators} introduces the MathScheme combinators for a morphism-based approach to building theory graphs, leading to a solution to the diamond problem. We discuss how to use the combinators to build the library in Section~\ref{sec:guidelines}. We end up with Section~\ref{sec:library:discussion} discussing best practice for using the combinators. 
 
 \begin{comment}
 To test our generation algorithms, we needed a large library of equational theories. As we have discussed in Section~\ref{sec:broader_context}, we work in the favor of a library organized as a theory graph, believing that it leverages the structure of mathematical knowledge. Morphisms of the graph are the means to relating the different theories. In this section, we present our approach to building a library that emphasizes these connections. 
@@ -55,13 +55,13 @@ Specware~\cite{Smith99} and MMT~\cite{MMT} force users to provide all details of
 %Clear is - to our knowledge - the first system that provides a modular way to write formal specifications. It provide theory combinators to build larger theories from smaller ones. 
 %\ednote{A good resource for Clear is the PhD thesis of Sanella with the title: semantics, implementation and pragmatics of CLEAR} 
 Another way to support building a library rich in morphisms is to provide combinators to handle some of the work. Clear~\cite{Goguen1980} is --- to our knowledge --- the first system to use combinators for creating new theories\footnote{Clear is a specification language, and theories are used under the name specifications.}. OBJ~\cite{Obj2000Goguen} and CASL~\cite{CoFI:2004:CASL-RM} are successors of Clear that also support combinators. We focus our discussion on CASL as a representative to these systems, as it is the only living one now and so we were only able to look at its library and run experiments on it. 
-We realized two problems related to combinators in CASL. First, It is not always possible to flatten theories built through the use of combinators, mainly when using hiding and freeness combinators~\cite{CoFI:2004:CASL-RM}. The second problem is related to how the \emph{union} operation is implemented. The \lstmath{union} operator is the one that handles multiple inheritance. Although the semantics of union is a pushout in the category of specifications and morphisms, it is computed on a 'same name, same thing' basis~\cite{bidoit2003casl}, i.e. two declarations are considered the same if they have the same name. Figure~\ref{fig:casl_expr} shows the problems that occur from using this principle. 
+We realized two problems related to combinators in CASL. First, it is not always possible to flatten theories built through the use of combinators, especially hiding and freeness combinators~\cite{CoFI:2004:CASL-RM}. The second problem is related to how the \emph{union} operation is implemented. The union operator is the one that handles multiple inheritance. Although the semantics of union is a pushout in the category of specifications and morphisms, it is computed on a `same name, same thing' basis~\cite{bidoit2003casl}, i.e. two declarations are considered the same if they have the same name. Figure~\ref{fig:casl_expr} shows the problems that occur from using this principle. 
 \begin{figure}
 \input{figures/casl-exp.tex}
 \end{figure}
 Both specifications \verb|Ext1| and \verb|Ext2|, on the left side, extend the \verb|BaseSpec| with a binary operation and its unit element. The semantics of the \lstmath{combine} (or \lstmath{and}) combinator is presented as a pushout in the category of specifications. A pushout between the two morphisms \lstmath{BaseSpec $\;\to\;$ Ext1} and \lstmath{BaseSpec $\;\to\;$ Ext2} would result in a theory with one sort \lstmath{A}, and  two binary operations with two different unit elements. When trying this specification in CASL\footnote{using the online tool at: \url{http://rest.hets.eu}}, it computes the declarations on the right side of the figure which has only one unit element for the two binary operations. This is different from what a pushout would compute. 
 
-We performed the same experiment with Isabelle locale expressions~\cite{ballarin2003locales} and got similar results. In the following section, we introduce a collection of combinators that provide solid infrastructure for dealing with theories and morphisms to build a large library organized as a theory graph. 
+We performed the same experiment with Isabelle locale expressions~\cite{ballarin2003locales} and got similar results. In the following section, we introduce a collection of combinators that provide an infrastructure for building a large library organized as a theory graph that enables us to avoid the problem we have just described. 
 
 \section{MathScheme Combinators}
 \label{sec:msCombinators}
@@ -74,71 +74,71 @@ Combinators manipulate theories in different ways. They enhance modularity, reus
 %Despite the large literature on using combinators to save work and reduce redundancy, Most of the systems we listed here suffer from redundancies in their own libraries. \ednote{Add an appendix about the different redundancies}To avoid this redundancy, we suggest in~\cite{carette2018building} a set of combinators that form a compact language to describe algebraic theories by reusing older ones. We use these combinators to build our library as well as some important design decisions 
 A library built using these combinators embody the following design decisions:
 \begin{itemize}
-    \item Theories can always be flattened. Not all users of a formal system are interested in the hierarchy used to build the theories they need. A mathematician who wants to prove results in \verb|Group| theory is only interested in groups with their standard definitions and results. This user should not be forced to work with groups as extensions of some theory, like \verb|Monoid|. Abstracting over the hierarchy in users' code also has the advantage that the code need not change in case the hierarchy change, like in the case of changing the type class hierarchy in Haskell~\cite{wiki:haskell_hierarch}. 
+    \item Theories can always be flattened. Not all users of a formal system are interested in the hierarchy used to build the theories they need. A mathematician who wants to prove results in \verb|Group| theory is only interested in groups with their standard definitions and results. This user should not be forced to work with groups as extensions of some theory, like \verb|Monoid|. Abstracting over the hierarchy in users' code also has the advantage that the code need not change in case the hierarchy changes, like in the case of changing the type class hierarchy in Haskell~\cite{wiki:haskell_hierarch}. 
     \item Names are taken seriously. Similar concepts have different names in different contexts of mathematics. The unit of \verb|_+_| has a different name than the one of \verb|_*_| and confusing their names would be a huge usability problem. The combinators introduced in~\cite{carette2018building} does not generate any names nor attempt to use any heuristics to solve name clashes. Instead name clashes are detected and the library developer is asked to resolve them.  
     \item Tiny theories are systematically used. Since we do not provide a drop combinator, we use tiny theories to make sure all intermediate results are available for future theories to use. 
-    \item Morphisms are the main building unit of the library. The semantics and the implementation of the combinators are based on morphisms, not theories. This makes it possible compute category theory operations based on their real semantics, not an approximation like same-name-same-thing. 
+    \item Morphisms are the main building unit of the library. The semantics and the implementation of the combinators are based on morphisms, not theories. This makes it possible to compute category-theoretic operations based on their real semantics, not on an approximation like same-name-same-thing. 
 \end{itemize}
 
 
-The combinators assume the underlying logic in which theories are defined to be a dependent type theory (DTT). Therefore, a theory is viewed as a context, or a telescope as defined in equation~\ref{eq:telescope}. But a specific variant of DTT is not assumed, instead many of the details are abstracted from. The minimum requirements of the underlying DTT are listed in ~\cite{carette2018building}. We include them here for convenience and completeness. These requirements are:  
+The combinators assume the underlying logic in which theories are defined to be a dependent type theory (DTT). Therefore, a theory is viewed as a context, or a telescope as defined in equation~\ref{eq:telescope}. But a specific variant of DTT is not assumed; instead many of the details are abstracted away. The minimum requirements of the underlying DTT are listed in ~\cite{carette2018building}. We include them here for convenience and completeness. These requirements are:  
 \begin{itemize}
-    \item An infinite set \vars of variable names.
+    \item An infinite set $\vars$ of variable names.
     
     \item A typing judgement for terms $s$ of type $\sigma$ in a context
-    $\Gamma$ which we write $\Gamma \vdash s : \sigma$.
+    $\Gamma$ which we write as $\Gamma \vdash s : \sigma$.
     
     \item A kinding judgement for types $\sigma$ of kind $\kappa$ in a context
-    $\context{\Gamma}$ which we write\\
+    $\context{\Gamma}$ which we write as \\
     $\context{\Gamma} \vdash \sigma : \kappa : \Box$.  We further assume that the set
     of valid kinds $\kappa : \Box$ is given and fixed.
     
     \item A definitional equality (a.k.a. convertibility) judgement of terms
     $s_1$ of type $\sigma_1$ and $s_2$ of type $\sigma_2$ in a context $\context{\Gamma}$,
-    which we write $\context{\Gamma} \vdash s_1 : \sigma_1 \equiv s_2 : \sigma_2$. \ We
+    which we write as $\context{\Gamma} \vdash s_1 : \sigma_1 \equiv s_2 : \sigma_2$. \ We
     will write $\context{\Gamma} \vdash s_1 \equiv s_2 : \sigma$ to denote $\context{\Gamma} \vdash
     s_1 : \sigma \equiv s_2 : \sigma$.
     
     \item A notion of substitution on terms. Given a list of variable
-    assignments $\assignment{x_i}{s_i}{i < n}$
+    assignments $[x_i \mapsto s_i]_{i < n}$
     and an expression $e$ we write $\substitutiondef{e}{x_i}{s_i}{i < n}$
     for the term $e$ after simultaneous substitution of variables $\left\{ x_i
     \right\}_{i < n}$ by the corresponding term in the assignment.
 \end{itemize}
 
-We now introduce the combinators we use from~\cite{carette2018building} 
+We now introduce the combinators we use from~\cite{carette2018building}.  
 \subsection{Extension} 
 \label{subsec:extension}
-Extensions are the most basic combinator. On its own, it makes it possible to define a flat hierarchy as in Figure~\ref{fig:flatExtensions}. 
+Extension is the most basic combinator. On its own, it makes it possible to define a flat hierarchy as in Figure~\ref{fig:flatExtensions}. 
 
 The inputs to an extension combinator are a theory presentation $\Gamma$ and a list of declarations $\extDecls = \left\{a_{i}:\sigma_{i}:\kappa_{i}\right\}_{i<n}$. 
 The combinator computes a new theory $\Gamma\rtimes\Delta^+$ and an identity morphism (\lstmath{$\tilde{\text{id}}$}) from $\Gamma$ to $\Gamma\rtimes\Delta^+$, where $\rtimes$ is an asymmetric operation that adds definitions to a telescope. On one side $\Gamma$ is a well-formed theory, but $\Delta^+$ may not be well-formed on its own. 
 The construction is defined as: 
 \[\extensionDef{\extSource}{\extDecls}\]
-An extension is well-formed if the new symbol does not occur in $\Gamma$ and its type is well-formed in $\Gamma$. 
-\begin{eqnarray}
+An extension is well-formed if each new symbol does not occur in $\Gamma$ and its type is well-formed in $\Gamma$:  
+\begin{eqnarray*}
 \forall i \cdot a_i \notin \syms{\Gamma_{i-1}} \\
 \forall i \cdot \Gamma_{i-1} \vdash \sigma_i : \kappa_{i}
-\end{eqnarray}
+\end{eqnarray*}
 where $\Gamma_{i-1} = \Gamma \rtimes \{a_0 : \sigma_0 : \kappa_0\  \cdots \ a_{i-1} : \sigma_{i-1} : \kappa_{i-1}\}$.  
 
 %\paragraph{Categorical Semantics}
 %In the category of contexts $\ctxcat$, an extension corresponds to a forgetful functor. 
 
 \paragraph{Example}
-Extensions are used when new concepts are added. According to little theories, the concept need to be added in its smallest context, i.e. if $\Gamma \vdash c : t$ then for every $\Sigma \subset \Gamma$, $\Sigma \nvdash c : t$. Tiny theories encourages adding one new concept at a time. A good example is adding properties of a binary operation, like \lstmath{commutativity} or \lstmath{associativity} as follows\footnote{The syntax we use here is the one used in our implementation. We give brief explanations for them here, and introduce them in details in the next section.} 
+Extensions are used when new concepts are added. According to little theories, the concept should be added in its smallest context, i.e. if $\Gamma \vdash c : t$ then for every $\Sigma \subset \Gamma$, $\Sigma \nvdash c : t$. Tiny theories encourages adding one new concept at a time. A good example is adding properties of a binary operation, like \lstmath{commutativity} or \lstmath{associativity} as follows\footnote{The syntax we use here is the one used in our implementation. We give brief explanations for it here, and introduce it in details in the next section.} 
 \begin{togcode}
 Semigroup = 
   extend Magma {assoc : {x y z : A} ~$\to$~ op x (op y z) == op (op x y) z} 
 CommMagma = 
   extend Magma {comm  : {x y : A} ~$\to$~ op x y == op y x}
 \end{togcode} 
-\noindent where \lstmath{Magma} is the theory $\Gamma$ being extended, \lstmath{assoc} and {comm} are definitions in $\Delta^+$. 
+\noindent where \lstmath{Magma} is the theory $\Gamma$ being extended, \lstmath{assoc} and \lstmath{comm} are definitions in $\Delta^+$. 
 
 \subsection{Rename}
 \label{subsec:rename}
 Renames do not add new concepts, but allows using flexible notations while still reusing all results from the source theory. 
-Given a theory presentation $\Gamma$ and a rename function $\pi$, the output of the rename operation is a new theory (\lstmath{pres}) $\pi \cdot \Gamma$ which is computed by performing a substitution of $\pi$ into the declarations of $\Gamma$, and an embedding morphism $\tilde{\pi} : \Gamma \to \pi\cdot\Gamma$ that maps symbols of $\Gamma$ to those of $\pi\cdot\Gamma$ based on the renaming function $\pi$. 
+Given a theory presentation $\Gamma$ and a rename function $\pi$, the output of the rename operation is a new theory (\lstmath{pres}) $\pi \cdot \Gamma$ which is computed by performing a substitution of $\pi$ into the declarations of $\Gamma$, and an embedding morphism $\tilde{\pi} : \Gamma \to \pi\cdot\Gamma$ that maps the symbols of $\Gamma$ to those of $\pi\cdot\Gamma$ based on the renaming function $\pi$. 
 \[ \renameDef{\renSource}{\renFun} \]
 
 A rename operation is well-formed whenever the rename function $\pi : |\Gamma| \to \vars$ is an injection, and the codomain is a permutation of a subset of $\vars$ with exactly $k$ elements, where $k$ is the number of declarations in $\Gamma$. 
@@ -192,7 +192,7 @@ The two morphisms of the combine operation are $u_{\Delta}$ and $u_{\Phi}$ both 
 %It is well agreed upon that the semantics of such an operation should be a pushout in the category of theory presentations\ednote{cite the other systems or refer to a previous section}.
 $\pi_{\Delta}$ and $\pi_{\Phi}$ are two rename functions given to resolve name conflicts. 
 
-\noindent A well-formed combine needs to ensure that any two symbols \lstmath{x $\;\in\;\mid\Delta\mid$} and \lstmath{y $\;\in\;\mid\Phi\mid$} --- after applying the renaming function --- map to the same symbol if they have originated from the source theory $\Gamma$ and that there are no name clashes when mapping a symbol $z$ across the two morphisms and rename functions.  The precondition for combine operation is described by the following equivalence: 
+\noindent A well-formed combine needs to ensure that any two symbols \lstmath{x $\;\in\;\mid\Delta\mid$} and \lstmath{y $\;\in\;\mid\Phi\mid$} --- after applying the renaming functions --- map to the same symbol if they have originated from the source theory $\Gamma$ and that there are no name clashes when mapping a symbol $z$ across the two morphisms and rename functions.  The precondition for combine operation is described by the following equivalence: 
 \begin{equation}
 \pi_{\Delta} \left( x \right) = \pi_{\Phi} \left( y \right)
 \Leftrightarrow \exists z \in \left| \Gamma \right|.\ x =
@@ -308,9 +308,9 @@ Zero0 =
 
 \subsection{Defining AdditiveMonoid}
 One would want to have \lstmath{AdditiveMonoid} with all the morphisms we introduced in Figure~\ref{fig:cube_monoid}. %But how close we can get to this diagram. 
-We have discussed the construction of \lstmath{AdditivePointedMagma}, and showed how the construction is not precisely as in Figure~\ref{fig:cube_monoid}, although all the morphisms are defined, some are composed of other morphisms. Now, we focus more on the part of defining \lstmath{AdditiveUnital}. 
+We have discussed the construction of \lstmath{AdditivePointedMagma} and shown how the construction is not precisely depicted in Figure~\ref{fig:cube_monoid}. Although all the morphisms are defined, some are composed of other morphisms. Now, we focus more on the part of defining \lstmath{AdditiveUnital}. 
 
-\noindent The definition of \lstmath{AdditiveLeftUnital} and \lstmath{AdditiveRightUnital} goes as follows 
+\noindent The definition of \lstmath{AdditiveLeftUnital} and \lstmath{AdditiveRightUnital} goes as follows: 
 \begin{togcode}
 AdditiveLeftUnital = 
   combine AdditivePointedMagma {} LeftUnital plus-zero 
@@ -357,7 +357,7 @@ The same problem occurs when defining \lstmath{AdditiveMonoid} and attempting to
 %AdditiveMonoid = combine AMonoid1 {} AMonoid2 {} over Monoid  
 
 We considered the possibility of using colimits or diagram combinators as in~\cite{cicm2019diagrams}. In either case, we want to arrive at the right pushouts and build diagrams or colimits on top of it. 
-The solution we adopted here is to enable the user to add identity embedding between theories. This allowed us to substitute for morphisms that are not generated in situations like the one we describe here. 
+Noticing that in all our experiments, the morphisms we wish to have that are not generated included an identity embedding, we adopted the solution of enabling the user to add those identity embeddings between theories. %This allowed us to substitute for morphisms that are not generated in situations like the one we describe here. 
 %Our approach is to define these techniques in terms of pushouts, i.e. provide them as a syntactic sugar to performing multiple pushouts. Since pushouts in the category of contexts are associative, we believed we are able to do that, but the examples above shows that this is not always possible. Therefore, we provided a construction that allows the user to add identity arrows between two theories.\ednote{need to add guarantees that this does not mess with the all-commute-path principle.} 
 
 The declarations that we use to define \lstmath{AdditiveMonoid} are 
@@ -396,7 +396,7 @@ The declarations that we use to define \lstmath{AdditiveMonoid} are
    combine AdditiveUnital {} Monoid plus-zero over Unital 
  idMonoid = id from AdditiveSemigroup to AdditiveMonoid   
 \end{minted} 
-\noindent Note that although we give name to identity morphisms, we never needed to refer to them in our development. 
+\noindent Note that although we give names to identity morphisms, we never needed to refer to them in our development. 
 
 \section{Discussion}
 \label{sec:library:discussion}
@@ -423,7 +423,7 @@ The first definition does not connect \lstmath{CommutativeMonoid} and \lstmath{C
 
 These observations stem from the fact that we are not only interested in computing the output theory of the expression, but we are also interested in building a rich theory graph that captures as much of the structure of mathematics as possible. 
 
-In some cases, a whole hierarchy has been developed and one may want to perform a pushout of the whole graph along a morphism, in a similar way to~\cite{cicm2019diagrams} and as shown in Figure~\ref{fig:shiftPMtoRingoid}. We encountered this situation while creating \lstmath{Semiring}, as that's when the additive and multiplicative variants of the theories are combined together. We have not implemented diagram combinators in the tog framework and leave this as future work. 
+In some cases, a whole hierarchy has been developed and one may want to perform a pushout of the whole graph along a morphism, in a similar way to~\cite{cicm2019diagrams} and as shown in Figure~\ref{fig:shiftPMtoRingoid}. We encountered this situation while creating \lstmath{Semiring}, as that is when the additive and multiplicative variants of the theories are combined together. We have not implemented diagram combinators in the Tog framework and leave this as future work. 
 %\begin{comment}
 \begin{figure}[h]
 \adjustbox{scale=0.7}{   
@@ -439,7 +439,7 @@ In some cases, a whole hierarchy has been developed and one may want to perform 
 \end{figure}
 
 Another line of future work is to support general morphisms as described in Section~\ref{sec:generalmorph} and their usage in the \lstmath{mixin} combinator as described in~\cite{carette2018building}. 
-The \lstmath{mixin} combinator computes pushout of an embedding along a general morphism. Given a general morphism \lstmath{$[\text{u}_\Delta]: \Gamma \to \Delta$} and an embedding \lstmath{$[\text{u}_\Phi] : \Gamma \to \Phi$} and two injective renaming functions 
+The \lstmath{mixin} combinator computes a pushout of an embedding along a general morphism. Given a general morphism \lstmath{$[\text{u}_\Delta]: \Gamma \to \Delta$} and an embedding \lstmath{$[\text{u}_\Phi] : \Gamma \to \Phi$} and two injective renaming functions 
 \lstmath{$\pi_\Delta :\ \mid\Delta\mid\ \to \mathbb{V}$}
 and \lstmath{$\pi_\Phi :\ \mid\Phi\mid\ \to \mathbb{V}$}, the mixin is defined as follows 
 \[
@@ -454,7 +454,7 @@ and \lstmath{$\pi_\Phi :\ \mid\Phi\mid\ \to \mathbb{V}$}, the mixin is defined a
 %  \mathtt{mediate} & = \lambda\ w_{\Delta}\ w_{\Phi}\ .\  w_{\combineResult}
 where $\Xi_1 = \pi_\Delta \cdot \Delta$ is the theory presentation resulting from applying the rename function $\pi_\Delta$ to $\Delta$ via substitution. 
 $\Xi_2 = \pi_\Phi \cdot \Phi^+$ is not a well-formed theory presentation, instead, it is the result of applying $\pi_\Phi$ to declarations of $\Phi$ that are not mappings of declarations in $\Gamma$. 
-In~\cite{carette2018building}, proofs that the mixin operation as described above is always defined has been presented. 
+In~\cite{carette2018building}, a proof that the mixin operation as described above is always defined has been presented. 
 
 For example, the morphism \lstmath{flip : Magma $\;\to\;$ FlippedMagma} shown in Section~\ref{sec:generalmorph} can be used to construct flipped \lstmath{Semigroup} as follows. 
 \begin{togcode} 

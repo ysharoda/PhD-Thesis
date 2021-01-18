@@ -9,7 +9,7 @@ A language with strong reflection mechanisms can be extended to support the gene
 \label{sec:relwork:hierarchy}
 The algebraic hierarchy is a main part of the libraries of theorem provers. Several efforts has been dedicated to organize them in a way that reflects their mathematical structure. 
 
-Many formalizations depends on the unification algorithm to figure connections between the different theories in the hierarchy. 
+Many formalizations depends on the unification algorithm to figure out the connections between the different theories in the hierarchy. 
 The simplest way is to use inclusions to describe inheritance between two structures. This is used in~\cite{Geuvers2002} where algebraic structures are presented as dependent records and user provided coercions are used to guide the unification algorithm. The hierarchy developed using this approach has been used to prove the fundamental theorem of algebra. As has been noted by the authors, this technique does not support multiple inheritance, so there is no way to describe that a ring is both a monoid and an abelian group. 
 %Multiple inheritance is important to capture the structure of mathematics. 
 %Various techniques have been developed to incorporate multiple inheritance. 
@@ -117,7 +117,7 @@ Another interesting work is the interface between Lean, a theorem prover, and Ma
 %\url{https://link.springer.com/chapter/10.1007/978-3-319-63046-5_32}
 
 \paragraph{Automation in Programming Languages (PL)}
-Eliminating boilerplate is a main field of research in the PL research community, either by providing abstractions that eliminates the need for the boilerplate code as in the scrap your boilerplate approach~\cite{syb2003Jones} or by generating this boierplate for the users.  
+Eliminating boilerplate is a main field of research in the PL research community, either by providing abstractions that eliminates the need for the boilerplate code as in the scrap your boilerplate approach~\cite{syb2003Jones} or by generating this boilerplate for the users.  
 
 We have already mentioned deriving and its extensions~\cite{loeh2010genericDeriving, loeh2018derivingVia}, and lenses~\cite{lensesLib}. Those techniques are pervasively used in Haskell projects.
 Ocaml provides the PPX preprocessor that manipulates the OCaml AST corresponding to an input program~\cite{ocaml2019ppx}. One form in which PPX transforms ocaml programs is using derivers that allow writing a deriving definition as in Haskell. 

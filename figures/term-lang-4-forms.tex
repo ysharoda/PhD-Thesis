@@ -3,23 +3,23 @@
 \begin{agdacode}
 -- Basic 
 data MonoidTerm  : Set where
-  opL : MonoidTerm ~$\to$~ 
+  op  : MonoidTerm ~$\to$~ 
         MonoidTerm ~$\to$~ 
         MonoidTerm
-  eL  : MonoidTerm   
+  e   : MonoidTerm   
 
 
 
 
 
 -- Closed 
-data ClMonoidTerm (A  : Set )  
+data ClMonoidTerm (A  : Set)  
           : Set where
   sing : A ~$\to$~ ClMonoidTerm A
-  opCl : ClMonoidTerm A ~$\to$~ 
+  op   : ClMonoidTerm A ~$\to$~ 
          ClMonoidTerm A ~$\to$~ 
          ClMonoidTerm A
-  eCl : ClMonoidTerm A
+  e    : ClMonoidTerm A
   
   
     
@@ -30,21 +30,21 @@ data ClMonoidTerm (A  : Set )
 -- Basic Open 
 data OpMonoidTerm (n  : Nat)  
           : Set where
-  v : Fin n ~$\to$~ OpMonoidTerm n
-  opOL : OpMonoidTerm n ~$\to$~ 
-         OpMonoidTerm n ~$\to$~ 
-         OpMonoidTerm n 
-  eOL : OpMonoidTerm n  
+  v  : Fin n ~$\to$~ OpMonoidTerm n
+  op : OpMonoidTerm n ~$\to$~ 
+       OpMonoidTerm n ~$\to$~ 
+       OpMonoidTerm n 
+  e  : OpMonoidTerm n  
 
 
 -- Open
-data OpMonoidTerm2 (n  : Nat ) (A  : Set )  
+data OpMonoidTerm2 (n  : Nat) (A  : Set)  
         : Set where
-  v2 : Fin n ~$\to$~ OpMonoidTerm2 n A 
-  sing2 : A ~$\to$~ OpMonoidTerm2 n A 
-  opOL2 : OpMonoidTerm2 n A ~$\to$~ 
-          OpMonoidTerm2 n A ~$\to$~ 
-          OpMonoidTerm2 n A
-  eOL2 : OpMonoidTerm2 n A  
+  v : Fin n ~$\to$~ OpMonoidTerm2 n A 
+  sing : A ~$\to$~ OpMonoidTerm2 n A 
+  op   : OpMonoidTerm2 n A ~$\to$~ 
+         OpMonoidTerm2 n A ~$\to$~ 
+         OpMonoidTerm2 n A
+  e    : OpMonoidTerm2 n A  
 \end{agdacode}
 \end{tabular}

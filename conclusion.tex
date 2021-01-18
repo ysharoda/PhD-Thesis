@@ -1,13 +1,13 @@
 \chapter{Conclusion and Future Work}
 \label{ch:conclusion}
 
-The main aim of this work is to reduce the labour needed to create libraries of formal mathematics. We have introduced a $3$-phase interpreter of declarative definitions that uses combinators to define theories and morphisms of a library. Starting with $227$ declarations of theories in the algebraic hierarchy, we generated $5,902$ library definitions spanning over $32459$ lines of tog code. 
+The main aim of this work is to reduce the labour needed to create libraries of formal mathematics. We have introduced a $3$-phase interpreter of declarative definitions that uses combinators to define theories and morphisms of a library. Starting with $227$ declarations of theories in the algebraic hierarchy, we generated $5,902$ library definitions spanning over $32459$ lines of Tog code. 
 % 10 declarations, 5 of which have 4 variants. 
 This huge saving of human effort proves how useful and promising a generative approach to library building can be.  
 
 In Section~\ref{conc:summary} we summarize the contributions of this work referring to how they solve the research questions introduced in Section~\ref{sec:questions}. In Section~\ref{future_work} we discuss several extensions of this work. 
 
-\paragraph{A note on runtime.} The user of our framework would encounter a big wait time when running the interpreter described in Chapter~\ref{ch:design} on a large library like the one we develop here. It is worth mentioning that the main source of overhead is the type checker, and not any of the operations we process the theory presentations. In a simple runtime experiment, we found that the flattener spent an average of $5.17 s$ on $10$ runs with standard deviation $0.18$. The generator spent an average of $2.7 s$ with standard deviation $0.06$. The exporter spent an average of $9.1 us$ with standard deviation $1.2 us$. On the other hand, the type checker spent an average of $1686.81s$ (approximately $28$ minutes) over $3$ runs with standard deviation $20.96s$.
+\paragraph{A note on runtime.} The user of our framework would encounter a big wait time when running the interpreter described in Chapter~\ref{ch:design} on a large library like the one we develop here. It is worth mentioning that the main source of overhead is the type checker, and not any of the operations we use to process the theory presentations. In a simple runtime experiment, we found that the flattener spent an average of $5.17 s$ on $10$ runs with standard deviation $0.18$. The generator spent an average of $2.7 s$ with standard deviation $0.06$. The exporter spent an average of $9.1 us$ with standard deviation $1.2 us$. On the other hand, the type checker spent an average of $1686.81s$ (approximately $28$ minutes) over $3$ runs with standard deviation $20.96s$.
 
 %Universal algebra is a well-established abstraction over details of algebraic theories in equational first order logic. 
 
@@ -37,7 +37,7 @@ Monoid = combine Unital and Semigroup over Magma
          using (waist=1,eq=Agda.Builtin.Equality)
          export_to agda 
 \end{togcode} 
-Or even referring to a whole graph and specifying the generation and exportation parameters the same way. 
+\noindent or even referring to a whole graph and specifying the generation and exportation parameters the same way. 
 The same expression can also be used to generate knowledge ``on demand" for user-provided theories, similar to Haskell's derivings. 
 
 \paragraph{Generalized Algebraic Theories (GAT).}
