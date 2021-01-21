@@ -6,7 +6,7 @@ Our ideas and implementation are based on dependent type theory (DTT). It is the
 
 Part of our work is building a library of axiomatic theories. The library is organized as a theory graph, in which theories are connected via morphisms. We introduce morphisms in Section~\ref{sec:background:morphisms} and discuss theory graphs and different strategies for building them in Section~\ref{sec:background:theorygraph}. 
 To build the library we use combinators motivated by category theory, so we give a brief introduction for that in Section~\ref{sec:categoryTh}. 
-One of the constructions we generate, that is not typically defined within universal algebra texts is multi-staged programming. We give details in Section~\ref{sec:background:msp}. 
+Two of the constructions we generate are not typically defined within universal algebra texts. These are relational interpretations and staged terms, used in multi-staged programming. We give details on them in Sections~\ref{sec:background:relInterp} and~\ref{sec:background:msp}, respectively. 
 
 \section{Dependent Type Theory}
 \label{subsec:background:dtt}
@@ -380,11 +380,31 @@ Consider the category $\mathbb{P}$ of theory presentations as objects connected 
 The colimit of this diagram is a theory with a carrier \lstmath{A} and one binary operation \lstmath{op} that has the properties described by the axioms in the theories connected to \lstmath{Magma}. Along with this theory are identity morphisms from all the theories in the above diagram to the colimit theory 
 \end{comment} 
 
-\section{Relational Interpretation}\ednote{add this section to the description} 
-A program consisting of a type and operations on that type can be seen as a theory. 
-When proving properties about programs, one often want to talk about structure-preserving relations between them, like equivalence. These are called relational interpretations and are seen as a generalization of homomorphisms~\cite{reynolds1983types}. Relational interpretations are used extensively when working on the semantics of programming languages. They form the bases of a proof technique called \emph{logical relations}~\cite{crary2005logical}. Supporting proofs by logical relations has been considered a benchmark for theorem provers in the revised POPLmark challenge~\cite{poplmark2019}.  
+\section{Relational Interpretation}
+\label{sec:background:relInterp} 
+%A proof by logical relations proves some property $P$ of all closed terms of type $A$ by induction on types, i.e.: prove $P$ for all terms of type $A$, then prove it for terms of type $A \to A$, then terms of type $(A \to A) \to (A \to A)$
 
-We give the definition of relational interpretations in Section~\ref{sec:toBeGenerated}. 
+%A program consisting of a type and operations on that type can be seen as a theory. 
+%When proving properties about programs, one often want to talk about structure-preserving relations between them, like equivalence. 
+
+%Logical relations is a proof method that prove properties of programming languages. 
+
+The relational interpretation of an algebraic structure is a generalization of its homomorphism~\cite{reynolds1983types} that defines a 
+structure-preserving relation between carriers of its algebras. For example the relational interpretation between two monoid algebras $M_1 = (A_1,op_1,e_1,...)$ and $M_2 = (A_2,op_2,e_2,...)$ is a relation $interp : A_1 \to A_2$ such that: 
+\begin{align*}
+interp\ e_1\ e_2 &  \\
+interp\ x_1\ x_2\ &\wedge\ interp\ y_1\ y_2\ \rightarrow\ interp\ (op\ x_1\ y_1)\ (op\ x_2\ y_2)  
+\end{align*}
+%We give a more generic \ref{sec:toBeGenerated}. 
+
+%interp\ e_1\ e_2 \\
+%interp\ x_1\ x_2\ \wedge\ interp\ y_1\ y_2\ \rightarrow\ interp\ (op\ x_1\ y_1)\ (op\ x_2\ y_2)  
+%\end{eqnarray*} 
+
+Relational interpretations are mainly applied to models of type theories. It has been used in~\cite{reynolds1983types} to develop the abstraction theorem that connects meanings of expressions under different assignments and in~\cite{parametricPoly93} to explain parameteric polymorphism. They have been applied to deduce theorems that apply to functions, given their polymorphic type~\cite{wadler1989theorems, algehed2020dynamic}. 
+%Other applications include proving strong normalization, type safety, or equivalence of type systems~\cite{skorstengaard2019introduction}. 
+They are used extensively when working on the semantics of programming languages, often refered to as \emph{logical relations}~\cite{crary2005logical}. Supporting proofs of logical relations has been considered a benchmark for theorem provers in the revised POPLmark challenge~\cite{poplmark2019}.  
+
 
 %Relational interpretation is a concept used when reasoning about the semantics of prograamming languages. The algebraic interpretation of types views types and their related operations as 
 %t is a generlization of the concept of homomorphisms between provides a syntactic translation 
