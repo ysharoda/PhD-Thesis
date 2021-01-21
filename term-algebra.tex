@@ -105,6 +105,7 @@ The declarations of the simplifier is the result of concatenating all these decl
  ++ simpVarsConsts (filter isConstOrVar cs) 
 \end{hscode} 
 
+Note that we do not generate the simplification functions for the \lstmath{Basic} term language. In some cases, like in \lstmath{Magma}, the \lstmath{Basic} term language does not have a base case, and therefore a termination proof of the simplification function is not trivial. Some theorem provers, like Lean, would not accept this definition. 
 
 \subsubsection{Evaluators}
 \label{sec:generation:evaluator}

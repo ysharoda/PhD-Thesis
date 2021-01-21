@@ -59,7 +59,7 @@ We realized two problems related to combinators in CASL. First, it is not always
 \begin{figure}
 \input{figures/casl-exp.tex}
 \end{figure}
-Both specifications \verb|Ext1| and \verb|Ext2|, on the left side, extend the \verb|BaseSpec| with a binary operation and its unit element. The semantics of the \lstmath{combine} (or \lstmath{and}) combinator is presented as a pushout in the category of specifications. A pushout between the two morphisms \lstmath{BaseSpec $\;\to\;$ Ext1} and \lstmath{BaseSpec $\;\to\;$ Ext2} would result in a theory with one sort \lstmath{A}, and  two binary operations with two different unit elements. When trying this specification in CASL\footnote{using the online tool at: \url{http://rest.hets.eu}}, it computes the declarations on the right side of the figure which has only one unit element for the two binary operations. This is different from what a pushout would compute. 
+Both specifications \verb|Ext1| and \verb|Ext2|, on the left side, extend the \verb|BaseSpec| with a binary operation and its unit element. The semantics of the \lstmath{combine} (or \lstmath{and}) combinator is presented as a pushout in the category of specifications. A pushout between the two morphisms \lstmath{BaseSpec $\;\to\;$ Ext1} and \lstmath{BaseSpec $\;\to\;$ Ext2} would result in a theory with one sort \lstmath{A}, and  two binary operations with two different unit elements. When trying this specification in CASL\footnote{Using the online tool at: \url{http://rest.hets.eu}}, it computes the declarations on the right side of the figure which has only one unit element for the two binary operations. This is different from what a pushout would compute. 
 
 We performed the same experiment with Isabelle locale expressions~\cite{ballarin2003locales} and got similar results. In the following section, we introduce a collection of combinators that provide an infrastructure for building a large library organized as a theory graph that enables us to avoid the problem we have just described. 
 
@@ -83,7 +83,7 @@ A library built using these combinators embody the following design decisions:
 
 The combinators assume the underlying logic in which theories are defined to be a dependent type theory (DTT). Therefore, a theory is viewed as a context, or a telescope as defined in equation~\ref{eq:telescope}. But a specific variant of DTT is not assumed; instead many of the details are abstracted away. The minimum requirements of the underlying DTT are listed in ~\cite{carette2018building}. We include them here for convenience and completeness. These requirements are:  
 \begin{itemize}
-    \item An infinite set $\vars$ of variable names.
+    \item An infinite set $\mathbb{S}$ of symbols.
     
     \item A typing judgement for terms $s$ of type $\sigma$ in a context
     $\Gamma$ which we write as $\Gamma \vdash s : \sigma$.
@@ -99,10 +99,10 @@ The combinators assume the underlying logic in which theories are defined to be 
     will write $\context{\Gamma} \vdash s_1 \equiv s_2 : \sigma$ to denote $\context{\Gamma} \vdash
     s_1 : \sigma \equiv s_2 : \sigma$.
     
-    \item A notion of substitution on terms. Given a list of variable
-    assignments $[x_i \mapsto s_i]_{i < n}$
+    \item A notion of substitution on terms. Given a list of symbol
+    assignments $[x_i \mapsto s_i]_{i < n}$ such that they form a total function, 
     and an expression $e$ we write $\substitutiondef{e}{x_i}{s_i}{i < n}$
-    for the term $e$ after simultaneous substitution of variables $\left\{ x_i
+    for the term $e$ after simultaneous substitution of symbols $\left\{ x_i
     \right\}_{i < n}$ by the corresponding term in the assignment.
 \end{itemize}
 
@@ -115,7 +115,8 @@ The inputs to an extension combinator are a theory presentation $\Gamma$ and a l
 The combinator computes a new theory $\Gamma\rtimes\Delta^+$ and an identity morphism (\lstmath{$\tilde{\text{id}}$}) from $\Gamma$ to $\Gamma\rtimes\Delta^+$, where $\rtimes$ is an asymmetric operation that adds definitions to a telescope. On one side $\Gamma$ is a well-formed theory, but $\Delta^+$ may not be well-formed on its own. 
 The construction is defined as: 
 \[\extensionDef{\extSource}{\extDecls}\]
-An extension is well-formed if each new symbol does not occur in $\Gamma$ and its type is well-formed in $\Gamma$:  
+An extension is well-formed if each new symbol $a_i:\sigma_{i}:\kappa_{i}$ in $\Delta^+$ does not occur in $\Gamma_{i-1}$ and its type is well-formed in $\Gamma_{i-1}$, 
+where $\Gamma_{i-1} = \Gamma \rtimes \Delta_{i-1}$ and $\Delta_{i-1} \subseteq \Delta^+$ containing the first $i-1$ elements of $\Delta^+$.     
 \begin{eqnarray*}
 \forall i \cdot a_i \notin \syms{\Gamma_{i-1}} \\
 \forall i \cdot \Gamma_{i-1} \vdash \sigma_i : \kappa_{i}
@@ -137,11 +138,13 @@ CommMagma =
 
 \subsection{Rename}
 \label{subsec:rename}
-Renames do not add new concepts, but allows using flexible notations while still reusing all results from the source theory. 
+A theory is the rename of another if they contain the same declaration in the same order but with different names for the symbols. A useful use case for rename is obtaining boolean algebras from idempotent ring. Assuming some theorems have been proved for idempotent rings. These theorems still hold for boolean algebras. It would be useful to transport those theorems to boolean algebras without having to prove them again. This can be done if a rename morphism exists between the two theories. Renames allow using flexible notations while still reusing all results from the source theory. 
+% https://plato.stanford.edu/entries/boolalg-math/
+
 Given a theory presentation $\Gamma$ and a rename function $\pi$, the output of the rename operation is a new theory (\lstmath{pres}) $\pi \cdot \Gamma$ which is computed by performing a substitution of $\pi$ into the declarations of $\Gamma$, and an embedding morphism $\tilde{\pi} : \Gamma \to \pi\cdot\Gamma$ that maps the symbols of $\Gamma$ to those of $\pi\cdot\Gamma$ based on the renaming function $\pi$. 
 \[ \renameDef{\renSource}{\renFun} \]
 
-A rename operation is well-formed whenever the rename function $\pi : |\Gamma| \to \vars$ is an injection, and the codomain is a permutation of a subset of $\vars$ with exactly $k$ elements, where $k$ is the number of declarations in $\Gamma$. 
+A rename operation is well-formed whenever the rename function $\pi : |\Gamma| \to \mathbb{S}$ is an injection, and the codomain is a permutation of a subset of $\mathbb{S}$ with exactly $k$ elements, where $k$ is the number of declarations in $\Gamma$. 
 
 \paragraph{Example}
 After defining \lstmath{Semigroup} in the example of the previous section over a binary operation \lstmath{op}, one would want to define the additive and multiplicative versions using the symbols \lstmath{+} and \lstmath{*}, resp. It also make sense to have a morphism from \lstmath{Semigroup} to those variants that only differ in the names of the symbols. The rename combinator does just that: 
@@ -440,8 +443,8 @@ In some cases, a whole hierarchy has been developed and one may want to perform 
 
 Another line of future work is to support general morphisms as described in Section~\ref{sec:generalmorph} and their usage in the \lstmath{mixin} combinator as described in~\cite{carette2018building}. 
 The \lstmath{mixin} combinator computes a pushout of an embedding along a general morphism. Given a general morphism \lstmath{$[\text{u}_\Delta]: \Gamma \to \Delta$} and an embedding \lstmath{$[\text{u}_\Phi] : \Gamma \to \Phi$} and two injective renaming functions 
-\lstmath{$\pi_\Delta :\ \mid\Delta\mid\ \to \mathbb{V}$}
-and \lstmath{$\pi_\Phi :\ \mid\Phi\mid\ \to \mathbb{V}$}, the mixin is defined as follows 
+\lstmath{$\pi_\Delta :\ \mid\Delta\mid\ \to \mathbb{S}$}
+and \lstmath{$\pi_\Phi :\ \mid\Phi\mid\ \to \mathbb{S}$}, the mixin is defined as follows 
 \[
 \mixfun\left( u_{\Delta}, u_{\Phi}, \pi_{\Delta}, \pi_{\Phi}\right) \define
 \left\{\begin{aligned}
