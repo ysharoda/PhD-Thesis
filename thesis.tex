@@ -12,7 +12,7 @@
 \usepackage{listings}
 \usepackage[T1]{fontenc}
 \lstset{basicstyle={\ttfamily}}%\footnotesize
-\usepackage[show]{ed}
+
 \usepackage{graphicx}                                   % Allows the inclusion of figures
 \usepackage{subcaption}                               % Allows captions to be added to subfigures
 \usepackage[justification=centering]{caption} % Centres caption text
@@ -70,16 +70,16 @@
 \begin{document}
 %\begin{comment}
 \beforepreface                                         % Half title page, title page, declaration page   
-  %\include{layabstr}                                  % Lay Abstract
+ % \include{layabstr}                                  % Lay Abstract
   \include{abstr}                                      % Abstract
   \include{dedic}                                      % Dedication
   \include{acknowledgements}                 % Acknowledgements
  % \referencepageswithnotations{notation} % Table of Contents, List of Figures, List of Tables, Notations
-  %\referencepages                                 % No notations version (choose one)
+  \referencepages                          % No notations version (choose one)
 \afterpreface                
 %\end{comment}
 
-\tableofcontents
+%\tableofcontents
 
 \input{intro2.tex}
 
@@ -121,6 +121,8 @@
 %\bibliographystyle{authoryear}
 \bibliographystyle{natbib}
 \bibliography{thesis}
+
+\label{NumDocumentPages}
 
 \end{document}
 % ********************************

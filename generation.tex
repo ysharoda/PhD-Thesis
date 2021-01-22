@@ -1,20 +1,20 @@
 \chapter{The Generator}
 \label{ch:generation}
 
-The flattener compiles theory expressions into a graph of flat theories and morphisms between them. The generator uses the flat theories and manipulate them in order to generate some constructions that are useful when working with algebraic structures. The algorithms used to generate these constructions correspond to how universal algebra defines them.
+The flattener compiles theory expressions into a graph of flat theories and morphisms between them. The generator uses the flat theories and manipulate them in order to generate some constructions that are useful when working with algebraic structures. The algorithms used to generate these constructions correspond to how universal algebra defines the constructions.
 
 In Section~\ref{sec:genFrameReqs}, we discuss the requirements of a generation framework that is capable of generating these constructions. In Section~\ref{sec:togFamework}, we present how we have handled those requirements using Tog as the object language. We discuss the generation of the constructions in Section~\ref{sec:generatedConstructions}. We further discuss our approach in Section~\ref{sec:generation:discussion}. 
 
 \section{Generation Framework}
 \label{sec:genFrameReqs}
 
-Generating information based on the content of a theory requires dealing with theories as data, and therefore working in the meta-level. Meta programming frameworks differ in their capabilities. We lay out here some basic operations that are required to manipulate theories based on universal algebra definitions.  Section~\ref{sec:gen:reqs:eqtheories} discusses how theories are preprocessed so information can be generated from them. The requirements needed to generate this information are presented in details in Section~\ref{sec:gen:reqs:constructions} and summarized in Section~\ref{sec:gen:reqs:summary}. 
+Generating information based on the content of a theory requires dealing with theories as data, and therefore working at the meta-level. Meta programming frameworks differ in their capabilities. We lay out here some basic operations that are required to manipulate theories based on universal algebra definitions.  Section~\ref{sec:gen:reqs:eqtheories} discusses how theories are preprocessed so information can be generated from them. The requirements needed to generate this information are presented in details in Section~\ref{sec:gen:reqs:constructions} and summarized in Section~\ref{sec:gen:reqs:summary}. 
 
 %In Section~\ref{sec:gen:eqtheories}, we discuss how the output theories of the flattener are presented as The constructions we generate are either record types (signature, products, homomorphisms, relational interpretations), inductive datatypes (term languages), or functions (simplifiers and evaluators of term languages). We discuss the requirements for generating each of these constructions. 
 
 \subsection{Equational Theories}
 \label{sec:gen:reqs:eqtheories}
-The graph theories are instances of \lstmath{GTheory} type, see Section~\ref{subsec:theoriesMorphisms}, which is a representation of telescopes as in Equation~\ref{eq:telescope}. In this representation, declarations of a theory are represented as a \lstmath{[Constr]}, where each \lstmath{Constr} has a name and an expression denoting its type. 
+The graph theories are instances of \lstmath{GTheory} type; see Section~\ref{subsec:theoriesMorphisms}, which is a representation of telescopes as in Equation~\ref{eq:telescope}. In this representation, declarations of a theory are represented as a \lstmath{[Constr]}, where each \lstmath{Constr} has a name and an expression denoting its type. 
 Universal algbera has a different representation of theories, which is discussed in Section~\ref{sec:eqtheory}. It separates declarations that describe sorts, functions symbols, and axioms. The first requirement to be able to process theories based on universal algebra definitions is to be able to classify theories declarations into these three groups. 
 
 \subsection{Constructions}
@@ -179,15 +179,18 @@ type EqInstance = (Name_,[Binding],Expr)
 
 Instances are computed by the function \lstmath{eqInstance}, where the second argument is used to index the instance in cases where more than one is needed. In this case, both the name of the instances and the names of the bindings are indexed using the input number. 
 \begin{hscode} 
-eqInstance :: EqTheory -> Maybe Int -> EqInstance
+eqInstance :: EqTheory -> Maybe Int -> EqInstance 
 eqInstance thry indx =
   let iname i = twoCharName (thry ^. thyName) i 
-      binds = map fldsToHiddenBinds (args thry)
-      bnames = getBindingsNames binds
-      expr = App ~$\$$~ mkArg (thry ^. thyName) : map mkArg bnames
+      binds i =
+        let bs = map fldsToHiddenBinds (args thry)
+        in if i == 0 then bs else indexBindings i bs
+      expr i =
+        let bnames = getBindingsNames (binds i)
+        in App ~$\$$~ mkArg (thry ^. thyName) : map mkArg bnames
    in case indx of
-    Nothing -> (iname 0, binds, expr)
-    Just i  -> (iname i, indexBindings i binds, expr)
+    Nothing -> (iname 0, binds 0, expr 0)
+    Just i  -> (iname i, binds i, expr i)
 \end{hscode}
 \noindent The value of \lstmath{expr} denotes the type of the instance by applying the name of the theory to the bindings. 
 

@@ -7,7 +7,21 @@ This huge saving of human effort proves how useful and promising a generative ap
 
 In Section~\ref{conc:summary} we summarize the contributions of this work referring to how they solve the research questions introduced in Section~\ref{sec:questions}. In Section~\ref{future_work} we discuss several extensions of this work. 
 
-\paragraph{A note on runtime.} The user of our framework would encounter a big wait time when running the interpreter described in Chapter~\ref{ch:design} on a large library like the one we develop here. It is worth mentioning that the main source of overhead is the type checker, and not any of the operations we use to process the theory presentations. In a simple runtime experiment, we found that the flattener spent an average of $5.17 s$ on $10$ runs with standard deviation $0.18$. The generator spent an average of $2.7 s$ with standard deviation $0.06$. The exporter spent an average of $9.1 us$ with standard deviation $1.2 us$. On the other hand, the type checker spent an average of $1686.81s$ (approximately $28$ minutes) over $3$ runs with standard deviation $20.96s$.
+\paragraph{A note on runtime.} The user of our framework would encounter a big wait time when running the interpreter described in Chapter~\ref{ch:design} on a large library like the one we develop here. It is worth mentioning that the main source of overhead is the type checker, and not any of the operations we use to process the theory presentations. We performed a simple runtime experiment in which we measure the runtime for every stage of the interpreter. In table~\ref{table:runtimes} we report the average and standard deviation over $10$ runs. 
+On the other hand, the type checker spent an average of $1686.81s$ (approximately $28$ minutes) over $3$ runs with standard deviation $20.96s$.
+\begin{table}
+\begin{center}
+\begin{tabular}{| c | c | c |} \hline 
+\textbf{Stage} & \textbf{Average} & \textbf{Standard Deviation} \\ \hline
+\textbf{Flattener} & $5.17$s & $0.18$s \\ \hline 
+\textbf{Generator} & $2.7$s & $0.06$s \\ \hline 
+\textbf{Exporter} & $9.1$us & $1.23$us \\ \hline 
+\end{tabular}
+\end{center}
+\caption{The average and standard deviation of the runtime of different stages of the interpreter over $10$ runs.}
+\label{table:runtimes}
+\end{table}
+
 
 %Universal algebra is a well-established abstraction over details of algebraic theories in equational first order logic. 
 
