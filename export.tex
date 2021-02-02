@@ -8,7 +8,7 @@ Generating the definitions of constructions from a theory presentation saves a l
 
 We study how different Agda and Lean are from Tog in Section~\ref{sec:beyongTog}. We discuss our design of an exporter in Section~\ref{sec:export_design}. The implementation in Haskell, the meta-language for Tog is disucssed in Section~\ref{sec:exporting_agda}. We compare our generated Agda code to the one in the Agda standard library~\cite{agda_stdlib} and discuss how close we can get to the standard library presentation in Section~\ref{sec:compasion_agda_stdlib}. 
 %To assess how our approach scale up, we discuss how we extended the exporter to support lean, as a target language, in Section~\ref{sec:exporting_lean}. 
-We wrap by a discussion in Section~\ref{sec:exporting:discussion}. 
+We end by a discussion in Section~\ref{sec:exporting:discussion}. 
 
 \begin{comment}
 One of the problems we highlight here is how design decisions lead to different presentations of the same theory, forcing developers to rewrite the same mathematical knowledge in different ways. In this chapter, we investigate the following question
@@ -22,7 +22,7 @@ One of the problems we highlight here is how design decisions lead to different 
 As an experimental small language, Tog lacks some features that are usually found in main stream ones. In this section we discuss these features 
 
 \subsection{Universes}
-Tog provides only one kind \lstmath{Set}. It does not support universe hierarchy, and so in tog \lstmath{Set : Set}. On the other hand, Agda and Lean has an infinite number of universes. This is expressed in Agda as 
+Tog provides only one kind \lstmath{Set}. It does not support a universe hierarchy, and so in Tog \lstmath{Set : Set}. On the other hand, Agda and Lean have an infinite number of universes. This is expressed in Agda as 
 \lstmath{Set$_{\text{n}}$ : Set$_{\text{n+1}}$} for any natural number $\text{n}$.\footnote{In Lean, the hierarchy is expressed as \lstmath{Type n : Type (n+1)} for any natural number \lstmath{n}.}
 All the constructions we generate belong to the same level, except for relational interpretations, which describe a structure-preserving relation between two instances of the theory; see Section~\ref{sec:generation:relInterp}. In Tog, relational interpretations are records and the relation is a field of the record represented as 
 \begin{togcode}
@@ -32,7 +32,7 @@ interp : A1 -> A2 -> Set
 A record with this field in Tog has a type \lstmath{Set} and therefore belong to universe level zero. When exported to Agda or Lean, its definition needs to have the type universe level 1.  
 
 \subsection{Prelude Definitions}
-The constructions we generate from theory presentations depend on Tog definition of \lstmath{Nat}, \lstmath{Fin}, \lstmath{Vec}, and \lstmath{lookup}. Tog does not support indexed types and defines \lstmath{Fin} as  
+The constructions we generate from theory presentations depend on the Tog definitions of \lstmath{Nat}, \lstmath{Fin}, \lstmath{Vec}, and \lstmath{lookup}. Tog does not support indexed types and defines \lstmath{Fin} as follows:
 \begin{togcode}
 data Fin (n : Nat) : Set where
   fzero : (m : Nat) (p : n == suc m) -> Fin n
@@ -40,7 +40,7 @@ data Fin (n : Nat) : Set where
 \end{togcode}
 \noindent This leads to a rather complicated definition of the \lstmath{lookup} function. 
 
-On the other hand, Agda supports indexed types, has a simpler definition of \lstmath{Fin} and \lstmath{lookup}, and has these definitions in its standard library. Similarly, lean has types and functions for the same purposes, but different names.
+On the other hand, Agda supports indexed types, has a simpler definition of \lstmath{Fin} and \lstmath{lookup}, and has these definitions in its standard library. Similarly, Lean has types and functions for the same purposes, but with different names.
 
 \subsection{Equality Check in Pattern Matching}
 One of the things we generate is a simplifier that uses axioms like \lstmath{e * x $\ \equiv\ $ x} to simplify expressions; see Section~\ref{sec:generation:simplifier}. 
@@ -48,7 +48,7 @@ In a theory that has a binary operation with an inverse and a unit, like \lstmat
 \begin{agdacode}
 op x (inv x) ~$\equiv$~ e 
 \end{agdacode}
-\noindent which would give rise to a simplification rule. To perform this simplification, one needs to compare the two occurrences of \lstmath{x} for equality. While Tog accepts using the same variable name in pattern matching, and considers the two occurrences to be equal, Agda and Lean would not accept that code. Therefore, to perform the simplification, we need to compate them using decidable equality.
+\noindent which would give rise to a simplification rule. To perform this simplification, one needs to compare the two occurrences of \lstmath{x} for equality. While Tog accepts using the same variable name in pattern matching, and considers the two occurrences to be equal, Agda and Lean would not accept that code. Therefore, to perform the simplification, we need to compare them using decidable equality.
 
 \subsection{Functions as Constructors}
 In Section~\ref{sec:generation:staged} we discussed automatically annotating term languages to produce staged expressions. We discussed a problem related to how Tog represents constructors of a datatype. Tog does not allow passing constructors to higher order functions. Instead, we had to define a function corresponding to these constructors and pass it to the functions that lifts them to their staged versions. When exporting to Agda or Lean, we do not need to keep this trick.
@@ -71,7 +71,7 @@ Afterwards, the exporter traverses the syntax tree and prints the output in the 
 \section{Implementation}
 \label{sec:exporting_agda}
 
-We discuss our implementation of the design in Section~\ref{sec:export_design}. We start by discussing the preprocessing functions in Section~\ref{sec:exporting:challenges} showing how they solve the problems highlighted in Section~\ref{sec:beyongTog}. In Section~\ref{sec:impl:exporter} we introduce the \lstmath{Export} type class that performs that translation from the modified Tog syntax tree to the definitions of the target language. 
+We now discuss our implementation of the design in Section~\ref{sec:export_design}. We start by discussing the preprocessing functions in Section~\ref{sec:exporting:challenges} showing how they solve the problems highlighted in Section~\ref{sec:beyongTog}. In Section~\ref{sec:impl:exporter} we introduce the \lstmath{Export} type class that performs that translation from the modified Tog syntax tree to the definitions of the target language. 
 
 \subsection{The Preprocessor}
 \label{sec:exporting:challenges}
@@ -86,12 +86,12 @@ universeLevel conf flds =
     if elem "Set" ~$\$$~ everything (++) (mkQ [] (\ (Name (_,x)) → [x])) flds
     then (level1 conf) else (level0 conf)    
 \end{hscode}
-The function \lstmath{universeLevel} is called every time a record header is printed. 
+\noindent The function \lstmath{universeLevel} is called every time a record header is printed. 
 
 \subsubsection{The Prelude}
 Exporting the prelude definitions is done differently than exporting the generated code. The configuration type includes information about how they are processed, via the field
-\lstmath{prelude_includes :: Either FilePath ([ImportDecl],[String])}. If the value has the type \lstmath{FilePath}, then the provided includes the definitions of the prelude. Otherwise, the configuration provides a list of import declarations, to be added at the beginning of the prelude module, and a list of the names of definitions to be exported. 
-For example, the \lstmath{prelude_includes} of the Agda configuration is 
+\lstmath{prelude_includes :: Either FilePath ([ImportDecl],[String])}. If the value has the type \lstmath{FilePath}, then the provided file includes the definitions of the prelude. Otherwise, the configuration provides a list of import declarations, to be added at the beginning of the prelude module, and a list of the names of definitions to be exported. 
+For example, the \lstmath{prelude_includes} of the Agda configuration is:  
 \begin{hscode} 
  Right (["open import Agda.Builtin.Equality",
          "open import Agda.Builtin.Nat",
@@ -101,10 +101,9 @@ For example, the \lstmath{prelude_includes} of the Agda configuration is
         "Choice","Comp","Staged","expr","const",
         "stage0","stage1","stage2","codeLift1","codeLift2"])   
 \end{hscode} 
+\noindent The imports for modules other than prelude is defined using the \lstmath{imports} config declaration. 
 
-The imports for modules other than prelude is defined using the \lstmath{imports} config declaration. 
-
-The function \lstmath{mkImport} creates import declarations for all modules based on the information retrieved from the configuration. \lstmath{import_}, \lstmath{open_}, and \lstmath{openimport} are the keywords to import, open, or open-import a module in the target language. The function reads the names of these modules and created instances pd \lstmath{Decl} using the corresponding constructors. 
+The function \lstmath{mkImport} creates import declarations for all modules based on the information retrieved from the configuration. \lstmath{import_}, \lstmath{open_}, and \lstmath{openimport} are the keywords to import, open, or open-import a module in the target language. The function reads the names of these modules and creates instances of \lstmath{Decl} using the corresponding constructors. 
 \begin{hscode}
 mkImports :: Config -> [String] -> [Decl]
 mkImports conf imprts =
@@ -119,7 +118,7 @@ mkImports conf imprts =
          (getNames ~$\$$~ open_ conf) \\ (getNames ~$\$$~ openimport conf))
 \end{hscode} 
 
-When importing functions, the order of their inputs may be different than that used when calling the same function in Tog. This is the case with the definition of \lstmath{lookup} in Agda versus Tog where the two arguments are flipped. In Lean the function name is \lstmath{nth} and the arguments are also flipped with respect to the tog definition. To solve this problem, every target exporter has a function \lstmath{callFunc} that adjusts the call to the function. The one for agda is: 
+When importing functions, the order of their inputs may be different than that used when calling the same function in Tog. This is the case with the definition of \lstmath{lookup} in Agda versus Tog where the two arguments are flipped. In Lean the function name is \lstmath{nth} and the arguments are also flipped with respect to the Tog definition. To solve this problem, every target exporter has a function \lstmath{callFunc} that adjusts the call to the function. The one for Agda is: 
 \begin{hscode}
 callFunc :: Expr -> Expr
 callFunc a@(App [nm,_,a2,a3]) =
@@ -129,7 +128,7 @@ callFunc e = e
 \noindent \lstmath{callFunc} is called before every function application is exported. Therefore, it can be easily extended to adjust calls to any function. 
 
 \subsubsection{Simplifier}
-One of the constructions that can be generated is decidable equality. In case they are generated, they can be used to check for equality of variables. Since we do not generate them, we remove simplification rules that includes two occurrences of the same variable name in the pattern. 
+One of the constructions that can be generated is decidable equality. In case it is generated, it can be used to check for equality of variables. Since we do not generate it, we remove simplification rules that includes two occurrences of the same variable name in the pattern. 
 
 \subsubsection{Functions as Constructors}
 Not allowing constructors to be passed to higher order functions resulted in creating a function declaration for every constructor of term languages during the generation phase of the interpreter. 
@@ -193,7 +192,7 @@ On top of these primitives, we have used the following functions provided by the
 
 \subsubsection{The Exporter Type Class}
 We present here some of the interesting instances of the \lstmath{Export} type class\footnote{The full code is available at: \url{https://github.com/ysharoda/Deriving-Definitions/blob/7e19c3c7d6240d7ff228a91c6c32d1914c483195/src/Tog/Exporting/export.hs}.}. 
-Our generator defines every theory along with its generated constructions in a  \lstmath{Module}. Exporting a \lstmath{Module} is described by the following instance 
+Our generator defines every theory along with its generated constructions in a  \lstmath{Module}. Exporting a \lstmath{Module} is described by the following instance:  
 \begin{hscode} 
 instance Export Module where
   export conf (Module nm params decls) =
@@ -237,7 +236,7 @@ end nm
 
 The configuration of each language specifies the position of the import declarations. The function \lstmath{split} checks the configuration for this information and accordingly splits the module declarations into those to be printed before its header (if any), and those who are part of the module. 
 
-The  \lstmath{moduleEnd} function checks if the module needs to be closed with any keywords, and whether the name of the module needs to be included as in lean. The \lstmath{export} function is called on the components of the module, which are the name (\lstmath{nm}), the parameters (\lstmath{params}) and the declarations within the module (\lstmath{decls}). 
+The  \lstmath{moduleEnd} function checks if the module needs to be closed with any keywords, and whether the name of the module needs to be included as in Lean. The \lstmath{export} function is called on the components of the module, which are the name (\lstmath{nm}), the parameters (\lstmath{params}) and the declarations within the module (\lstmath{decls}). 
 
 The parameters of a module are represented as \lstmath{[Binding]}, which can be hidden or explicit. Exporting the binding is done by calling \lstmath{export} on its arguments and type expression.  
 \begin{hscode}
@@ -252,9 +251,9 @@ instance Export Binding where
       HBind _ _ -> braces ~$\$$~ binding binds
 
 \end{hscode}
-Every \lstmath{Binding} consists of a set of arguments of type \lstmath{Arg} that defines the variables of the binding. the function \lstmath{getBindingExpr} returns the type of those binding arguments. 
+Every \lstmath{Binding} consists of a set of arguments of type \lstmath{Arg} that defines the variables of the binding. The function \lstmath{getBindingExpr} returns the type of those binding arguments. 
 
-The body of the module consists of declarations \lstmath{[Decl]}. Exporting each of these declarations is straight forward by calling the \lstmath{export} function on its components. Function definitions in Agda are declared by writing the function names for every pattern, while in Lean guards are used to declare the different patterns. 
+The body of the module consists of declarations of type \lstmath{[Decl]}. Exporting each of these declarations is straight forward by calling the \lstmath{export} function on its components. Function definitions in Agda are declared by writing the function names for every pattern, while in Lean guards are used to declare the different patterns. 
 \newline
 \begin{tabular}{p{18em} p{10em}}
 \begin{agdacode} 
@@ -297,7 +296,7 @@ instance Export Decl where
   export _ _ = empty
 \end{hscode}
 
-With instances of \lstmath{export} for every type in the tog abstract syntax, a single call to \lstmath{export} on the top level module of the tog library generates the equivalent Agda definitions\footnote{The generated files available at:~\url{https://github.com/ysharoda/Deriving-Definitions/tree/master/Library/generated/mathscheme-agda}.}.
+With instances of \lstmath{export} for every type in the Tog abstract syntax, a single call to \lstmath{export} on the top level module of the tog library generates the equivalent Agda definitions\footnote{The generated files available at:~\url{https://github.com/ysharoda/Deriving-Definitions/tree/master/Library/generated/mathscheme-agda}.}.
 
 \section{Comparison With Agda Standard Library}
 \label{sec:compasion_agda_stdlib}
@@ -328,7 +327,7 @@ record Monoid c ~$\ell$~ : Set (suc (c ~$\sqcup$~ ~$\ell$~)) where
    rawMonoid = record { _~$\approx$~_ = _~$\approx$~_; _~$\bullet$~_ = _~$\bullet$~_; ~$\varepsilon$~ = ~$\varepsilon$~}
 \end{agdacodelnos}
 \noindent The definition of \lstmath{Monoid} is universe polymorphic, \lstmath{c} and \lstmath{$\ell$} refer to the universe levels of the carrier and the equality relation. 
-Line $2$ and $3$ define notation for infix binary symbols, specifying their precedence. Line $5$ defines the carrier of the \lstmath{Monoid} structure. The carrier belongs to universe level \lstmath{c}. 
+Lines $2$ and $3$ define notation for infix binary symbols, specifying their precedence. Line $5$ defines the carrier of the \lstmath{Monoid} structure. The carrier belongs to universe level \lstmath{c}. 
 Line $6$ defines the equality used to compare terms of \lstmath{Monoid}. Since the algebraic hierarchy in Agda's standard library is based on setoids, equality is explicitly defined for every algebraic structure. 
 Lines $7$ and $8$ defines the function symbols of \lstmath{Monoid}. The axioms of \lstmath{Monoid} are defined by instantiating the \lstmath{IsMonoid} record, which can be seen as an unbundled variation of the definition of \lstmath{Monoid}. Given the function symbols of \lstmath{Monoid}, the \lstmath{IsMonoid} record declares the axioms they need to satisfy. \lstmath{IsMonoid} is defined as: 
 \begin{agdacode}
@@ -353,7 +352,7 @@ The flattener described in Chapter~\ref{ch:library} computes flat theories param
 \subsection{Predicate Style Presentations}
 A predicate style presentation for a theory $\Gamma = (\mathcal{S},\mathcal{F}, \mathcal{E})$ splits its declarations into two records. The \lstmath{is$\Gamma$} record has the sort and function symbols as parameters, while having the axioms as record fields. The second record, $\Gamma$, is an unparametrized record. 
 
-Starting from flattened theories, the following function generates \lstmath{is$\Gamma$} 
+Starting from flattened theories, the following function generates \lstmath{is$\Gamma$}: 
 \begin{hscode}
 isX :: GTheory -> GTheory
 isX (GTheory constrs _) =
@@ -403,14 +402,14 @@ There are three main differences between the \lstmath{IsMonoid} in the Agda stan
 
 \subsection{Setoids Based Presentations}
 \label{subsec:setoid-based-pres}
-The algebraic hierarchy in Agda are defined over setoids, i.e. every carrier set is equipped with its own equality. 
+The algebraic hierarchy in Agda are defined over setoids, i.e.~every carrier set is equipped with its own equality. 
 The theory of setoid can be obtained from the \lstmath{Carrier} theory using the extension combinator 
 \begin{togcode}
 Setoid = extend Carrier {eq : A -> A -> Set}
 \end{togcode}
-In our development, the equality used to represent the equations is Tog's underlying propositional equality. It is part of the meta theory and is not reflected in the theories or the morphisms of the graph. Therefore, switching to a different equality would require doing that on the meta theory level. 
+In our development, the equality used to represent the equations is Tog's underlying propositional equality. It is part of the meta theory and is not reflected in the theories or the morphisms of the graph. Therefore, switching to a different equality would require doing that at the meta theory level. 
 
-On the other hand, if we start with a graph developed with equality at the theories level, using setoids, one can switch to built-in equality by substitution. 
+On the other hand, if we start with a graph developed with equality at the theory level, using setoids, one can switch to built-in equality by substitution. 
 
 
 % The data being manipulated in this work is theories in equational logic. The theories of algebra that we consider in this work are first order equational theories, i.e.: all the axioms are equations.
@@ -427,22 +426,34 @@ The definition of \lstmath{Monoid} in the Agda standard library includes backwar
 %\section{Exporting to Lean}
 %\label{sec:exporting_lean}
 
-\section{Comparing with Lean's Mathlib}
+\section{Comparison With Lean's Mathlib}
 \lstmath{Monoid} is defined in Mathlib as follows\footnote{source:\url{https://github.com/leanprover-community/mathlib/blob/bc94d05242714263947fa485f3b64b911bb84faf/src/algebra/group/defs.lean}.}: 
 \begin{leancode} 
 @[ancestor semigroup has_one]
 class monoid (M : Type u) extends semigroup M, has_one M :=
   (one_mul : ~$\forall$~ a : M, 1 * a = a) (mul_one : ~$\forall$~ a : M, a * 1 = a)
 \end{leancode} 
-The declaration \lstmath{@[ancestor semigroup has_one]} defines \lstmath{semigroup} and \lstmath{has_one} as the ancestors of \lstmath{monoid}. In a theory graph model, this means that an identity morphism exists between them. Note that the \lstmath{has_one} class is the representation of a class with one point, which we have referred to as \lstmath{Pointed}. 
+While the definition we export is defined as follows 
+\begin{leancode} 
+structure monoid (a : Type) : Type := 
+  (op : a ~$\to$~ a ~$\to$~ a)
+  (e  : a)
+  (lunit_e : ~$\forall$~ {x : a}, op e x = x)
+  (runit_e : ~$\forall$~ {x : a}, op x e = x)
+  (associative_op : ~$\forall$~ {x y z : a}, op (op x y) z = op x (op y z)) 
+\end{leancode} 
+There are two differences between the two definitions. First, \lstmath{monoid} is defined as an extension of both \lstmath{semigroup} and \lstmath{has_one}. In a theory graph model, this means that identity morphisms exist between each of them and \lstmath{monoid}. Note that the \lstmath{has_one} class is the representation of a class with one point, which we have referred to as \lstmath{Pointed}. 
 Similar to the discussion we provided in Section~\ref{subsec:model-morph}, the information about the hierarchy is available in the graph we construct. Our current implementation does not export this information, and we leave it for future work. 
+
+The second difference is that \lstmath{monoid} here is defined as a \lstmath{class}, while the \lstmath{monoid} provided by our exporter defines \lstmath{monoid} as a \lstmath{structure}. To change the exported definition to be a \lstmath{class} we only need to change one keyword, which can be done easily. But projecting the fields of a class requires more arguments than fields of a structure. Both fields have the type 
+\lstmath{$\Pi\ $ {m : Type}, monoid m $\ \to\ $ m $\ \to\ $ m $\ \to\ $ m}. While structures have a syntactic sugar for projecting these fields, classes do not. Therefore, changing the presentation of \lstmath{monoid} to class requires changing its projections. 
 
 \section{Discussion}
 \label{sec:exporting:discussion}
-The idea of exporting from one language to another has been discussed various times, as we show in Section~\ref{sec:relwork:automation}. Our work take advantage from the fact that we export from a small language, and therefore the source syntax tree is small and can be manipulated easily.  
+The idea of exporting from one language to another has been discussed various times, as we show in Section~\ref{sec:relwork:automation}. Our work takes advantage from the fact that we export from a small language, and therefore the source syntax tree is small and can be manipulated easily.  
 %Having a minimal source language gives us the opportunity to add design decisions without having to observe how it affects the multiple other features that would be present in a feature-rich language. That makes the export process easier to manage. 
 
-As in Section~\ref{sec:generation:discussion}, we noted here that some missing features in Tog makes the exporting process a bit harder, like universes and indexed types. It is hard to decide which features are needed for a core language that fits our purpose. This is one way our work can be extended. We suggest studying theorem provers as a program family, capturing their commonalities and variabilities via techniques like feature models~\cite{czarnecki2000generative}. If we have this model, one can write a staged exporter to different languages in the model, similar to what is explained in~\cite{stagedConfig}. 
+As in Section~\ref{sec:generation:discussion}, we noted here that some missing features in Tog, like universes and indexed types, makes the exporting process a bit harder. It is hard to decide which features are needed for a core language that fits our purpose. This is one way our work can be extended. We suggest studying theorem provers as a program family, capturing their commonalities and variabilities via techniques like feature models~\cite{czarnecki2000generative}. If we have this model, one can write a staged exporter to different languages in the model, similar to what is explained in~\cite{stagedConfig}. 
 
 %The theory graph organization structure is useful to add model morphisms has proven useful in the exporting process. The fact that the morphisms carry information about It made it possible to add design decisions, like exporting to the setoids-based graph, and to add the model morphisms as we discussed in Section has also made it possible to incorporate model definitions, as we discuss in Section~\ref{subsec:model-morph}. 
 
