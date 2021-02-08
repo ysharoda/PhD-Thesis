@@ -1,0 +1,25 @@
+\begin{figure}
+    \adjustbox{scale=0.6,center}{%
+  \begin{tikzcd}[row sep=0.9em, column sep=0.3em]
+    && & \verb|Pointed0| \arrow[dd,hook] & \\
+    \verb|Carrier| \arrow[dd,hook] \arrow[rr,hook] & & \verb|Pointed| \arrow[ur,mapsto] & & \\
+    & \verb|Magma+| \arrow[rr,hook] \arrow[dd,hook]& & \verb|PointedMagma+|
+    \arrow[rr,hook]
+    \arrow[dd,hook]& &
+    \verb|RightUnital+|  \arrow[dd,hook]\\
+    \verb|Magma| \arrow[ur,mapsto] \arrow[dd,hook]  & &
+    \verb|PointedMagma| \arrow[dd,hook] \arrow[ur,mapsto] \arrow[from=uu, crossing over]
+    \arrow[rr,hook,crossing over] \arrow[from=ll,hook, crossing over]
+    & & \verb|RightUnital| \arrow[ur,mapsto] \\
+    & \verb|Semigroup+| \arrow[ddd,hook] & &\verb|LeftUnital+| \arrow[rr,hook] &  &
+    \verb|Unital+| \arrow[dddllll,hook] \\
+    \verb|Semigroup|  \arrow[ddd,hook] \arrow[ur,mapsto]&  & \verb|LeftUnital|
+    \arrow[ur,mapsto]
+    \arrow[rr,hook,crossing over] &  & \verb|Unital| \arrow[dddllll,hook,crossing
+    over]\arrow[ur,mapsto]
+    \arrow[from=uu,hook,crossing over]& \\
+    &&&& \\
+    &  \verb|Monoid+| &  &&\\
+    \verb|Monoid|  \arrow[ur,mapsto] && &&
+  \end{tikzcd}}
+\end{figure}
