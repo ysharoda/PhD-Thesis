@@ -41,6 +41,7 @@
 \usepackage{multicol}
 \usepackage{upgreek}
 \usepackage{adjustbox}
+%\usepackage[bottom]{footmisc}
 
 \numberwithin{equation}{section}                 % Numbers equations based on their section
 \usepackage{xspace}
@@ -58,6 +59,11 @@
 
 \usepackage{url}
 \def\UrlBreaks{\do\/\do-}
+
+\newcommand\Chapter[2]{\chapter
+  [#1\hfil\hbox{}\protect\linebreak{\itshape#2}]%
+  {#1\\[2ex]\large\itshape#2}%
+}
 
 %\setcitestyle{authoryear,open={[},close={]}}
 
@@ -81,19 +87,25 @@
 
 %\tableofcontents
 
+%\part{Introduction and Background}
+
 \input{intro2.tex}
 
 \input{background.tex}
 
 \input{ualgebra.tex}
 
-\input{redundancy.tex}
+%\part{The Interpreter : Design}
 
-\input{tog.tex}
+\input{redundancy.tex}
 
 \input{design.tex}
 
+\input{tog.tex}
+
 \input{library.tex}
+
+%\part{The Interpreter : Implementation}
 
 \input{flattener.tex}
 

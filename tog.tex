@@ -1,7 +1,8 @@
-\chapter{Tog}
+\chapter{Tog: Language and Type Checker}
 \label{ch:tog}
 
 %The interpreter of our DSL generates definitions of theories and related constructions. 
+To implement the methodology we presented in Chapter~\ref{ch:design}, we need a language for representing and manipulating theories and a type checker to verify these manipulations. 
 Theories are written in some formal language, the object language. To manipulate them we need to investigate and manipulate the syntax of the object language. This can be done in the same language if it has a strong reflection mechanism, or in the meta language in which the object language is embedded. As the main goal of our work is to investigate the usefulness of a generative approach, we do not want to be constrained by the amount of support given by the reflection mechanism. Working in the meta language gives us full control over manipulating the object language's syntax. 
 We need our meta language to support the following features in the object language it represents:
 \begin{itemize}

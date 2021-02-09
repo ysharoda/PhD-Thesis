@@ -1,4 +1,5 @@
-\chapter{The Exporter}
+%\chapter{The Exporter}
+\Chapter{The Exporter }{Generated constructions to proof assistants}
 \label{ch:export}
 
 %So far we have been working in a simplistic dependent language. The next step is to export our work in Tog into systems that are widely used for theory development and proofs. We start with Agda, as it is the one that resembles Tog the most. 
@@ -433,7 +434,7 @@ The definition of \lstmath{Monoid} in the Agda standard library includes backwar
 class monoid (M : Type u) extends semigroup M, has_one M :=
   (one_mul : ~$\forall$~ a : M, 1 * a = a) (mul_one : ~$\forall$~ a : M, a * 1 = a)
 \end{leancode} 
-While the definition we export is defined as follows 
+\noindent while the definition provided by the exporter is: 
 \begin{leancode} 
 structure monoid (a : Type) : Type := 
   (op : a ~$\to$~ a ~$\to$~ a)
@@ -442,11 +443,14 @@ structure monoid (a : Type) : Type :=
   (runit_e : ~$\forall$~ {x : a}, op x e = x)
   (associative_op : ~$\forall$~ {x y z : a}, op (op x y) z = op x (op y z)) 
 \end{leancode} 
-There are two differences between the two definitions. First, \lstmath{monoid} is defined as an extension of both \lstmath{semigroup} and \lstmath{has_one}. In a theory graph model, this means that identity morphisms exist between each of them and \lstmath{monoid}. Note that the \lstmath{has_one} class is the representation of a class with one point, which we have referred to as \lstmath{Pointed}. 
-Similar to the discussion we provided in Section~\ref{subsec:model-morph}, the information about the hierarchy is available in the graph we construct. Our current implementation does not export this information, and we leave it for future work. 
+There are two differences between the two definitions. First, \lstmath{monoid} is defined as an extension of both \lstmath{semigroup} and \lstmath{has_one}. 
+In a theory graph model, this means that identity morphisms exist between each of them and \lstmath{monoid}. The \lstmath{has_one} class is the representation of a class with one point, which we have referred to as \lstmath{Pointed}. 
+Similar to the discussion we provided in Section~\ref{subsec:model-morph}, the information about the hierarchy is available in the graph we construct. 
+Note how the information provided by the \lstmath{ancestor} attribute is a repitition of the one provided by the \lstmath{extends} keyword. The only documentaion we could find for the \lstmath{ancestor} attribute is a 
+\href{https://leanprover.zulipchat.com/#narrow/stream/113488-general/topic/ancestor}{zulip thread}
+which explains that it is neded by some tactics like the one that computes the additive version of a class. 
 
-The second difference is that \lstmath{monoid} here is defined as a \lstmath{class}, while the \lstmath{monoid} provided by our exporter defines \lstmath{monoid} as a \lstmath{structure}. To change the exported definition to be a \lstmath{class} we only need to change one keyword, which can be done easily. But projecting the fields of a class requires more arguments than fields of a structure. Both fields have the type 
-\lstmath{$\Pi\ $ {m : Type}, monoid m $\ \to\ $ m $\ \to\ $ m $\ \to\ $ m}. While structures have a syntactic sugar for projecting these fields, classes do not. Therefore, changing the presentation of \lstmath{monoid} to class requires changing its projections. 
+The second difference is that \lstmath{monoid} here is defined as a class, while the \lstmath{monoid} provided by our exporter is defined as a structure. To change the exported definition to be a \lstmath{class} we only need to change one keyword, which can be done easily. Yet, the Lean elaborator deal with classes in a way different than structures. classes have one instance for every carrier type, which enables the elaborator to infer this instance. Therefore, accepting a qualified projection of a \lstmath{monoid} field is more complicated. For example, the expression for projecting the binary operation \lstmath{op} of a \lstmath{monoid} class instance \lstmath{m : monoid a} with a carrier {a : Type} is \lstmath{@monoid_class.op a m x y}. The Tog syntax tree does not keep track of whether the projected field belongs to a class or a structure, which means we will need to keep track of this information in a separate data structure and consult it whenever a field is being projected. 
 
 \section{Discussion}
 \label{sec:exporting:discussion}

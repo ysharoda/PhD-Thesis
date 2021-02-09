@@ -1,13 +1,4 @@
-\begin{comment} 
-Dr. Carette's remarks: 
-“formal systems community” – I have rarely heard it called that. You might want to be more precise. You only cover ITPs that use logics more expressive than FOL.
-I think you’ll need to justify (and least via examples) your first sentence, if you’re going to include it at all. I would seriously consider deleting it.
-3.2 focuses way too much on stuff that I’ve done. You need to diversify more!
-I was expecting some actual statistics to show up here, not just examples! 
-this chapter, as written has too little actual content in it. I’m pretty sure you’ve looked much deeper and harder into those libraries. I think reporting on that could be a solid, tangible contribution.
-\end{comment} 
-
-\chapter[Boilerplate In Libraries]{Boilerplate In Libraries\footnote{This chapter is adapted from~\cite{leverageCICM2020}.}}
+\chapter[Boilerplate in Libraries]{Boilerplate in Libraries\footnote{This chapter is adapted from~\cite{leverageCICM2020}.}}
 \label{ch:redundancy}
 %One of the observations we build our work on is that libraries of formal systems contain developer provided definitions that can be automatically generated. In this chapter we support this observation by listing 
 %The formal systems community has mostly focused on making necessary things possible. Our focus is more oriented to making uniform definitions free. In this chapter we highlight the redundancy that is currently a part of the development of theories in formal systems. In Section~\ref{sec:redun:libraries} we focus our attention to libraries of formal systems, while in Section~\ref{sec:redun:user_projects} we show how some projects are redfines algebraic structure and some other constructions because they are unable to use the definitions provided by libraries of the system they are using. 
@@ -192,7 +183,7 @@ structure monoid_hom (M : Type*) (N : Type*) [monoid M] [monoid N] :=
 \end{leancode} 
 The library provide the unbundled (class) definitions for many theories, including \lstmath{group}, \lstmath{semiring}, and \lstmath{ring}. These definitions are marked deprecated. We were able to only find the bundled definitions for 
 \href{https://github.com/leanprover-community/mathlib/blob/4bb8d4475f897c8997100d31fe84b33050444374/src/algebra/group/hom.lean}
-{\lstmath{monoid_hom}} and 
+{\lstmath{monoid_hom}}, its additive variant, and 
 \href{https://github.com/leanprover-community/mathlib/blob/4bb8d4475f897c8997100d31fe84b33050444374/src/algebra/ring.lean}
 {\lstmath{ring_hom}}. 
 

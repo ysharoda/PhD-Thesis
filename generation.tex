@@ -1,4 +1,5 @@
-\chapter{The Generator}
+%\chapter{The Generator}
+\Chapter{The Generator }{Graph theories to generated constructions}
 \label{ch:generation}
 
 The flattener compiles theory expressions into a graph of flat theories and morphisms between them. The generator uses the flat theories and manipulate them in order to generate some constructions that are useful when working with algebraic structures. The algorithms used to generate these constructions correspond to how universal algebra defines the constructions.
@@ -14,12 +15,12 @@ Generating information based on the content of a theory requires dealing with th
 
 \subsection{Equational Theories}
 \label{sec:gen:reqs:eqtheories}
-The graph theories are instances of \lstmath{GTheory} type; see Section~\ref{subsec:theoriesMorphisms}, which is a representation of telescopes as in Equation~\ref{eq:telescope}. In this representation, declarations of a theory are represented as a \lstmath{[Constr]}, where each \lstmath{Constr} has a name and an expression denoting its type. 
-Universal algbera has a different representation of theories, which is discussed in Section~\ref{sec:eqtheory}. It separates declarations that describe sorts, functions symbols, and axioms. The first requirement to be able to process theories based on universal algebra definitions is to be able to classify theories declarations into these three groups. 
+The graph theories are instances of \lstmath{GTheory} type; see Section~\ref{subsec:theoriesMorphisms}, which is a representation of telescopes as in Equation~\ref{eq:telescope}. In this representation, declarations of a theory are represented as members of the  \lstmath{[Constr]} type, where each \lstmath{Constr} has a name and an expression denoting its type. 
+Universal algbera has a different representation of theories, which is discussed in Section~\ref{sec:eqtheory}. It separates declarations that describe sorts, functions symbols, and axioms. The first requirement to be able to process theories based on universal algebra definitions is to be able to classify theory declarations into these three groups. 
 
 \subsection{Constructions}
 \label{sec:gen:reqs:constructions}
-After presenting a theory as described by universal algebra, it can be used to generate the constructions we present in Section~\ref{sec:toBeGenerated} and possibly more. We implemented the generation of signature, product theories, homomorphisms, relational interpretations, term languages and some functions to operate on them. We discuss the requirements of generating each of them in the sequel of this section, where constructions with similar requirements are discussed together.  
+After presenting a theory as described by universal algebra, it can be used to generate the constructions we present in Section~\ref{sec:toBeGenerated} and possibly more. We implemented the generation of signatures, product theories, homomorphisms, relational interpretations, and term languages as well as some functions to operate on them. We discuss the requirements of generating each of them in the sequel of this section, where constructions with similar requirements are discussed together.  
 %We group similar constructions and discuss them together  
 
 \subsubsection{Signatures and Product Theories}
@@ -34,18 +35,18 @@ Figure~\ref{fig:monoid-sig-prod} shows how the theory presentation of \lstmath{M
 \subsubsection{Homomorphisms and Relational Interpretations}
 \begin{figure}
 \input{figures/monoid-hom-rel.tex}
-\caption{Manipulating \lstinline|Monoid| theory presentation to generate its homomorphism.}
+\caption{Manipulating the \lstinline|Monoid| theory presentation to generate its homomorphism.}
 \label{fig:monoid-hom-rel}
 \end{figure}
 
-Homomorphisms are structure preserving mappings between the carrier of two algebras. Relational interpretations are structure preserving relations between them. Figure~\ref{fig:monoid-hom-rel} shows how components of the definitions of \lstmath{Monoid} are used to generate its homomorphism. To generate them we need the following: 
+Homomorphisms are structure-preserving mappings between the carriers of two algebras. Relational interpretations are structure-preserving relations between them. Figure~\ref{fig:monoid-hom-rel} shows how components of the definitions of \lstmath{Monoid} are used to generate its corresponding homomorphism theory. To generate them we need the following: 
 \begin{itemize}
 \item A representation of $2$ instances of a theory with the necessary bindings to define these instances.  
 \item A function/relation between elements of the carriers of the two instances. 
-\item Preservation axioms for every function symbol. To generate these axioms, we need the following 
+\item Preservation axioms for every function symbol. To generate these axioms, we need the following:  
     \begin{itemize}
-    \item Project fields of the instances. The names of these projections are qualified if they are fields within a record. Otherwise, they are unqualified.   
-    \item Given a function symbol of the theory, with information about its name and type, generate a representation of function application of that symbol.  
+    \item Projection fields of the instances. The names of these projections are qualified if they are fields within a record. Otherwise, they are unqualified.   
+    \item Given a function symbol of the theory, with information about its name and type, a representation of function application of that symbol.  
     \end{itemize}
 \end{itemize}
 
@@ -60,23 +61,23 @@ We differentiate between $4$ different forms of term languages that differ in th
 
 The \lstmath{Basic} term language defines expressions created using the function symbols of the theory. At this level of abstraction, referring to elements of the carrier is not possible.
 Considering, for example, the binary operation of the basic \lstmath{Monoid} term language in Figure~\ref{fig:term-lang-4-forms}, \lstmath{op}. Its arguments are either the constant \lstmath{e} or another call for \lstmath{op}. 
-\lstmath{Closed} term languages solve this problem by providing the \lstmath{sing} constructor, abbreviation for \emph{singleton}, that lifts element of type \lstmath{A} into instances of the closed term language. Assuming that the carrier is the type of natural numbers \lstmath{Nat}, a possible term in the language would be \lstmath{op (sing (suc zero)) e}. 
+\lstmath{Closed} term languages solve this problem by providing the \lstmath{sing} constructor, abbreviation for \emph{singleton}, that lifts an element of type \lstmath{A} to an instance of the closed term language. Assuming that the carrier is the type of natural numbers \lstmath{Nat}, a possible term in the language would be \lstmath{op (sing (suc zero)) e}. 
 
 \lstmath{Open} term languages provides extra constructor to represent variables, represented using the \lstmath{Fin} type. The two open term languages are shown on the right hand side of Figure~\ref{fig:term-lang-4-forms}.  
 
-For all 4 versions, we need to generate a constructor for every function symbol of the theory. The term languages that support referring to elements of the carrier, would have an extra constructor for singleton elements with arguments of type \lstmath{A}; and those that support language with variables would have an extra constructor whose arguments has the type \lstmath{Fin n}. 
+For all 4 versions, we need to generate a constructor for every function symbol of the theory. The term languages that support referring to elements of the carrier would have an extra constructor for singleton elements with arguments of type \lstmath{A}; and those that support language with variables would have an extra constructor whose arguments has the type \lstmath{Fin n}. 
 
 The requirements for generating these term languages is: 
 \begin{itemize}
-\item A representation for inductive types and constructors 
-\item A representation of types for natural numbers \lstmath{Nat}, finite sets \lstmath{Fin}, and vectors\lstmath{Vec}. 
+\item A representation for inductive types and constructors.  
+\item A representation of types for natural numbers~\lstmath{Nat}, finite sets~\lstmath{Fin}, and vectors~\lstmath{Vec}. 
 \end{itemize}
 
 \subsubsection{Functions on Term Languages}
 \label{sec:gen:reqs:funcs}
-After generating the term languages, we generate functions that manipulates them. This functions are: simplifier, evaluator, induction principle, staged term languages, and staging using representation type that abstracts over the stage. Generating these functions requires the following: 
+After generating the term languages, we generate functions that manipulates them. These functions are simplifier, evaluator, induction principle, staged term languages, and staging using representation type that abstracts over the stage. Generating these functions requires the following: 
 \begin{itemize}
-\item Pattern matching on the constructors of the term language 
+\item Pattern matching on the constructors of the term language.  
 \item Constructing recursive calls on the arguments of the pattern. 
 \end{itemize} 
 
@@ -91,7 +92,7 @@ We summarize the different points presented in this section as requirements for 
 \item A function/relation between elements of the carriers of the two instances. 
 \item A representation of function application of this field.  
 \item Computing patterns and recursive calls of a function declaration. 
-\item Creating inductive type and their constructors. 
+\item Creating inductive types and their constructors. 
 \item A representation of natural numbers, finite sets and vector types.    
 \end{enumerate}
 

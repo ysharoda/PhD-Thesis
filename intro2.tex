@@ -8,7 +8,7 @@ Diversity in mathematical formalizations was a big obstacle towards realizing th
 
 Despite the many efforts dedicated to building math libraries, a large universal library has not become a reality.\footnote{However, in 2020, the mathlib team is making serious inroads in that direction~\cite{lean2019} .} One reason is that developing and maintaining libraries of mathematics requires a lot of person-power. One would want to believe that this human effort is put into the creative work of formalizing new pieces of knowledge. By examining current libraries of theorem provers, we know this is not always the case. 
 The algebraic hierarchy has been formalized various times in different libraries, sometimes even within the same system~\cite{Geuvers2002, Gonthier2009, Spitters2010, coq-contribs-algebra}. 
-In every formalization, the library developers had to provide all the definitions of the structures in the hierarchy and related constructions such as homomorphisms. We want to add more automation to the process of building libraries. We identify sources of redundancy that can be eliminated and use the theory of \lstmath{Monoid} as our running example. \lstmath{Monoid} is an algebraic structure, a member of the algebraic hierarchy, that describes algebras with a carrier set and an associative binary operation over that set that has an identity element.
+In every formalization, the library developers had to provide all the definitions of the structures in the hierarchy and related constructions such as homomorphisms. We want to add more automation to the process of building libraries. We identify some sources of redundancy that can be eliminated and use the theory of \lstmath{Monoid} as our running example. \lstmath{Monoid} is an algebraic structure, a member of the algebraic hierarchy, that describes algebras with a carrier set and an associative binary operation over that set that has an identity element.
 %The libraries for theorem provers contain definitions provided by library developers that . 
 %We give examples of redundancies associated with defining the algebraic hierarchy in libraries of formal systems in Chapter~\ref{ch:redundancy}. 
 %By investigating the formalization of the algebraic hierarchy in libraries of formal systems, we can see 
@@ -211,7 +211,7 @@ These are the principle contributions of the thesis:
     \item Build a library of over $200$ theories describing the algebraic hierarchy, implemented using the combinators in~\cite{carette2018building} (Chapter~\ref{ch:library}). 
     \item Compile a list of structures that can be generated from theory presentations (Section~\ref{sec:toBeGenerated}). 
     \item Generate some of these constructions in Tog, a small implementation of a dependently typed language, in the style of Agda, Coq and Lean (Chapter~\ref{ch:generation}). 
-    \item Export this implementation to Agda, (Chapter~\ref{ch:export}). 
+    \item Export this implementation to Agda and Lean, (Chapter~\ref{ch:export}). 
 \end{itemize}  
 
 \section{Broader Context}

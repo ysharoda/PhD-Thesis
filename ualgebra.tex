@@ -1,4 +1,4 @@
-\chapter{Universal Algebra}
+\chapter{Universal Algebra: An Overview}
 \label{ch:ualgebra}
 Algebraic structures, like monoids, groups, and rings, are classes of algebras that have similar properties. Universal algbera studies those structures in a more generic way. It abstracts over the specific definitions and properties of classes of algebraic structures and deals with them as axiomatic theories in equational first-order logic. With this abstraction in place, universal algebra defines some constructions useful when dealing with algebras and prove some of their properties.
 
@@ -116,7 +116,7 @@ The definitions are adapted from~\cite{ehrig1985fundamentals} and~\cite{handbook
    \item The \emph{closed term language} \lstmath{L} induced by a theory is a set of terms that are defined inductively as 
     \begin{itemize}
         \item all constants belong to \lstmath{L} (basic terms) 
-        \item A term \lstmath{t$_{\texttt{op}}$ $\ $ t$_1$ $\ \cdots\ $ t$_n$} for every function symbol \lstmath{op : $\sort \to ... \to \sort $} of arity $n$, such that  \lstmath{t$_1$ $\ \cdots\ $ t$_n$} belongs to \lstmath{L}. 
+        \item a term \lstmath{t$_{\texttt{op}}$ $\ $ t$_1$ $\ \cdots\ $ t$_n$} for every function symbol \lstmath{op : $\sort \to ... \to \sort $} of arity $n$, such that  \lstmath{t$_1$ $\ \cdots\ $ t$_n$} belongs to \lstmath{L}. 
     \end{itemize}
     \item The \emph{open term language} of a theory is similar to the closed term language, except that basic terms includes a set of variables.  
     \item The \emph{staged term language} of a theory is the term language in which expressions can be marked for execution in compile or runtime stages as discussed in Section~\ref{sec:background:msp}.  
