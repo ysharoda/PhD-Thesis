@@ -49,7 +49,7 @@ In a theory that has a binary operation with an inverse and a unit, like \lstmat
 \begin{agdacode}
 op x (inv x) ~$\equiv$~ e 
 \end{agdacode}
-\noindent which would give rise to a simplification rule. To perform this simplification, one needs to compare the two occurrences of \lstmath{x} for equality. While Tog accepts using the same variable name in pattern matching, and considers the two occurrences to be equal, Agda and Lean would not accept that code. Therefore, to perform the simplification, we need to compare them using decidable equality.
+\noindent which would give rise to a simplification rule. To perform this simplification, one needs to compare the two occurrences of \lstmath{x} for equality. Non-linear pattern matching is the case when the same variable name can occur more than once in patterns, in which case the value referred to at these occurrences are considered equal. While Tog accepts non-linear patterns, Agda and Lean are restricted to linear pattern matching and would not accept that code. Therefore, to perform the simplification, we need to compare them using decidable equality.
 
 \subsection{Functions as Constructors}
 In Section~\ref{sec:generation:staged} we discussed automatically annotating term languages to produce staged expressions. We discussed a problem related to how Tog represents constructors of a datatype. Tog does not allow passing constructors to higher order functions. Instead, we had to define a function corresponding to these constructors and pass it to the functions that lifts them to their staged versions. When exporting to Agda or Lean, we do not need to keep this trick.
