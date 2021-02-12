@@ -106,7 +106,7 @@ The work in~\cite{Muller2017alignment} share our motivation of contributing to b
 Code generation from theorem provers into one or more programming languages has also been discussed in the literature. Both Coq~\cite{CoqCodegen2003, cruz2003program} and Isabelle~\cite{IsabelleCodegen2010} provides code extraction mechanisms from their theories and proofs into functional programs. 
 
 Logipedia~\cite{Dowek2019LogipediaAM} exports proofs written in the logical framework Dedukti to multiple theorem provers. The supported targets are Coq, Lean, Matita, OpenTheory, HOL-Light, and PVS. 
-Lem~\cite{lem2014} exports specifications to a programming language (Ocaml), multiple theorem provers (Coq, HOL4, Isabelle/HOL), Latex and HTML. 
+Lem~\cite{lem2014} exports specifications to a programming language (OCaml), multiple theorem provers (Coq, HOL4, Isabelle/HOL), Latex and HTML. 
 
 Another interesting work is the interface between Lean, a theorem prover, and Mathematica, a computer algebra system~\cite{Lewis_2017} which allows exchange of information between the two systems in both directions.  
 
@@ -120,7 +120,7 @@ Another interesting work is the interface between Lean, a theorem prover, and Ma
 Eliminating boilerplate is a main field of research in the PL community, either by providing abstractions that eliminates the need for the boilerplate code as in the scrap your boilerplate approach~\cite{syb2003Jones} or by generating this boilerplate for the users.  
 
 We have already mentioned deriving and its extensions~\cite{loeh2010genericDeriving, loeh2018derivingVia}, and lenses~\cite{lensesLib}. Those techniques are pervasively used in Haskell projects.
-Ocaml provides the PPX preprocessor that manipulates the OCaml AST corresponding to an input program~\cite{ocaml2019ppx}. One form in which PPX transforms ocaml programs is using derivers that allow writing a deriving definition as in Haskell. 
+OCaml provides the PPX preprocessor that manipulates the OCaml AST corresponding to an input program~\cite{ocaml2019ppx}. One form in which PPX transforms OCaml programs is using derivers that allow writing a deriving definition as in Haskell. 
 Macros, which are provided by multiple programming languages can also be seen as a form of code generation with one application being removing boilerplate. The work in~\cite{macros2001msp} presents a typed macro system that can be used to develop domain specific languages. 
 
 
@@ -145,7 +145,7 @@ Coq's Mtac is a meta language for constructing tactics that generate proof terms
 
 %The Lean supports meta programming by exposing an API for the procedures implemented in C++. Metaprogramming in Lean~\cite{lean2017metaprogramming} is performed by writing a tactic script that manipulates the tactic state to produce expressions. and elaboration is similar to Idris in the sense that 
 \begin{comment}
-Coq allows user-defined tactics using Ocaml or Ltac (a high-level language for defining tactics). Both can generate ill-typed expressions. 
+Coq allows user-defined tactics using OCaml or Ltac (a high-level language for defining tactics). Both can generate ill-typed expressions. 
 Mtac performs code generation within the M monad. they all provide tactics that produces proof terms. 
 Template coq~\cite{templateCoq2018} has a more general approach that reflects the syntax of the calculus of inductive constructions as implemented by Coq. It still does not concern itself with generating definitions for managing boilerplate. 
 

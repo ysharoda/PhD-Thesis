@@ -5,7 +5,7 @@
 %\section{Algebra Theories in Libraries}\ednote{currently a copy-paste from the paper}
 %\label{sec:redun:libraries}
 
-One of our observations is that current formalizations of Algebra contain quite a
+One of our observations is that current formalizations of algebra contain quite a
 bit of information that is ``free'' in the sense that it can be
 mechanically generated from basic definitions. For example, given a theory
 X, it is mechanical to define X-homomorphisms. 
@@ -130,7 +130,7 @@ and
 \href{https://github.com/agda/agda-stdlib/blob/c61b159363ce2390049ce8e1e5422f61f17ec3b7/src/Algebra/Solver/IdempotentCommutativeMonoid.agda}
 {\lstinline|IdempotentCommutativeMonoid|}. The \lstmath{Raw} versions are provided for $7$ theories; \lstmath{Magma}, \lstmath{Monoid}, \lstmath{NearSemiring}, \lstmath{Semiring}, \lstmath{Ring}, and \lstmath{Lattice}. The definitions of the $3$ morphisms are provided for the same theories. 
 
-The direct product is defined for $10$ theories. From the $7$ that we defined above, only \lstmath{Magma}, \lstmath{Monoid}, and \lstmath{Group} have definitions of direct product. In addition to those $3$ theories, It is defined for \lstmath{Semigroup}, \lstmath{Band}\lstmath{CommutativeSemigroup}, \lstmath{Semilattice}, \lstmath{CommutativeMonoid}, \lstmath{IdempotentCommutativeMonoid}, and \lstmath{AbelianGroup}. Beside these definitions, the products of the signatures of \lstmath{Magma}, \lstmath{Monoid}, and \lstmath{Group} is given in the library.  
+The direct product is defined for $10$ theories. From the $7$ that we defined above, only \lstmath{Magma}, \lstmath{Monoid}, and \lstmath{Group} have definitions of direct product. In addition to those $3$ theories, It is defined for \lstmath{Semigroup}, \lstmath{Band}, \lstmath{CommutativeSemigroup}, \lstmath{Semilattice}, \lstmath{CommutativeMonoid}, \lstmath{IdempotentCommutativeMonoid}, and \lstmath{AbelianGroup}. Beside these definitions, the products of the signatures of \lstmath{Magma}, \lstmath{Monoid}, and \lstmath{Group} is given in the library.  
 
 These give us a total of $47$ definitions that are provided by the library developers, but could instead be generated, bearing in mind that not all constructions are provided for all theories. Also, constructions are not provided for additive or multiplicative versions of theories like \lstmath{Monoid} and \lstmath{Group}. A generative algorithm would be able to provide those variants of the constructions, at no extra cost. 
 % 2 * 3 (term langs) 

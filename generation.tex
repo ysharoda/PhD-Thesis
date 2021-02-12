@@ -75,7 +75,7 @@ The requirements for generating these term languages is:
 
 \subsubsection{Functions on Term Languages}
 \label{sec:gen:reqs:funcs}
-After generating the term languages, we generate functions that manipulates them. These functions are simplifier, evaluator, induction principle, staged term languages, and staging using representation type that abstracts over the stage. Generating these functions requires the following: 
+After generating the term languages, we generate functions that manipulate them. These functions are simplifier, evaluator, induction principle, staged term languages, and staging using representation type that abstracts over the stage. Generating these functions requires the following: 
 \begin{itemize}
 \item Pattern matching on the constructors of the term language.  
 \item Constructing recursive calls on the arguments of the pattern. 
@@ -389,7 +389,7 @@ Once the knowledge capture and utility functions presented in Section~\ref{sec:t
 %Another interesting problem here is related to dealing with bindings of two different inputs, how to determine if they are the same, different, hidden or explicit. 
 
 Another useful lesson we learn here is about the importance of having a strong and small core language for manipulating structures. Many things were easy to do in Tog because it is a small system. But we also faced difficulties due to the immaturity of some features in Tog.  
-For example, The generated definition of induction is not accepted by Tog's type checker if the hidden argument \lstmath{\{p\}} is not passed over. Most feature-rich systems, like Agda and Lean, will not need to have this argument defined. Another needed feature is treating constructors as functions, where they can be passed to higher order functions. Tog does not support that, although most systems do.  
+For example, the generated definition of induction is not accepted by Tog's type checker if the hidden argument \lstmath{\{p\}} is not passed explicitly. Most feature-rich systems, like Agda and Lean, will not need to have this argument defined. Another needed feature is treating constructors as functions, where they can be passed to higher order functions. Tog does not support that, although many systems do.  
 
 Using this framework we are able to generate a library of $106468$ lines of code from the representation of $227$ theories. Appendix~\ref{appendix:generatedTog} shows the generated definition for \lstmath{Monoid} theory. All the generated files are present on github under~\url{https://github.com/ysharoda/Deriving-Definitions/tree/master/Library/generated}. 
  

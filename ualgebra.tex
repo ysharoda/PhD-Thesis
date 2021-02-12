@@ -2,7 +2,7 @@
 \label{ch:ualgebra}
 Algebraic structures, like monoids, groups, and rings, are classes of algebras that have similar properties. Universal algbera studies those structures in a more generic way. It abstracts over the specific definitions and properties of classes of algebraic structures and deals with them as axiomatic theories in equational first-order logic. With this abstraction in place, universal algebra defines some constructions useful when dealing with algebras and prove some of their properties.
 
-We use concepts of universal algebra to leverage the information in theory presentations. We internalize a representation of uni-sorted equational first order theories into DTT, our meta theory. This way we are able to manipulate them and generate the constructions as described by universal algebra. In this chapter we introduce core concepts that we use from universal algebra. In Chapter~\ref{ch:generation} we discuss how we use it in our work. In Section~\ref{sec:eqtheory} we present equational first order logic, the meta theory for universal algebra, and define the components of a theory in this logic. We then introduce some of the constructions of universal algebra that can be generated from an equational theory presentation in Section~\ref{sec:toBeGenerated}. It is worth mentioning that although our framework generate only some of these constructions, they all follow from the definition of a theory and the definitions we provide here will hopefully make this noticeable.   
+We use concepts of universal algebra to leverage the information in theory presentations. We internalize a representation of uni-sorted equational first order theories into DTT, our meta theory. This way we are able to manipulate them and generate the constructions as described by universal algebra. In this chapter we introduce core concepts that we use from universal algebra. In Chapter~\ref{ch:generation} we discuss how we use it in our work. In Section~\ref{sec:eqtheory} we present equational first order logic, the meta theory for universal algebra, and define the components of a theory in this logic. We then introduce some of the constructions of universal algebra that can be generated from an equational theory presentation in Section~\ref{sec:toBeGenerated}. It is worth mentioning that although our framework generates only some of these constructions, they all follow from the definition of a theory and the definitions we provide here will hopefully make this noticeable.   
 
 \section{Equational Theory}
 \label{sec:eqtheory}
@@ -13,12 +13,12 @@ Equational logic has $3$ inference rules described in~\cite{Gries1993EquationalL
 \begin{proofrules}
         \[ t_1 = t_2 \ \justifies t[x \mapsto t_1] = t[x \mapsto t_2] \]
         \[ t_1 = t_2 \qquad t_2 = t_3 \ \justifies t_1 = t_3 \]
-        \[t \ \justifies t [xs \mapsto ts] \] 
+        \[p\ t \ \justifies p\ (t[xs \mapsto ts]) \] 
 \end{proofrules}       
-\noindent where $t$, $t_1$, $t_2$, and $t_3$ are expressions, $x$ is a symbol in the language, $ts$ is a list of expressions, and $xs$ is a list of symbols. 
-The leftmost rule refers to leibniz equality that states that two expressions are equal if one can be substituted by the other without changing the truth of a statement. 
+\noindent where $t$, $t_1$, $t_2$, and $t_3$ are expressions, $x$ is a symbol in the language, $ts$ is a list of expressions, $xs$ is a list of symbols, and $p$ is a predicate. 
+The leftmost rule refers to Leibniz equality that states that two expressions are equal if one can be substituted by the other without changing the truth of a statement. 
 The rule in the middle reflects the transitivity of equality. 
-The rightmost rule states that if $t$ is true, then it remains true under all substitutions.  
+The rightmost rule states that if $p\ t$ is true, then it remains true under all substitutions.  
 
 %\section{A Theory in Equational Logic} 
 %\label{sec:eqtheory}
@@ -26,14 +26,14 @@ A theory in universal algebra is described in first order equational logic. It r
 such that 
 \begin{itemize}
 \item $\sort$ is a set of one sort \lstmath{s}. 
-\item $\fsyms$ is a finite set of function symbols. A $0$-ary function symbol is a constant. 
+\item $\fsyms$ is a finite set of function symbols along with their arities. A $0$-ary function symbol is a constant. 
 \item $\equations$ is a finite set of generating equations. 
 \end{itemize}
 %containing one sort .\footnote{In case of multi-sorted logics, the set $\sort$ is an indexed set of sorts. We restrict ourselves to unisorted logics as it captures the algebraic structures we're interested in, like monoids, groups, and rings.}
 %An equation has the form \lstmath{t$_1$ = t$_2$}. We refer to this set as $\equations$, and therefore refer to a theory in equational logic as \lstmath{($\sort$,$\fsyms$,$\equations$)}. 
 %An algebra describes a model  of the theory. It assigns a carrier set to the sort \lstmath{s} and functions to every symbol in $\fsyms$ such that the equations is $\equations$ hold. 
 
-An algebra is a mathematical structure consisting of a domain and a set of functions on the domain. It provides an interpretation for the carrier $\sort$ and the function symbols in $\fsyms$ of a theory such that the equations in $\equations$ hold.  
+An algebra ($\sort$,$\fsyms$) is a mathematical structure consisting of a domain and functions on this domain. It provides an interpretation for the carrier $\sort$ and the function symbols in $\fsyms$ of a theory.  
 %The models of a first-order algebraic theory presentation define algebras (1) whose domain and distinguished elements and functions are the interpretations of the carrier and symbols of the theory and (2) that satisfy the axioms of theory.  A model isn’t exactly an algebra.  It is a mapping to an algebra.
 
 \section{Constructions}
@@ -46,22 +46,22 @@ The definitions are adapted from~\cite{ehrig1985fundamentals} and~\cite{handbook
 
 \begin{itemize}
     \item The \emph{signature} of a theory $(\sort, \fsyms, \equations)$ is $(\sort, \fsyms)$ consisting of the sort and $n$-ary function symbols, where $n \geq 0$. The signature specifies the language of the theory, without any laws. 
-    \item The \emph{sub-theory} $\Delta$ of a theory $\Gamma$ is defined as 
+    \item A \emph{sub-theory} $\Delta$ of a theory $\Gamma$ is a theory $(\sort_\Delta, \fsyms_\Delta,\equations_\Delta)$ satisfying the conditions:  
     \begin{enumerate}
     \item $\sort_\Delta \subseteq \sort_\Gamma$ 
-    \item \lstmath{c$_\Delta$} \lstmath{=} \lstmath{c$_{\Gamma}$} for every constant symbol in the set of function symbols $\fsyms$. 
-    \item \lstmath{op$_\Delta\ $ x$_1$ $\;...\;$ x$_n$} \lstmath{=} \lstmath{op$_\Gamma\ $x$_1$ $\;...\;$ x$_n$}, for all \lstmath{op$\ \in\;\mid\fsyms\mid$}, {x$_1$ $\cdots$ x$_n$ $\in \sort_\Delta$}, and \lstmath{n $\ \in \mathbb{N}$, n $\;\geq\;$ 1}. 
+    \item \lstmath{c$_\Delta$} \lstmath{=} \lstmath{c$_{\Gamma}$} \lstmath{$\in \sort_\Delta$} for every constant symbol in the set of function symbols $\fsyms$. 
+    \item \lstmath{op$_\Delta\ $ x$_1$ $\;...\;$ x$_n$} \lstmath{=} \lstmath{op$_\Gamma\ $x$_1$ $\;...\;$ x$_n$} \lstmath{$\in \sort_\Delta$}, for all \lstmath{op$\ \in\;\mid\fsyms\mid$}, {x$_1$ $\cdots$ x$_n$ $\in \sort_\Delta$}, and \lstmath{n $\ \in \mathbb{N}$, n $\;\geq\;$ 1}. 
     \end{enumerate}
     \item The \emph{trivial sub-theory} is the sub-theory with the empty carrier. Because the carrier is empty, the $3$ conditions above trivially hold. Note that the trivial sub-theory is not defined for theories with constants.    
-    \item The \emph{product} of two algebras \lstmath{A} and \lstmath{B} of the same theory $\Gamma$ is the algebra with sort $(\sort_\texttt{A} \times \sort_\texttt{B})$. In a uni-sorted setup, the sort of the product algebra is $(\sort \times \sort)$. 
+    \item The \emph{product} of two algebras \lstmath{A} and \lstmath{B} of the same theory $\Gamma$ is a theory with sort $(\sort_\texttt{A} \times \sort_\texttt{B})$. If a theory is uni-sorted, then the set of sorts $\sort$ is a singleton and we refer to that one sort as $\sort$ for simplicity. In this case, the sort of the product theory is $(\sort \times \sort)$. 
     \begin{itemize}
-    \item \lstmath{c$_\times$ : $(\sort \times \sort) = c_\texttt{A} \times c_\texttt{B}$}, for every constant symbol 
+    \item \lstmath{c$_\times$ : $(\sort_A \times \sort_B) = c_\texttt{A} \times c_\texttt{B}$}, for every constant symbol 
       \lstmath{c $\;\in\;\mid\Gamma\mid$}. 
-    \item \lstmath{op$_\times$ : $(\sort \times \sort) \to \cdots \to (\sort \times \sort)$}, for every function symbol \lstmath{op $\;\in\; \mid\Gamma\mid$} based on its arity, defined as: \newline 
+    \item \lstmath{op$_\times$ : $(\sort_A \times \sort_B) \to \cdots \to (\sort_A \times \sort_B)$}, for every function symbol \lstmath{op $\;\in\; \mid\Gamma\mid$} based on its arity, defined as: \newline 
     \lstmath{op$_\times\ $ (x$_{1_\texttt{A}}$,x$_{1_\texttt{B}}$) ... (x$_{n_\texttt{A}}$,x$_{n_\texttt{B}}$) = (op$_\texttt{A}\ $ x$_{1_\texttt{A}}$ ... x$_{n_\texttt{A}}$, op$_\texttt{B}\ $ x$_{1_\texttt{B}}\ $ ... x$_{n_\texttt{B}}$)}
-    \item The set of equations $\equations_\times$ is given by substituting the new sort, constant and function symbols in the set $\sort$.  
+    \item The set of equations $\equations_\times$ is given by substituting the new sort, constant and function symbols in the equations in $\equations$.  
     \end{itemize}
-    \item The \emph{homomorphism} between two algebras \lstmath{A} and \lstmath{B} of the same theory $\Gamma$ is a function \lstmath{hom : $\;\sort_A \to \sort_B$} such that 
+    \item A \emph{homomorphism} between two algebras \lstmath{A} and \lstmath{B} of the same theory $\Gamma$ is a function \lstmath{hom : $\;\sort_A \to \sort_B$} such that 
     \begin{itemize}
         \item for every constant symbol \lstmath{c} in $\fsyms$: \lstmath{hom c$_A\ $ = c$_B$} 
         \item for every function symbol \lstmath{op} in $\fsyms$: \newline 
@@ -83,14 +83,18 @@ The definitions are adapted from~\cite{ehrig1985fundamentals} and~\cite{handbook
     \item The composition of two morphisms \lstmath{f : A $\ \to\ $ B} and \lstmath{g : B $\ \to\ $ C} is denoted by the function \lstmath{g $\ \circ\ $ f : A $\ \to\ $ C} and is defined as 
     \lstmath{(g $\ \circ\ $ f) a = g (f a)} for every \lstmath{a $\ \in\ $ A}   
  %   \item Homomorphism Equality 
-    \item The \emph{relational interpretation} between two algebras \lstmath{A} and \lstmath{B} of the same theory is a relation \lstmath{interp a b}, for all \lstmath{a $\;\in \sort_A$} and \lstmath{b $\;\in \sort_B$} such that 
+    \item A \emph{relational interpretation} between two algebras \lstmath{A} and \lstmath{B} of the same theory $\Gamma$ is a relation \lstmath{interp : $\sort_A \to \sort_B \to \mathbb{B}$}, such that 
     \begin{itemize}
-    \item \lstmath{interp c$_A\ $ c$_B$}, for every constant \lstmath{c $\;\in\;$ A}.  
+    \item \lstmath{interp c$_A\ $ c$_B$}, where c$_A\ $ c$_B$ are the assignments of the constant \lstmath{c $\;\in\;$ $\Gamma$} in algebras $A$ and $B$, respectively.  
     \item \lstmath{interp x$_1\ $ y$_1$ $\ \wedge\ $ $\ \cdots\ $ $\ \wedge\ $ interp x$_n\ $ y$_n\ $} \\
     \lstmath{$\Rightarrow\ $ interp (op$_A\ $ x$_1$ $\ \cdots\ $ x$_n$) (op$_B\ $ y$_1$ $\ \cdots\ $ y$_n$)}, \\
-    for all function symbols \lstmath{op $\;\in\ \mid\fsyms\mid$}, where \lstmath{x$_1$ $\; ... \;$ x$_n$ $\ \in\ $ $\sort_A$} and \lstmath{y$_1$ $\; ... \;$ y$_n$ $\;\in \sort_B$}. 
+    for all function symbols \lstmath{op $\;\in\ \fsyms$}, where \lstmath{x$_1$ $\; ... \;$ x$_n$ $\ \in\ $ $\sort_A$} and \lstmath{y$_1$ $\; ... \;$ y$_n$ $\;\in \sort_B$}. 
     \end{itemize}
-    
+    \item A \emph{congruence relation} $\equiv$ for a theory $\Gamma$ is an equivalence relation on elements of its sort which respects its operations, such that: 
+    \begin{itemize}
+    \item \lstmath{x$_1$ $\ \equiv\ $ y$_1$ $\ \wedge\ $ ... $\ \wedge\ $ x$_n$ $\ \equiv\ $ y$_n$ $\ \Rightarrow\ $ op x$_1$ ... x$_n$ $\ \equiv\ $ op y$_1$ ... y$_n$}  \\
+    for all function symbols \lstmath{op $\ \in\ \fsyms$}. 
+    \end{itemize}
     \item The \emph{quotient algebra} for a theory $\Gamma$ with respect to some congruence relation \lstmath{$\equiv$} is defined as the theory \lstmath{$\Gamma/\equiv \;= (\sort_Q, \fsyms_Q, \equations_Q)$} such that 
     \begin{itemize}
        \item \lstmath{$\sort_Q$} is the factor set of $\sort$, defined as 
@@ -111,35 +115,37 @@ The definitions are adapted from~\cite{ehrig1985fundamentals} and~\cite{handbook
 \end{itemize}
 
 \subsection*{Term Languages}
-
+We define the term language of a theory, as well as some of its related constructions:  
 \begin{itemize}
-   \item The \emph{closed term language} \lstmath{L} induced by a theory is a set of terms that are defined inductively as 
+   \item The \emph{closed term language} \lstmath{L} induced by a theory is a set of terms that is defined inductively as 
     \begin{itemize}
         \item all constants belong to \lstmath{L} (basic terms) 
-        \item a term \lstmath{t$_{\texttt{op}}$ $\ $ t$_1$ $\ \cdots\ $ t$_n$} for every function symbol \lstmath{op : $\sort \to ... \to \sort $} of arity $n$, such that  \lstmath{t$_1$ $\ \cdots\ $ t$_n$} belongs to \lstmath{L}. 
+        \item for every function symbol \lstmath{op : $\sort \to ... \to \sort $} of arity $n$ and for all terms  \lstmath{t$_1$ $\ \cdots\ $ t$_n\ $ $\in\ $ L}, the term \lstmath{t$_{\texttt{op}}$ $\ $ t$_1$ $\ \cdots\ $ t$_n$}. 
     \end{itemize}
-    \item The \emph{open term language} of a theory is similar to the closed term language, except that basic terms includes a set of variables.  
+    \item An \emph{open term language} of a theory is similar to the closed term language, except that basic terms include the set of variables.  
     \item The \emph{staged term language} of a theory is the term language in which expressions can be marked for execution in compile or runtime stages as discussed in Section~\ref{sec:background:msp}.  
     \item \emph{Induction Principle on Terms}: Let \lstmath{p} be a predicate defined on terms \lstmath{t $\ \in\ $ T$_{\texttt{op}}$(X)} of a signature \lstmath{SIG = $(\sort,\fsyms)$} with a set of variables \lstmath{X}. The assertion \lstmath{p(t)} is true for all \lstmath{t $\ \in\ $ T$_{\texttt{op}}$} if the following conditions are satisfied: 
     \begin{itemize}
-        \item \lstmath{p(t)} is true for all constant and variable symbols \lstmath{t}.
-        \item If \lstmath{(p t$_1$) $...$ (p t$_n$)} are true, then \lstmath{p (f t$_1$ $\ \cdots\ $ t$_n$)} is true, for every term \lstmath{f t$_1$ $\ \cdots\ $ t$_n$}.  
+        \item \lstmath{(p t)} is true for all constant and variable symbols \lstmath{t}.
+        \item If \lstmath{(p t$_1$), ..., (p t$_n$)} are true, then \lstmath{p (f t$_1$ $\ \cdots\ $ t$_n$)} is true, for every term \lstmath{f t$_1$ $\ \cdots\ $ t$_n$}.  
     \end{itemize}     
-    \item \emph{Evaluation functions}: Given an algebra \lstmath{A} of a theory \lstmath{$\Gamma = (\sort,\fsyms,\equations$)}, a closed term of the language of the theory as defined above, the function \lstmath{eval : $\ T\ \to\ \sort_\texttt{A}$} is defined recursively as 
+    \item \emph{Evaluation functions}: Given an algebra \lstmath{A} of a theory \lstmath{$\Gamma = (\sort,\fsyms,\equations$)}, let $T$ be the set of closed terms of the language of the theory as defined above; then the function \lstmath{eval : $\ T\ \to\ \sort_\texttt{A}$} is defined recursively by:  
     \begin{itemize}
         \item \lstmath{eval c = c$_{A}$}
-        \item \lstmath{eval (op t$_1$ $\ \cdots\ $ t$_n$)} = op$_A$ (eval t$_1$) $\cdots$ (eval t$_n$) where an assignment function maps the constants of the language to the constants defined by the algebra. The evaluation function for open term language would be similar except it has an additional environment that assigns value of the carrier to variables. 
+        \item \lstmath{eval (op t$_1$ $\ \cdots\ $ t$_n$)} = op$_A$ (eval t$_1$) $\cdots$ (eval t$_n$) 
+        %where an assignment function maps the constants of the language to the constants defined by the algebra. 
     \end{itemize}      
-    \item \emph{Simplification via rewriting}: Given a set of equations, each represented as \lstmath{(X,L,R)}, where \lstmath{X} is a set of variables, \lstmath{L} is the term on the left of the equation, and \lstmath{R} is the term on the right side. By fixing the set of variables, we can represent equations as  (L,R). Each equation represented this form gives rise to two substitutions \lstmath{1) L $\ \Rightarrow\ $ R} and \lstmath{2) R $\ \Rightarrow\ $ L}. Any of these substitutions can result in rewriting systems, but when simplifying one need to define an ordering relation that decides which term is \emph{simpler} than the other. When having the equations and the ordering relation, rewriting systems can be defined. 
+    The evaluation function for open term language would be similar except it has an additional environment that assigns value of the carrier to variables. 
+    \item \emph{Simplification via rewriting}: Given a set of equations, each represented as \lstmath{(X,L,R)}, where \lstmath{X} is a set of variables, \lstmath{L} and \lstmath{R} are terms of the language, \lstmath{L} is the term on the left of the equation, and \lstmath{R} is the term on the right side. By fixing the set of variables, we can represent equations as  (L,R). Each equation represented in this form gives rise to two rewrite rules \lstmath{1) L $\ \Rightarrow\ $ R} and \lstmath{2) R $\ \Rightarrow\ $ L}. Any of these can result in rewriting systems, but when simplifying one need to define an ordering relation, which is a preorder (reflexive, transitive relation) that decides if a term is \emph{simpler} than another. When having the equations and the ordering relation, a simplifier can be defined. 
     \item \emph{Equivalence of terms}: two terms can be denoted equal in one or more of the following cases 
     \begin{itemize}
         \item Evaluation of the two terms yields the same value. 
         \item Simplification of the two terms yield the same term. 
         \item The two terms are structurally identical, i.e.: they have the same syntax tree. 
     \end{itemize}
-    \item A \emph{printing} function similar to the show function in haskell. 
+%    \item A \emph{printing} function similar to the show function in Haskell. 
   %  \item Applying functors to terms: 
-    \item \emph{Setters} and \emph{getters} for constructors of data types, similar to Haskell lenses. 
+   % \item \emph{Setters} and \emph{getters} for constructors of data types, similar to Haskell lenses. 
 \end{itemize}
 
 

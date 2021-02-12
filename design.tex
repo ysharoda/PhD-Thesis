@@ -14,7 +14,7 @@ Informally, this means that the theory of \lstmath{Monoid} can be constructed by
 
 The theories resulting from the flattener are used to compute some universal algebra constructions that are also part of algebra libraries. Chapter~\ref{ch:redundancy} shows examples of homomorphisms, product algebra and term languages provided by library developers. These and more can be generated based on their definitions from universal algebra. The \emph{generator} does that by manipulating the  components of the theories. We discuss the generator in Chapter~\ref{ch:generation}. 
 
-The flattener and generator deal with mathematical definitions while keeping {system-specific} details to a minimal. In order to make the constructions more useful, the \emph{exporter} makes them available in feature-rich systems, like Agda and Lean. We discuss the exporter in Chapter~\ref{ch:export}. 
+The flattener and generator deal with mathematical definitions while keeping {system-specific} details to a minimum. In order to make the constructions more useful, the \emph{exporter} makes them available in feature-rich systems, like Agda and Lean. We discuss the exporter in Chapter~\ref{ch:export}. 
 
 Figure~\ref{fig:staged-interpreter} describes the $3$-stage processing that a theory expression goes through. This process leads to the generation of all the constructions\footnote{The generated constructions can be found at:~\url{https://github.com/ysharoda/Deriving-Definitions/tree/master/Library/generated}.} described in Appendix~\ref{appendix:generatedTog} in Tog, Agda, and Lean. 
 \begin{figure}

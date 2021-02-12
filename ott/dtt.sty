@@ -35,16 +35,16 @@
 \ottfirstprodline{|}{\ottkw{x}}{}{}{}{} \mbox{variable} \ottprodnewline
 \ottprodline{|}{\ottsym{\mbox{$\lambda{}$}(x}  \ottsym{:}  \ottsym{T)}  \ottsym{.}  \ottnt{t}}{}{}{}{} \mbox{abstraction} \ottprodnewline
 \ottprodline{|}{\ottnt{t} \, \ottnt{t}}{}{}{}{} \mbox{application} \ottprodnewline
-\ottprodline{|}{\ottsym{(t,}  \ottnt{t}  \ottsym{:} \, \ottkw{\mbox{$\Sigma{}$}} \, \ottsym{(x}  \ottsym{:}  \ottsym{T)}  \ottsym{.}  \ottsym{T)}}{}{}{}{} \mbox{typed pair} \ottprodnewline
+\ottprodline{|}{\ottsym{(t}  \ottnt{,} \ottsym{t)}}{}{}{}{} \mbox{typed pair} \ottprodnewline %  \ottsym{:} \, \ottkw{\mbox{$\Sigma{}$}} \, \ottsym{x}  \ottsym{:}  \ottsym{T}  \ottsym{.}  \ottsym{T')}}{}{}{}{} \mbox{typed pair} \ottprodnewline
 \ottprodline{|}{\ottsym{t.1}}{}{}{}{} \mbox{first projection} \ottprodnewline
 \ottprodline{|}{\ottsym{t.2}}{}{}{}{} \mbox{second projection} } 
 
 \newcommand{\ottT}{
 \ottrulehead{\ottnt{T}}{::=}{\mbox{types:}} \ottprodnewline
 \ottfirstprodline{|}{\ottkw{X}}{}{}{}{} \mbox{type/ family variable} \ottprodnewline
-\ottprodline{|}{\ottkw{\mbox{$\Pi{}$}} \, \ottkw{x} \, \ottsym{:}  \ottnt{T}  \ottsym{.}  \ottnt{T'}}{}{}{}{} \mbox{dependent product type} \ottprodnewline
+\ottprodline{|}{\ottkw{\mbox{$\Pi{}$}} \, \ottkw{x} \, \ottsym{:}  \ottnt{T}  \ottsym{.}  \ottnt{T}}{}{}{}{} \mbox{dependent product type} \ottprodnewline
 \ottprodline{|}{\ottnt{T} \, \ottnt{t}}{}{}{}{} \mbox{type family application} \ottprodnewline
-\ottprodline{|}{\ottkw{\mbox{$\Sigma{}$}} \, \ottkw{x} \, \ottsym{:}  \ottnt{T}  \ottsym{.}  \ottnt{T'}}{}{}{}{} \mbox{dependent sum type} }
+\ottprodline{|}{\ottkw{\mbox{$\Sigma{}$}} \, \ottkw{x} \, \ottsym{:}  \ottnt{T}  \ottsym{.}  \ottnt{T}}{}{}{}{} \mbox{dependent sum type} }
 
 \newcommand{\ottK}{
 \ottrulehead{\ottnt{K}}{::=}{\mbox{kinds:}}\ottprodnewline

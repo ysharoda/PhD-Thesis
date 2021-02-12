@@ -4,8 +4,8 @@
 
 %We discuss our implementation of the combinators in Section~\ref{sec:lib_implementation}. 
 
-The combinators from~\cite{carette2018building} has been implemented in~\cite{cicm2019diagrams, TPCProto, meta-prim-blog}. With the exception of~\cite{cicm2019diagrams}, the implementations and the associated libraries did not emphasize the morphisms in the way presented in~\cite{carette2018building} and summarized in the previous chapter. Instead, they based their computation of pushout on theories using same-name-same-thing approach, which makes errors like the one in Figure~\ref{fig:casl_expr} go undetected.  
-This approach also computes results for expressions that should not be meaningful in the language of combinators presented in~\cite{carette2018building}. Consider the following expression
+The combinators from~\cite{carette2018building} has been implemented in~\cite{cicm2019diagrams, TPCProto, meta-prim-blog}. With the exception of~\cite{cicm2019diagrams}, the implementations and the associated libraries did not emphasize the morphisms in the way presented in~\cite{carette2018building} and summarized in the previous chapter. Instead, different theories are combined using same-name-same-thing approach, which makes problems like the one in Figure~\ref{fig:casl_expr} go undetected.  
+This approach also computes results for expressions that should not be meaningful in the language of combinators presented in~\cite{carette2018building}. Consider the following expression: 
 \begin{togcode}
 SemiRng = combine AdditiveCommutativeMonoid Semigroup Ringoid
           over RingoidSig
@@ -75,7 +75,7 @@ Although one can declare a theory with a list of declarations using the \lstmath
 \label{subsec:theoriesMorphisms}
 In Chapter~\ref{ch:library}, we described the library we are building. This library is the output of the flattener. In Section~\ref{sec:impl:expressions}, we introduce the theory expressions we need to generate this library. These expressions are the inputs to the flattener. In the sequel of this chapter, we describe the implementation of the flattener that reads those theory expressions and generates the graph. 
 
-The graph consists of theories and morphisms. In Section~\ref{sec:impl:Theories} we describe theories and morphisms, which are the basic components of the graph. We use them to define the theory graph data structure in Section~\ref{subsec:graph}, as well as the definition of a library. Our Implementation of the combinators that adds theories and morphisms in the graph are described in Section~\ref{subsec:combinatorsImpl}. 
+The graph consists of theories and morphisms. In Section~\ref{sec:impl:Theories} we describe theories and morphisms, which are the basic components of the graph. We use them to define the theory graph data structure in Section~\ref{subsec:graph}, as well as the definition of a library. The combinators add the theories and morphisms to the graph. Their implementation is described in Section~\ref{subsec:combinatorsImpl}. 
 
 \subsection{Theories and Morphisms}
 \label{sec:impl:Theories}
@@ -94,7 +94,7 @@ data GView  = GView {
   target  :: GTheory,
   rename  :: Rename }  
 \end{hscode}
-\noindent where \lstmath{type Rename = Map.Map Name_ Name_} is the mapping function. 
+\noindent Here \lstmath{type Rename = Map.Map Name_ Name_} is the type of mapping functions. 
 
 \subsection{Theory Graph Structure}
 \label{subsec:graph}
@@ -152,7 +152,7 @@ theory nm cList =
 
 \subsubsection{Theory Expressions}
 The syntax for the theory expression is introduced in Section~\ref{subsec:overPart}. We now discuss their implementation. 
-We start with the function \lstmath{updateGraph} which adds theories and morphisms to the graph, assuming they already have been computed by the combinator
+We start with the function \lstmath{updateGraph} which adds theories and morphisms to the graph:  
 \begin{hscode}
 updateGraph ::   Name_ -> Either GView PushOut -> TGraph -> TGraph
 updateGraph nm (Left view) =

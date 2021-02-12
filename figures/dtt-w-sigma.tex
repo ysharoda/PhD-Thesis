@@ -6,7 +6,7 @@
         \]
         \[ \Gamma \vdash S : * \qquad \Gamma, x : S \vdash t : T 
         \justifies 
-        \Gamma \vdash \lambda x : S \cdot t : \Pi x : S \cdot T 
+        \Gamma \vdash (\lambda x : S \cdot t) : \Pi x : S \cdot T 
         \]
         \[ \Gamma \vdash t_1 : \Pi x : S \cdot T \qquad \Gamma \vdash t_2 : S 
         \justifies 
@@ -19,7 +19,7 @@
         \[ \Gamma \vdash \Sigma x : S \cdot T : * \qquad 
             \Gamma \vdash t_1 : S \qquad  \Gamma \vdash t_2 : T[x \mapsto t_1] 
         \justifies 
-        \Gamma \vdash (t_1, t_2 : \Sigma x : S \cdot T) : \Sigma x : S \cdot T 
+        \Gamma \vdash (t_1, t_2) : \Sigma x : S \cdot T 
         \] 
         \[ \Gamma \vdash t : \Sigma x : S \cdot T 
         \justifies 

@@ -92,7 +92,7 @@ According to the type \lstmath{Decl}, modules can import and open other modules,
 
 Parameters to modules, records, and datatypes are represented by the \lstmath{Params} type. A single parameter has type \lstmath{Binding} and can be declared implicit by using the constructor \lstmath{HBind}. 
 
-A record field and a datatype constructor are both of type \lstmath{Constr}, each having a name and a type expression \lstmath{Expr}. Dependent types are created with the \lstmath{Pi} constructor. Function types are curried and represented with the \lstmath{Fun} constructor. Axioms that are equations are represented with \lstmath{Eq} constructor. Type and function applications are created using the \lstmath{App} constructor. If a type has no arguments, then the \lstmath{Id} constructor is used to refer to it by name. 
+A record field and a datatype constructor are both of type \lstmath{Constr}, each having a name and a type expression \lstmath{Expr}. Dependent types are created with the \lstmath{Pi} constructor. Function types are curried and represented with the \lstmath{Fun} constructor. Axioms that are equations are represented with \lstmath{Eq} constructor. Type and function applications are created using the \lstmath{App} constructor. The \lstmath{Id} constructor is used for $0$-ary types and functions, i.e.: If \lstmath{q : QName}, then \lstmath{q} is not a type, but \lstmath{Id q} is.
 
 To perform pattern matching, the \lstmath{Pattern} type is used. Matching with a $0$-ary constructor is done using \lstmath{IdP}. If the constructor takes parameters, then \lstmath{ConP} is used. \lstmath{HideP} represents pattern matching on implicit arguments and \lstmath{EmptyP} represents the don't care \lstmath{$\_$} character. 
 
