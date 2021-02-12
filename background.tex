@@ -6,7 +6,7 @@ Our ideas and implementation are based on dependent type theory (DTT). It is the
 
 Part of our work is building a library of axiomatic theories. The library is organized as a theory graph, in which theories are connected via morphisms. We introduce morphisms in Section~\ref{sec:background:morphisms} and discuss theory graphs and different strategies for building them in Section~\ref{sec:background:theorygraph}. 
 To build the library we use combinators motivated by category theory, so we give a brief introduction for that in Section~\ref{sec:categoryTh}. 
-Two of the constructions we generate are not typically defined within universal algebra texts. These are relational interpretations and staged terms, used in multi-staged programming. We give details on them in Sections~\ref{sec:background:relInterp} and~\ref{sec:background:msp}, respectively. 
+Two of the constructions we generate are not typically defined within universal algebra texts. These are relational interpretations and staged terms, used in multi-staged programming. We give details on these in Sections~\ref{sec:background:relInterp} and~\ref{sec:background:msp}, respectively. 
 
 \section{Dependent Type Theory}
 \label{subsec:background:dtt}
@@ -37,10 +37,10 @@ Figures~\ref{fig:dttGrammar} and~\ref{fig:dtt-w-sigma} shows the grammar and typ
 \input{figures/dtt-w-sigma.tex}
 
 \paragraph{$\Sigma$-types.}
-Types of dependent pairs, in which the second element depends on value of the first one, are referred to as $\Sigma$-types. The type 
+Types of dependent pairs, in which the type of the second element depends on value of the first one, are referred to as $\Sigma$-types. For example, 
 %\sigmatype{n}{$\ \mathbb{N}\ $}{Vec A n}} 
 \lstmath{$\Sigma\ $ n : $\ \mathbb{N}\ \cdot\ $ Vec A n} 
-refer to a pair that contains the value of \lstmath{n : $\;\mathbb{N}$} in the first position and a vector of length \lstmath{n} in the second one. 
+refers to the type of a pair that contains the value of \lstmath{n : $\;\mathbb{N}$} in the first position and a vector of length \lstmath{n} in the second one. 
 
 \paragraph{Telescopes.}
 The concept of $\Sigma$ types is generalized into that of \emph{telescopes}, or equivalently,  \lstmath{dependent-type records}~\cite{pollack2002dependently}. A telescope $\mathbb{T}$ is defined as 
@@ -128,10 +128,10 @@ $$
     \begin{proofrules}
         \[ \ \justifies \varnothing \ \wfctx \]
         \[ \context{\Gamma}\ \wfctx \qquad \sigma \notin \syms{\context{\Gamma}}
-        \qquad \context{\Gamma} \vdash \kappa : \Box \justifies
+        \qquad \context{\Gamma} \vdash \kappa : * \justifies
         (\context{\Gamma}\ ;\ \sigma : \kappa)\ \wfctx \]
         \[ \context{\Gamma}\ \wfctx \qquad x\notin \syms{\context{\Gamma}}
-        \qquad \context{\Gamma} \vdash \sigma : \kappa : \Box \justifies
+        \qquad \context{\Gamma} \vdash \sigma : \kappa : * \justifies
         (\context{\Gamma}\ ;\ x : \sigma)\ \wfctx \]
     \end{proofrules}
     \caption{Formation rules for contexts as given in~\cite{carette2018building}}
@@ -143,7 +143,7 @@ $$
 Morphisms are used to capture the structure of mathematics, by describing how theories are related to each other. In mathematical texts, a theorem proved for an arbitrary \lstmath{Monoid} can be used when considering an arbitrary \lstmath{Group} without extra work. Formally, this can be done if a meaning preserving morphism between \lstmath{Monoid} and \lstmath{Group} exists. The morphism specifies how results in \lstmath{Monoid} can be interpreted in \lstmath{Group}. 
 
 A morphism $\arrow{[v]}{\Gamma}{\Delta}$ consist of a list of assignments $[v]$, a source theory \lstmath{$\Gamma$}, and a target theory \lstmath{$\Delta$}. 
-$[v]$ assigns to every symbol\footnote{The symbols of a theory are the names of its declarations.} in $\Gamma$ an expression of $\Delta$. A term \lstmath{t} in the language of $\Gamma$ can be translated into a term \lstmath{t$^\prime$} in the language of $\Delta$ using substitution induced by the assignment $[v]$, such that  \lstmath{t$^\prime$ = t$[v]$}. Using the morphism 
+$[v]$ assigns to every symbol\footnote{The symbols of a theory are the names of its declarations.} $x : \sigma$ in $\Gamma$ a term $r : \sigma[v]$ in $\Delta$. A term \lstmath{t} in the language of $\Gamma$ can be translated into a term \lstmath{t$^\prime$} in the language of $\Delta$ using substitution induced by the assignment $[v]$, such that  \lstmath{t$^\prime$ = t$[v]$}. Using the morphism 
 \lstmath{[op $\ \mapsto\ $ + ; e $\ \mapsto\ $ 0] : Monoid $\;\to\;$ AdditiveMonoid}
 we are able to interpret the expression \lstmath{(op e x)} in \lstmath{Monoid} as \lstmath{(+ 0 x)} in \lstmath{AdditiveMonoid} using substitution. 
 %For example, a morphism from \lstmath{Monoid} to \lstmath{AdditiveMonoid} contains the assignments \lstmath{op to +} and \lstmath{e to 0} 
@@ -205,10 +205,10 @@ We refer to an embedding morphism as $\widetilde{m}$, and therefore identity mor
 
 \subsection{General Morphism}
 \label{sec:generalmorph}
-A morphism $\arrow{[v]}{\Gamma}{\Delta}$ is a general morphism if it maps symbols $x \in \syms{\Gamma}$ to terms $r \in \Delta$. 
-
+A morphism in its general form as defined in the beginning of this section. 
+%$\arrow{[v]}{\Gamma}{\Delta}$ is a general morphism if it maps symbols $x \in \syms{\Gamma}$ to terms $r \in \Delta$. 
 An example is a morphism that flips a binary operation, i.e.: maps \lstmath{op x y} to \lstmath{op y x}
-\begin{equation}\label{eq:flipmagmaview}
+\begin{equation*}
 \begin{tikzpicture}[node distance=9.0cm, auto,baseline=(current bounding box.center)]
 \node (P) {$
     \begin{thyex}
@@ -223,7 +223,7 @@ An example is a morphism that flips a binary operation, i.e.: maps \lstmath{op x
 \draw[->] (P) to node {$[A \mapsto\ A,
     op \mapsto\ \mathsf{flip}\ op]$} (B);
 \end{tikzpicture}
-\end{equation}
+\end{equation*}
 
 %\section{Substitution}
 %Morphisms acts on theories by substitution, i.e.: Given a morphism $[v] : \Gamma \to \Delta$, by performing the substitution of mappings in $[v]$ to symbols in $\Gamma$, we get the presentation $\Delta$. This substitution is written as $\Gamma[v]$. 
@@ -276,7 +276,7 @@ theory Unital = {
 \end{tabular}
 
 Defining \lstmath{Unital} this way overlooks that in some cases one might want to define a theory to describe structures with a carrier and a binary operation on it that has only a right unit, like a theory with Integers as carrier and subtraction as the only binary operation. 
-One will then need to add a new theory that is similar to \lstmath{Unital} without the \lstmath{lunit} declaration. Any theorems proved in the context of \lstmath{Unital} cannot be used, even if it only depends on \lstmath{runit}. 
+One will then need to add a new theory that is similar to \lstmath{Unital} without the \lstmath{lunit} declaration. Theorems proved in the context of \lstmath{Unital} cannot be used, even if they only depends on \lstmath{runit}. 
 
 Using tiny theories, one would first define a \lstmath{LeftUnital} theory adding the \lstmath{lunit} axiom to \lstmath{PointedMagma}, a \lstmath{RightUnital} theory adding \lstmath{runit} axiom, and the theory of \lstmath{Unital} would be connected to both \lstmath{LeftUnital} and \lstmath{RightUnital}, creating more connections and therefore, allowing more reuse of results. Systematically using tiny theories to develop a large library leads to the need for support to diamond structures, which we discuss in Chapter~\ref{ch:library} based on the work in \cite{carette2018building}.  
 
@@ -289,16 +289,19 @@ While set theory has elements of sets as the main concept, category theory is bu
 A category $\mathcal{C}$ consists of 
 \begin{itemize}
 \item A collection of objects, $\syms{\mathcal{C}}$
-\item A collection of morphisms between two objects. A morphism between objects $\Gamma$ and $\Delta$ is represented as $u : \Gamma \to \Delta$.  
-\item Operations assigning every morphism to its domain and codomain 
-\item A composition function $\cdot$ assigning to each pair of morphisms  $u : \Gamma \to \Delta$ and $v : \Delta \to \Phi$, a morphism $u \cdot v : \Gamma \to \Phi$, such that 
-\[ u \cdot (v \cdot w) = (u \cdot v) \cdot w \]
+\item For any two objects, a collection of morphisms between them. A morphism between objects $\Gamma$ and $\Delta$ is presented as $u : \Gamma \to \Delta$.  
+\item Operations assigning to every morphism its domain and codomain 
+\item A composition function $\cdot$ assigning to each pair of morphisms  $u : \Gamma \to \Delta$ and $v : \Delta \to \Phi$, a morphism $v \cdot u : \Gamma \to \Phi$, such that for any arrow $w : \Phi \to \Omega$
+\[ w \cdot (v \cdot u) = (w \cdot v) \cdot u \]
 i.e. ($\cdot$) is associative. 
 \item For every object $\Gamma$ in $\mathcal{C}$, an identity morphism $id_\Gamma : \Gamma \to \Gamma$, such that for $u : \Gamma \to \Delta$ 
 \[ id_\Gamma \cdot u = u \cdot id_\Delta = u \]
 i.e. $id_\Gamma$ is a left unit for ($\cdot$) and $id_\Delta$ is a right unit. 
 \end{itemize}
 
+A diagram in a category $\mathcal{C}$ is a graph homomorphism between collection of vertices and directed edges (the shape of the diagram) to objects and morphisms of $\mathcal{C}$. 
+%Consistent labelling means that arrows of the category are represented by a directed edges whose source and target nodes have the same labels as the the objects of the category. 
+% where by "consistency" we mean that if an edge in the diagram is labelled with the arrow f and f has domain A and codomain B, then the endpoints of this edge must be labelled with A and B. 
 Finite categories can be represented diagrammatically as in Figure~\ref{fig:diagram}. 
 \begin{figure}
 \centering{
@@ -306,10 +309,10 @@ Finite categories can be represented diagrammatically as in Figure~\ref{fig:diag
  & \Gamma \arrow[loop] \arrow[dr,"k"]& \\
 \Delta \arrow[loop left] \arrow[rr,"i"] \arrow[ur,"j"] & & \Phi \arrow[loop right] 
 \end{tikzcd}}
-\caption{A diagram in a category with at least $3$ objects}
+\caption{A diagrammatic representation of a category}
 \label{fig:diagram}
 \end{figure}
-Such a diagram is said to commute if for every pair of vertices, $\Gamma$ and $\Delta$, all paths from $\Gamma$ to $\Delta$ are equal, i.e.: $i = j \cdot k$. 
+A diagram is said to commute if for every pair of vertices, $\Gamma$ and $\Delta$, all paths from $\Gamma$ to $\Delta$ are equal, i.e.: compose to the same arrow. 
 
 In the following we introduce two concepts related to categories that we use in Chapter~\ref{ch:library}. These are pushouts and colimits. \cite{nlab:colimit} gives an intuition of what a colimit is as 
 \begin{quote}
@@ -328,7 +331,7 @@ The formal definitions of the two constructions are given as follows:
 Colimits are defined in terms of cocones. The definitions we present here are adapted from~\cite{sannella2012foundations}. 
 
 A cocone over a diagram $D$ is an object $\Phi$ and a family of morphisms $u_0 : \Delta_0 \to \Phi, ..., u_{n} : \Delta_{n} \to \Phi$, 
-where $\Delta_0\ ...\ \Delta_{n}$ are the objects in $D$, such that for every morphism $v : \Delta_i \to \Delta_j$ in $D$: $v \cdot u_j = u_i$, i.e. the following diagram commutes 
+where $\Delta_0\ ...\ \Delta_{n}$ are the objects in $D$, such that for every morphism $v : \Delta_i \to \Delta_j$ in $D$: $u_j \cdot v = u_i$, i.e. the following diagram commutes 
 \begin{tikzcd} 
 & \Phi & \\ 
 \Delta_i \arrow[ur,"u_i"] \arrow[rr,"v"] & & \Delta_j \arrow[ul,"u_j"] 
@@ -347,16 +350,21 @@ $\langle u_i^{\prime} : \Phi^{\prime} \to \Phi \rangle_{i\leq n}$ there is a uni
 \paragraph{Pushouts.}
 The pushout is the colimit of a diagram $D$ that has exactly $3$ objects and $2$ morphisms. The morphisms need to have the same source. For a pair of morphisms $u_1 : \Gamma \to \Delta_1$ and $u_2 : \Gamma \to \Delta_2$, the pushout is an object $\Phi$ and a pair of morphisms $v_1 : \Delta_1 \to \Phi$ and $v_2 : \Delta_2 \to \Phi$ such that 
 \begin{itemize}
-\item $u_1 \cdot v_1 = u_2 \cdot v_2 $
+\item $v_1 \cdot u_1 = v_2 \cdot u_2 $
 \item for morphisms $w_1 : \Delta_1 \to \Omega$ and $w_2 : \Delta_2 \to \Omega$, there is a unique $w : \Phi \to \Omega$, such that 
-$v_1 \cdot w = w_1$ and $v_2 \cdot w = w_2$
+\begin{itemize}
+\item $w \cdot v_1 = w_1$
+\item $w \cdot v_2 = w_2$
+\item $w_1 \cdot u_1 = w_2 \cdot u_2$ 
+\end{itemize}
+
 \end{itemize}
 The definition of the pushout is illustrated in Figure~\ref{fig:pushoutDef}. 
 \begin{figure}
 \centering{
 \begin{tikzcd} 
 \Gamma \arrow["u_1",d] \arrow["u_2",rr]& & \Delta_2 \arrow["v_2",d] \arrow["w_2",rdd, bend left] \\
-\Delta_1 \arrow["v_1",rr] \arrow["w_1",rrrd, bend right]& & \Phi \arrow[dashed, rd] \\ 
+\Delta_1 \arrow["v_1",rr] \arrow["w_1",rrrd, bend right]& & \Phi \arrow["w",dashed, rd] \\ 
 & & & \Omega
 \end{tikzcd}} 
 \caption{Diagram illustrating the definition of a pushout}
@@ -448,14 +456,14 @@ CodeRep : (A : Set) (s : Stage) -> Set
   CodeRep A s0 = A
   CodeRep A s1 = Wrap (CodeRep A s0)
 \end{togcode} 
-We also add a flag indicating whether the quoted code represent an expression (\lstmath{Expr}) or a literal, constant or variable (\lstmath{Const}).  
+We also add a flag indicating whether the quoted code represents an expression (\lstmath{Expr}) or a literal, a constant or a variable (\lstmath{Const}).  
 \begin{togcode} 
 data Choice : Set where
   Expr : Choice
   Const : Choice
 \end{togcode} 
 
-There are $3$ main applications to staging; generating well-typed code as in \mbox{MetaOcaml}~\cite{taha1999multi}, removing abstraction overhead introduced by generic programming~\cite{yallop2016StagingGeneric, carette2011mspFunctorsMonads, carette2011generative}, and developing domain specific languages~\cite{sheard2000stagingDSL}. MetaOcaml and Haskell templates provide staging constructs under the names \emph{quote} and \emph{eval} instead of \emph{Now} and \emph{Later}. In logical reasoning the same ideas are used for reflection, as in~\cite{farmer2013quoteEval}.  
+Staging has $3$ main applications; generating well-typed code as in \mbox{MetaOcaml}~\cite{taha1999multi}, removing abstraction overhead introduced by generic programming~\cite{yallop2016StagingGeneric, carette2011mspFunctorsMonads, carette2011generative}, and developing domain specific languages~\cite{sheard2000stagingDSL}. MetaOcaml and Haskell templates provide staging constructs under the names \emph{quote} and \emph{eval} instead of \emph{Now} and \emph{Later}. In logical reasoning the same ideas are used for reflection, as in~\cite{farmer2013quoteEval}.  
 
 
 %MSP gives the developers of the meta program the control over it by annotating which pieces can be evaluated at runtime\ednote{better writing}.  
