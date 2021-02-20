@@ -1,0 +1,10 @@
+        \begin{minted}[escapeinside=||,mathescape=true,fontsize=\tiny]{agda}
+theory Monoid { 
+  A  : type 
+  e  : A
+  op : A |$\to$| A |$\to$| A
+  lunit : {x : A} |$\to$| op e x = x 
+  runit : {x : A} |$\to$| op x e = x 
+  assoc : {x y z : A} |$\to$| op x (op y z) = op (op x y) z
+}
+         \end{minted} 

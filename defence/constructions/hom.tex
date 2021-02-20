@@ -1,0 +1,9 @@
+        \begin{minted}[escapeinside=||,mathescape=true,fontsize=\tiny]{agda}
+theory MonoidHom { 
+  M1, M2 : Monoid  
+  hom : M1.A |$\to$| M2.A 
+  pres-e : hom (M1.e) = M2.e
+  pres-op : (x y : M1.A) |$\to$| 
+      hom (M1.op x y) = M2.op (hom x) (hom y) 
+}             
+          \end{minted} 

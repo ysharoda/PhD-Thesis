@@ -1,0 +1,24 @@
+\begin{minted}[escapeinside=||,mathescape=true,fontsize=\tiny]{agda}
+theory Homomorphism { 
+  M1, M2 : Monoid  
+  hom : M1.A |$\to$| M2.A 
+  pres-e : hom (M1.e) = M2.e
+  pres-op : (x y : M1.A) |$\to$| 
+      hom (M1.op x y) = M2.op (hom x) (hom y) 
+}            
+theory Isomorphism { 
+  M1, M2 : Monoid  
+  f : Homomorphism M1 M2 
+  g : M2.A |$\to$| M1.A
+  id|$_1$| : {x : M1.A} |$\to$| (g |$\circ$| f.hom) x = x    
+  id|$_2$| : {x : M2.A} |$\to$| (f.hom |$\circ$| g) x = x 
+}        
+theory Endomorphism {
+  M : Monoid 
+  Homomorphism M M 
+}
+theory Automorphism { 
+  M1, M2 : Monoid  
+  Isomorphism M1 M2
+}  
+\end{minted}

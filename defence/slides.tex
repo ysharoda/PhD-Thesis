@@ -21,6 +21,7 @@
 \usepackage{pgf}
 \usepackage{pgfpages} 
 \usepackage{tikz}
+\usetikzlibrary{tikzmark}
 \usepackage{tikz-cd}
 \usetikzlibrary{cd}
 \usepackage{upgreek}
@@ -53,7 +54,7 @@
 %\usepackage{todonotes}
 %\presetkeys{todonotes}{inline}{}
 
-\setlength{\arrayrulewidth}{1mm}
+\setlength{\arrayrulewidth}{0.5mm}
 \setlength{\tabcolsep}{18pt}
 \renewcommand{\arraystretch}{1.5}
 \usepackage{color}
@@ -104,28 +105,41 @@ Jacques Carette and William M. Farmer}
 \frame{\titlepage}
 %\section{Motivation and Problem}
 
-\plain{A large library of Mathematics is \newline
-\textcolor{Orange}{\emph{useful}} but \textcolor{Orange}{\emph{hard to build}}} 
+%\plain{A large library of Mathematics is \newline
+%\textcolor{Orange}{\emph{useful}} but \textcolor{Orange}{\emph{hard to build}}} 
 
 \begin{frame}[fragile] 
+\frametitle{Large Libraries of Mathematics}
 % The quest for a large library of Mathematics
-\begin{center}
-A large library of Mathematics is \textcolor{Orange}{\textbf{useful}} %but hard to build
-\end{center}
-\vfill 
+%\begin{center}
+%A large library of Mathematics is \textcolor{Orange}{\textbf{useful}} %but hard to build
+%\end{center}
+%\vfill 
 \begin{itemize}
 \item QED Manifesto, 1994: 
 \begin{itemize}
 \item One library to formalize all of Mathematics 
 \end{itemize}
-\vspace{0.5cm}
-\item Universal Digital Math Library, 2004: 
+\vspace{0.3cm}
+%\item Universal Digital Math Library, 2004: 
+%\begin{itemize}
+%\item Heterogeneous, Interconnecting libraries.  
+%\end{itemize}
+\pause
+\item Building a library requires: 
 \begin{itemize}
-\item Heterogeneous, Interconnecting libraries.  
+\item Foundation 
+\item Organization Structures 
+\item ... 
+\item Huge amount of knowledge $\Rightarrow$ \textbf{Labour Intensive} 
 \end{itemize}
 \end{itemize}
+\vfill 
+\pause 
+Current Libraries of Mathematics are full of \textcolor{Orange}{\textbf{\emph{redundancy}}}
 \end{frame}
 
+\begin{comment} 
 \begin{frame}[fragile] 
 \begin{center}
 A large library of Mathematics is \textcolor{Orange}{\textbf{hard to build}} 
@@ -142,12 +156,65 @@ A large library of Mathematics is \textcolor{Orange}{\textbf{hard to build}}
 Current Libraries of Mathematics are full of \textcolor{blue}{\emph{redundancy}}
 % Because there is some standard mathematical knowledge that are re-formalized again and again 
 \end{frame}
+\end{comment} 
+
+\begin{comment}
+\begin{frame}
+\frametitle{Monoid Definition} 
+A monoid is a triple $(M,p,1)$ in which: 
+\begin{itemize}
+\item $M$ is a non-empty set. 
+\item $p$ is an associative binary composition (or product) in $M$. 
+\item $1$ is an element of $M$ such that: \\
+$p(1,a)= a = p(a,1)$ for all $a \in M$.
+\end{itemize}
+\end{frame}
+\end{comment}
 
 \begin{frame}[fragile]
 \frametitle{Monoid: One theory, Multiple Representations} 
+\begin{onlyenv}<1>
 \begin{figure}
-  \scalebox{.95}{\input{figures/mon-diff-reps-3-col.tex}}
+  \scalebox{.95}{\input{figures/mon-diff-reps-3-col-0.tex}}
 \end{figure}
+\end{onlyenv}
+\begin{onlyenv}<2>
+\begin{figure}
+  \scalebox{.95}{\input{figures/mon-diff-reps-3-col-1.tex}}
+\end{figure}
+\end{onlyenv}
+\begin{onlyenv}<3>
+\begin{figure}
+  \scalebox{.95}{\input{figures/mon-diff-reps-3-col-2.tex}}
+\end{figure}
+\end{onlyenv}
+\begin{onlyenv}<4>
+\begin{figure}
+  \scalebox{.95}{\input{figures/mon-diff-reps-3-col-3.tex}}
+\end{figure}
+\end{onlyenv}
+\begin{onlyenv}<5>
+\begin{figure}
+  \scalebox{.95}{\input{figures/mon-diff-reps-3-col-3.tex}}
+\end{figure}
+\pause
+Can we abstract over these design decisions? 
+\end{onlyenv}
+\end{frame}
+
+\begin{frame}[fragile] 
+\frametitle{Monoid: One theory, Many Constructions} 
+\begin{columns}
+    \begin{column}{0.45\textwidth}
+\input{constructions/others.tex} 
+     \end{column}
+     \begin{column}{0.45\textwidth} 
+\input{constructions/other2.tex} 
+     \end{column}  
+\end{columns}
+\vspace{0.3cm}      
+\scriptsize
+signature, trivial sub-theory, monomorphisms, epimorphisms, kernel of a homomorphism, composition of morphisms, quotient algebra, staged term language, induction principle, evaluation of terms, simplification of terms, equivelance of terms, printers, ... 
 \end{frame}
 
 \begin{frame}[fragile]
@@ -155,32 +222,11 @@ Current Libraries of Mathematics are full of \textcolor{blue}{\emph{redundancy}}
 % based on commit: 78d5bd370a8f7824aee1f46fc6a32d6df9fc59c4
 \begin{columns}
     \begin{column}{0.45\textwidth}
-        \begin{minted}[escapeinside=||,mathescape=true,fontsize=\tiny]{agda}
-theory Monoid { 
-  A  : type 
-  e  : A
-  op : A |$\to$| A |$\to$| A
-  lunit : {x : A} |$\to$| op e x = x 
-  runit : {x : A} |$\to$| op x e = x 
-  assoc : {x y z : A} |$\to$| op x (op y z) = op (op x y) z
-}
-         \end{minted} 
+\input{constructions/monoid.tex}
 \vspace{0.65cm}
-        \begin{minted}[escapeinside=||,mathescape=true,fontsize=\tiny]{agda}
-theory MonoidHom { 
-  M1, M2 : Monoid  
-  hom : M1.A |$\to$| M2.A 
-  pres-e : hom (M1.e) = M2.e
-  pres-op : (x y : M1.A) |$\to$| 
-      hom (M1.op x y) = M2.op (hom x) (hom y) 
-}             
-          \end{minted} 
+\input{constructions/hom.tex}
 \vspace{0.35cm}          
-\begin{minted}[escapeinside=||,mathescape=true,fontsize=\tiny]{agda}  
-type MonoidExpr := 
-  e   : MonoidExpr 
-  op  : MonoidExpr |$\to$| MonoidExpr |$\to$| MonoidExpr
-\end{minted}            
+\input{constructions/termlang.tex}
      \end{column} 
      \begin{column}{0.45\textwidth}
      
@@ -216,28 +262,44 @@ type GroupExpr :=
 \end{minted}           
 \end{column}
 \end{columns} 
+Can we make use of these patterns? 
 \end{frame}
 
 \begin{frame}[fragile]
 \frametitle{Universal Algebra}  
-A theory: 
+\begin{columns}
+\begin{column}{0.2\textwidth}
+A theory: \newline 
 \[\Gamma = (\mathcal{S},\mathcal{F},\mathcal{E}) \]
-
-%\vspace{0.5mm}
+\end{column}
+\begin{column}{0.45\textwidth} 
+\begin{itemize}
+\item[-] $\mathcal{S}$: a sort
+\item[-] $\mathcal{F}$: set of function symbols
+\item[-] $\mathcal{E}$: set of axioms
+\end{itemize}
+\end{column} 
+\end{columns} 
+\pause
+\vspace{0.5cm}
 \begin{itemize}
 \item A Homomorphism between two $\Gamma$-Algebra:  
-\begin{enumerate}
-\item hom : $\mathcal{S}_1 \to \mathcal{S}_2$ 
-\item For every \lstmath{op $\ \in \mathcal{F}$}. 
-\begin{lstlisting}[mathescape]
-hom (op$_1$ x$_1$ .. x$_n$) = op$_2$ (hom x$_1$) .. (hom x$_n$)
-\end{lstlisting}
-\end{enumerate}
-
-\item The closed term language \lstmath{L} induced by $\Gamma$ is the set of terms defined inductively includes 
 \begin{itemize}
-\item all constants belong of $\Gamma$  
-\item a term \lstmath{t$_{\texttt{op}}$ t$_1 \cdots$ t$_n$} for every function symbol \lstmath{op : $\ \sort \to ... \to \sort $} of arity $n$, such that  \lstmath{t$_1$ $\ \cdots\ $ t$_n$} belongs to \lstmath{L}. 
+\item hom : $\mathcal{S}_1 \to \mathcal{S}_2$ 
+\item For every \lstmath{op $\ \in \mathcal{F}$}: \newline  
+%\begin{lstlisting}[mathescape]
+\lstmath{hom (op$_1\ $ x$_1\ $ ... x$_n$) = op$_2\ $ (hom x$_1$)$\ $... (hom x$_n$)}
+%\end{lstlisting}
+\end{itemize}
+\vspace{0.5cm}
+\item The closed term language $L$ induced by $\Gamma$ is the set of: 
+\begin{itemize}
+\item all constants of $\Gamma$  
+\item For every \lstmath{op $\ \in \mathcal{F}$}, with arity $> 0$: \newline 
+%\begin{lstlisting}[mathescape]
+\lstmath{t$_{\texttt{op}}\ $ t$_1\ \cdots\ $ t$_n$}, such that \lstmath{t$_1$ $\ \cdots\ $ t$_n$} are terms of $L$.
+%\end{lstlisting}
+%\noindent such that  \lstmath{t$_1$ $\ \cdots\ $ t$_n$} are terms of \lstmath{L}. 
 \end{itemize}
 
 \end{itemize}
@@ -247,10 +309,11 @@ hom (op$_1$ x$_1$ .. x$_n$) = op$_2$ (hom x$_1$) .. (hom x$_n$)
 
 \begin{frame}[fragile] 
 \frametitle{Redundancies in Libraries} 
-\begin{onlyenv}<1>
-\textcolor{Orange}{Agda}
+\begin{columns}
+\begin{column}{0.45\textwidth}
+\textcolor{Orange}{\textbf{Agda}}
 \begin{table}
-\begin{adjustbox}{width=0.5\columnwidth}
+\begin{adjustbox}{width=0.9\columnwidth}
 \begin{tabular}{| c || c |}
 %\multicolumn{2}{c}{\textbf{Agda Standard Library}} \\ \hline 
 \hline 
@@ -268,11 +331,12 @@ Total & 47 \\ \hline
 \end{tabular}
 \end{adjustbox}
 \end{table}
-\end{onlyenv} 
-\begin{onlyenv}<2>%{0.45\textwidth}
-\textcolor{Orange}{Lean}
+
+\end{column} 
+\begin{column}{0.45\textwidth}
+\textcolor{Orange}{\textbf{Lean}}
 \begin{table}
-\begin{adjustbox}{width=0.5\columnwidth}
+\begin{adjustbox}{width=0.9\columnwidth}
 \begin{tabular}{| c || c |}
 %\multicolumn{2}{c}{\textbf{Agda Standard Library}} \\ \hline 
 \hline 
@@ -286,8 +350,22 @@ Total & 38 \\ \hline
 \end{tabular}
 \end{adjustbox}
 \end{table} 
-\end{onlyenv} 
-%\end{columns}
+\end{column} 
+\end{columns}
+\begin{itemize}
+\item $> 20$ algebraic structures in each library.
+% 24 for Agda: Magma, CommMagma, SelectiveMagma, Band, CommSemigroup, Monoid, NearSemiring, Semiring, Ring, Lattice, Semigroup, Semilattice, CommutativeMonoid, AbelianGroup, Group, BoundLattice, DistributiveLattice, SemiringWithoutOne, CommSemiringWithoutOne, SemiringWithoutAnhiliatingZero, CommSemiring, CancellativeCommSemiring, CommRing, BooleanAlgebra  
+% 22 for Lean  
+% \item At least $22$ algebraic structures in Mathlib. 
+\pause  
+\item $>200$ algebraic structures in our library.
+\item $>300$ algebraic structures collected by Peter Jipsen.\only<+->\footnote{source:~http://math.chapman.edu/~jipsen/structures/doku.php}
+%\item Many more algebraic structures 
+%\begin{itemize}
+%\item[-] $>200$ algebraic structures in our library.
+%\item[-] $>300$ algebraic structures collected by Peter Jipsen.\footnote{source:~http://math.chapman.edu/~jipsen/structures/doku.php}
+%\end{itemize}
+\end{itemize}
 \end{frame}
 % 22 definitions of products 
 % 5 definitions of Subtheory 
@@ -302,7 +380,18 @@ Total & 38 \\ \hline
 % -- is_semiring_hom
 % -- is_ring_hom
 
-\plain{Can the uniformity provided by universal algebra be captured by a meta program that generates parts of an algebra library? } 
+\begin{frame}%[standout]
+\vfill 
+\begin{center}
+\Large{\textbf{
+Can the abstractions and uniformity \\
+provided by \textcolor{Orange}{universal algebra} be captured by 
+\textcolor{Orange}{meta-programs} 
+that generate parts of algebra libraries? }}
+\end{center}
+\vfill 
+\end{frame}
+%\plain{Can the abstraction and uniformity provided by universal algebra be captured by a meta program that generates parts of an algebra library? } 
 
 %\section{approach}
 
@@ -322,8 +411,7 @@ data List a = Nil | Cons a (List a)
                     Functor, Generic, Data,         
                     Foldable,Traversable, Lift)
     \end{minted}
-\end{onlyenv}    
-\begin{onlyenv}<3>
+    \vspace{0.5cm}
     \begin{minted}[fontsize=\footnotesize]{haskell}
 data Point = Point { _x :: Double, _y :: Double }
 makeLenses ''Point  
@@ -386,109 +474,128 @@ record Monoid (A : Set) : Set where
 \end{frame}
 
 \begin{frame}[fragile] 
-\frametitle{The Flattener} 
-\begin{center}
-\includegraphics[scale=0.2]{figures/flattener.png}
-\end{center}
-
+\frametitle{The Flattener: Combinators} 
 \textcolor{Orange}{\textbf{Theory Expressions}} \vspace{0.2cm}
 
 \begin{overprint}
 \onslide<1>
-\textbf{Extension}
 \begin{columns}
 \begin{column}{0.45\textwidth}
+\scriptsize{1. Extension}
 \begin{minted}[fontsize=\scriptsize]{agda}
-Pointed = extend Carrier {e : A}
-Magma   = extend Carrier {op : A -> A -> A}
 Semigroup  = extend Magma {assoc: ...}
 \end{minted}
 \end{column}
 \begin{column}{0.45\textwidth}
 
 
-
 {\scriptsize
   \begin{tikzcd}[row sep=2.0em, column sep=2.5em]
-    \verb|Carrier| \arrow[d,hook,blue] \arrow[r,hook,blue] & \verb|Pointed| & \\
-    \verb|Magma| \arrow[d,hook,blue] & & \\
-    \verb|Semigroup| & &
+    \verb|Magma| \arrow[r,hook,blue] & \verb|Semigroup| 
   \end{tikzcd}
 }
 \end{column}
 \end{columns}
 
 \onslide<2>
-\textbf{Combine}
 \begin{columns}
 \begin{column}{0.45\textwidth}
+\scriptsize{1. Extension}
 \begin{minted}[fontsize=\scriptsize]{agda}
-Pointed = extend Carrier {e : A}
-Magma   = extend Carrier {op : A -> A -> A}
-Semigroup    = 
-  extend Magma {assoc: ...}
-PointedMagma = 
-  combine Pointed {} Magma {} 
-  over Carrier
+Semigroup  = extend Magma {assoc: ...}
+\end{minted}
+\vspace{0.3cm}
+\scriptsize{2. Rename}
+\begin{minted}[fontsize=\scriptsize]{agda}
+AdditiveMagma = rename Magma {op to +} 
 \end{minted}
 \end{column}
 \begin{column}{0.45\textwidth}
-
-
-
 {\scriptsize
   \begin{tikzcd}[row sep=2.0em, column sep=2.5em]
-    \verb|Carrier| \arrow[d,hook] \arrow[r,hook] \arrow[dr,hook, blue]& \verb|Pointed| \arrow[d,hook,blue]& \\
-    \verb|Magma| \arrow[d,hook] \arrow[r,hook, blue] & 
-    \verb|PointedMagma|  & \\
-    \verb|Semigroup| && 
+    \verb|Magma| \arrow[r,hook] \arrow[d,mapsto,blue] & \verb|Semigroup| & \\
+    \verb|AdditiveMagma| & &
   \end{tikzcd}
 }
 \end{column}
 \end{columns}
 
 \onslide<3>
-\textbf{Rename}
 \begin{columns}
 \begin{column}{0.45\textwidth}
+\scriptsize{1. Extension}
 \begin{minted}[fontsize=\scriptsize]{agda}
-PointedZero = rename Pointed {e to 0} 
-AdditiveMagma   = rename Magma {op to +} 
+Semigroup  = extend Magma {assoc: ...}
+\end{minted}
+\vspace{0.3cm}
+\scriptsize{2. Rename}
+\begin{minted}[fontsize=\scriptsize]{agda}
+AdditiveMagma = rename Magma {op to +} 
+\end{minted}
+\vspace{0.3cm}
+\scriptsize{3. Combine}
+\begin{minted}[escapeinside=~~,mathescape=true,fontsize=\scriptsize]{agda}
+AddtivieSemigroup = 
+  combine Semigroup {op to +} AdditiveMagma {} 
 \end{minted}
 \end{column}
 \begin{column}{0.45\textwidth}
-
-
-
 {\scriptsize
-  \begin{tikzcd}[row sep=2.0em, column sep=2.5em]
-    \verb|Carrier| \arrow[d,hook] \arrow[r,hook] & \verb|Pointed| \arrow[r,mapsto,blue] & \verb|PointedZero| \\
-    \verb|Magma| \arrow[d,mapsto,blue] & & \\
-    \verb|AdditiveMagma| & &
-  \end{tikzcd}
+\begin{tikzcd}[row sep=2.0em, column sep=2.5em]
+    \verb|Magma| \arrow[r,hook] \arrow[d,mapsto] \arrow[rd, blue] & \verb|Semigroup| \arrow[d,mapsto,blue]  \\
+    \verb|AdditiveMagma| \arrow[r,hook,blue] & \verb|AdditiveSemigroup|
+\end{tikzcd}
 }
 \end{column}
 \end{columns}
 \end{overprint}
 \end{frame}
 
-\begin{frame}[fragile] 
-\frametitle{The Flattener: Combinators}
-{\scriptsize
-  \begin{tikzcd}[row sep=2.0em, column sep=2.5em]
-    \verb|Carrier| \arrow[d,hook] \arrow[r,hook] \arrow[dr,hook]& \verb|Pointed| \arrow[d,hook]& \\
-    \verb|Magma| \arrow[d,hook] \arrow[r,mapsto] \arrow[rd,dotted] & 
-    \verb|AdditiveMagma=(A,+)|  \arrow[d,dotted] & \\
-    \verb|Semigroup=(A,op,assoc)| \arrow[r,dotted] & \verb|??| & 
-  \end{tikzcd}
+
+\begin{frame}[fragile]
+\frametitle{The Flattener: Computing Pushout}
+ A pushout is a $5$-ary operation \hspace{1cm} 
+ {\scriptsize
+\begin{tikzcd}[row sep=2.0em, column sep=2.5em]
+    \Gamma \arrow[r] \arrow[d]  & \Delta \\
+    \Phi & 
+\end{tikzcd}
 }
-\pause 
+% \begin{itemize}
+% \item $3$ theories 
+% \item $2$ morphisms 
+% \end{itemize}
+ \pause 
+ \vspace{1cm}
+\begin{minted}[fontsize=\scriptsize]{agda}
+combine AdditiveMonoid {} Group { ... } 
+combine AdditiveMonoid {} MultMonoid {}  
+\end{minted}
 \vspace{0.5cm}
-\begin{minted}[fontsize=\scriptsize]{agda} 
-AdditiveSemigroup = 
-  combine AdditiveMagma {} Semigroup {op to +}
-  over Magma 
-\end{minted} 
+\begin{columns}
+\begin{column}{0.45\textwidth}
+{\scriptsize
+\begin{tikzcd}[row sep=2.0em, column sep=2.5em]
+    \verb|??| \arrow[r,hook] \arrow[d,mapsto]  & \verb|Group| \\
+    \verb|AdditiveMonoid| & 
+\end{tikzcd}
+}
+\end{column}
+\begin{column}{0.45\textwidth}
+{\scriptsize
+\begin{tikzcd}[row sep=2.0em, column sep=2.5em]
+    \verb|??| \arrow[r,hook] \arrow[d,mapsto]  & \verb|MultMonoid| \\
+    \verb|AdditiveMonoid| & 
+\end{tikzcd}
+}
+\end{column}
+\end{columns} 
+\pause 
+\vspace{1cm}
+\begin{minted}[escapeinside=~~,fontsize=\scriptsize]{agda}
+combine AdditiveMonoid {} Group { ... } ~\textcolor{Blue}{over Monoid}~ 
+combine AdditiveMonoid {} MultMonoid {} ~\textcolor{Blue}{over Carrier}~ 
+\end{minted}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -536,9 +643,21 @@ Monoid = combine Unital {} Semigroup {} over Magma
 \end{overprint}
 \end{frame}
 
+\begin{frame}[fragile] 
+\input{figures/theories3.tex}
+\end{frame}
+
 %\section{The Generator}
 \begin{frame}[fragile]
 \frametitle{The Generator}
+\begin{center}
+\includegraphics[scale=0.25]{figures/generator.png}
+\end{center}
+\pause
+\begin{itemize}
+\item Uni-sorted equational theory: 
+$\Gamma = (\mathcal{S},\mathcal{F},\mathcal{E})$
+\vspace{0.2cm}
 \begin{minted}[escapeinside=||,mathescape=true,fontsize=\scriptsize]{haskell}
 data EqTheory = EqTheory  {
   name        :: Name_   ,
@@ -548,6 +667,51 @@ data EqTheory = EqTheory  {
   waist       :: Int        -- the number of parameters
 }  
 \end{minted}
+% |\tikzmark{ssort}|
+\begin{comment}
+\begin{minted}[escapeinside=||,mathescape=true,fontsize=\scriptsize]{text}
+record |\fcolorbox{blue}{white}{Monoid \fcolorbox{red}{white}{(A : Set)}}| : Set where -- waist = 1  
+  e  : A 
+  op : A |$\to$| A |$\to$| A 
+  lunit : ...
+  runit : ... 
+  assoc : ...
+\end{minted} 
+\end{comment}
+\pause
+\item Instance of a theory:  
+\begin{minted}[escapeinside=||,mathescape=true,fontsize=\scriptsize]{haskell}
+type EqInstance = (Name|\_|,[Binding],Expr) 
+\end{minted}
+\scriptsize{Example:} 
+\begin{minted}[escapeinside=||,mathescape=true,fontsize=\scriptsize]{text}
+          {A : Set} |$\to$| M : Monoid A   
+\end{minted}
+%\begin{minted}[escapeinside=||,mathescape=true,fontsize=\scriptsize]{text}
+%type EqInstance = (|\fcolorbox{blue}{white}{Na\tikzmark{name}me\_}|,|\fcolorbox{red}{white}{[Bin\tikzmark{binds}ding]}|,|\fcolorbox{green}{white}{Ex\tikzmark{expr}pr}|) 
+%|\fcolorbox{red}{white}{{A : Set}}| |$\to$| |\fcolorbox{blue}{white}{M}| : |\fcolorbox{green}{white}{Monoid A}|   
+%\end{minted}
+\end{itemize}
+%\input{figures/monoid-hom-rel.tex}
+
+\begin{comment}
+\begin{minted}[fontsize=\scriptsize,escapeinside=||]{Agda}
+record Monoid (A : Set) (e : A) : Set where 
+  constructor monoid
+  field
+   op : A -> A -> A
+   lunit : {x : A} -> (op e x) == x
+   runit : {x : A} -> (op x e) == x
+   assoc : {x y z : A} -> 
+     op x (op y z) == op (op x y) z
+\end{minted}
+\end{comment}
+
+%\begin{tikzpicture}[remember picture]
+%\draw[overlay, ->] (pic cs:name) -- (pic cs:nm); %to[bend right]
+%\draw[overlay, ->] (pic cs:binds) -- (pic cs:bi); %, line width=5pt, red
+%\draw[overlay, ->] (pic cs:expr) -- (pic cs:ex);
+%\end{tikzpicture}
 \end{frame}
 
 \begin{frame}[fragile] 
@@ -578,10 +742,46 @@ homomorphism thry =
 \includegraphics[scale=0.25]{figures/monoid_generation2.png}
 \end{figure}
 \scriptsize
-Monomorphism, Isomorphism, Endomorphism, Congruence relation, Quotient algebra, Trivial subtheory, Flipped theory, Monoid action, Monoid Cosets, composition of morphisms, kernel of homomorphisms, parse trees.  
+monomorphism, epimorphism, endomorphism, isomorphism, automorphism, kernel of a morphism, composition of morphisms, quotient algebra, sub-theory, trivial sub-theory, parse trees, equivalence of terms, ...   
 \end{frame}
 
 %\section{The Exporter}
+
+\begin{comment}
+\begin{frame}[fragile] 
+\frametitle{The Exporter} 
+\begin{minted}[escapeinside=||,mathescape=true,fontsize=\scriptsize]{agda} 
+data MonTerm  (n : Nat) (A : Set) : Set where 
+  v : Fin n |$\to$| MonTerm n A 
+  sing : A |$\to$| MonTerm n A 
+  op : MonTerm n A |$\to$| MonTerm n A |$\to$| MonTerm n A 
+  e : MonTerm n A 
+\end{minted}
+\begin{minted}[escapeinside=~~,mathescape=true,fontsize=\scriptsize]{lean} 
+inductive MonTerm  (n : Nat) (A : Type) : Type 
+  | v : Fin n ~$\to$~ MonTerm
+  | sing : A ~$\to$~ MonTerm
+  | op : MonTerm ~$\to$~ MonTerm ~$\to$~ MonTerm 
+  | e  : MonTerm
+open MonTerm   
+\end{minted}
+\begin{minted}[escapeinside=~~,mathescape=true,fontsize=\scriptsize]{lean} 
+def evalOp   {A : Type} {n : ~$\mathbb{N}$~}  : ((Monoid A) ~$\to$~ ((vector A n) ~$\to$~ ((OpMonoidTerm2 n A) ~$\to$~ A))) 
+  | Mo vars (v2 x1) := (nth vars x1)  
+  | Mo vars (sing2 x1) := x1  
+  | Mo vars (opOL2 x1 x2) := ((op Mo) (evalOp Mo vars x1) (evalOp Mo vars x2))  
+  | Mo vars eOL2 := (e Mo)  
+\end{minted}
+\end{frame}
+\end{comment}
+
+\begin{frame}[fragile] 
+\frametitle{The Exporter} 
+\begin{center}
+\includegraphics[scale=0.25]{figures/exporter.png}
+\end{center} 
+\end{frame}
+
 \begin{frame}[fragile] 
 \frametitle{The Exporter} 
 \includegraphics[scale=0.2]{../figures/exporter_arch.png}
@@ -590,7 +790,10 @@ Monomorphism, Isomorphism, Endomorphism, Congruence relation, Quotient algebra, 
 \textbf{Preprocessor}
 \begin{itemize}
 \item Universes 
-\item Prelude Definitions 
+\item Prelude definitions 
+\item Non-linear pattern matching 
+\item Functions as constructors
+\item Names misalignment  
 \end{itemize}
 \onslide<2>
 \textbf{Exporter}
@@ -598,6 +801,7 @@ Monomorphism, Isomorphism, Endomorphism, Congruence relation, Quotient algebra, 
 class Export a where
   export :: Config -> a -> Doc
 \end{minted} 
+\lstmath{Config}: captures language-specific information. 
 \end{overprint}
 \end{frame}
 
@@ -608,31 +812,34 @@ Starting with \textbf{\textcolor{Orange}{227}} theory expressions:
 \item \textcolor{Orange}{\textbf{5092}} library definitions. 
 \item \textcolor{Orange}{\textbf{32,459}} lines of code. 
 \item Exported to \textcolor{Orange}{\textbf{Lean}}, \textcolor{Orange}{\textbf{Agda}} (flat and predicate style theories).
+\pause
+\item Average time: \\ \vspace{0.25cm}
+\begin{center}
+\begin{adjustbox}{width=0.4\columnwidth}
+\begin{tabular}{| c | c |}\hline
+Flattener & 5.17 s \\ \hline
+Generator & 2.7 s \\ \hline
+Exporter & 9.1 us \\ \hline
+Type-checking & 28 mins \\ \hline
+\end{tabular}
+\end{adjustbox}
+\end{center}
 \end{itemize}
 \end{frame}
 
 %\section{Conclusion and Future Work}
 \begin{frame}[fragile] 
-\frametitle{Conclusion} 
-Develop a generative approach to library building 
-\begin{itemize}
-\item Highlight the redundancy in libraries formalizing the algebraic hierarchy.
-\item Build a library of $227$ theories describing the algebraic hierarchy using theory combinators.
-\item Compile a list of structures that can be generated from theory presentations.
-\item Generate some of these constructions in Tog, a small implementation of a dependently typed language.
-\item Export this implementation to Agda and Lean.
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile] 
 \frametitle{Future Work}
 \begin{itemize}
+\item Generalizing the approach to \textcolor{Orange}{\textbf{generalized algebraic theories}}.
+
+\vspace{0.5cm}
 \item Proof assistants as \textcolor{Orange}{\textbf{program families}}. 
 \begin{itemize}
 \item better understanding how design decisions affect theory presentations 
 \item staged exporter to multiple proof assistants 
 \end{itemize}
-\pause
+
 \vspace{0.5cm}
 \item a \textcolor{Orange}{\textbf{DSL}} for library development. 
 \vspace{0.2cm}
@@ -642,12 +849,19 @@ Monoid = combine Unital and Semigroup over Magma
          using (waist=1,eq="=")
          export_to lean
 \end{minted}
-\pause 
-\vspace{0.5cm}
-\item Generalizing the approach to \textcolor{Orange}{\textbf{generalized algebraic theories}}.
 \end{itemize}
 \end{frame} 
 
-\plain{Thank You!} 
+\begin{frame}[fragile] 
+\frametitle{Conclusion} 
+Summary of Contributions: 
+\begin{itemize}
+\item Highlight the redundancy in libraries formalizing the algebraic hierarchy.
+\item Build a library of $227$ theories describing the algebraic hierarchy using theory combinators.
+\item Compile a list of structures that can be generated from theory presentations.
+\item Generate some of these constructions in Tog, a small implementation of a dependently typed language.
+\item Export this implementation to Agda and Lean.
+\end{itemize}
+\end{frame}
 
 \end{document}

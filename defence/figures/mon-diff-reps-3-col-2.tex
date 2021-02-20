@@ -3,8 +3,8 @@
 \begin{tabular}{p{7cm} p{7cm} p{7cm}}  
 \underline{Lean}
 \begin{minted}[mathescape=true, escapeinside=||]{lean} 
-class monoid (M : Type u)
- |\fcolorbox{red}{white}{extends semigroup M, has$\_$one M}| :=
+class monoid |\fcolorbox{red}{white}{(M : Type u)}|
+ extends semigroup M, has|$\_$|one M :=
   (one_mul : |$\forall$| a : M, 1 * a = a) 
   (mul_one : |$\forall$| a : M, a * 1 = a)   
 \end{minted} 
@@ -12,7 +12,7 @@ class monoid (M : Type u)
 \underline{MMT}
 \begin{minted}[mathescape=true, escapeinside=~~]{coq}
 theory Monoid : ~$?$~NatDed = 
- ~\fcolorbox{red}{white}{includes $?$Semigroup}~ 
+ includes ~$?$~Semigroup 
  unit : tm u ~$\#$~ e 
  unit_axiom : ~$\vdash$~ ~$\forall$~ [x] = x * e = x    
  
@@ -35,7 +35,7 @@ theory Semigroup : ~$?$~NatDed =
 &
 \underline{Haskell}
 \begin{minted}[mathescape, escapeinside=~~]{haskell}
-class ~\fcolorbox{red}{white}{Semigroup a => Monoid a}~ where 
+class Semigroup a => Monoid ~\fcolorbox{red}{white}{a}~ where 
   mempty :: a 
   mappend :: a -> a -> a 
   mappend = (<>) 
@@ -45,9 +45,9 @@ class ~\fcolorbox{red}{white}{Semigroup a => Monoid a}~ where
 \vspace{0.5cm}
 \underline{Coq}
 \begin{minted}[mathescape=true, escapeinside=~~]{coq}
-class Monoid {A : type}
- (dot : A ~$\to$~ A ~$\to$~ A)
- (one : A) : Prop := {
+class Monoid ~\fcolorbox{red}{white}{{A : type}}~
+ ~\fcolorbox{red}{white}{(dot : A $\to$ A $\to$ A)}~
+ ~\fcolorbox{red}{white}{(one : A)}~ : Prop := {
   dot_assoc : 
    forall x y z : A, 
    (dot x (dot y z)) = dot (dot x y) z
@@ -77,7 +77,7 @@ record Monoid c ~$\ell$~ : Set (suc (c ~$\sqcup$~ ~$\ell$~)) where
   _~$\bullet$~_ : Op~$_2$~ Carrier 
   isMonoid : IsMonoid _~$\approx$~_ _~$\bullet$~_ ~$\varepsilon$~ 
   
-record IsMonid (~$\bullet$~ : Op~$_2$~) (~$\varepsilon$~ : A) 
+record IsMonid ~\fcolorbox{red}{white}{($\bullet$ : Op$_2$) ($\varepsilon$ : A)}~ 
 : Set (a ~$\sqcup$~ ~$\ell$~) where 
   field 
    isSemiring : IsSemiring ~$\bullet$~ 

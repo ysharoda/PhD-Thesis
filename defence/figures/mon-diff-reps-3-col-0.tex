@@ -4,7 +4,7 @@
 \underline{Lean}
 \begin{minted}[mathescape=true, escapeinside=||]{lean} 
 class monoid (M : Type u)
- |\fcolorbox{red}{white}{extends semigroup M, has$\_$one M}| :=
+ extends semigroup M, has|$\_$|one M :=
   (one_mul : |$\forall$| a : M, 1 * a = a) 
   (mul_one : |$\forall$| a : M, a * 1 = a)   
 \end{minted} 
@@ -12,7 +12,7 @@ class monoid (M : Type u)
 \underline{MMT}
 \begin{minted}[mathescape=true, escapeinside=~~]{coq}
 theory Monoid : ~$?$~NatDed = 
- ~\fcolorbox{red}{white}{includes $?$Semigroup}~ 
+ includes ~$?$~Semigroup 
  unit : tm u ~$\#$~ e 
  unit_axiom : ~$\vdash$~ ~$\forall$~ [x] = x * e = x    
  
@@ -35,7 +35,7 @@ theory Semigroup : ~$?$~NatDed =
 &
 \underline{Haskell}
 \begin{minted}[mathescape, escapeinside=~~]{haskell}
-class ~\fcolorbox{red}{white}{Semigroup a => Monoid a}~ where 
+class Semigroup a => Monoid a where 
   mempty :: a 
   mappend :: a -> a -> a 
   mappend = (<>) 

@@ -1,0 +1,25 @@
+\begin{minted}[escapeinside=||,mathescape=true,fontsize=\tiny]{agda}
+theory Product { 
+  M1, M2 : Monoid 
+  e : M1.A |$\times$| M2.A
+  op : M1.A |$\times$| M2.A  |$\to$| M1.A |$\times$| M2.A  |$\to$| M1.A |$\times$| M2.A
+  lunit : {x : M1.A |$\times$| M2.A} |$\to$| op e x = x 
+  runit : {x : M1.A |$\times$| M2.A} |$\to$| op x e = x 
+  assoc : {x y z : M1.A |$\times$| M2.A} |$\to$| 
+          op x (op y z) = op (op x y) z
+}
+theory Submonoid {
+  M : Monoid
+  subset : Set |$\to$| Set  
+  A|$_s$| : subset M.A
+  e|$_s$| : A|$_s$|
+  op|$_s$| : A|$_s$| |$\to$| A|$_s$| |$\to$| A|$_s$| 
+}
+type Expr := 
+  e   : Expr 
+  op  : Expr |$\to$| Expr |$\to$| Expr
+type OpenExpr := 
+  vars : {n : Nat} |$\to$| Fin n |$\to$| OpenExpr
+  e   : OpenExpr 
+  op  : OpenExpr |$\to$| OpenExpr |$\to$| OpenExpr
+\end{minted} 

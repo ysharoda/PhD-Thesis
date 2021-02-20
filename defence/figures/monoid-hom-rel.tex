@@ -3,19 +3,19 @@
 \begin{tikzpicture}[node distance=2cm]
     \node(NodeName1){
 \begin{lstlisting}[basicstyle=\footnotesize, escapeinside=~~]
-record ~\fcolorbox{blue}{white}{Monoid \fcolorbox{red}{white}{(A : Set)}}~
+ record Monoid (A : Set)
       : Set where 
-  e  : A 
-  op : A -> A -> A 
-  lunit : ...
-  runit : ... 
-  assoc : ...
+   e  : A 
+   op : A -> A -> A 
+   lunit : ...
+   runit : ... 
+   assoc : ...
 \end{lstlisting} 
 };
 \node(NodeName2) [right=of NodeName1] {  % added position of second box
 \begin{lstlisting}[basicstyle=\footnotesize, escapeinside=~~]
 record Hom ~\fcolorbox{red}{white}{\{A1 A2 : Set\}}~ 
-       ~(\fcolorbox{blue}{white}{M1} : \fcolorbox{green}{white}{Monoid \fcolorbox{red}{white}{A1}}) (\fcolorbox{blue}{white}{M2} : \fcolorbox{green}{white}{Monoid \fcolorbox{red}{white}{A2}})~
+       ~(\fcolorbox{blue}{white}{M1} : \fcolorbox{green}{white}{Monoid A1}) (\fcolorbox{blue}{white}{M2} : \fcolorbox{green}{white}{Monoid A2})~
        : Set where 
   hom : A1 -> A2 
   pres-e : hom (e M1) = e M2 
