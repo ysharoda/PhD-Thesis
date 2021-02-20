@@ -456,11 +456,11 @@ CodeRep : (A : Set) (s : Stage) -> Set
   CodeRep A s0 = A
   CodeRep A s1 = Wrap (CodeRep A s0)
 \end{togcode} 
-We also add a flag indicating whether the quoted code represents an expression (\lstmath{Expr}) or a literal, a constant or a variable (\lstmath{Const}).  
+We also add a flag indicating whether the quoted code represents an expression (\lstmath{Expr}) or a literal, a constant or a variable (\lstmath{Atom}).  
 \begin{togcode} 
 data Choice : Set where
   Expr : Choice
-  Const : Choice
+  Atom : Choice
 \end{togcode} 
 
 Staging has $3$ main applications; generating well-typed code as in \mbox{MetaOcaml}~\cite{taha1999multi}, removing abstraction overhead introduced by generic programming~\cite{yallop2016StagingGeneric, carette2011mspFunctorsMonads, carette2011generative}, and developing domain specific languages~\cite{sheard2000stagingDSL}. MetaOcaml and Haskell templates provide staging constructs under the names \emph{quote} and \emph{eval} instead of \emph{Now} and \emph{Later}. In logical reasoning the same ideas are used for reflection, as in~\cite{farmer2013quoteEval}.  
