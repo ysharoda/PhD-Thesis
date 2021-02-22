@@ -58,7 +58,7 @@
 \setlength{\tabcolsep}{18pt}
 \renewcommand{\arraystretch}{1.5}
 \usepackage{color}
-\hypersetup{colorlinks=true,
+\hypersetup{colorlinks=false,
     urlcolor=blue, 
     linkcolor=white,
     citecolor=blue,
@@ -129,34 +129,15 @@ Jacques Carette and William M. Farmer}
 \item Building a library requires: 
 \begin{itemize}
 \item Foundation 
-\item Organization Structures 
+\item Organizational Structures 
 \item ... 
 \item Huge amount of knowledge $\Rightarrow$ \textbf{Labour Intensive} 
 \end{itemize}
 \end{itemize}
 \vfill 
 \pause 
-Current Libraries of Mathematics are full of \textcolor{Orange}{\textbf{\emph{redundancy}}}
+Current libraries of mathematics are full of \textcolor{Orange}{\textbf{\emph{redundancy}}}
 \end{frame}
-
-\begin{comment} 
-\begin{frame}[fragile] 
-\begin{center}
-A large library of Mathematics is \textcolor{Orange}{\textbf{hard to build}} 
-\end{center}
-\vfill 
-\begin{itemize}
-\item Foundation 
-\item Organization Structures 
-\item ... 
-\item Huge amount of knowledge $\Rightarrow$ Labor Intensive 
-\end{itemize}
-\vfill 
-\pause 
-Current Libraries of Mathematics are full of \textcolor{blue}{\emph{redundancy}}
-% Because there is some standard mathematical knowledge that are re-formalized again and again 
-\end{frame}
-\end{comment} 
 
 \begin{comment}
 \begin{frame}
@@ -218,7 +199,7 @@ signature, trivial sub-theory, monomorphisms, epimorphisms, kernel of a homomorp
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Monoid: Multiple theories, Same Constructions}
+\frametitle{Monoid: Multiple Theories, Same Constructions}
 % based on commit: 78d5bd370a8f7824aee1f46fc6a32d6df9fc59c4
 \begin{columns}
     \begin{column}{0.45\textwidth}
@@ -283,21 +264,21 @@ A theory: \newline
 \pause
 \vspace{0.5cm}
 \begin{itemize}
-\item A Homomorphism between two $\Gamma$-Algebra:  
+\item A homomorphism between two $\Gamma$-algebras:  
 \begin{itemize}
 \item hom : $\mathcal{S}_1 \to \mathcal{S}_2$ 
 \item For every \lstmath{op $\ \in \mathcal{F}$}: \newline  
 %\begin{lstlisting}[mathescape]
-\lstmath{hom (op$_1\ $ x$_1\ $ ... x$_n$) = op$_2\ $ (hom x$_1$)$\ $... (hom x$_n$)}
+\lstmath{hom (op$_1\ $ x$_1\ $ ... x$_n$)$\ $= op$_2\ $ (hom x$_1$)$\ $... (hom x$_n$)}
 %\end{lstlisting}
 \end{itemize}
 \vspace{0.5cm}
 \item The closed term language $L$ induced by $\Gamma$ is the set of: 
 \begin{itemize}
-\item all constants of $\Gamma$  
+\item All constants of $\Gamma$  
 \item For every \lstmath{op $\ \in \mathcal{F}$}, with arity $> 0$: \newline 
 %\begin{lstlisting}[mathescape]
-\lstmath{t$_{\texttt{op}}\ $ t$_1\ \cdots\ $ t$_n$}, such that \lstmath{t$_1$ $\ \cdots\ $ t$_n$} are terms of $L$.
+\lstmath{t$_{\texttt{op}}\ $ t$_1\ \cdots\ $ t$_n$}, such that \lstmath{t$_1$ $\ \cdots\ $ t$_n$} are closed terms of $L$.
 %\end{lstlisting}
 %\noindent such that  \lstmath{t$_1$ $\ \cdots\ $ t$_n$} are terms of \lstmath{L}. 
 \end{itemize}
@@ -359,7 +340,7 @@ Total & 38 \\ \hline
 % \item At least $22$ algebraic structures in Mathlib. 
 \pause  
 \item $>200$ algebraic structures in our library.
-\item $>300$ algebraic structures collected by Peter Jipsen.\only<+->\footnote{source:~http://math.chapman.edu/~jipsen/structures/doku.php}
+\item $>300$ algebraic structures collected by Peter Jipsen.\only<+->\footnote{source:~\url{http://math.chapman.edu/~jipsen/structures/doku.php}}
 %\item Many more algebraic structures 
 %\begin{itemize}
 %\item[-] $>200$ algebraic structures in our library.
@@ -398,7 +379,7 @@ that generate parts of algebra libraries? }}
 \begin{frame}[fragile]
 \frametitle{Generative Approach to Library Building}
 \begin{figure}
-    \includegraphics[scale=0.3]{figures/interpreter_small.png}
+    \includegraphics[scale=0.2]{figures/interpreter_small.png}
 \end{figure}
 \pause
 \begin{itemize}
@@ -435,7 +416,7 @@ makeLenses ''Point
 \begin{itemize}
     \item Dependently typed language 
     \begin{itemize}
-        \item Martin L\"{o}f type theory. 
+        \item Martin-L\"{o}f type theory. 
     \end{itemize}
     \item Experimental language, in the style of Agda 
 \end{itemize}
@@ -553,20 +534,24 @@ AddtivieSemigroup =
 
 
 \begin{frame}[fragile]
-\frametitle{The Flattener: Computing Pushout}
- A pushout is a $5$-ary operation \hspace{1cm} 
+\frametitle{The Flattener: Computing Pushouts}
+ Pushouts are a $5$-ary operations: \hspace{1cm} 
  {\scriptsize
 \begin{tikzcd}[row sep=2.0em, column sep=2.5em]
     \Gamma \arrow[r] \arrow[d]  & \Delta \\
     \Phi & 
 \end{tikzcd}
 }
+\begin{itemize}
+\item $3$ theories. 
+\item $2$ arrows.
+\end{itemize}
 % \begin{itemize}
 % \item $3$ theories 
 % \item $2$ morphisms 
 % \end{itemize}
  \pause 
- \vspace{1cm}
+ \vspace{0.5cm}
 \begin{minted}[fontsize=\scriptsize]{agda}
 combine AdditiveMonoid {} Group { ... } 
 combine AdditiveMonoid {} MultMonoid {}  
@@ -856,11 +841,11 @@ Monoid = combine Unital and Semigroup over Magma
 \frametitle{Conclusion} 
 Summary of Contributions: 
 \begin{itemize}
-\item Highlight the redundancy in libraries formalizing the algebraic hierarchy.
-\item Build a library of $227$ theories describing the algebraic hierarchy using theory combinators.
-\item Compile a list of structures that can be generated from theory presentations.
-\item Generate some of these constructions in Tog, a small implementation of a dependently typed language.
-\item Export this implementation to Agda and Lean.
+\item Highlighted the redundancy in libraries formalizing the algebraic hierarchy.
+\item Built a library of $227$ theories describing the algebraic hierarchy using theory combinators.
+\item Compiled a list of structures that can be generated from theory presentations.
+\item Generated some of these constructions in Tog, a small implementation of a dependently typed language.
+\item Exported this implementation to Agda and Lean.
 \end{itemize}
 \end{frame}
 
