@@ -194,7 +194,7 @@ Also, the Lens library~\cite{lensesLib} in Haskell, uses Template Haskell~\cite{
 
 %The definitions we use in our development are based on universal algebra abstractions. Universal algebra abstracts over algebraic structures and their related constructions and provides the meta theory that explains how the generation algorithms should work. A theory presentation in universal algebra has three components \verb|(S,F,E)|; a sort \verb|S|, a list of function symbols along with their types \verb|F|, and a list of axioms (equations) that describe properties of the function symbols \verb|E|. If we can abstract over the details of theory presentations to extract this information, we are able to generate the constructions defined by universal algebra, like morphisms, product algebras, term languages, and others. 
 
-In this work, we address the following research questions
+In this work, we address the following research questions: 
 \begin{enumerate}
     \item[RQ1] Can the uniformity provided by universal algebra be captured by a meta program that generates parts of an algebra library? 
     \item[RQ2] What are the preconditions for generating this new information? 
@@ -241,7 +241,7 @@ The Tetrapod project~\cite{carette2020bigMath} envisions a software system in wh
 \label{fig:tetrapod}
 \end{figure}
 
-The organization aspect is reflected in the efforts of building libraries of mathematics. The Tetrapod project supports building a large library of mathematical knowledge organized as theory graph of biform theories~\cite{biformCICM2018}. The theory graph structure connects theories by describing how the symbols of a source theory can be interpreted in the target one. In a graph, one can express facts like `a group is a monoid` and that `monoid and additive monoid are isomorphic`. We explain theories, morphisms and graphs in more details in Chapter~\ref{ch:background}. 
+The organization aspect is reflected in the efforts of building libraries of mathematics. The Tetrapod project supports building a large library of mathematical knowledge organized as theory graph of biform theories~\cite{biformCICM2018}. The theory graph structure connects theories by describing how the symbols of a source theory can be interpreted in the target one. In a graph, one can express facts like `a group is a monoid' and that `monoid and additive monoid are isomorphic'. We explain theories, morphisms and graphs in more details in Chapter~\ref{ch:background}. 
 Ideally, we want the nodes of the theory graph to be biform theories~\cite{biformCICM2018} which connect axiomatic theories  (used by theorem provers) and algorithmic theories (used by computer algebra systems) using meaning formulas. This way communication between reasoning and computation systems becomes possible. Communication can take the form of reasoning about algorithmic theories or using results of computer algebra systems in theorem provers.
 
 This work contributes to the Tetrapod project by investigating how a generative approach can contribute to building the library at the center of the tetrapod. We focus on building the algebraic hierarchy and the constructions related to the theories in it, mainly as described by universal algebra. The library we build has a theory graph structure, but the nodes are axiomatic, rather than biform, theories. 
@@ -296,8 +296,8 @@ This was an earlier attempt to implement the combinators and also the first time
 We start by introducing some background knowledge in Chapter~\ref{ch:background}. 
 We introduce universal algebra and the constructions of interest to this work in Chapter~\ref{ch:ualgebra}. 
 We give in Chapter~\ref{ch:redundancy} examples of how some of these constructions are currently presented in libraries of formal systems, highlighting the redundancies that can be avoided.
-We present Tog, the language and type checker that we use to develop our framework in Chapter~\ref{ch:tog}. 
 In Chapter~\ref{ch:design}, we introduce the methodology we use to enhance the library development process. 
+We present Tog, the language and type checker that we use to develop our framework in Chapter~\ref{ch:tog}. 
 We discuss the combinators we use to build our library in Chapter~\ref{ch:library}, with the implementation discussed in Chapter~\ref{sec:lib_implementation}. 
 Chapter~\ref{ch:generation} discusses our generative framework that computes the constructions related to a specific theory.  
 The theories and the generated constructions are exported to Agda and Lean. We discuss the exporter in Chapter~\ref{ch:export}. 

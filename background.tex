@@ -43,7 +43,7 @@ Types of dependent pairs, in which the type of the second element depends on val
 refers to the type of a pair that contains the value of \lstmath{n : $\;\mathbb{N}$} in the first position and a vector of length \lstmath{n} in the second one. 
 
 \paragraph{Telescopes.}
-The concept of $\Sigma$ types is generalized into that of \emph{telescopes}, or equivalently,  \lstmath{dependent-type records}~\cite{pollack2002dependently}. A telescope $\mathbb{T}$ is defined as 
+The concept of $\Sigma$ types is generalized into that of \emph{telescopes} or, equivalently, dependently-typed records~\cite{pollack2002dependently}. A telescope $\mathbb{T}$ is defined as 
 \begin{equation}
 \mathbb{T} \equiv [\text{x}_1 : \text{A}_1]
 [\text{x}_2 : \text{A}_2(\text{x}_1)] \ ... \ 
@@ -205,7 +205,7 @@ We refer to an embedding morphism as $\widetilde{m}$, and therefore identity mor
 
 \subsection{General Morphism}
 \label{sec:generalmorph}
-A morphism in its general form as defined in the beginning of this section. 
+A morphism in its general form is defined in the beginning of this section. 
 %$\arrow{[v]}{\Gamma}{\Delta}$ is a general morphism if it maps symbols $x \in \syms{\Gamma}$ to terms $r \in \Delta$. 
 An example is a morphism that flips a binary operation, i.e.: maps \lstmath{op x y} to \lstmath{op y x}
 \begin{equation*}
@@ -234,9 +234,9 @@ One way to organize theories is using theory graphs. A theory graph is a directe
 
 In systems that are based on categorical semantics, a theory graph is seen as a diagram in the category of theories and theory morphisms. Specware~\cite{Smith99} uses the keyword \emph{diagram} to build them. The work in~\cite{developmentGraph2000}, based on CASL, refer to them as \emph{development graphs}. 
 
-Organizing a library as a theory graph leverages the structure of mathematics by relying on morphisms to connect the different concepts presented within the theories. Compare a library defining the graph leading to  \lstmath{Monoid} as in Figure~\ref{fig:cube_monoid} to one that defines it only in terms of its components, as in Section~\ref{sec:background:theory}. The theory graph one has more information which makes it more useful to library users. 
+Organizing a library as a theory graph leverages the structure of mathematics by relying on morphisms to connect the different concepts presented within the theories. Compare a library defining the graph leading to  \lstmath{Monoid} as in Figure~\ref{fig:cube_monoid} to one that defines it only in terms of its components, as in Section~\ref{sec:background:theory}. The theory graph provides more information which makes it more useful to library users. 
 \input{figures/many_diam.tex}
-Theory graphs also makes it possible to modularize a formalization by adding definitions or proving theorems within smaller modules (theories). Definitions and theorems are then made available to different other theories by transporting them via morphisms. 
+Theory graphs also make it possible to modularize a formalization by adding definitions or proving theorems within smaller modules (theories). Definitions and theorems are then made available to different other theories by transporting them via morphisms. 
 
 Here we discuss two strategies for decomposing theories; little and tiny theories.  
 
@@ -341,7 +341,7 @@ $\langle u_i : \Phi \to \Delta_i \rangle_{i\leq n}$.
 
 The colimit of a diagram is a cocone  
 $\langle u_i : \Phi \to \Delta_i \rangle_{i\leq n}$ such that for any cocone 
-$\langle u_i^{\prime} : \Phi^{\prime} \to \Phi \rangle_{i\leq n}$ there is a unique morphism $v : \Phi \to \Phi^\prime$ such that for every $u_i$, the following diagram commutes 
+$\langle u_i^{\prime} : \Phi^{\prime} \to \Delta_i \rangle_{i\leq n}$ there is a unique morphism $v : \Phi \to \Phi^\prime$ such that for every $u_i$, the following diagram commutes 
 \begin{tikzcd} 
 \Phi \arrow[ rr,dashed, "v"] && \Phi^\prime \\ 
 & \Delta_i \arrow[ul,"u_i"] \arrow [ur," u_i^{\prime}"] & 
@@ -409,7 +409,7 @@ interp\ x_1\ x_2\ &\wedge\ interp\ y_1\ y_2\ \rightarrow\ interp\ (op\ x_1\ y_1)
 %interp\ x_1\ x_2\ \wedge\ interp\ y_1\ y_2\ \rightarrow\ interp\ (op\ x_1\ y_1)\ (op\ x_2\ y_2)  
 %\end{eqnarray*} 
 
-Relational interpretations are mainly applied to models of type theories. It has been used in~\cite{reynolds1983types} to develop the abstraction theorem that connects meanings of expressions under different assignments and in~\cite{parametricPoly93} to explain parameteric polymorphism. They have been applied to deduce theorems that apply to functions, given their polymorphic type~\cite{wadler1989theorems, algehed2020dynamic}. 
+Relational interpretations are mainly applied to models of type theories. They have been used in~\cite{reynolds1983types} to develop the abstraction theorem that connects meanings of expressions under different assignments and in~\cite{parametricPoly93} to explain parameteric polymorphism. They have been applied to deduce theorems that apply to functions, given their polymorphic type~\cite{wadler1989theorems, algehed2020dynamic}. 
 %Other applications include proving strong normalization, type safety, or equivalence of type systems~\cite{skorstengaard2019introduction}. 
 They are used extensively when working on the semantics of programming languages, often refered to as \emph{logical relations}~\cite{crary2005logical}. Supporting proofs of logical relations has been considered a benchmark for theorem provers in the revised POPLmark challenge~\cite{poplmark2019}.  
 

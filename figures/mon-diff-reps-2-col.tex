@@ -64,10 +64,10 @@ record Monoid c ~$\ell$~ :
   _~$\bullet$~_ : Op~$_2$~ Carrier 
   isMonoid : IsMonoid _~$\approx$~_ _~$\bullet$~_ ~$\varepsilon$~ 
   
-record IsMonid (~$\bullet$~ : Op~$_2$~) (~$\varepsilon$~ : A) 
+record IsMonoid (~$\bullet$~ : Op~$_2$~) (~$\varepsilon$~ : A) 
  : Set (a ~$\sqcup$~ ~$\ell$~) where 
   field 
-   isSemiring : IsSemiring ~$\bullet$~ 
+   isSemigroup : IsSemigroup ~$\bullet$~ 
    identity : Identity ~$\varepsilon$~ 
        
    open IsSemigroup isSemigroup public 
@@ -78,11 +78,16 @@ record IsMonid (~$\bullet$~ : Op~$_2$~) (~$\varepsilon$~ : A)
    identity~$^r$~ = proj~$_2$~ identity        
 \end{agdacode}       
 \underline{MMT}
-\begin{minted}[mathescape=true, escapeinside=~~]{mmt} 
-theory Semigroup : ?NatDed = 
+\begin{minted}[mathescape=true, escapeinside=~~]{text} 
+theory Monoid : ~$?$~NatDed = 
+ includes ~$?$~Semigroup 
+ unit : tm u ~$\#$~ e 
+ unit_axiom : ~$\vdash$~ ~$\forall$~ [x] = x * e = x      
+ 
+theory Semigroup : ~$?$~NatDed = 
  u : sort 
  comp : tm u ~$\to$~ tm u ~$\to$~ tm u 
-  # 1 * 2 prec 40
+  ~$\#$~ 1 * 2 prec 40
  assoc : ~$\vdash$~ ~$\forall$~ [x, y, z]
   (x * y) * z = x * (y * z)    
  assocLeftToRight : 
@@ -93,10 +98,6 @@ theory Semigroup : ?NatDed =
  assocRightToLeft : 
   {x,y,z} ~$\vdash$~  x * (y * z) 
            = (x * y) * z 
-  = [x,y,z] sym assocLR 
-theory Monoid : ?NatDed 
- includes ?Semigroup 
- unit : tm u # e 
- unit_axiom : ~$\vdash$~ ~$\forall$~ [x] = x * e = x       
+  = [x,y,z] sym assocLR  
 \end{minted}      
 \end{tabular}  
