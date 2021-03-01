@@ -77,10 +77,10 @@ record Monoid c ~$\ell$~ : Set (suc (c ~$\sqcup$~ ~$\ell$~)) where
   _~$\bullet$~_ : Op~$_2$~ Carrier 
   isMonoid : IsMonoid _~$\approx$~_ _~$\bullet$~_ ~$\varepsilon$~ 
   
-record IsMonid ~\fcolorbox{red}{white}{($\bullet$ : Op$_2$) ($\varepsilon$ : A)}~ 
+record IsMonoid ~\fcolorbox{red}{white}{($\bullet$ : Op$_2$) ($\varepsilon$ : A)}~ 
 : Set (a ~$\sqcup$~ ~$\ell$~) where 
   field 
-   isSemiring : IsSemiring ~$\bullet$~ 
+   isSemigroup : IsSemigroup ~$\bullet$~ 
    identity : Identity ~$\varepsilon$~ 
        
    open IsSemigroup isSemigroup public 

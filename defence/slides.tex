@@ -243,6 +243,7 @@ type GroupExpr :=
 \end{minted}           
 \end{column}
 \end{columns} 
+\pause
 Can we make use of these patterns? 
 \end{frame}
 
@@ -516,7 +517,7 @@ AdditiveMagma = rename Magma {op to +}
 \vspace{0.3cm}
 \scriptsize{3. Combine}
 \begin{minted}[escapeinside=~~,mathescape=true,fontsize=\scriptsize]{agda}
-AddtivieSemigroup = 
+AdditiveSemigroup = 
   combine Semigroup {op to +} AdditiveMagma {} 
 \end{minted}
 \end{column}

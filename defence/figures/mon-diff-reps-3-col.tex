@@ -80,7 +80,7 @@ record Monoid c ~$\ell$~ : Set (suc (c ~$\sqcup$~ ~$\ell$~)) where
 record IsMonid (~$\bullet$~ : Op~$_2$~) (~$\varepsilon$~ : A) 
 : Set (a ~$\sqcup$~ ~$\ell$~) where 
   field 
-   isSemiring : IsSemiring ~$\bullet$~ 
+   isSemigroup : IsSemigroup ~$\bullet$~ 
    identity : Identity ~$\varepsilon$~ 
        
    open IsSemigroup isSemigroup public 
