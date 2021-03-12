@@ -6,7 +6,7 @@ We highlighted some of the problems that make library building labor intensive a
 %The algebraic hierarchy is a core component of libraries of formal systems and their structure is well-studies in universal algebra. Therefore, they are good candidates for providing automation. 
 
 One of the main components of an algebra library is the axiomatic theory presentation of the algebraic structures, like the different formalizations of \lstmath{Monoid} shown in Figure~\ref{fig:mon-diff-lang}. In most theorem provers, developers provide all the declarations of the theory. Another way is to define theories by using combinators which describe how the new theory can be formed in terms of existing ones. 
-Combinators are also a useful tool to leverage the structure of the theories by relating them to each other, which is useful when organizing the library as a theory graph. A \emph{flattener} is used to compute the theory and morphisms resulting from the combinator. We discuss our implementation of the flattener in Chapter~\ref{ch:library}. Using these ideas, \lstmath{Monoid} can be defined as 
+Combinators are also a useful tool to leverage the structure of the theories by relating them to each other, which is useful when organizing the library as a theory graph. A \emph{flattener} is used to compute the theory and morphisms resulting from the combinators. We discuss our implementation of the flattener in Chapter~\ref{sec:lib_implementation}. Using these ideas, \lstmath{Monoid} can be defined as 
 \begin{togcode} 
 Monoid = combine Unital and Semigroup over Magma
 \end{togcode} 
@@ -16,7 +16,7 @@ The theories resulting from the flattener are used to compute some universal alg
 
 The flattener and generator deal with mathematical definitions while keeping {system-specific} details to a minimum. In order to make the constructions more useful, the \emph{exporter} makes them available in feature-rich systems, like Agda and Lean. We discuss the exporter in Chapter~\ref{ch:export}. 
 
-Figure~\ref{fig:staged-interpreter} describes the $3$-stage processing that a theory expression goes through. This process leads to the generation of all the constructions\footnote{The generated constructions can be found at:~\url{https://github.com/ysharoda/Deriving-Definitions/tree/master/Library/generated}.} described in Appendix~\ref{appendix:generatedTog} in Tog, Agda, and Lean. 
+Figure~\ref{fig:staged-interpreter} describes the $3$-stage processing that a theory expression goes through. This process leads to the generation of all the constructions\footnote{The generated constructions can be found at:~\url{https://github.com/ysharoda/Deriving-Definitions/tree/115462d85389/Library/generated}.} described in Appendix~\ref{appendix:generatedTog} in Tog, Agda, and Lean. 
 \begin{figure}
 \includegraphics[scale=0.5,width=\linewidth]{figures/interpreter_detailed}
 \caption{A $3$-staged interpreter for generating libraries}

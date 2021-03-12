@@ -54,6 +54,8 @@
 %\usepackage{todonotes}
 %\presetkeys{todonotes}{inline}{}
 
+%\usepackage{sagetex}
+
 \setlength{\arrayrulewidth}{0.5mm}
 \setlength{\tabcolsep}{18pt}
 \renewcommand{\arraystretch}{1.5}
@@ -96,9 +98,11 @@ Jacques Carette and William M. Farmer}
 %\institute{McMaster University}
 \date{}
 \titlegraphic{
-\hspace*{8cm}\includegraphics[width=2cm]{figures/mac-logo.png}
+\vspace{-0.5cm}
+\hspace*{8.5cm}\includegraphics[width=2cm]{figures/mac-logo.png}
 }
 
+\usepackage{appendixnumberbeamer}
 
 \begin{document}
     
@@ -244,7 +248,7 @@ type GroupExpr :=
 \end{column}
 \end{columns} 
 \pause
-Can we make use of these patterns? 
+Can we make use of this uniformity? 
 \end{frame}
 
 \begin{frame}[fragile]
@@ -367,8 +371,8 @@ Total & 38 \\ \hline
 \begin{center}
 \Large{\textbf{
 Can the abstractions and uniformity \\
-provided by \textcolor{Orange}{universal algebra} be captured by 
-\textcolor{Orange}{meta-programs} 
+provided by universal algebra be captured by 
+meta-programs 
 that generate parts of algebra libraries? }}
 \end{center}
 \vfill 
@@ -405,10 +409,13 @@ makeLenses ''Point
 \begin{frame}[fragile]
 \frametitle{Requirements}
 \begin{enumerate}
-\item A small language to represent theories without unnecessary details. 
-\item Meta programs to manipulate these theories  
-\item A type checker for the theories and constructions 
-\item A large library of theories.
+\item A small \textbf{language} to represent theories. 
+\vspace{0.5cm}
+\item Some \textbf{meta programs} to manipulate these theories. 
+\vspace{0.5cm}
+\item A \textbf{type checker} for the theories and constructions. 
+\vspace{0.5cm}
+\item A large \textbf{library} of theories.
 \end{enumerate}
 \end{frame}
 
@@ -435,7 +442,7 @@ record Monoid (A : Set) : Set where
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Approach} 
+\frametitle{Approach: Three-Phase Interpreter} 
 \begin{figure}
     \includegraphics[scale=0.2]{figures/interpreter_detailed.png}
 \end{figure}
@@ -443,7 +450,7 @@ record Monoid (A : Set) : Set where
 
 %\section{The Flattener}
 \begin{frame}[fragile] 
-\frametitle{The Flattener} 
+\frametitle{1. The Flattener} 
 
 %\centering{
 \begin{center}
@@ -456,7 +463,7 @@ record Monoid (A : Set) : Set where
 \end{frame}
 
 \begin{frame}[fragile] 
-\frametitle{The Flattener: Combinators} 
+\frametitle{1. The Flattener: Combinators} 
 \textcolor{Orange}{\textbf{Theory Expressions}} \vspace{0.2cm}
 
 \begin{overprint}
@@ -535,7 +542,7 @@ AdditiveSemigroup =
 
 
 \begin{frame}[fragile]
-\frametitle{The Flattener: Computing Pushouts}
+\frametitle{1. The Flattener: Computing Pushouts}
  Pushouts are a $5$-ary operations: \hspace{1cm} 
  {\scriptsize
 \begin{tikzcd}[row sep=2.0em, column sep=2.5em]
@@ -585,7 +592,7 @@ combine AdditiveMonoid {} MultMonoid {} ~\textcolor{Blue}{over Carrier}~
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{The Flattener} 
+\frametitle{1. The Flattener} 
 \begin{center}
 \includegraphics[scale=0.2]{figures/flattener.png}
 \end{center}
@@ -635,7 +642,7 @@ Monoid = combine Unital {} Semigroup {} over Magma
 
 %\section{The Generator}
 \begin{frame}[fragile]
-\frametitle{The Generator}
+\frametitle{2. The Generator}
 \begin{center}
 \includegraphics[scale=0.25]{figures/generator.png}
 \end{center}
@@ -735,7 +742,7 @@ monomorphism, epimorphism, endomorphism, isomorphism, automorphism, kernel of a 
 
 \begin{comment}
 \begin{frame}[fragile] 
-\frametitle{The Exporter} 
+\frametitle{3. The Exporter} 
 \begin{minted}[escapeinside=||,mathescape=true,fontsize=\scriptsize]{agda} 
 data MonTerm  (n : Nat) (A : Set) : Set where 
   v : Fin n |$\to$| MonTerm n A 
@@ -762,14 +769,14 @@ def evalOp   {A : Type} {n : ~$\mathbb{N}$~}  : ((Monoid A) ~$\to$~ ((vector A n
 \end{comment}
 
 \begin{frame}[fragile] 
-\frametitle{The Exporter} 
+\frametitle{3. The Exporter} 
 \begin{center}
 \includegraphics[scale=0.25]{figures/exporter.png}
 \end{center} 
 \end{frame}
 
 \begin{frame}[fragile] 
-\frametitle{The Exporter} 
+\frametitle{3. The Exporter} 
 \includegraphics[scale=0.2]{../figures/exporter_arch.png}
 \begin{overprint}
 \onslide<1>
@@ -787,7 +794,7 @@ def evalOp   {A : Type} {n : ~$\mathbb{N}$~}  : ((Monoid A) ~$\to$~ ((vector A n
 class Export a where
   export :: Config -> a -> Doc
 \end{minted} 
-\lstmath{Config}: captures language-specific information. 
+%\lstmath{Config}: captures language-specific information. 
 \end{overprint}
 \end{frame}
 
@@ -846,8 +853,76 @@ Summary of Contributions:
 \item Built a library of $227$ theories describing the algebraic hierarchy using theory combinators.
 \item Compiled a list of structures that can be generated from theory presentations.
 \item Generated some of these constructions in Tog, a small implementation of a dependently typed language.
-\item Exported this implementation to Agda and Lean.
+\item Exported the library to Agda and Lean.
 \end{itemize}
+\end{frame}
+
+\appendix
+
+\plain{}
+
+\begin{frame}[fragile] 
+Sagemath: 
+\begin{minted}[fontsize=\scriptsize]{text}
+class Monoid_class(Parent):
+  def __init__(self, names):
+    from sage.categories.monoids import Monoids
+    category = Monoids().FinitelyGeneratedAsMagma()
+    Parent.__init__(self, base=self, names=names, category=category)
+
+-- sage.categories.monoids 
+class Monoids(CategoryWithAxiom)
+  _base_category_class_and_axiom = (Semigroups, "Unital")
+\end{minted}
+Isabelle: 
+\begin{minted}[escapeinside=||,mathescape=true,fontsize=\scriptsize]{Isabelle}
+locale monoid =
+  fixes G (structure)
+  assumes m_closed [intro, simp]:
+         |$\llbracket$|x |$\in$| carrier G|$;$| y |$\in$| carrier G|$\rrbracket$| |$\Rightarrow$| x |$\oplus$| y  |$\in$| carrier G
+      and m_assoc:
+         |$\llbracket$|x |$\in$| carrier G|$;$| y |$\in$| carrier G|$;$| z |$\in$| carrier G|$\rrbracket$|
+          |$\Rightarrow$| (x |$\oplus$| y) |$\oplus$| z = x |$\oplus$| (y |$\oplus$| z)
+      and one_closed [intro, simp]: |$\textbf{1}$| |$\in$| carrier G
+      and l_one [simp]: x |$\in$| carrier G |$\Rightarrow$| |$\textbf{1}$| |$\oplus$| x = x
+      and r_one [simp]: x |$\in$| carrier G |$\Rightarrow$| x |$\oplus$| |$\textbf{1}$| = x
+        
+\end{minted} 
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Combine renames}
+{\scriptsize
+  \begin{tikzcd}[row sep=2.0em, column sep=2.5em]
+    \verb|Carrier| \arrow[d,hook] \arrow[r,hook] \arrow[dr,hook]& \verb|Pointed| \arrow[d,hook]& \\
+    \verb|Magma| \arrow[d,hook] \arrow[r,mapsto] \arrow[rd,dotted] & 
+    \verb|AdditiveMagma=(A,+)|  \arrow[d,dotted] & \\
+    \verb|Semigroup=(A,op,assoc)| \arrow[r,dotted] & \verb|??| & 
+  \end{tikzcd}
+}
+\vspace{0.5cm}
+\begin{minted}[fontsize=\scriptsize]{agda} 
+AdditiveSemigroup = 
+  combine AdditiveMagma {} Semigroup {op to +}
+  over Magma 
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile] 
+\frametitle{Distinguished Arrows}
+{\scriptsize
+\begin{tikzcd} 
+\verb|Carrier| \arrow[r,blue,hook] \arrow[d,blue,hook] \arrow[rd,blue,hook] & \verb|UnaryOperation| \arrow[r,blue,hook] \arrow[d,hook] & \verb|Involution| \\ 
+\verb|Magma| \arrow[r,hook] & \verb|InvolutiveMagmaSig| \arrow [d,hook,blue] & \\ 
+& \verb|UnaryAntiDistribution| 
+\end{tikzcd}}
+\end{frame}
+
+\begin{frame}[fragile] 
+\frametitle{Export}
+What is in Tog that needs to be changes 
+
+What are the differences between Agda and Lean 
 \end{frame}
 
 \end{document}
