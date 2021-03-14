@@ -1,0 +1,32 @@
+\begin{figure}
+    \adjustbox{scale=0.8,center}{%
+\begin{tikzpicture}[node distance=2cm]
+    \node(NodeName1){
+\begin{lstlisting}[basicstyle=\footnotesize, escapeinside=~~]
+ record Monoid (A : Set)
+      : Set where 
+   e  : A 
+   op : A -> A -> A 
+   lunit : ...
+   runit : ... 
+   assoc : ...
+\end{lstlisting} 
+};
+\node(NodeName2) [right=of NodeName1] {  % added position of second box
+\begin{lstlisting}[basicstyle=\footnotesize, escapeinside=~~]
+record Hom {A1 A2 : Set}
+       (M1 : Monoid A1) (M2 : Monoid A2)
+       : Set where 
+  hom : A1 $->$ A2
+  pres-e : hom (e M1) = e M2 
+  pres-op : {x1 x2 : A1} -> 
+    ~\fcolorbox{red}{white}{hom (\fcolorbox{blue}{white}{(op M1) x1 x2})}~ = 
+       ~\fcolorbox{green}{white}{(op M2) (hom x1) (hom x2)}~
+\end{lstlisting} };  
+
+
+
+%\draw[red, line width=0.5mm,-{Triangle[angle=60:0.5pt 3]}] (NodeName1) -- (NodeName2);
+%\draw[blue, line width=1mm,-{Triangle[angle=60:1pt 3]}] (NodeName1) -- (NodeName3);
+\end{tikzpicture}}
+\end{figure}

@@ -345,7 +345,7 @@ Total & 38 \\ \hline
 % 22 for Lean  
 % \item At least $22$ algebraic structures in Mathlib. 
 \pause  
-%\item $>200$ algebraic structures in our library.
+\item $>200$ algebraic structures in our library.
 \item $>300$ algebraic structures collected by Peter Jipsen.\only<+->\footnote{source:~\url{http://math.chapman.edu/~jipsen/structures/doku.php}}
 %\item Many more algebraic structures 
 %\begin{itemize}
@@ -732,6 +732,23 @@ homomorphism thry =
 
 \begin{frame}[fragile] 
 \frametitle{Constructions for Free!} 
+\input{figures/monoid-hom-rel2.tex}
+
+\begin{overprint}
+\onslide<1>
+\begin{minted}[escapeinside=||,mathescape=true,fontsize=\scriptsize]{haskell} 
+homFunc :: Eq.EqTheory -> Eq.EqInstance -> Eq.EqInstance -> Constr 
+homFunc thry i1 i2 =
+  let carrier = thry ^. Eq.sort
+  in Constr (mkName homFuncName) |$\$$|
+       Fun |\fcolorbox{red}{white}{(Eq.projectConstr thry i1 carrier)}| 
+           (Eq.projectConstr thry i2 carrier)  
+\end{minted} 
+\end{overprint}
+\end{frame}
+
+\begin{frame}[fragile] 
+\frametitle{Constructions for Free!} 
 \begin{figure}
 \includegraphics[scale=0.25]{figures/monoid_generation2.png}
 \end{figure}
@@ -740,34 +757,6 @@ monomorphism, epimorphism, endomorphism, isomorphism, automorphism, kernel of a 
 \end{frame}
 
 %\section{The Exporter}
-
-\begin{comment}
-\begin{frame}[fragile] 
-\frametitle{3. The Exporter} 
-\begin{minted}[escapeinside=||,mathescape=true,fontsize=\scriptsize]{agda} 
-data MonTerm  (n : Nat) (A : Set) : Set where 
-  v : Fin n |$\to$| MonTerm n A 
-  sing : A |$\to$| MonTerm n A 
-  op : MonTerm n A |$\to$| MonTerm n A |$\to$| MonTerm n A 
-  e : MonTerm n A 
-\end{minted}
-\begin{minted}[escapeinside=~~,mathescape=true,fontsize=\scriptsize]{lean} 
-inductive MonTerm  (n : Nat) (A : Type) : Type 
-  | v : Fin n ~$\to$~ MonTerm
-  | sing : A ~$\to$~ MonTerm
-  | op : MonTerm ~$\to$~ MonTerm ~$\to$~ MonTerm 
-  | e  : MonTerm
-open MonTerm   
-\end{minted}
-\begin{minted}[escapeinside=~~,mathescape=true,fontsize=\scriptsize]{lean} 
-def evalOp   {A : Type} {n : ~$\mathbb{N}$~}  : ((Monoid A) ~$\to$~ ((vector A n) ~$\to$~ ((OpMonoidTerm2 n A) ~$\to$~ A))) 
-  | Mo vars (v2 x1) := (nth vars x1)  
-  | Mo vars (sing2 x1) := x1  
-  | Mo vars (opOL2 x1 x2) := ((op Mo) (evalOp Mo vars x1) (evalOp Mo vars x2))  
-  | Mo vars eOL2 := (e Mo)  
-\end{minted}
-\end{frame}
-\end{comment}
 
 \begin{frame}[fragile] 
 \frametitle{3. The Exporter} 
@@ -826,14 +815,14 @@ Type-checking & 28 mins \\ \hline
 \frametitle{Future Work}
 \begin{itemize}
 \item Generalizing the approach to \textcolor{Orange}{\textbf{generalized algebraic theories}}.
-
+\pause
 \vspace{0.5cm}
 \item Proof assistants as \textcolor{Orange}{\textbf{program families}}. 
 \begin{itemize}
 \item better understanding how design decisions affect theory presentations 
 \item staged exporter to multiple proof assistants 
 \end{itemize}
-
+\pause
 \vspace{0.5cm}
 \item a \textcolor{Orange}{\textbf{DSL}} for library development. 
 \vspace{0.2cm}
@@ -861,6 +850,39 @@ Summary of Contributions:
 \appendix
 
 \plain{}
+
+\begin{frame}[fragile] 
+\frametitle{Preservation Axioms} 
+\input{figures/monoid-hom-rel3.tex}
+
+\begin{minted}[escapeinside=||,mathescape=true,fontsize=\scriptsize]{haskell} 
+equation :: Eq.EqTheory -> Eq.EqInstance -> Eq.EqInstance -> 
+            Constr -> Constr -> Expr 
+equation thry i1 i2 hom constr =
+  let (bind1,expr1) = Eq.|\fcolorbox{blue}{white}{applyProjConstr}| thry i1 constr Nothing
+      (_    ,expr2) = Eq.applyProjConstr thry i2 constr Nothing 
+  in if bind1 == [] then Eq (lhs hom expr1) (rhs hom expr2)
+     else Pi (Tel bind1) |$\$$| Eq (lhs hom expr1) (rhs hom expr2)
+\end{minted}
+\begin{columns}
+\begin{column}{0.45\textwidth} 
+\begin{minted}[escapeinside=||,mathescape=true,fontsize=\scriptsize]{haskell}
+lhs :: Constr -> Expr -> Expr
+lhs (Constr n _) fexpr =
+    |\fcolorbox{red}{white}{App [mkArg (n $^{\wedge}.$ name),Arg fexpr]}|
+\end{minted}
+ 
+\end{column}
+\begin{column}{0.45\textwidth} 
+\begin{minted}[escapeinside=||,mathescape=true,fontsize=\scriptsize]{haskell}
+rhs :: Constr -> Expr -> Expr
+rhs (Constr n _) fexpr =
+   |\fcolorbox{green}{white}{functor (n $^\wedge.$ name) fexpr}|
+\end{minted}  
+% 
+\end{column}
+\end{columns}
+\end{frame}
 
 \begin{frame}[fragile] 
 Sagemath: 
@@ -919,11 +941,24 @@ AdditiveSemigroup =
 \end{tikzcd}}
 \end{frame}
 
-\begin{frame}[fragile] 
-\frametitle{Export}
-What is in Tog that needs to be changes 
 
-What are the differences between Agda and Lean 
+\begin{frame}[fragile] 
+\frametitle{Inductive Types in Agda and Lean} 
+\begin{minted}[escapeinside=||,mathescape=true,fontsize=\scriptsize]{agda} 
+data MonTerm  (n : Nat) (A : Set) : Set where 
+  v : Fin n |$\to$| MonTerm n A 
+  sing : A |$\to$| MonTerm n A 
+  op : MonTerm n A |$\to$| MonTerm n A |$\to$| MonTerm n A 
+  e : MonTerm n A 
+\end{minted}
+\begin{minted}[escapeinside=~~,mathescape=true,fontsize=\scriptsize]{lean} 
+inductive MonTerm  (n : Nat) (A : Type) : Type 
+  | v : Fin n ~$\to$~ MonTerm
+  | sing : A ~$\to$~ MonTerm
+  | op : MonTerm ~$\to$~ MonTerm ~$\to$~ MonTerm 
+  | e  : MonTerm
+open MonTerm   
+\end{minted}
 \end{frame}
 
 \end{document}
