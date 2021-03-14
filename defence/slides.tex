@@ -474,6 +474,8 @@ record Monoid (A : Set) : Set where
 \scriptsize{1. Extension}
 \begin{minted}[fontsize=\scriptsize]{agda}
 Semigroup  = extend Magma {assoc: ...}
+
+
 \end{minted}
 \end{column}
 \begin{column}{0.45\textwidth}
@@ -561,16 +563,22 @@ AdditiveSemigroup =
 % \end{itemize}
  \pause 
  \vspace{0.5cm}
+\begin{minted}[escapeinside=~~,fontsize=\scriptsize]{agda}
+combine AdditiveMonoid {} Group { ... } ~\textcolor{Blue}{over Monoid}~ 
+combine AdditiveMonoid {} MultMonoid {} ~\textcolor{Blue}{over Carrier}~ 
+\end{minted} 
+\begin{comment}
 \begin{minted}[fontsize=\scriptsize]{agda}
 combine AdditiveMonoid {} Group { ... } 
 combine AdditiveMonoid {} MultMonoid {}  
 \end{minted}
+\end{comment}
 \vspace{0.5cm}
 \begin{columns}
 \begin{column}{0.45\textwidth}
 {\scriptsize
 \begin{tikzcd}[row sep=2.0em, column sep=2.5em]
-    \verb|??| \arrow[r,hook] \arrow[d,mapsto]  & \verb|Group| \\
+    \verb|Monoid| \arrow[r,hook] \arrow[d,mapsto]  & \verb|Group| \\
     \verb|AdditiveMonoid| & 
 \end{tikzcd}
 }
@@ -578,7 +586,7 @@ combine AdditiveMonoid {} MultMonoid {}
 \begin{column}{0.45\textwidth}
 {\scriptsize
 \begin{tikzcd}[row sep=2.0em, column sep=2.5em]
-    \verb|??| \arrow[r,hook] \arrow[d,mapsto]  & \verb|MultMonoid| \\
+    \verb|Carrier| \arrow[r,hook] \arrow[d,mapsto]  & \verb|MultMonoid| \\
     \verb|AdditiveMonoid| & 
 \end{tikzcd}
 }
@@ -586,10 +594,7 @@ combine AdditiveMonoid {} MultMonoid {}
 \end{columns} 
 \pause 
 \vspace{1cm}
-\begin{minted}[escapeinside=~~,fontsize=\scriptsize]{agda}
-combine AdditiveMonoid {} Group { ... } ~\textcolor{Blue}{over Monoid}~ 
-combine AdditiveMonoid {} MultMonoid {} ~\textcolor{Blue}{over Carrier}~ 
-\end{minted}
+
 \end{frame}
 
 \begin{frame}[fragile]
