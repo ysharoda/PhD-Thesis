@@ -60,9 +60,9 @@ The type \lstmath{Vec A n} represented as a telescope would be written as
 
 \paragraph{Contexts.}
 %\label{sec:background:context}
-In logic, a proposition is true if it is an axiom or is derivable from other true propositions using inference rules. This is usually written as $\varphi_1 ... \varphi_n \vdash \psi$.  In categorical logic, instead of talking about propositions, one talks about contexts. \cite{handbook1993CategoricalLogic} defines a context as 
+In logic, a proposition is true if it is an axiom or is derivable from other true propositions using inference rules. This is usually written as $\varphi_1 ... \varphi_n \vdash \psi$.  In categorical logic, instead of talking about propositions, one talks about contexts. \cite{handbook1993CategoricalLogic} defines a context as: 
 \begin{quote}
-A context, $\Gamma$, is a finite list $[x_1 : \sigma_1, ... , x_n : \sigma_n]$ of (variable,sort) pairs, subject to the condition that $x_1, ... , x_n$ are distinct.  
+A context, $\Gamma$, is a finite list $[x_1 : A_1, ... , x_n : A_n]$ of (variable,sort) pairs, subject to the condition that $x_1, ... , x_n$ are distinct.  
 \end{quote}
 When using dependent types, the context becomes a telescope, where every type in the list can contain reference variables before it as described by Equation~\ref{eq:telescope}. The statement $\Gamma \vdash \psi$ means that the type judgement $\psi$ follows from the context $\Gamma$. The concatenation of two contexts $\Gamma_1$ and $\Gamma_2$ is noted by $\Gamma_1 ; \Gamma_2$.  
 %\paragraph{The category of contexts}
@@ -108,7 +108,7 @@ $\Sigma$ A : Type $\cdot$
 \end{lstlisting} 
 \noindent which can be describe as a telescope as:  
 \begin{togcode} 
-Monoid = [A : Set, op : A ~$\;\to\;$~ A ~$\;\to\;$~ A, e : A, 
+Monoid = [A : Type, op : A ~$\;\to\;$~ A ~$\;\to\;$~ A, e : A, 
           lunit : {x : A} ~$\;\to\;$~ op e x = x, 
           runit : {x : A} ~$\;\to\;$~ op x e = x, 
           assoc : {x y z : A} ~$\;\to\;$~ op x (op y z) = op (op x y) z] 

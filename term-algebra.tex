@@ -157,7 +157,7 @@ The value of the expression at each constructor is mapped to the corresponding f
 
 \subsubsection{Induction Principle}
 \label{sec:generation:induction}
-Induction principles are defined over sets with well-founded relations. In the case of structural induction, they are based on the subterm relation. Structural induction requires a base case, a constant or variable symbol in the language. In cases like the \lstmath{Basic} term language of magma, the variables \lstmath{x} and \lstmath{y} of an expression \lstmath{op x y} can only be substituted by other \lstmath{op} expressions and therefore never gets smaller. One can argue that in this case the induction principle is not defined. Despite that, we run the following experiment in Coq, which automatically generates the induction principle for types declared as \lstmath{Inductive}. 
+Induction principles are defined over sets with well-founded relations. In the case of structural induction, they are based on the subterm relation. Structural induction requires a base case, a constant or variable symbol in the language. In cases like the \lstmath{Basic} term language of \lstmath{magma}, the variables \lstmath{x} and \lstmath{y} of an expression \lstmath{op x y} can only be substituted by other \lstmath{op} expressions and therefore never gets smaller. One can argue that in this case the induction principle is not defined. Despite that, we run the following experiment in Coq, which automatically generates the induction principle for types declared as \lstmath{Inductive}. 
  \begin{minted}{coq}
 Inductive magma : Set := op : magma -> magma -> magma.
 Check magma_ind.

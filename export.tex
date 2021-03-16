@@ -7,7 +7,7 @@
 Generating the definitions of constructions from a theory presentation saves a lot of library development time, but having these definitions in a feature-rich language makes it even more useful. In this chapter we implement an automatic translator of the library theories and their related constructions to Agda and Lean. This part is related to the third research question from Section~\ref{sec:questions}. 
 %and lean\ednote{lean is still being implemented} 
 
-We study how different Agda and Lean are from Tog in Section~\ref{sec:beyongTog}. We discuss our design of an exporter in Section~\ref{sec:export_design}. The implementation in Haskell, the meta-language for Tog is disucssed in Section~\ref{sec:exporting_agda}. We compare our generated Agda code to the one in the Agda standard library~\cite{agda_stdlib} and discuss how close we can get to the standard library presentation in Section~\ref{sec:compasion_agda_stdlib}. 
+We study how different Agda and Lean are from Tog in Section~\ref{sec:beyongTog}. We discuss our design of an exporter in Section~\ref{sec:export_design}. The implementation in Haskell, the meta-language for Tog is disucssed in Section~\ref{sec:exporting_agda}. We compare our generated Agda code to the one in the Agda standard library~\cite{agda_stdlib} and discuss how close we can get to the standard library presentation in Section~\ref{sec:compasion_agda_stdlib}. Similarly, we compare the generated Lean code with Lean's Mathlib library in Section~\ref{sec:lean_comparison}.  
 %To assess how our approach scale up, we discuss how we extended the exporter to support lean, as a target language, in Section~\ref{sec:exporting_lean}. 
 We end by a discussion in Section~\ref{sec:exporting:discussion}. 
 
@@ -270,7 +270,7 @@ def f ~$binds-list : type-expr$~
 \end{leancode}
 \end{tabular}
 \newline
-If the function name is part of the definition, the configuration is set to be \lstmath{"fname"}. The function \lstmath{funcHeader} takes care of this case. 
+If the function name is part of the definition, then the configuration would have the field \lstmath{fname} set to \lstmath{True}. The function \lstmath{funcHeader} takes care of this case. 
 
 The instance of \lstmath{Export} for \lstmath{Decl} is:  
 \begin{hscode}
@@ -428,6 +428,7 @@ The definition of \lstmath{Monoid} in the Agda standard library includes backwar
 %\label{sec:exporting_lean}
 
 \section{Comparison With Lean's Mathlib}
+\label{sec:lean_comparison}
 \lstmath{Monoid} is defined in Mathlib as follows\footnote{source:\url{https://github.com/leanprover-community/mathlib/blob/bc94d05242714263947fa485f3b64b911bb84faf/src/algebra/group/defs.lean}.}: 
 \begin{leancode} 
 @[ancestor semigroup has_one]
@@ -450,7 +451,7 @@ Note how the information provided by the \lstmath{ancestor} attribute is a repit
 \href{https://leanprover.zulipchat.com/#narrow/stream/113488-general/topic/ancestor}{zulip thread}
 which explains that it is neded by some tactics like the one that computes the additive version of a class. 
 
-The second difference is that \lstmath{monoid} here is defined as a class, while the \lstmath{monoid} provided by our exporter is defined as a structure. To change the exported definition to be a \lstmath{class} we only need to change one keyword, which can be done easily. Yet, the Lean elaborator deal with classes in a way different than structures. classes have one instance for every carrier type, which enables the elaborator to infer this instance. Therefore, accepting a qualified projection of a \lstmath{monoid} field is more complicated. For example, the expression for projecting the binary operation \lstmath{op} of a \lstmath{monoid} class instance \lstmath{m : monoid a} with a carrier {a : Type} is \lstmath{@monoid_class.op a m x y}. The Tog syntax tree does not keep track of whether the projected field belongs to a class or a structure, which means we will need to keep track of this information in a separate data structure and consult it whenever a field is being projected. 
+The second difference is that \lstmath{monoid} here is defined as a class, while the \lstmath{monoid} provided by our exporter is defined as a structure. To change the exported definition to be a \lstmath{class} we only need to change one keyword, which can be done easily. Yet, the Lean elaborator deal with classes in a way different than structures. classes have one instance for every carrier type, which enables the elaborator to infer this instance. Therefore, accepting a qualified projection of a \lstmath{monoid} field is more complicated. For example, the expression for projecting the binary operation \lstmath{op} of a \lstmath{monoid} class instance \lstmath{m : monoid a} with a carrier \lstmath{a : Type} is \lstmath{@monoid_class.op a m x y}. The Tog syntax tree does not keep track of whether the projected field belongs to a class or a structure, which means we will need to keep track of this information in a separate data structure and consult it whenever a field is being projected. 
 
 \section{Discussion}
 \label{sec:exporting:discussion}

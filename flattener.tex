@@ -17,7 +17,7 @@ The theory \lstmath{RingoidSig} has declarations for two binary operations, whil
 
 It is worth noting that by implementing the combinators we mean computing a flattened version of the theory presentation described by the given expressions. This is performed by the flattener that given a theory presentation produces a Tog dependent record of declarations within the described theory presentation. 
 
-In Section~\ref{subsec:overPart} we discuss a modification in the syntax of combine and why we have it. We introduce the syntax of the language we implement in Section~\ref{sec:impl:expressions} and start discussing the implementation in Section~\ref{subsec:theoriesMorphisms} by presenting how we represent theories and morphisms in our framework. In Section~\ref{subsec:graph} we present the type of the theory graph. The implementation of the combinators that build the graph is presented in Section~\ref{subsec:combinatorsImpl}. 
+In Section~\ref{subsec:overPart} we discuss a modification in the syntax of combine from the one in Section~\ref{subsec:combine} and why we have it. We introduce the syntax of the language we implement in Section~\ref{sec:impl:expressions} and start discussing the implementation in Section~\ref{subsec:theoriesMorphisms} by presenting how we represent theories and morphisms in our framework. In Section~\ref{subsec:graph} we present the type of the theory graph. The implementation of the combinators that build the graph is presented in Section~\ref{subsec:combinatorsImpl}. 
 
 \section{Referring to Morphisms}
 \label{subsec:overPart}
@@ -25,7 +25,7 @@ In Section~\ref{subsec:overPart} we discuss a modification in the syntax of comb
 %We slightly modify the restrict the original combinators to solve some implementation issues. We conclude by summarizing the syntax of the tog expressions that we use based on the syntax of the combinators. 
 %\subsubsection{Referring to arrows}
 The extension and rename combinators need to identify a theory in the graph to operate on and compute the output theory and morphism. The input theory is part of the expression of the combinator. 
-In the case of \lstmath{combine}, the inputs to the combinator are two morphisms and two rename functions. But the syntax for combine is not defined in terms of morphisms. Instead, it is defined in terms of theories and the morphisms are left to the implementation to infer them. 
+In the case of \lstmath{combine}, the inputs to the combinator are two morphisms and two rename functions. But the syntax for combine is not defined in terms of morphisms. Instead, it is defined in terms of theories and the morphisms are left for the implementation to infer them. 
 For example, the expression 
 \begin{togcode}
 combine CommutativeMagma {} AssociativeMagma {}
@@ -40,7 +40,7 @@ combine CommutativeMagma {op to +} AssociativeMagma {op to *}
 \end{itemize}
 As the hierarchy gets deeper, this problem becomes more complicated. For example, \lstmath{CommutativeGroup} and \lstmath{IdempotentGroup} have many more possibilities for their common source. 
 
-The reason of this problem is that the syntax of the language presented in~\cite{carette2018building} is based on naming target theories, while the syntax is based on having the embedding available. This leaves the gap of using the target theories to infer the embeddings. Using theories, instead of morphisms, in the syntax is a usability decision. Morphisms do not have canonical names, mainly because they do not appear in informal mathematics. For example, it is hard to think of a name for the morphism (that result of composition of morphisms) from the \lstmath{PointedMagma} to \lstmath{Monoid} theory. It is easier to refer to it in terms of the source and the target than to give it any name. 
+The reason of this problem is that the syntax of the language presented in~\cite{carette2018building} is based on naming target theories, while the operation is based on having the embeddings available. This leaves the gap of using the target theories to infer the embeddings. Using theories, instead of morphisms, in the syntax is a usability decision. Morphisms do not have canonical names, mainly because they do not appear in informal mathematics. For example, it is hard to think of a name for the morphism (that result of composition of morphisms) from the \lstmath{PointedMagma} to \lstmath{Monoid} theory. It is easier to refer to it in terms of the source and the target than to give it any name. 
 
 We use an approach that still uses theories for usability reasons but gives more information for inferring the embeddings. We modify the syntax of \lstmath{combine} in the paper to have an \lstmath{over} part similar to the initial work on the combinators~\cite{CaretteOConnorTPC}. 
 
@@ -73,7 +73,7 @@ Although one can declare a theory with a list of declarations using the \lstmath
 
 \section{Implementation}
 \label{subsec:theoriesMorphisms}
-In Chapter~\ref{ch:library}, we described the library we are building. This library is the output of the flattener. In Section~\ref{sec:impl:expressions}, we introduce the theory expressions we need to generate this library. These expressions are the inputs to the flattener. In the sequel of this chapter, we describe the implementation of the flattener that reads those theory expressions and generates the graph. 
+In Chapter~\ref{ch:library}, we described the library we are building. This library is the output of the flattener. In Section~\ref{sec:impl:expressions}, we introduced the theory expressions we need so that we can generate this library. These expressions are the inputs to the flattener. In the sequel of this chapter, we describe the implementation of the flattener that reads those theory expressions and generates the graph. 
 
 The graph consists of theories and morphisms. In Section~\ref{sec:impl:Theories} we describe theories and morphisms, which are the basic components of the graph. We use them to define the theory graph data structure in Section~\ref{subsec:graph}, as well as the definition of a library. The combinators add the theories and morphisms to the graph. Their implementation is described in Section~\ref{subsec:combinatorsImpl}. 
 
@@ -87,7 +87,7 @@ data GTheory = GTheory {
 \end{hscode}
 The waist is needed to determine how many of the declarations are parameters, as in~\cite{alhassy2019}. 
 
-In our implementation we refer to morphisms as views. The type \lstmath{GView} describes morphisms as defined in~\ref{sec:background:morphisms}. It consists of a tsource and target theory, as well as the mapping between them. We discussed the combinators we use to build the library in Section~\ref{sec:msCombinators}. Since all the morphisms resulting from these combinators are embeddings, the mapping between theories can be described as a name-to-name map. 
+In our implementation we refer to morphisms as views. The type \lstmath{GView} describes morphisms as defined in Section~\ref{sec:background:morphisms}. It consists of source and target theories, as well as the mapping between them. We discussed the combinators we use to build the library in Section~\ref{sec:msCombinators}. Since all the morphisms resulting from these combinators are embeddings, the mapping between theories can be described as a name-to-name map. 
 \begin{hscode}
 data GView  = GView {
   source  :: GTheory,
@@ -98,7 +98,7 @@ data GView  = GView {
 
 \subsection{Theory Graph Structure}
 \label{subsec:graph}
-A theory graph consisting of nodes and morphisms is described in Section~\ref{sec:background:theorygraph}. The datatype \lstmath{TGraph} defines a theory graph as a set of named theories for nodes and a set of named views for edges. 
+A theory graph consisting of nodes and morphisms as described in Section~\ref{sec:background:theorygraph}. The datatype \lstmath{TGraph} defines a theory graph as a set of named theories for nodes and a set of named views for edges. 
 \begin{hscode}
 data TGraph = TGraph { 
   _nodes :: Map.Map Name_ GTheory,
@@ -119,7 +119,7 @@ data Library = Library {
 
 \subsection{Combinators}
 \label{subsec:combinatorsImpl}
-Now we describe the implementation of the expressions introduced in Section~\ref{sec:impl:expressions} and how they build instance of the type \lstmath{Library}.  
+Now we describe the implementation of the expressions introduced in Section~\ref{sec:impl:expressions} and how they build instances of the type \lstmath{Library}.  
 The language extension that we introduce to Tog is described in the type \lstmath{Language} 
 \begin{togcode}
 data Language = 
@@ -201,7 +201,7 @@ Computing renames requires computing substitutions. This requires traversing the
 gmap :: (Generics.Typeable a, Generics.Data b) => (a -> a) -> b -> b
 gmap r x = Generics.everywhere (Generics.mkT r) x  
 \end{hscode} 
-\lstmath{gmap} traverses an instance of type \lstmath{b} changing every instance of \lstmath{a} according to the input function \lstmath{r}. \lstmath{computeRename} uses \lstmath{gmap} to perform substitution to declarations of the input theory, as follows
+\lstmath{gmap} traverses an instance of type \lstmath{b} changing every instance of \lstmath{a} according to the input function \lstmath{r}. \lstmath{computeRename} uses \lstmath{gmap} to perform substitution to declarations of the input theory, as follows: 
 \begin{hscode}
 computeRename :: Rename -> GTheory -> GView  
 computeRename namesMap thry =

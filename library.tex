@@ -54,7 +54,7 @@ Specware~\cite{Smith99} and MMT~\cite{MMT} force users to provide all details of
 
 %Clear is - to our knowledge - the first system that provides a modular way to write formal specifications. It provide theory combinators to build larger theories from smaller ones. 
 %\ednote{A good resource for Clear is the PhD thesis of Sanella with the title: semantics, implementation and pragmatics of CLEAR} 
-Another way to support building a library rich in morphisms is to provide combinators to handle some of the work. Clear~\cite{Goguen1980} is --- to our knowledge --- the first system to use combinators for creating new theories\footnote{Clear is a specification language, and theories are used under the name specifications.}. OBJ~\cite{Obj2000Goguen} and CASL~\cite{CoFI:2004:CASL-RM} are successors of Clear that also support combinators. We focus our discussion on CASL as a representative to these systems, as it is the only living one now and so we were only able to look at its library and run experiments on it. 
+Another way to support building a library rich in morphisms is to provide combinators to handle some of the work. Clear~\cite{Goguen1980} is --- to our knowledge --- the first system to use combinators for creating new theories\footnote{Clear is a specification language, and theories are used under the name specifications.}. OBJ~\cite{Obj2000Goguen} and CASL~\cite{CoFI:2004:CASL-RM} are successors of Clear that also support combinators. We focus our discussion on CASL as a representative of these systems, as it is the only living one now and so we were only able to look at its library and run experiments on it. 
 We realized two problems related to combinators in CASL. First, it is not always possible to flatten theories built through the use of combinators, especially hiding and freeness combinators~\cite{CoFI:2004:CASL-RM}. The second problem is related to how the \emph{union} operation is implemented. The union operator is the one responsible for combining different specifications. They are combined on a `same name, same thing' basis~\cite{bidoit2003casl}, i.e. two declarations are considered the same if they have the same name. Figure~\ref{fig:casl_expr} shows the problems that occur from using this principle. 
 \begin{figure}
 \input{figures/casl-exp.tex}
@@ -101,7 +101,7 @@ The combinators assume the underlying logic in which theories are defined to be 
     s_1 : \sigma \equiv s_2 : \sigma$.
     
     \item A notion of substitution on terms. Given a list of symbol
-    assignments $[x_i \mapsto s_i]_{i < n}$ such that they form a total function, 
+    assignments $[x_i \mapsto s_i]_{i < n}$ such that they form a total function over the symbols of the term, 
     and an expression $e$ we write $\substitutiondef{e}{x_i}{s_i}{i < n}$
     for the term $e$ after simultaneous substitution of symbols $\left\{ x_i
     \right\}_{i < n}$ by the corresponding term in the assignment.
@@ -158,7 +158,7 @@ MultSemigroup = rename Semigroup {op to *}
 
 \subsection{Combine}
 \label{subsec:combine}
-Conisder the following small library
+Consider the following small library: 
 \begin{togcode} 
 Theory Empty = {} 
 Carrier = extend Empty {A : Set}
@@ -229,7 +229,7 @@ The embeddings used here are \lstmath{Magma $\;\mapsto\;$ AdditiveMagma} and \ls
 %Once implementation of combinators is in place, 
 Using \lstmath{extends}, \lstmath{rename}, and \lstmath{combine}, we build a library of $227$ theories describing the algebraic hierarchy organized as a theory graph using tiny theories approach. Those theories range from \lstmath{Empty} up to \lstmath{Ring} and  \lstmath{BoundedDistributedLattice}. The library definitions are given in Appendix~\ref{appendix:input}. 
 %we start using them to build the library organized as a theory graph. 
-Our guide in building this library are the definitions in~\cite{msLibDecls}, which were part of an experiment~\cite{mathscheme2011experiments} on the way to developing the combinators we discuss in this chapter. Therefore, there are some definitions in that library that referred to non-existing morphisms, like the definition of \lstmath{SemiRng} presented in Section~\ref{sec:lib_implementation}. As the implementation of combinators depends on finding the right morphisms in the underlying theory graph, we had to work out the correct morphisms. 
+Our guide in building this library are the definitions in~\cite{msLibDecls}, which were part of an experiment~\cite{mathscheme2011experiments} on the way to developing the combinators we discuss in this chapter. Therefore, there are some definitions in that library that referred to non-existing morphisms, like the definition of \lstmath{SemiRng} presented in Chapter~\ref{sec:lib_implementation}. As the implementation of combinators depends on finding the right morphisms in the underlying theory graph, we had to work out the correct morphisms. 
  
 The examples in Section~\ref{sec:msCombinators} give an intuition of how the combinators work together to build the library. In this section we discuss some the challenges we faced to build the graph defining \lstmath{AdditiveMonoid} as in Figure~\ref{fig:cube_monoid}.  
 %leading to a completely morphism-based development of the library. 
@@ -244,7 +244,7 @@ Magma = extend Carrier {op : A -> A -> A}
 AdditiveMagma = rename Magma {op to +} 
 PointedMagma = combine Pointed {} Magma {} over Carrier
 \end{togcode} 
-These definitions would result in the black theories and morphisms in Figure~\ref{fig:addPointedMagma}. Now we want to defined \lstmath{AdditivePointedMagma} consisting of three declarations \lstmath{(A,+,0)} such that all the blue morphisms of 
+These definitions~\footnote{Note that the syntax for \texttt{combine} here is different from the one in Section~\ref{subsec:combine}. Here we have the \texttt{over} part to specify the common source of the two arrows being combined. In Section~\ref{subsec:overPart} we discuss why we need this syntax modification.} would result in the black theories and morphisms in Figure~\ref{fig:addPointedMagma}. Now we want to defined \lstmath{AdditivePointedMagma} consisting of three declarations \lstmath{(A,+,0)} such that all the blue morphisms of 
 Figure~\ref{fig:addPointedMagma} are generated. 
 \begin{figure}[h]
     \begin{tikzcd}
