@@ -15,7 +15,7 @@ Generating information based on the content of a theory requires dealing with th
 
 \subsection{Equational Theories}
 \label{sec:gen:reqs:eqtheories}
-The graph theories are instances of \lstmath{GTheory} type; see Section~\ref{subsec:theoriesMorphisms}, which is a representation of telescopes as in Equation~\ref{eq:telescope}. In this representation, declarations of a theory are represented as members of the  \lstmath{[Constr]} type, where each \lstmath{Constr} has a name and an expression denoting its type. 
+Theories of the graph are instances of \lstmath{GTheory} type; see Section~\ref{subsec:theoriesMorphisms}, which is a representation of telescopes as in Equation~\ref{eq:telescope}. In this representation, declarations of a theory are represented as members of the  \lstmath{[Constr]} type, where each \lstmath{Constr} has a name and an expression denoting its type. 
 Universal algbera has a different representation of theories, which is discussed in Section~\ref{sec:eqtheory}. It separates declarations that describe sorts, functions symbols, and axioms. The first requirement to be able to process theories based on universal algebra definitions is to be able to classify theory declarations into these three groups. 
 
 \subsection{Constructions}
@@ -63,7 +63,8 @@ The \lstmath{Basic} term language defines expressions created using the function
 Considering, for example, the binary operation of the basic \lstmath{Monoid} term language in Figure~\ref{fig:term-lang-4-forms}, \lstmath{op}. Its arguments are either the constant \lstmath{e} or another call for \lstmath{op}. 
 \lstmath{Closed} term languages solve this problem by providing the \lstmath{sing} constructor, abbreviation for \emph{singleton}, that lifts an element of type \lstmath{A} to an instance of the closed term language. Assuming that the carrier is the type of natural numbers \lstmath{Nat}, a possible term in the language would be \lstmath{op (sing (suc zero)) e}. 
 
-\lstmath{Open} term languages provides extra constructor to represent variables, represented using the \lstmath{Fin} type. The two open term languages are shown on the right hand side of Figure~\ref{fig:term-lang-4-forms}.  
+\lstmath{Open} term languages provides extra constructor to represent variables, represented using the \lstmath{Fin} type of finite sets, which depends on a number \lstmath{n : Nat} representing the size of the set of variables. This representation has the advantage that one can easily add fresh variables by incrementing \lstmath{n}. 
+The two open term languages are shown on the right hand side of Figure~\ref{fig:term-lang-4-forms}.  
 
 For all 4 versions, we need to generate a constructor for every function symbol of the theory. The term languages that support referring to elements of the carrier would have an extra constructor for singleton elements with arguments of type \lstmath{A}; and those that support language with variables would have an extra constructor whose arguments has the type \lstmath{Fin n}. 
 

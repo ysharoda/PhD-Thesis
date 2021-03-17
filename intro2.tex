@@ -15,11 +15,11 @@ In every formalization, the library developers had to provide all the definition
 %It mainly requires developers to To understand why this redundancy exists, we examine the formalization of \lstmath{Monoid} in algebra textbooks versus in interactive theorem provers. 
 
 \paragraph{Handwritten Boilerplate.}
-\lstmath{Monoid} is defined in~\cite{jacobson1985basic} as
+\lstmath{Monoid} is defined in~\cite{jacobson1985basic} as: 
 \begin{quote}
     A monoid is a triple $(M,p,1)$ in which $M$ is a non-vacuous set, $p$ is an associative binary composition (or product) in $M$, and $1$ is an element of $M$ such that $p(1,a)= a = p(a,1)$ for all $a \in M$ 
 \end{quote}
-The definition of \lstmath{Monoid} is followed by the definition of its homomorphism as
+The definition of \lstmath{Monoid} is followed by the definition of its homomorphism as: 
 \begin{quote}
 If $M$ and $M^\prime$ are monoids, then a map $\eta$ of $M$ into $M^\prime$ is called a homomorphism if 
 \begin{multicols}{3}
@@ -30,7 +30,7 @@ If $M$ and $M^\prime$ are monoids, then a map $\eta$ of $M$ into $M^\prime$ is c
     $a,b \in M$  \vfill    
 \end{multicols}
 \end{quote}
-More monoid-related constructions are defined, like submonoid, and quotient monoids. The same constructions are defined for \lstmath{Group} and \lstmath{Ring}. 
+More monoid-related constructions are defined, like submonoids, and quotient monoids. The same constructions are defined for \lstmath{Group} and \lstmath{Ring}. 
 %Mathematics presented in textbooks rely on the human understanding to be able to generalize these concepts. For example, \cite{jacobson1985basic} does not provide an explicit definition for group homomorphism, but proceeds to use it. 
 
 Formal systems\footnote{We use the term \emph{formal systems} to refer to all computer systems with logical foundations, be it automatic theorem prover (ATP), interactive theorem prover (ITP), specification system, or others.} present algebraic structures using axiomatic theories. \lstmath{Monoid} and its notion of homomorphism are presented axiomatically in a minimal (imaginary) computer language as follows: \\
@@ -104,7 +104,7 @@ It defines an algebra as~\cite{mckenzie1987algebras}\footnote{An axiomatic theor
 \end{quote}
 %\ednote{look for a text book that explicitly state axioms. The properties of the function symbols, which are mentioned in mathematics textbooks but not always stated, are stated as axioms in formal systems, and so we defined an algebraic theory to be a type ($\langle A, F \rangle$,$E$), where $E$ is the set of axioms.}
 %\todo{check the sanella software specification book for this definition. }
-Libraries formalizing the algebraic hierarchy would contain axiomatic theories describing algebras and their related constructions, like homomorphism, subalgebra, quotient algebra, term language, etc. 
+Libraries formalizing the algebraic hierarchy would contain axiomatic theories describing algebras and their related constructions, like homomorphisms, subalgebras, quotient algebras, term languages, etc. 
 For every one of those constructions, universal algebra provides a uniform definition in terms of the components of the theory. 
 It gives us the meta theory and the abstractions that enables us to instantiate those definitions for every theory. This suggests that we can have a program generate those constructions from the individual theories, instead of having library developers provide them manually. As there are many algebraic structures in mathematics and computer science and many constructions for each of them, this automation can save significant human effort. In this work, we provide a framework for generating these constructions. 
 %There are many algebraic structures and many constructions related to each of them. Their definitions are part of libraries of algebra in formal systems. Universal algebra provides a strong meta-theory for abstracting over the details of those structures and their related constructions. In this work, we want to use those abstractions to define algorithms that given a theory would compute the constructions. 

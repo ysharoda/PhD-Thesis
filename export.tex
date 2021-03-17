@@ -297,7 +297,7 @@ instance Export Decl where
   export _ _ = empty
 \end{hscode}
 
-With instances of \lstmath{export} for every type in the Tog abstract syntax, a single call to \lstmath{export} on the top level module of the tog library generates the equivalent Agda definitions\footnote{The generated files available at:~\url{https://github.com/ysharoda/Deriving-Definitions/tree/master/Library/generated/mathscheme-agda}.}.
+With instances of \lstmath{export} for every type in the Tog abstract syntax, a single call to \lstmath{export} on the top level module of the tog library generates the equivalent Agda definitions\footnote{The generated files available at:~\url{https://github.com/ysharoda/Deriving-Definitions/tree/2a61c1ee190a/Library/generated/mathscheme-agda}.}.
 
 \section{Comparison With Agda Standard Library}
 \label{sec:compasion_agda_stdlib}
@@ -305,7 +305,7 @@ With instances of \lstmath{export} for every type in the Tog abstract syntax, a 
 We compare the the definitions that we generate in Agda to those in its standard library, highlighting how close we can get to them. 
 %look at our generated theories and constructions and compare them with the ones that agda provides in its standard library, highlighting how close we can get to them. 
 
-Algebraic structures in Agda are unparameterized records. For example, \lstmath{Monoid} is defined as\footnote{source:\url{https://github.com/agda/agda-stdlib/blob/84dcc85a8c6ee258d8a00f7137b9db399cdb62da/src/Algebra/Bundles.agda}.}:
+Algebraic structures in Agda are unparameterized records. For example, \lstmath{Monoid} is defined as\footnote{source:\url{https://github.com/agda/agda-stdlib/blob/84dcc85a8c6e/src/Algebra/Bundles.agda}.}:
 \begin{agdacodelnos}
 record Monoid c ~$\ell$~ : Set (suc (c ~$\sqcup$~ ~$\ell$~)) where 
   infixl 7 _~$\bullet$~_
@@ -429,7 +429,7 @@ The definition of \lstmath{Monoid} in the Agda standard library includes backwar
 
 \section{Comparison With Lean's Mathlib}
 \label{sec:lean_comparison}
-\lstmath{Monoid} is defined in Mathlib as follows\footnote{source:\url{https://github.com/leanprover-community/mathlib/blob/bc94d05242714263947fa485f3b64b911bb84faf/src/algebra/group/defs.lean}.}: 
+\lstmath{Monoid} is defined in Mathlib as follows\footnote{source:\url{https://github.com/leanprover-community/mathlib/blob/bc94d0524271/src/algebra/group/defs.lean}.}: 
 \begin{leancode} 
 @[ancestor semigroup has_one]
 class monoid (M : Type u) extends semigroup M, has_one M :=

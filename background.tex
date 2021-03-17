@@ -106,7 +106,7 @@ $\Sigma$ A : Type $\cdot$
          $\Sigma$ assoc : {x y z : A} $\;\to\;$ op x (op y z) = 
                                   op (op x y) z
 \end{lstlisting} 
-\noindent which can be describe as a telescope as:  
+\noindent where we assume that \lstmath{Type} is the universe of all types and equality is provided by the underlying logic. The same theory can be describe as a telescope as follows:  
 \begin{togcode} 
 Monoid = [A : Type, op : A ~$\;\to\;$~ A ~$\;\to\;$~ A, e : A, 
           lunit : {x : A} ~$\;\to\;$~ op e x = x, 
@@ -314,11 +314,11 @@ Finite categories can be represented diagrammatically as in Figure~\ref{fig:diag
 \end{figure}
 A diagram is said to commute if for every pair of vertices, $\Gamma$ and $\Delta$, all paths from $\Gamma$ to $\Delta$ are equal, i.e.: compose to the same arrow. 
 
-In the following we introduce two concepts related to categories that we use in Chapter~\ref{ch:library}. These are pushouts and colimits. \cite{nlab:colimit} gives an intuition of what a colimit is as 
+In the following we introduce two concepts related to categories that we use in Chapter~\ref{ch:library}. These are pushouts and colimits. \cite{nlab:colimit} gives an intuition of what a colimit is as: 
 \begin{quote}
 ``The intuitive general idea of a colimit is that it defines an object obtained by sewing together the objects of the diagram, according to the instructions given by the morphisms of the diagram"
 \end{quote}
-A pushout is a special case of a colimit. In~\cite{nlab:pushout}, it is mentioned that 
+A pushout is a special case of a colimit. In~\cite{nlab:pushout}, it is mentioned that:  
 \begin{quote}
 ``A pushout is the colimit of the diagram 
 \begin{tikzcd} 
@@ -409,7 +409,7 @@ interp\ x_1\ x_2\ &\wedge\ interp\ y_1\ y_2\ \rightarrow\ interp\ (op\ x_1\ y_1)
 %interp\ x_1\ x_2\ \wedge\ interp\ y_1\ y_2\ \rightarrow\ interp\ (op\ x_1\ y_1)\ (op\ x_2\ y_2)  
 %\end{eqnarray*} 
 
-Relational interpretations are mainly applied to models of type theories. They have been used in~\cite{reynolds1983types} to develop the abstraction theorem that connects meanings of expressions under different assignments and in~\cite{parametricPoly93} to explain parameteric polymorphism. They have been applied to deduce theorems that apply to functions, given their polymorphic type~\cite{wadler1989theorems, algehed2020dynamic}. 
+Relational interpretations have been used in~\cite{reynolds1983types} to develop the abstraction theorem that connects meanings of expressions under different assignments and in~\cite{parametricPoly93} to explain parameteric polymorphism. They have been applied to deduce theorems that apply to functions, given their polymorphic type~\cite{wadler1989theorems, algehed2020dynamic}. 
 %Other applications include proving strong normalization, type safety, or equivalence of type systems~\cite{skorstengaard2019introduction}. 
 They are used extensively when working on the semantics of programming languages, often refered to as \emph{logical relations}~\cite{crary2005logical}. Supporting proofs of logical relations has been considered a benchmark for theorem provers in the revised POPLmark challenge~\cite{poplmark2019}.  
 

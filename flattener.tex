@@ -25,15 +25,15 @@ In Section~\ref{subsec:overPart} we discuss a modification in the syntax of comb
 %We slightly modify the restrict the original combinators to solve some implementation issues. We conclude by summarizing the syntax of the tog expressions that we use based on the syntax of the combinators. 
 %\subsubsection{Referring to arrows}
 The extension and rename combinators need to identify a theory in the graph to operate on and compute the output theory and morphism. The input theory is part of the expression of the combinator. 
-In the case of \lstmath{combine}, the inputs to the combinator are two morphisms and two rename functions. But the syntax for combine is not defined in terms of morphisms. Instead, it is defined in terms of theories and the morphisms are left for the implementation to infer them. 
+In the case of \lstmath{combine}, the inputs to the combinator are two morphisms and two rename functions. But the syntax introduced for combine in Section~\ref{subsec:combine} is not defined in terms of morphisms. Instead, it is defined in terms of theories and the morphisms are left for the implementation to infer them. 
 For example, the expression 
 \begin{togcode}
 combine CommutativeMagma {} AssociativeMagma {}
 \end{togcode}
-\noindent does give information that the targets of the two embeddings involved are the theories  \lstmath{CommutativeMagma} and \lstmath{AssociativeMagma}, but it does not specify the source of the embeddings. The algorithm has three choices of the source theory, which is common to both morphisms. 
+\noindent does give information that the targets of the two embeddings involved are the theories  \lstmath{CommutativeMagma} and \lstmath{AssociativeMagma}, but it does not specify the source of the embeddings. The algorithm has three choices of the source theory, which is common to both morphisms:  
 \begin{itemize}
-    \item If the source theory is \lstmath{Magma}, the theory resulting from the combine operation will have one binary operation that is both associative and commutative 
-    \item If the source theory is \lstmath{Carrier}, then the definition is describing a theory (along with the related morphisms) that has two binary operations, one associative and the other commutative. But this theory will not be computed because of the name clash; The user has to choose another name for one of the two operations. A possible fix is 
+    \item If the source theory is \lstmath{Magma}, the theory resulting from the \lstmath{combine} operation will have one binary operation that is both associative and commutative 
+    \item If the source theory is \lstmath{Carrier}, then the definition is describing a theory (along with the related morphisms) that has two binary operations, one associative and the other commutative. But this theory will not be computed because of the name clash; The user has to choose another name for one of the two operations. A possible fix is:  
     \begin{togcode}
 combine CommutativeMagma {op to +} AssociativeMagma {op to *}
     \end{togcode}

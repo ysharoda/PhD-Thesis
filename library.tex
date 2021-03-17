@@ -4,7 +4,7 @@
 
 In this Chapter, we build a library of axiomatic theories representing the algebraic hierarchy. 
 %before we use it to generate related constructions that we discuss in Chapter~\ref{ch:generation}. 
-Our library consists of equational first-order theories organized as a theory graph using the tiny theories approach. Instead of having to provide all declaration of the theories and morphisms within the graph, we use the MathScheme combinators introduced in~\cite{CaretteOConnorTPC, carette2018building}. 
+Our library consists of equational first-order theories organized as a theory graph using the tiny theories approach. Instead of having to provide all declarations of the theories and morphisms within the graph, we use the MathScheme combinators introduced in~\cite{CaretteOConnorTPC, carette2018building}. 
 
 It is common to see the algebraic hierarchy as a series of inclusions as in Figure~\ref{fig:flatExtensions}. 
 \begin{figure}
@@ -17,7 +17,7 @@ It is common to see the algebraic hierarchy as a series of inclusions as in Figu
 \end{figure}  
 But the algebraic hierarchy is richer than that, considering for example the list in~\cite{jipsen}. 
 In Section~\ref{sec:background:tinytheories} we discuss tiny theories as an adequate approach to building a theory graph that captures this structure. The nodes of the graph are theory presentations and they are connected via morphisms (see Section~\ref{sec:background:theorygraph}). Morphisms describe how the different theory presentations relate to each other. 
-We present the example of building the theory of \lstmath{Unital} by extending the theory of \lstmath{PointedMagma} to create \lstmath{LeftUnital} and \lstmath{RightUnital}, then combining them. This example is described by a diamond structure as in Figure~\ref{fig:unitalDiamond}. 
+We presented the example of building the theory of \lstmath{Unital} by extending the theory of \lstmath{PointedMagma} to create \lstmath{LeftUnital} and \lstmath{RightUnital}, then combining them. This example is described by a diamond structure as in Figure~\ref{fig:unitalDiamond}. 
 \begin{figure}
 \centering{
 \begin{tikzcd} 
@@ -82,7 +82,7 @@ A library built using these combinators embodies the following design decisions:
 \end{itemize}
 
 
-The combinators assume the underlying logic in which theories are defined to be a dependent type theory (DTT). Therefore, a theory is viewed as a context, or a telescope as defined in equation~\ref{eq:telescope}. But a specific variant of DTT is not assumed; instead many of the details are abstracted away. The minimum requirements of the underlying DTT are listed in ~\cite{carette2018building}. We include them here for convenience and completeness. These requirements are:  
+The combinators assume the underlying logic in which theories are defined to be a dependent type theory (DTT). Therefore, a theory is viewed as a context, or a telescope as defined by Equation~\ref{eq:telescope}. But a specific variant of DTT is not assumed; instead many of the details are abstracted away. The minimum requirements of the underlying DTT are listed in~\cite{carette2018building}. We include them here for convenience and completeness. These requirements are:  
 \begin{itemize}
     \item An infinite set $\mathbb{S}$ of symbols.
     
@@ -207,7 +207,7 @@ $\pi_{\Delta}$ and $\pi_{\Phi}$ are two rename functions given to resolve name c
 \end{equation}
 
 \paragraph{Example}
-We have given two examples in the beginning of this section illustrating situations in which combine operations is needed. A \lstmath{PointedMagma} is defined as 
+We have given two examples in the beginning of this section illustrating situations in which combine operations are needed. A \lstmath{PointedMagma} is defined as 
 \begin{togcode} 
 PointedMagma = combine Magma {} Pointed {} 
 \end{togcode} 
@@ -244,7 +244,7 @@ Magma = extend Carrier {op : A -> A -> A}
 AdditiveMagma = rename Magma {op to +} 
 PointedMagma = combine Pointed {} Magma {} over Carrier
 \end{togcode} 
-These definitions~\footnote{Note that the syntax for \texttt{combine} here is different from the one in Section~\ref{subsec:combine}. Here we have the \texttt{over} part to specify the common source of the two arrows being combined. In Section~\ref{subsec:overPart} we discuss why we need this syntax modification.} would result in the black theories and morphisms in Figure~\ref{fig:addPointedMagma}. Now we want to defined \lstmath{AdditivePointedMagma} consisting of three declarations \lstmath{(A,+,0)} such that all the blue morphisms of 
+These definitions would result in the black theories and morphisms in Figure~\ref{fig:addPointedMagma}. Now we want to defined \lstmath{AdditivePointedMagma} consisting of three declarations \lstmath{(A,+,0)} such that all the blue morphisms of 
 Figure~\ref{fig:addPointedMagma} are generated. 
 \begin{figure}[h]
     \begin{tikzcd}
@@ -408,7 +408,7 @@ The declarations that we use to define \lstmath{AdditiveMonoid} are
 
 \section{Discussion}
 \label{sec:library:discussion}
-In many cases, there are many ways to define a theory. We restrict using \lstmath{extension} for adding new concepts within their minimal context, like adding associativity to \lstmath{Magma}. Whenever associativity is needed in a different context, it should be transported through \lstmath{rename} and \lstmath{combine}. In other words, a concept should only be defined once and transported to different theories via morphisms. It is also reasonable to assume that \lstmath{AdditiveMagma} should be an ancestor for any theory that contain the binary {operation \lstmath{+}}. This means that many renames take place using \lstmath{combine} operation, rather than the \lstmath{rename} one. For example, compare the following two definitions of \lstmath{AdditiveSemigroup} 
+In many cases, there are many ways to define a theory. We restrict using \lstmath{extend} for adding new concepts within their minimal context, like adding associativity to \lstmath{Magma}. Whenever associativity is needed in a different context, it should be transported through \lstmath{rename} and \lstmath{combine}. In other words, a concept should only be defined once and transported to different theories via morphisms. It is also reasonable to assume that \lstmath{AdditiveMagma} should be an ancestor for any theory that contain the binary {operation \lstmath{+}}. This means that many renames take place using \lstmath{combine} operation, rather than the \lstmath{rename} one. For example, compare the following two definitions of \lstmath{AdditiveSemigroup} 
 \begin{togcode}
 1. AdditiveSemigroup = rename Semigroup {op to +}
 \end{togcode}
